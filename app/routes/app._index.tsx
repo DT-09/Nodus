@@ -85,7 +85,6 @@ export default function Overview() {
       <article className="surface-card">
         <div className="card-heading"><div><p className="eyebrow">01 / RECONCILIATION</p><h3>Shipping cost coverage</h3></div><span className="tag">Awaiting review</span></div>
         <p className="body-copy">NODUS has stored Shopify order shipping charges. It will not calculate a cost gap until supported label, carrier or 3PL cost evidence is connected and its coverage is reviewed.</p>
-        <div className="progress-track"><span style={{ width: "24%" }}/></div>
         <div className="progress-caption"><span>Store connection</span><strong>Connected</strong></div>
         <div className="progress-caption"><span>Cost evidence</span><strong>Review required</strong></div>
         <div className="progress-caption"><span>Reconciliation</span><strong>Pending evidence review</strong></div>
