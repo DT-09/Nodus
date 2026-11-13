@@ -78,7 +78,7 @@ export function reconcileShipping(orders: readonly OrderInput[], evidence: reado
         shippingRevenue: order.shippingRevenue,
         evidencedCost: null,
         evidenceIds: [],
-        coverage: currencyMismatchOrders.has(order.orderId) ? "partial" as const : "none" as const,
+        coverage: order.costCoverage === "partial" || currencyMismatchOrders.has(order.orderId) ? "partial" as const : "none" as const,
         shippingContributionBeforeUnobservedCosts: null,
       };
     }
