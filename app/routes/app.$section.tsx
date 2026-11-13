@@ -128,6 +128,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       : [],
     costCoverage: order.costCoverageStatus === "complete" ? "complete" as const
       : order.costCoverageStatus === "partial" ? "partial" as const : "unknown" as const,
+    taxesIncluded: order.taxesIncluded,
   }));
   const costInputs = costs.map((cost) => ({
     evidenceId: `${cost.sourceSystem}:${cost.sourceRecordId}`,
@@ -176,10 +177,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       return `"${text.replaceAll('"', '""')}"`;
     };
     const records = [
-      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions"],
-      ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), order.costCoverageStatus, "", "", "", "", "", "", order.coverageReviewedAt?.toISOString() ?? "", order.coverageReviewedBy ?? "", "", "", "", ""]),
-      ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? "", "", "", "", "", "", ""]),
-      ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion, "", "", String(simulation.sampleSize), simulation.sampleWindowStart?.toISOString() ?? "", simulation.sampleWindowEnd?.toISOString() ?? "", JSON.stringify(simulation.assumptions)]),
+      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","taxes_included","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions"],
+      ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), String(order.taxesIncluded), order.costCoverageStatus, "", "", "", "", "", "", order.coverageReviewedAt?.toISOString() ?? "", order.coverageReviewedBy ?? "", "", "", "", ""]),
+      ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? "", "", "", "", "", "", ""]),
+      ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "", "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion, "", "", String(simulation.sampleSize), simulation.sampleWindowStart?.toISOString() ?? "", simulation.sampleWindowEnd?.toISOString() ?? "", JSON.stringify(simulation.assumptions)]),
     ];
     const csv = records.map((record) => record.map(csvCell).join(",")).join("\r\n");
     await prisma.auditEvent.create({ data: {
@@ -282,10 +283,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
       if (!merchant) return { kind: "simulation" as const, ok: false, message: "No Shopify order history is stored yet." };
       const orders = await prisma.shippingOrder.findMany({
-        where: { merchantId: merchant.id, subtotalMinor: { not: null }, currency },
+        where: { merchantId: merchant.id, subtotalMinor: { not: null }, currency, taxesIncluded: false },
         orderBy: { orderedAt: "desc" }, take: 250,
       });
-      if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No orders in this currency with a verified subtotal are available." };
+      if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No non-tax-inclusive orders in this currency with a verified subtotal are available." };
       const result = simulateHistoricalShippingRevenue(orders.map((order) => ({
         orderId: order.sourceOrderId,
         subtotal: { minor: order.subtotalMinor!, currency: order.currency },
@@ -366,7 +367,7 @@ export default function Section() {
         <p className="body-copy">Mark coverage complete only after all applicable carrier, label and 3PL costs have been imported and checked. This is a merchant attestation, not an automatic inference.</p>
         {result?.kind === "coverage" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
         <table className="data-table"><thead><tr><th>Order</th><th>Shipping collected</th><th>Evidenced cost</th><th>Evidence rows</th><th>Coverage</th><th>Review</th></tr></thead>
-          <tbody>{data.rows.map((row) => <tr key={row.orderId}><td>{row.orderName}</td><td>{formatMinor(row.collectedMinor,row.currency)}</td><td>{formatMinor(row.evidencedCostMinor,row.currency)}</td><td>{row.evidenceCount}</td><td>{row.coverage} <small>({row.costCoverageStatus})</small></td><td>
+          <tbody>{data.rows.map((row) => <tr key={row.orderId}><td>{row.orderName}</td><td>{formatMinor(row.collectedMinor,row.currency)}{row.taxesIncluded ? <small>Tax included · contribution withheld</small> : null}</td><td>{formatMinor(row.evidencedCostMinor,row.currency)}</td><td>{row.evidenceCount}</td><td>{row.coverage} <small>({row.costCoverageStatus})</small></td><td>
             <Form method="post" className="coverage-review-form"><input type="hidden" name="intent" value="review-coverage"/><input type="hidden" name="orderId" value={row.orderId}/>
               <select name="coverageStatus" defaultValue={row.costCoverageStatus} aria-label={`Cost coverage for ${row.orderName}`}><option value="unknown">Unreviewed</option><option value="partial">Partial</option><option value="complete">Complete</option></select><button type="submit">Save review</button>
             </Form>{row.coverageReviewedAt ? <small>Reviewed {new Date(row.coverageReviewedAt).toLocaleDateString()}</small> : null}
