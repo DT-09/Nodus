@@ -73,7 +73,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     page,
-    totalOrders: orders.length,
+    totalOrders,
+    totalEvidence,
+    evidenceRows: params.section === "evidence" ? costs.slice(0, 250).map((cost) => ({
+      id: cost.id, sourceSystem: cost.sourceSystem, sourceRecordId: cost.sourceRecordId,
+      orderReference: cost.orderReference, trackingNumber: cost.trackingNumber,
+      currency: cost.currency, amountMinor: cost.amountMinor.toString(), costType: cost.costType,
+      occurredAt: cost.occurredAt?.toISOString() ?? null, sourceReference: cost.sourceReference,
+    })) : [],
+    auditEvents: auditEvents.map((event) => ({
+      id: event.id, actor: event.actor, action: event.action, subjectType: event.subjectType,
+      subjectId: event.subjectId, createdAt: event.createdAt.toISOString(),
+    })),
     rows: reconciled.map((row) => ({
       orderId: row.orderId,
       orderName: orders.find((order) => order.sourceOrderId === row.orderId)?.orderName ?? row.orderId,
@@ -100,6 +111,35 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export async function action({ request, params }: ActionFunctionArgs) {
   const { session } = await authenticate.admin(request);
   const form = await request.formData();
+
+  if (params.section === "reports" && form.get("intent") === "export-report") {
+    const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
+    if (!merchant) return new Response("No merchant data is available.", { status: 404 });
+    const [orders, costs] = await Promise.all([
+      prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "asc" } }),
+      prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "asc" } }),
+    ]);
+    const quote = (value: string | number | null) => {
+      const text = value === null ? "" : String(value);
+      return `"${text.replaceAll('"', '""')}"`;
+    };
+    const rows = [
+      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","cost_coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference"],
+      ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), order.costCoverageStatus, "", "", "", "", "", ""]),
+      ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference]),
+    ];
+    const csv = rows.map((row) => row.map(quote).join(",")).join("\r\n");
+    await prisma.auditEvent.create({ data: {
+      merchantId: merchant.id, actor: session.id, action: "report_exported",
+      subjectType: "merchant", subjectId: session.shop,
+      detail: { orderCount: orders.length, evidenceCount: costs.length, format: "csv" },
+    } });
+    return new Response(csv, { headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": `attachment; filename="nodus-evidence-report-${new Date().toISOString().slice(0,10)}.csv"`,
+      "Cache-Control": "no-store",
+    } });
+  }
 
   if (params.section === "orders" && form.get("intent") === "review-coverage") {
     const orderId = String(form.get("orderId") ?? "").trim();
@@ -234,6 +274,7 @@ export default function Section() {
           {!data.rows.length ? <tr><td colSpan={6}>No persisted orders yet. Open the overview to refresh the latest Shopify sample.</td></tr> : null}</tbody>
         </table>
       </div> : null}
+      {page.title === "Reports" ? <div className="report-panel"><p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records</p><p className="body-copy">Export a merchant-scoped CSV containing stored Shopify order records, imported carrier cost evidence and each order's coverage-review status. Export actions are recorded in the audit log.</p><Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form><h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}{!data.auditEvents.length ? <p className="body-copy">No audit activity recorded yet.</p> : null}</div></div> : null}
       {page.title === "Diagnostics" ? <div className="finding-list">
         <p className="table-caption">{data.findings.length} coverage findings · {data.totalOrders} orders analyzed</p>
         {data.findings.map((finding) => <article className="finding-row" key={finding.ruleId + finding.orderId}>
