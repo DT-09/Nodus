@@ -71,7 +71,7 @@ export async function importCarrierCostCsv(shop: string, csv: string) {
       }
     }
     return { imported, invalidatedReviews };
-  });
+  }, { maxWait: 5_000, timeout: 30_000 });
 
   return { received: costs.length, imported: result.imported, duplicates: costs.length - result.imported };
 }
