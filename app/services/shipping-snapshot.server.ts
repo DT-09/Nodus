@@ -6,7 +6,7 @@ const INITIAL_QUERY = `query NodusInitialShippingSnapshot($after: String) {
   shop { name myshopifyDomain }
   orders(first: 100, after: $after, sortKey: CREATED_AT, reverse: true) {
     nodes {
-      id name createdAt
+      id name createdAt taxesIncluded
       currentShippingPriceSet { shopMoney { amount currencyCode } }
       currentSubtotalPriceSet { shopMoney { amount currencyCode } }
       fulfillments(first: 10) { nodes { trackingInfo { number } } }
@@ -30,6 +30,7 @@ type ShopifyOrder = {
   id: string;
   name: string;
   createdAt: string;
+  taxesIncluded: boolean;
   currentShippingPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
   currentSubtotalPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
   fulfillments?: { nodes: Array<{ trackingInfo?: Array<{ number?: string | null }> }> };
@@ -123,11 +124,11 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
             where: { merchantId_sourceOrderId: { merchantId: merchant.id, sourceOrderId: order.id } },
             create: {
               merchantId: merchant.id, sourceOrderId: order.id, orderName: order.name, orderedAt,
-              currency: money.currencyCode, shippingRevenueMinor: parsed.minor, subtotalMinor, trackingNumbers,
+              currency: money.currencyCode, shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
             },
             update: {
               orderName: order.name, orderedAt, currency: money.currencyCode,
-              shippingRevenueMinor: parsed.minor, subtotalMinor, trackingNumbers,
+              shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
             },
           }),
         ));
