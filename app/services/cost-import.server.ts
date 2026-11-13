@@ -12,29 +12,37 @@ export async function importCarrierCostCsv(shop: string, csv: string) {
     select: { id: true },
   });
 
-  const result = await prisma.shippingCost.createMany({
-    data: costs.map((cost) => ({
-      merchantId: merchant.id,
-      sourceSystem: "carrier_csv",
-      sourceRecordId: cost.sourceRecordId,
-      orderReference: cost.orderReference,
-      trackingNumber: cost.trackingNumber,
-      currency: cost.currency,
-      amountMinor: cost.amountMinor,
-      costType: cost.costType,
-      occurredAt: cost.occurredAt,
-      sourceReference: cost.sourceReference,
-    })),
-    skipDuplicates: true,
-  });
+  const result = await prisma.$transaction(async (tx) => {
+    let imported = 0;
+    const batchSize = 500;
+    for (let offset = 0; offset < costs.length; offset += batchSize) {
+      const batch = costs.slice(offset, offset + batchSize);
+      const inserted = await tx.shippingCost.createMany({
+        data: batch.map((cost) => ({
+          merchantId: merchant.id,
+          sourceSystem: "carrier_csv",
+          sourceRecordId: cost.sourceRecordId,
+          orderReference: cost.orderReference,
+          trackingNumber: cost.trackingNumber,
+          currency: cost.currency,
+          amountMinor: cost.amountMinor,
+          costType: cost.costType,
+          occurredAt: cost.occurredAt,
+          sourceReference: cost.sourceReference,
+        })),
+        skipDuplicates: true,
+      });
+      imported += inserted.count;
+    }
 
-  if (result.count > 0) {
-    const invalidated = await prisma.shippingOrder.updateMany({
-      where: { merchantId: merchant.id, costCoverageStatus: "complete" },
-      data: { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null },
-    });
-    await prisma.$transaction([
-      prisma.auditEvent.create({
+    let invalidatedReviews = 0;
+    if (imported > 0) {
+      const invalidated = await tx.shippingOrder.updateMany({
+        where: { merchantId: merchant.id, costCoverageStatus: "complete" },
+        data: { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null },
+      });
+      invalidatedReviews = invalidated.count;
+      await tx.auditEvent.create({
         data: {
           merchantId: merchant.id,
           actor: "system:carrier_csv_import",
@@ -43,24 +51,27 @@ export async function importCarrierCostCsv(shop: string, csv: string) {
           subjectId: shop,
           detail: {
             receivedRows: costs.length,
-            importedRows: result.count,
-            duplicateRows: costs.length - result.count,
-            previousCompleteReviewsInvalidated: invalidated.count,
+            importedRows: imported,
+            duplicateRows: costs.length - imported,
+            previousCompleteReviewsInvalidated: invalidatedReviews,
           },
         },
-      }),
-      ...(invalidated.count ? [prisma.auditEvent.create({
-        data: {
-          merchantId: merchant.id,
-          actor: "system:carrier_csv_import",
-          action: "coverage_reviews_invalidated_by_new_evidence",
-          subjectType: "merchant",
-          subjectId: shop,
-          detail: { affectedOrders: invalidated.count },
-        },
-      })] : []),
-    ]);
-  }
+      });
+      if (invalidatedReviews > 0) {
+        await tx.auditEvent.create({
+          data: {
+            merchantId: merchant.id,
+            actor: "system:carrier_csv_import",
+            action: "coverage_reviews_invalidated_by_new_evidence",
+            subjectType: "merchant",
+            subjectId: shop,
+            detail: { affectedOrders: invalidatedReviews },
+          },
+        });
+      }
+    }
+    return { imported, invalidatedReviews };
+  });
 
-  return { received: costs.length, imported: result.count, duplicates: costs.length - result.count };
+  return { received: costs.length, imported: result.imported, duplicates: costs.length - result.imported };
 }
