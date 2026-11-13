@@ -1,8 +1,105 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
-model Session { id String @id shop String state String isOnline Boolean @default(false) scope String? expires DateTime? accessToken String userId BigInt? firstName String? lastName String? email String? accountOwner Boolean @default(false) locale String? collaborator Boolean? @default(false) emailVerified Boolean? @default(false) refreshToken String? refreshTokenExpires DateTime? @@index([shop]) }
-model Merchant { id String @id @default(cuid()) shop String @unique shopName String? installedAt DateTime @default(now()) uninstalledAt DateTime? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt orders ShippingOrder[] costs ShippingCost[] auditEvents AuditEvent[] }
-model ShippingOrder { id String @id @default(cuid()) merchantId String sourceOrderId String orderName String orderedAt DateTime currency String shippingRevenueMinor BigInt trackingNumbers Json? sourcePayload Json? ingestedAt DateTime @default(now()) merchant Merchant @relation(fields:[merchantId],references:[id],onDelete:Cascade) @@unique([merchantId,sourceOrderId]) @@index([merchantId,orderedAt]) }
-model ShippingCost { id String @id @default(cuid()) merchantId String sourceSystem String sourceRecordId String orderReference String? trackingNumber String? currency String amountMinor BigInt costType String occurredAt DateTime? sourceReference String? merchant Merchant @relation(fields:[merchantId],references:[id],onDelete:Cascade) @@unique([merchantId,sourceSystem,sourceRecordId]) @@index([merchantId,orderReference]) @@index([merchantId,trackingNumber]) }
-model AuditEvent { id String @id @default(cuid()) merchantId String actor String action String subjectType String subjectId String detail Json? createdAt DateTime @default(now()) merchant Merchant @relation(fields:[merchantId],references:[id],onDelete:Cascade) @@index([merchantId,createdAt]) }
-model WebhookReceipt { id String @id @default(cuid()) shop String webhookId String @unique topic String receivedAt DateTime @default(now()) processedAt DateTime? status String @default("received") @@index([shop,topic,receivedAt]) }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id                   String    @id
+  shop                 String
+  state                String
+  isOnline             Boolean   @default(false)
+  scope                String?
+  expires              DateTime?
+  accessToken          String
+  userId               BigInt?
+  firstName            String?
+  lastName             String?
+  email                String?
+  accountOwner         Boolean   @default(false)
+  locale               String?
+  collaborator         Boolean?  @default(false)
+  emailVerified        Boolean?  @default(false)
+  refreshToken         String?
+  refreshTokenExpiresAt DateTime?
+
+  @@index([shop])
+}
+
+model Merchant {
+  id           String          @id @default(cuid())
+  shop         String          @unique
+  shopName     String?
+  installedAt  DateTime        @default(now())
+  uninstalledAt DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  orders       ShippingOrder[]
+  costs        ShippingCost[]
+  auditEvents  AuditEvent[]
+}
+
+model ShippingOrder {
+  id                   String   @id @default(cuid())
+  merchantId           String
+  sourceOrderId        String
+  orderName            String
+  orderedAt            DateTime
+  currency             String
+  shippingRevenueMinor BigInt
+  trackingNumbers      Json?
+  sourcePayload        Json?
+  ingestedAt           DateTime @default(now())
+  merchant             Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@unique([merchantId, sourceOrderId])
+  @@index([merchantId, orderedAt])
+}
+
+model ShippingCost {
+  id              String   @id @default(cuid())
+  merchantId      String
+  sourceSystem    String
+  sourceRecordId  String
+  orderReference  String?
+  trackingNumber  String?
+  currency        String
+  amountMinor     BigInt
+  costType        String
+  occurredAt      DateTime?
+  sourceReference String?
+  merchant        Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@unique([merchantId, sourceSystem, sourceRecordId])
+  @@index([merchantId, orderReference])
+  @@index([merchantId, trackingNumber])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  merchantId String
+  actor      String
+  action     String
+  subjectType String
+  subjectId  String
+  detail     Json?
+  createdAt  DateTime @default(now())
+  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, createdAt])
+}
+
+model WebhookReceipt {
+  id          String   @id @default(cuid())
+  shop        String
+  webhookId   String   @unique
+  topic       String
+  receivedAt  DateTime @default(now())
+  processedAt DateTime?
+  status      String   @default("received")
+
+  @@index([shop, topic, receivedAt])
+}
