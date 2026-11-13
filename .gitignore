@@ -1,0 +1,10 @@
+node_modules
+build
+.cache
+.react-router
+.env
+.env.*
+!.env.example
+.DS_Store
+coverage
+*.log
