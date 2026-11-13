@@ -16,7 +16,7 @@ const shopify = shopifyApp({
   apiSecretKey: secret ?? "development-placeholder",
   appUrl: url ?? "http://localhost:3000",
   apiVersion: ApiVersion.July26,
-  scopes: (process.env.SCOPES ?? "read_orders,read_products,read_fulfillments,read_shipping").split(",").map((scope) => scope.trim()).filter(Boolean),
+  scopes: (process.env.SCOPES ?? "read_orders,read_products,read_fulfillments,read_shipping,read_markets").split(",").map((scope) => scope.trim()).filter(Boolean),
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
