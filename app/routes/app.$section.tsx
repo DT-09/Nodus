@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const empty = {
     page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, rows: [] as OrderRow[],
-    evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; warning: string }>,
+    evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return empty;
@@ -75,7 +75,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         observed: simulation.observedShippingRevenueMinor.toString(),
         replayed: simulation.replayedShippingRevenueMinor.toString(),
         delta: simulation.revenueDeltaMinor.toString(),
-        createdAt: simulation.createdAt.toISOString(), warning: simulation.warning,
+        createdAt: simulation.createdAt.toISOString(), sampleWindowStart: simulation.sampleWindowStart?.toISOString() ?? null, sampleWindowEnd: simulation.sampleWindowEnd?.toISOString() ?? null, warning: simulation.warning,
       })),
     };
   }
@@ -234,6 +234,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
       const flatRate = parseMoney(String(form.get("flatRate") ?? ""), currency);
       const thresholdText = String(form.get("freeShippingThreshold") ?? "").trim();
       const threshold = thresholdText ? parseMoney(thresholdText, currency) : null;
+      if (flatRate.minor < 0n) throw new Error("Flat shipping rate cannot be negative.");
+      if (threshold && threshold.minor < 0n) throw new Error("Free-shipping threshold cannot be negative.");
       const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
       if (!merchant) return { kind: "simulation" as const, ok: false, message: "No Shopify order history is stored yet." };
       const orders = await prisma.shippingOrder.findMany({
@@ -347,7 +349,7 @@ export default function Section() {
           <div className="simulation-metrics"><div><small>Observed shipping revenue</small><strong>{formatMinor(simulationResult.observed,simulationResult.currency)}</strong></div><div><small>Replayed shipping revenue</small><strong>{formatMinor(simulationResult.replayed,simulationResult.currency)}</strong></div><div><small>Revenue difference</small><strong>{formatMinor(simulationResult.delta,simulationResult.currency)}</strong></div></div>
           <p className="body-copy">{simulationResult.warning}</p><ul>{simulationResult.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
         </div> : null}
-        <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
+        <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""}{run.sampleWindowStart && run.sampleWindowEnd ? " · Orders "+new Date(run.sampleWindowStart).toLocaleDateString()+"–"+new Date(run.sampleWindowEnd).toLocaleDateString() : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
         <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations</p>
