@@ -41,6 +41,7 @@ model Merchant {
   costs        ShippingCost[]
   auditEvents  AuditEvent[]
   syncState    ShopifySyncState?
+  simulations  PolicySimulation[]
 }
 
 model ShopifySyncState {
@@ -121,4 +122,25 @@ model WebhookReceipt {
   status      String   @default("received")
 
   @@index([shop, topic, receivedAt])
+}
+
+model PolicySimulation {
+  id                          String   @id @default(cuid())
+  merchantId                  String
+  currency                    String
+  flatRateMinor               BigInt
+  freeShippingThresholdMinor  BigInt?
+  sampleSize                  Int
+  sampleWindowStart           DateTime?
+  sampleWindowEnd             DateTime?
+  observedShippingRevenueMinor BigInt
+  replayedShippingRevenueMinor BigInt
+  revenueDeltaMinor           BigInt
+  assumptions                 Json
+  warning                     String
+  engineVersion               String   @default("v1")
+  createdAt                   DateTime @default(now())
+  merchant                    Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, createdAt])
 }
