@@ -147,6 +147,7 @@ export default function Section() {
   const data = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   const page = data.page;
+  const simulationResult = result?.kind === "simulation" && result.ok ? result.result : undefined;
   return <div className="page-wrap">
     <header className="topbar"><div><p className="eyebrow">NODUS / WORKSPACE</p><h1>{page.title}</h1><p className="muted">{page.subtitle}</p></div></header>
     <section className="surface-card">
@@ -180,15 +181,15 @@ export default function Section() {
         <input id="free-threshold" name="freeShippingThreshold" type="number" min="0" step="0.001" placeholder="Leave blank to disable" />
         <button type="submit">Run historical replay</button>
         {result?.kind === "simulation" && !result.ok ? <p role="status" className="import-error">{result.message}</p> : null}
-        {result?.kind === "simulation" && result.ok ? <div className="simulation-result">
-          <p className="eyebrow">HISTORICAL REPLAY · {result.result.sampleSize} ORDERS</p>
+        {simulationResult ? <div className="simulation-result">
+          <p className="eyebrow">HISTORICAL REPLAY · {simulationResult.sampleSize} ORDERS</p>
           <div className="simulation-metrics">
-            <div><small>Observed shipping revenue</small><strong>{formatMinor(result.result.observed,result.result.currency)}</strong></div>
-            <div><small>Replayed shipping revenue</small><strong>{formatMinor(result.result.replayed,result.result.currency)}</strong></div>
-            <div><small>Revenue difference</small><strong>{formatMinor(result.result.delta,result.result.currency)}</strong></div>
+            <div><small>Observed shipping revenue</small><strong>{formatMinor(simulationResult.observed,simulationResult.currency)}</strong></div>
+            <div><small>Replayed shipping revenue</small><strong>{formatMinor(simulationResult.replayed,simulationResult.currency)}</strong></div>
+            <div><small>Revenue difference</small><strong>{formatMinor(simulationResult.delta,simulationResult.currency)}</strong></div>
           </div>
-          <p className="body-copy">{result.result.warning}</p>
-          <ul>{result.result.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
+          <p className="body-copy">{simulationResult.warning}</p>
+          <ul>{simulationResult.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
         </div> : null}
       </Form> : null}
     </section>
