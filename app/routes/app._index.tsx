@@ -78,7 +78,7 @@ export default function Overview() {
     </section>
     <section className="metric-grid">
       <article className="metric-card"><span>Orders stored</span><strong>{d.sampledOrders.toLocaleString()}</strong><small>Persisted order history · up to 2,500 orders processed per visit</small></article>
-      <article className="metric-card"><span>Shipping collected</span><strong>{formatMoney(d.shippingRevenueMinor, d.currency)}</strong><small>{d.mixedCurrencies ? "Mixed currencies; aggregate withheld" : "Persisted Shopify orders only"}</small></article>
+      <article className="metric-card"><span>Shipping collected</span><strong>{formatMoney(d.shippingRevenueMinor, d.currency)}</strong><small>{d.mixedCurrencies ? "Mixed currencies; aggregate withheld" : "Current Shopify amount after refunds and discounts; tax may be included"}</small></article>
       <article className="metric-card"><span>Cost evidence</span><strong className="metric-pending">Review required</strong><small>Carrier and 3PL cost evidence must be imported and reviewed</small></article>
     </section>
     <section className="content-grid">
@@ -100,7 +100,7 @@ export default function Overview() {
       This visit processed {d.pagesThisRun} pages; {d.totalPagesProcessed} pages have been processed in the current sync.
       {d.paginationComplete ? " The current sync is complete." : " Historical sync is checkpointed. Reopen Overview to continue from the saved cursor."}
       {d.lastCompletedAt ? " Last completed sync: " + new Date(d.lastCompletedAt).toLocaleString() + "." : ""}
-      {" "}Shopify exposes only the most recent 60 days under the current read_orders grant. Older history requires Shopify approval for read_all_orders; NODUS does not claim that access. Shipping revenue is not profit.
+      {" "}Shopify exposes only the most recent 60 days under the current read_orders grant. Older history requires Shopify approval for read_all_orders; NODUS does not claim that access. Shipping collected is not profit. Tax-inclusive orders are excluded from contribution calculations.
     </p>
   </div>;
 }
