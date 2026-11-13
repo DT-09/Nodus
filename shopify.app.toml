@@ -2,17 +2,35 @@ client_id = "SET_WITH_SHOPIFY_CLI"
 name = "NODUS"
 application_url = "https://example.invalid"
 embedded = true
+
 [build]
 automatically_update_urls_on_dev = true
+
 [access_scopes]
 scopes = "read_orders,read_products,read_fulfillments,read_shipping"
+
 [auth]
 redirect_urls = ["https://example.invalid/auth/callback", "https://example.invalid/auth/shopify/callback", "https://example.invalid/api/auth/callback"]
+
 [webhooks]
 api_version = "2026-07"
+
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
 uri = "/webhooks"
+
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
+uri = "/webhooks"
+
+[[webhooks.subscriptions]]
+topics = ["customers/data_request"]
+uri = "/webhooks"
+
+[[webhooks.subscriptions]]
+topics = ["customers/redact"]
+uri = "/webhooks"
+
+[[webhooks.subscriptions]]
+topics = ["shop/redact"]
 uri = "/webhooks"
