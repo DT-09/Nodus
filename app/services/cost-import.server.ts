@@ -36,8 +36,8 @@ export async function importCarrierCostCsv(shop: string, csv: string) {
         where: {
           merchantId: merchant.id,
           OR: [
-            ...(references.length ? [{ OR: [{ sourceOrderId: { in: references } }, { orderName: { in: references } }] }] : []),
-            ...(trackingNumbers.length ? [{ trackingNumbers: { array_contains: trackingNumbers } }] : []),
+            ...references.map((reference) => ({ OR: [{ sourceOrderId: reference }, { orderName: reference }] })),
+            ...trackingNumbers.map((trackingNumber) => ({ trackingNumbers: { array_contains: [trackingNumber] } })),
           ],
         },
         select: { id: true, sourceOrderId: true, costCoverageStatus: true },
