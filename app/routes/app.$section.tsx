@@ -20,7 +20,7 @@ const pages: Record<string, { title: string; subtitle: string; heading: string; 
 };
 
 type OrderRow = {
-  orderId: string; orderName: string; currency: string; collectedMinor: string;
+  orderId: string; orderName: string; currency: string; collectedMinor: string; taxesIncluded: boolean;
   evidencedCostMinor: string | null; evidenceCount: number; coverage: string;
   costCoverageStatus: string; coverageReviewedAt: string | null;
 };
@@ -145,7 +145,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       const order = orders.find((item) => item.sourceOrderId === row.orderId)!;
       return {
         orderId: row.orderId, orderName: order.orderName, currency: row.shippingRevenue.currency,
-        collectedMinor: row.shippingRevenue.minor.toString(),
+        collectedMinor: row.shippingRevenue.minor.toString(), taxesIncluded: order.taxesIncluded,
         evidencedCostMinor: row.evidencedCost?.minor.toString() ?? null,
         evidenceCount: row.evidenceIds.length, coverage: row.coverage,
         costCoverageStatus: order.costCoverageStatus,
