@@ -8,7 +8,7 @@ NODUS is a Shopify-first shipping economics workspace. It brings current Shopify
 
 - Shopify embedded-app authentication and merchant-scoped PostgreSQL storage.
 - Resumable, checkpointed Shopify order backfill with idempotent persistence and incremental refresh by order update time.
-- Current Shopify shipping revenue after discounts and refunds, using `currentShippingPriceSet`.
+- Current Shopify shipping charges after discounts and refunds, using `currentShippingPriceSet`; tax-inclusive treatment is persisted and contribution is withheld when tax cannot be separated.
 - CSV carrier-cost ingestion with invoice-line identity, currency precision checks and duplicate protection.
 - Evidence register with manual order matching for ambiguous carrier records.
 - Per-order cost-coverage attestations. New cost imports invalidate previous complete attestations; manual reassignment resets the affected orders.
