@@ -23,17 +23,35 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const page = pages[params.section ?? ""];
   if (!page) throw new Response("Not found", { status: 404 });
 
-  if (params.section !== "orders" && params.section !== "diagnostics") {
-    return { page, rows: [], findings: [], totalOrders: 0 };
+  if (params.section !== "orders" && params.section !== "diagnostics" && params.section !== "evidence") {
+    return { page, rows: [], findings: [], totalOrders: 0, evidence: [], evidenceCount: 0 };
   }
 
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return { page, rows: [], findings: [], totalOrders: 0 };
 
-  const [orders, costs] = await Promise.all([
-    prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250 }),
-    prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "desc" } }),
+  const [orders, costs, evidenceCount] = await Promise.all([
+    params.section === "evidence" ? Promise.resolve([]) : prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250 }),
+    prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "desc" }, take: params.section === "evidence" ? 500 : 10000 }),
+    params.section === "evidence" ? prisma.shippingCost.count({ where: { merchantId: merchant.id } }) : Promise.resolve(0),
   ]);
+
+  if (params.section === "evidence") {
+    return {
+      page, rows: [], findings: [], totalOrders: 0, evidenceCount,
+      evidence: costs.map((cost) => ({
+        id: cost.sourceRecordId,
+        invoice: cost.sourceReference ?? "—",
+        orderReference: cost.orderReference ?? "—",
+        trackingNumber: cost.trackingNumber ?? "—",
+        costType: cost.costType,
+        amountMinor: cost.amountMinor.toString(),
+        currency: cost.currency,
+        occurredAt: cost.occurredAt?.toISOString() ?? null,
+        sourceSystem: cost.sourceSystem,
+      })),
+    };
+  }
 
   const orderInputs = orders.map((order) => ({
     orderId: order.sourceOrderId,
@@ -67,6 +85,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       costCoverageStatus: orders.find((order) => order.sourceOrderId === row.orderId)?.costCoverageStatus ?? "unknown",
       coverageReviewedAt: orders.find((order) => order.sourceOrderId === row.orderId)?.coverageReviewedAt?.toISOString() ?? null,
     })),
+    evidence: [], evidenceCount: 0,
     findings: findings.map((finding) => ({
       ruleId: finding.ruleId,
       orderId: finding.orderId,
@@ -191,12 +210,23 @@ export default function Section() {
     <header className="topbar"><div><p className="eyebrow">NODUS / WORKSPACE</p><h1>{page.title}</h1><p className="muted">{page.subtitle}</p></div></header>
     <section className="surface-card">
       <h3>{page.heading}</h3><p className="body-copy">{page.body}</p>
-      {page.title === "Source evidence" ? <Form method="post" encType="multipart/form-data" className="import-form">
-        <label htmlFor="cost-file">Carrier cost CSV</label>
-        <input id="cost-file" name="file" type="file" accept=".csv,text/csv" required />
-        <button type="submit">Import evidence</button>
-        {result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
-      </Form> : null}
+      {page.title === "Source evidence" ? <>
+        <Form method="post" encType="multipart/form-data" className="import-form">
+          <label htmlFor="cost-file">Carrier cost CSV</label>
+          <input id="cost-file" name="file" type="file" accept=".csv,text/csv" required />
+          <button type="submit">Import evidence</button>
+          {result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
+        </Form>
+        <div className="data-table-wrap">
+          <p className="table-caption">{data.evidenceCount} imported invoice lines · showing latest {data.evidence.length}</p>
+          <p className="body-copy">Imported rows remain source evidence. An order reference or tracking number is a matching candidate, not proof that all fulfillment costs have been captured.</p>
+          <table className="data-table"><thead><tr><th>Invoice / line</th><th>Order reference</th><th>Tracking</th><th>Cost type</th><th>Amount</th><th>Charge date</th></tr></thead>
+            <tbody>{data.evidence.map((item) => <tr key={item.id}><td>{item.invoice}<small>{item.id}</small></td><td>{item.orderReference}</td><td>{item.trackingNumber}</td><td>{item.costType}</td><td>{formatMinor(item.amountMinor,item.currency)}</td><td>{item.occurredAt ? new Date(item.occurredAt).toLocaleDateString() : "—"}</td></tr>)}
+              {!data.evidence.length ? <tr><td colSpan={6}>No carrier cost evidence has been imported yet.</td></tr> : null}</tbody>
+          </table>
+          {data.evidenceCount > data.evidence.length ? <p className="footnote">Showing the latest 500 records. {data.evidenceCount - data.evidence.length} older records are retained.</p> : null}
+        </div>
+      </> : null}
       {page.title === "Order evidence" ? <div className="data-table-wrap">
         <p className="table-caption">{data.totalOrders} persisted orders · latest 250</p><p className="body-copy">Mark coverage complete only after all applicable carrier, label and 3PL costs for that order have been imported and checked. This is a merchant attestation, not an automatic inference.</p>{result?.kind === "coverage" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
         <table className="data-table"><thead><tr><th>Order</th><th>Shipping collected</th><th>Evidenced cost</th><th>Evidence rows</th><th>Coverage</th><th>Review</th></tr></thead>
