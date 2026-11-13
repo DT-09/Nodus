@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
-    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, rows: [] as OrderRow[],
+    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
     markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
     evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
@@ -139,7 +139,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const findings = diagnoseReconciliation(reconciled);
 
   return {
-    ...empty, totalOrders, totalEvidence,
+    ...empty, totalOrders, totalEvidence, analyzedOrders: orders.length, analyzedEvidence: costs.length, analysisTruncated: totalOrders > orders.length || totalEvidence > costs.length,
     rows: reconciled.map((row) => {
       const order = orders.find((item) => item.sourceOrderId === row.orderId)!;
       return {
@@ -375,7 +375,7 @@ export default function Section() {
         </table>
       </div> : null}
       {data.page.title === "Diagnostics" ? <div className="finding-list">
-        <p className="table-caption">{data.findings.length} coverage findings · {data.totalOrders} orders analyzed</p>
+        <p className="table-caption">{data.findings.length} coverage findings · {data.analyzedOrders} of {data.totalOrders} orders analyzed · {data.analyzedEvidence} of {data.totalEvidence} cost records checked</p>{data.analysisTruncated ? <p className="import-error">Analysis is limited to the latest 250 orders and 5,000 cost records. Export the complete evidence register for a full external review.</p> : null}
         {data.findings.map((finding) => <article className="finding-row" key={finding.ruleId + finding.orderId}>
           <span className="tag">{finding.severity}</span><div><strong>{finding.title}</strong><p>{finding.explanation}</p><small>{finding.orderId} · {finding.evidenceIds.length} evidence references</small></div>
         </article>)}
