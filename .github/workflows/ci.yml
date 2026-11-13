@@ -35,6 +35,8 @@ jobs:
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npx prisma migrate status
+      - run: npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - run: docker build -t nodus:ci .
