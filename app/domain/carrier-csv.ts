@@ -12,28 +12,67 @@ export type ParsedCarrierCost = {
 };
 
 function parseCsvRows(input: string): string[][] {
+  const source = input.replace(/^\\uFEFF/, "");
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
   let quoted = false;
-  for (let i = 0; i < input.length; i += 1) {
-    const char = input[i]!;
+  let quoteClosed = false;
+
+  const pushField = () => {
+    row.push(field);
+    field = "";
+    quoteClosed = false;
+  };
+  const pushRow = () => {
+    pushField();
+    if (row.some((cell) => cell.trim() !== "")) rows.push(row);
+    row = [];
+    if (rows.length > 20_000) throw new Error("CSV exceeds the 20,000-row import limit.");
+  };
+
+  for (let i = 0; i < source.length; i += 1) {
+    const char = source[i]!;
     if (quoted) {
-      if (char === '"' && input[i + 1] === '"') { field += '"'; i += 1; }
-      else if (char === '"') quoted = false;
-      else field += char;
-    } else if (char === '"' && field.length === 0) quoted = true;
-    else if (char === ",") { row.push(field); field = ""; }
-    else if (char === "\n" || char === "\r") {
-      if (char === "\r" && input[i + 1] === "\n") i += 1;
-      row.push(field); field = "";
-      if (row.some((cell) => cell.trim() !== "")) rows.push(row);
-      row = [];
-    } else field += char;
+      if (char === '"' && source[i + 1] === '"') {
+        field += '"';
+        i += 1;
+      } else if (char === '"') {
+        quoted = false;
+        quoteClosed = true;
+      } else {
+        field += char;
+      }
+      continue;
+    }
+
+    if (quoteClosed) {
+      if (char === ",") pushField();
+      else if (char === "\n" || char === "\r") {
+        if (char === "\r" && source[i + 1] === "\n") i += 1;
+        pushRow();
+      } else if (char !== " " && char !== "\t") {
+        throw new Error("CSV contains characters after a closing quote.");
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      if (field.trim() !== "") throw new Error("CSV contains a quote inside an unquoted field.");
+      field = "";
+      quoted = true;
+    } else if (char === ",") {
+      pushField();
+    } else if (char === "\n" || char === "\r") {
+      if (char === "\r" && source[i + 1] === "\n") i += 1;
+      pushRow();
+    } else {
+      field += char;
+    }
   }
+
   if (quoted) throw new Error("CSV contains an unterminated quoted field.");
-  row.push(field);
-  if (row.some((cell) => cell.trim() !== "")) rows.push(row);
+  pushRow();
   return rows;
 }
 
