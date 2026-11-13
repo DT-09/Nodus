@@ -6,6 +6,7 @@ export type OrderInput = Readonly<{
   shippingRevenue: Money;
   trackingNumbers: readonly string[];
   costCoverage: "complete" | "partial" | "unknown";
+  taxesIncluded?: boolean;
 }>;
 export type CostInput = Readonly<{
   evidenceId: string;
@@ -19,6 +20,7 @@ export type ReconciliationRow = Readonly<{
   evidencedCost: Money | null;
   evidenceIds: readonly string[];
   coverage: "complete" | "partial" | "none";
+  taxesIncluded: boolean;
   shippingContributionBeforeUnobservedCosts: Money | null;
 }>;
 
@@ -79,6 +81,7 @@ export function reconcileShipping(orders: readonly OrderInput[], evidence: reado
         evidencedCost: null,
         evidenceIds: [],
         coverage: order.costCoverage === "partial" || currencyMismatchOrders.has(order.orderId) ? "partial" as const : "none" as const,
+        taxesIncluded: order.taxesIncluded ?? false,
         shippingContributionBeforeUnobservedCosts: null,
       };
     }
@@ -92,7 +95,8 @@ export function reconcileShipping(orders: readonly OrderInput[], evidence: reado
       evidencedCost: cost,
       evidenceIds: items.map((item) => item.evidenceId),
       coverage,
-      shippingContributionBeforeUnobservedCosts: coverage === "complete"
+      taxesIncluded: order.taxesIncluded ?? false,
+      shippingContributionBeforeUnobservedCosts: coverage === "complete" && !order.taxesIncluded
         ? { minor: order.shippingRevenue.minor - cost.minor, currency: cost.currency }
         : null,
     };
