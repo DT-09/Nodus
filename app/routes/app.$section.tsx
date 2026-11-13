@@ -7,6 +7,7 @@ import { reconcileShipping } from "../domain/reconcile";
 import { diagnoseReconciliation } from "../domain/diagnostics";
 import { parseMoney } from "../domain/money";
 import { simulateHistoricalShippingRevenue } from "../domain/simulation";
+import { getMarketShippingSnapshot } from "../services/shipping-policy.server";
 
 const pages: Record<string, { title: string; subtitle: string; heading: string; body: string }> = {
   orders: { title: "Order evidence", subtitle: "Order-level shipping revenue and fulfillment evidence.", heading: "Persisted Shopify orders", body: "Orders are stored through a resumable Shopify backfill. Imported costs are matched by exact order reference or an unambiguous tracking number. Cost coverage must be reviewed before contribution is calculated." },
@@ -32,13 +33,14 @@ type FindingRow = { ruleId: string; orderId: string; severity: string; title: st
 type AuditRow = { id: string; actor: string; action: string; subjectType: string; subjectId: string; createdAt: string };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { session } = await authenticate.admin(request);
+  const { session, admin } = await authenticate.admin(request);
   const section = params.section ?? "";
   const page = pages[section];
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
     page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, rows: [] as OrderRow[],
+    markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
     evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
@@ -61,6 +63,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         occurredAt: cost.occurredAt?.toISOString() ?? null,
       })),
     };
+  }
+
+  if (section === "policies") {
+    try {
+      const snapshot = await getMarketShippingSnapshot(admin);
+      return { ...empty, markets: snapshot.markets };
+    } catch (error) {
+      return { ...empty, policyError: error instanceof Error ? error.message : "Unable to read Shopify market shipping settings." };
+    }
   }
 
   if (section === "simulations") {
@@ -369,6 +380,20 @@ export default function Section() {
           <span className="tag">{finding.severity}</span><div><strong>{finding.title}</strong><p>{finding.explanation}</p><small>{finding.orderId} · {finding.evidenceIds.length} evidence references</small></div>
         </article>)}
         {!data.findings.length ? <p className="body-copy">No findings in this sample. This is not proof of zero shipping leakage; confirm sample and cost-evidence coverage.</p> : null}
+      </div> : null}
+      {data.page.title === "Policy control" ? <div className="policy-snapshot">
+        <p className="table-caption">Read-only snapshot · {data.markets.length} Shopify markets</p>
+        {data.policyError ? <p role="status" className="import-error">{data.policyError}. Reauthorize the app with the requested read_markets scope, then reload this page.</p> : null}
+        {data.markets.map((market) => <article className="market-card" key={market.id}>
+          <div className="card-heading"><div><h4>{market.name}</h4><p className="muted">{market.handle} · {market.status}</p></div><span className="tag">{market.inheritsShipping ? "Inherits shipping" : market.shippingEnabled ? "Shipping enabled" : "Shipping disabled"}</span></div>
+          {market.options.map((option) => <div className="market-option" key={option.id}>
+            <div><strong>{option.name}</strong><small>{option.type.replace("Delivery","").replace("OptionDefinition","")} · {option.active ? "Active" : "Inactive"} · {option.currency}</small></div>
+            <div>{option.flatRates.length ? option.flatRates.map((rate,index) => <span key={index}>{formatMinor(parseMoney(rate.amount,rate.currency).minor.toString(),rate.currency)}</span>) : <span>Rate details not exposed for this option type</span>}{option.freeThreshold ? <small>Free shipping from {option.freeThreshold}</small> : null}</div>
+          </div>)}
+          {!market.options.length && !market.inheritsShipping ? <p className="body-copy">No shipping options returned for this market.</p> : null}
+        </article>)}
+        {!data.markets.length && !data.policyError ? <p className="body-copy">No markets were returned by Shopify for this store.</p> : null}
+        <p className="footnote">This is a read-only view of Shopify Markets shipping configuration. NODUS does not write checkout settings. Market-driven shipping is now the current Shopify model; legacy delivery-profile data may be stale or no-op on migrated stores.</p>
       </div> : null}
       {data.page.title === "Policy simulations" ? <Form method="post" className="import-form">
         <label htmlFor="flat-rate">Proposed flat shipping rate</label><input id="flat-rate" name="flatRate" type="number" min="0" step="0.001" placeholder="e.g. 6.50" required />
