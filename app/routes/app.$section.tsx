@@ -95,19 +95,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
       select: { id: true, sourceOrderId: true, costCoverageStatus: true },
     });
     if (!order) return { kind: "coverage" as const, ok: false, message: "Order not found in this shop." };
+    const actor = session.userId?.toString() ?? session.id;
     await prisma.$transaction([
       prisma.shippingOrder.update({
         where: { id: order.id },
         data: {
           costCoverageStatus: status,
           coverageReviewedAt: status === "unknown" ? null : new Date(),
-          coverageReviewedBy: status === "unknown" ? null : session.id,
+          coverageReviewedBy: status === "unknown" ? null : actor,
         },
       }),
       prisma.auditEvent.create({
         data: {
           merchantId: merchant.id,
-          actor: session.id,
+          actor,
           action: "shipping_cost_coverage_reviewed",
           subjectType: "shipping_order",
           subjectId: order.sourceOrderId,
