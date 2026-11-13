@@ -1,1 +1,93 @@
-import {addMoney,type Money} from "./money";export type OrderInput=Readonly<{orderId:string;shippingRevenue:Money;trackingNumbers:readonly string[];costCoverage:"complete"|"partial"|"unknown"}>;export type CostInput=Readonly<{evidenceId:string;amount:Money;orderReference?:string|null;trackingNumber?:string|null}>;export type ReconciliationRow=Readonly<{orderId:string;shippingRevenue:Money;evidencedCost:Money|null;evidenceIds:readonly string[];coverage:"complete"|"partial"|"none";shippingContributionBeforeUnobservedCosts:Money|null}>;export function reconcileShipping(orders:readonly OrderInput[],evidence:readonly CostInput[]):ReconciliationRow[]{const ids=new Set<string>();for(const o of orders){if(!o.orderId||ids.has(o.orderId))throw new Error("Order IDs must be unique.");ids.add(o.orderId)}const eids=new Set<string>();for(const e of evidence){if(!e.evidenceId||eids.has(e.evidenceId))throw new Error("Evidence IDs must be unique.");eids.add(e.evidenceId)}const tracking=new Map<string,string[]>();for(const o of orders)for(const t of new Set(o.trackingNumbers.map(x=>x.trim()).filter(Boolean)))tracking.set(t,[...(tracking.get(t)??[]),o.orderId]);const allocated=new Map<string,CostInput[]>();for(const e of evidence){let id=e.orderReference&&ids.has(e.orderReference)?e.orderReference:null;if(!id&&e.trackingNumber){const candidates=tracking.get(e.trackingNumber.trim())??[];if(candidates.length===1)id=candidates[0]!}if(!id)continue;const order=orders.find(o=>o.orderId===id)!;if(order.shippingRevenue.currency!==e.amount.currency)continue;allocated.set(id,[...(allocated.get(id)??[]),e])}return orders.map(o=>{const items=allocated.get(o.orderId)??[];if(!items.length)return {orderId:o.orderId,shippingRevenue:o.shippingRevenue,evidencedCost:null,evidenceIds:[],coverage:"none",shippingContributionBeforeUnobservedCosts:null};const cost=items.reduce((sum,e)=>addMoney(sum,e.amount),{minor:0n,currency:o.shippingRevenue.currency});const coverage=o.costCoverage==="complete"?"complete":"partial";return {orderId:o.orderId,shippingRevenue:o.shippingRevenue,evidencedCost:cost,evidenceIds:items.map(e=>e.evidenceId),coverage,shippingContributionBeforeUnobservedCosts:coverage==="complete"?{minor:o.shippingRevenue.minor-cost.minor,currency:cost.currency}:null}})}
+import { addMoney, type Money } from "./money";
+
+export type OrderInput = Readonly<{
+  orderId: string;
+  orderName?: string;
+  shippingRevenue: Money;
+  trackingNumbers: readonly string[];
+  costCoverage: "complete" | "partial" | "unknown";
+}>;
+export type CostInput = Readonly<{
+  evidenceId: string;
+  amount: Money;
+  orderReference?: string | null;
+  trackingNumber?: string | null;
+}>;
+export type ReconciliationRow = Readonly<{
+  orderId: string;
+  shippingRevenue: Money;
+  evidencedCost: Money | null;
+  evidenceIds: readonly string[];
+  coverage: "complete" | "partial" | "none";
+  shippingContributionBeforeUnobservedCosts: Money | null;
+}>;
+
+export function reconcileShipping(orders: readonly OrderInput[], evidence: readonly CostInput[]): ReconciliationRow[] {
+  const ids = new Set<string>();
+  const referenceMap = new Map<string, string | null>();
+  for (const order of orders) {
+    if (!order.orderId || ids.has(order.orderId)) throw new Error("Order IDs must be unique.");
+    ids.add(order.orderId);
+    for (const reference of [order.orderId, order.orderName].filter((value): value is string => Boolean(value))) {
+      const normalized = reference.trim();
+      if (!normalized) continue;
+      if (referenceMap.has(normalized) && referenceMap.get(normalized) !== order.orderId) referenceMap.set(normalized, null);
+      else referenceMap.set(normalized, order.orderId);
+    }
+  }
+
+  const evidenceIds = new Set<string>();
+  for (const item of evidence) {
+    if (!item.evidenceId || evidenceIds.has(item.evidenceId)) throw new Error("Evidence IDs must be unique.");
+    evidenceIds.add(item.evidenceId);
+  }
+
+  const trackingOwners = new Map<string, Set<string>>();
+  for (const order of orders) {
+    for (const tracking of new Set(order.trackingNumbers.map((value) => value.trim()).filter(Boolean))) {
+      const owners = trackingOwners.get(tracking) ?? new Set<string>();
+      owners.add(order.orderId);
+      trackingOwners.set(tracking, owners);
+    }
+  }
+
+  const allocated = new Map<string, CostInput[]>();
+  for (const item of evidence) {
+    let matchedOrderId: string | null = null;
+    if (item.orderReference) matchedOrderId = referenceMap.get(item.orderReference.trim()) ?? null;
+    if (!matchedOrderId && item.trackingNumber) {
+      const owners = trackingOwners.get(item.trackingNumber.trim());
+      if (owners?.size === 1) matchedOrderId = [...owners][0]!;
+    }
+    if (!matchedOrderId) continue;
+    const order = orders.find((candidate) => candidate.orderId === matchedOrderId)!;
+    if (order.shippingRevenue.currency !== item.amount.currency) continue;
+    allocated.set(matchedOrderId, [...(allocated.get(matchedOrderId) ?? []), item]);
+  }
+
+  return orders.map((order) => {
+    const items = allocated.get(order.orderId) ?? [];
+    if (!items.length) {
+      return {
+        orderId: order.orderId,
+        shippingRevenue: order.shippingRevenue,
+        evidencedCost: null,
+        evidenceIds: [],
+        coverage: "none" as const,
+        shippingContributionBeforeUnobservedCosts: null,
+      };
+    }
+    const cost = items.reduce((sum, item) => addMoney(sum, item.amount), { minor: 0n, currency: order.shippingRevenue.currency });
+    const coverage = order.costCoverage === "complete" ? "complete" as const : "partial" as const;
+    return {
+      orderId: order.orderId,
+      shippingRevenue: order.shippingRevenue,
+      evidencedCost: cost,
+      evidenceIds: items.map((item) => item.evidenceId),
+      coverage,
+      shippingContributionBeforeUnobservedCosts: coverage === "complete"
+        ? { minor: order.shippingRevenue.minor - cost.minor, currency: cost.currency }
+        : null,
+    };
+  });
+}

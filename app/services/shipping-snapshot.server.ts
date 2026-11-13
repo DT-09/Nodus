@@ -1,26 +1,31 @@
+import { parseMoney } from "../domain/money";
+import { prisma } from "../db.server";
+
 type AdminGraphqlContext = { graphql(query: string): Promise<Response> };
 
-const SNAPSHOT_QUERY = "query NodusShippingSnapshot { shop { name myshopifyDomain } orders(first:100,sortKey:CREATED_AT,reverse:true) { nodes { createdAt totalShippingPriceSet { shopMoney { amount currencyCode } } } } }";
+const SNAPSHOT_QUERY = `query NodusShippingSnapshot {
+  shop { name myshopifyDomain }
+  orders(first: 100, sortKey: CREATED_AT, reverse: true) {
+    nodes {
+      id
+      name
+      createdAt
+      totalShippingPriceSet { shopMoney { amount currencyCode } }
+      fulfillments(first: 10) { trackingInfo { number } }
+    }
+  }
+}`;
 
 export type ShippingSnapshot = {
   shopName: string;
   shopDomain: string;
   sampledOrders: number;
+  persistedOrders: number;
   shippingRevenueMinor: bigint;
   currency: string | null;
   mixedCurrencies: boolean;
   sampleWindowStart: string | null;
 };
-
-function toMinorUnits(amount: string, currency: string): bigint {
-  const zeroDecimal = new Set(["BIF", "CLP", "DJF", "GNF", "JPY", "KMF", "KRW", "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF"]);
-  const precision = zeroDecimal.has(currency.toUpperCase()) ? 0 : 2;
-  if (!/^-?\\d+(\\.\\d+)?$/.test(amount)) throw new Error("Invalid Shopify monetary amount.");
-  const negative = amount.startsWith("-");
-  const [whole, fraction = ""] = (negative ? amount.slice(1) : amount).split(".");
-  const value = BigInt(whole) * (10n ** BigInt(precision)) + BigInt((fraction + "0".repeat(precision)).slice(0, precision) || "0");
-  return negative ? -value : value;
-}
 
 export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<ShippingSnapshot> {
   const response = await admin.graphql(SNAPSHOT_QUERY);
@@ -29,8 +34,11 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
       shop?: { name: string; myshopifyDomain: string };
       orders?: {
         nodes: Array<{
+          id: string;
+          name: string;
           createdAt: string;
           totalShippingPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
+          fulfillments?: Array<{ trackingInfo?: Array<{ number?: string | null }> }>;
         }>;
       };
     };
@@ -41,22 +49,64 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
     throw new Error(body.errors?.map((error) => error.message).join("; ") || "Unable to retrieve Shopify snapshot.");
   }
 
+  const shop = body.data.shop;
   const orders = body.data.orders.nodes;
-  const currencies = new Set(orders.map((order) => order.totalShippingPriceSet?.shopMoney?.currencyCode).filter((value): value is string => Boolean(value)));
-  const currency = currencies.size === 1 ? [...currencies][0] : null;
-  const total = orders.reduce((sum, order) => {
+  const merchant = await prisma.merchant.upsert({
+    where: { shop: shop.myshopifyDomain },
+    create: { shop: shop.myshopifyDomain, shopName: shop.name },
+    update: { shopName: shop.name },
+    select: { id: true },
+  });
+
+  const persistable = orders.flatMap((order) => {
     const money = order.totalShippingPriceSet?.shopMoney;
-    if (!money || (currency && money.currencyCode !== currency)) return sum;
-    return sum + toMinorUnits(money.amount, money.currencyCode);
-  }, 0n);
+    if (!money) return [];
+    const parsed = parseMoney(money.amount, money.currencyCode);
+    const trackingNumbers = [...new Set((order.fulfillments ?? [])
+      .flatMap((fulfillment) => fulfillment.trackingInfo ?? [])
+      .map((tracking) => tracking.number?.trim() ?? "")
+      .filter(Boolean))];
+    const orderedAt = new Date(order.createdAt);
+    if (Number.isNaN(orderedAt.getTime())) throw new Error("Shopify returned an invalid order timestamp.");
+    return [{ order, money, parsed, trackingNumbers, orderedAt }];
+  });
+
+  await prisma.$transaction(persistable.map(({ order, money, parsed, trackingNumbers, orderedAt }) =>
+    prisma.shippingOrder.upsert({
+      where: { merchantId_sourceOrderId: { merchantId: merchant.id, sourceOrderId: order.id } },
+      create: {
+        merchantId: merchant.id,
+        sourceOrderId: order.id,
+        orderName: order.name,
+        orderedAt,
+        currency: money.currencyCode,
+        shippingRevenueMinor: parsed.minor,
+        trackingNumbers,
+      },
+      update: {
+        orderName: order.name,
+        orderedAt,
+        currency: money.currencyCode,
+        shippingRevenueMinor: parsed.minor,
+        trackingNumbers,
+      },
+    }),
+  ));
+
+  const currencies = new Set(persistable.map((entry) => entry.money.currencyCode));
+  const currency = currencies.size === 1 ? [...currencies][0]! : null;
+  const shippingRevenueMinor = currency
+    ? persistable.reduce((sum, entry) => sum + entry.parsed.minor, 0n)
+    : 0n;
 
   return {
-    shopName: body.data.shop.name,
-    shopDomain: body.data.shop.myshopifyDomain,
-    sampledOrders: orders.length,
-    shippingRevenueMinor: total,
+    shopName: shop.name,
+    shopDomain: shop.myshopifyDomain,
+    sampledOrders: persistable.length,
+    persistedOrders: persistable.length,
+    shippingRevenueMinor,
     currency,
     mixedCurrencies: currencies.size > 1,
-    sampleWindowStart: orders.at(-1)?.createdAt ?? null
+    sampleWindowStart: orders.at(-1)?.createdAt ?? null,
   };
 }
