@@ -4,7 +4,7 @@ import {reconcileShipping} from "./reconcile";
 import {diagnoseReconciliation} from "./diagnostics";
 import {simulateHistoricalShippingRevenue} from "./simulation";
 import {approve,beginExecution,verify} from "./policy-workflow";
-import {parseCarrierCostCsv} from "../services/cost-import.server";
+import {parseCarrierCostCsv} from "./carrier-csv";
 
 describe("NODUS deterministic domain",()=>{
   it("uses integer minor units",()=>{const m=parseMoney("125.40","USD");expect(m.minor).toBe(12540n);expect(formatMoney(m)).toBe("USD 125.40")});
