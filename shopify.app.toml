@@ -7,7 +7,7 @@ embedded = true
 automatically_update_urls_on_dev = true
 
 [access_scopes]
-scopes = "read_orders,read_products,read_fulfillments,read_shipping"
+scopes = "read_orders,read_products,read_fulfillments,read_shipping,read_markets"
 
 [auth]
 redirect_urls = ["https://example.invalid/auth/callback", "https://example.invalid/auth/shopify/callback", "https://example.invalid/api/auth/callback"]
