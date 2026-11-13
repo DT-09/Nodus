@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
-  if (!merchant) return { page, rows: [], findings: [], totalOrders: 0 };
+  if (!merchant) return { page, rows: [], findings: [], totalOrders: 0, evidence: [], evidenceCount: 0 };
 
   const [orders, costs, evidenceCount] = await Promise.all([
     params.section === "evidence" ? Promise.resolve([]) : prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250 }),
