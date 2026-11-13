@@ -2,7 +2,19 @@ import { parseMoney } from "../domain/money";
 import { prisma } from "../db.server";
 
 type AdminGraphqlContext = { graphql(query: string, options?: { variables?: Record<string, unknown> }): Promise<Response> };
-const QUERY = `query NodusShippingSnapshot($after: String, $updatedSince: String) {
+const INITIAL_QUERY = `query NodusInitialShippingSnapshot($after: String) {
+  shop { name myshopifyDomain }
+  orders(first: 100, after: $after, sortKey: CREATED_AT, reverse: true) {
+    nodes {
+      id name createdAt
+      totalShippingPriceSet { shopMoney { amount currencyCode } }
+      currentSubtotalPriceSet { shopMoney { amount currencyCode } }
+      fulfillments(first: 10) { nodes { trackingInfo { number } } }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}`;
+const INCREMENTAL_QUERY = `query NodusIncrementalShippingSnapshot($after: String, $updatedSince: String) {
   shop { name myshopifyDomain }
   orders(first: 100, after: $after, query: $updatedSince, sortKey: UPDATED_AT, reverse: true) {
     nodes {
@@ -78,7 +90,9 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
 
   try {
     while (pagesThisRun < MAX_PAGES_PER_REQUEST && hasNextPage) {
-      const response = await admin.graphql(QUERY, { variables: { after: cursor, updatedSince } });
+      const response = previous?.lastCompletedAt
+        ? await admin.graphql(INCREMENTAL_QUERY, { variables: { after: cursor, updatedSince } })
+        : await admin.graphql(INITIAL_QUERY, { variables: { after: cursor } });
       const body = await response.json() as ShopifyPage;
       if (!response.ok || body.errors?.length || !body.data?.orders) {
         throw new Error(body.errors?.map((error) => error.message).join("; ") || "Unable to retrieve Shopify orders.");
