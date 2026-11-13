@@ -14,6 +14,18 @@ export type Finding = Readonly<{
 export function diagnoseReconciliation(rows: readonly ReconciliationRow[]): Finding[] {
   const out: Finding[] = [];
   for (const row of rows) {
+    if (row.taxesIncluded) {
+      out.push({
+        ruleId: "shipping.tax_inclusive_charge.v1",
+        orderId: row.orderId,
+        severity: "warning",
+        title: "Tax-inclusive shipping charge",
+        explanation: "Shopify reports this shipping charge with tax included. NODUS withholds shipping contribution until the tax component can be separated reliably.",
+        evidenceIds: row.evidenceIds,
+        amountMinor: "0",
+        currency: row.shippingRevenue.currency,
+      });
+    }
     if (row.coverage === "none") {
       out.push({
         ruleId: "shipping.cost_evidence_missing.v1",
