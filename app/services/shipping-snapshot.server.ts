@@ -7,7 +7,7 @@ const INITIAL_QUERY = `query NodusInitialShippingSnapshot($after: String) {
   orders(first: 100, after: $after, sortKey: CREATED_AT, reverse: true) {
     nodes {
       id name createdAt
-      totalShippingPriceSet { shopMoney { amount currencyCode } }
+      currentShippingPriceSet { shopMoney { amount currencyCode } }
       currentSubtotalPriceSet { shopMoney { amount currencyCode } }
       fulfillments(first: 10) { nodes { trackingInfo { number } } }
     }
@@ -19,7 +19,7 @@ const INCREMENTAL_QUERY = `query NodusIncrementalShippingSnapshot($after: String
   orders(first: 100, after: $after, query: $updatedSince, sortKey: UPDATED_AT, reverse: true) {
     nodes {
       id name createdAt
-      totalShippingPriceSet { shopMoney { amount currencyCode } }
+      currentShippingPriceSet { shopMoney { amount currencyCode } }
       currentSubtotalPriceSet { shopMoney { amount currencyCode } }
       fulfillments(first: 10) { nodes { trackingInfo { number } } }
     }
@@ -30,7 +30,7 @@ type ShopifyOrder = {
   id: string;
   name: string;
   createdAt: string;
-  totalShippingPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
+  currentShippingPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
   currentSubtotalPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
   fulfillments?: { nodes: Array<{ trackingInfo?: Array<{ number?: string | null }> }> };
 };
@@ -100,7 +100,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
 
       const page = body.data.orders;
       const rows = page.nodes.flatMap((order) => {
-        const money = order.totalShippingPriceSet?.shopMoney;
+        const money = order.currentShippingPriceSet?.shopMoney;
         if (!money) return [];
         const parsed = parseMoney(money.amount, money.currencyCode);
         const trackingNumbers = [...new Set((order.fulfillments?.nodes ?? [])
