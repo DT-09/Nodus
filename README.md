@@ -1,19 +1,25 @@
 # NODUS
 
-The intelligence behind shipping decisions.
+**The intelligence behind shipping decisions.**
 
-NODUS is a Shopify-first shipping economics intelligence and policy-control application. Its closed loop ingests source data, reconciles shipping charges and costs, diagnoses issues, simulates policy alternatives, obtains merchant approval, executes supported changes, verifies the result and monitors outcomes.
+NODUS is a Shopify-first shipping economics intelligence and policy-control application. It is designed to ingest source data, reconcile shipping charges and costs, diagnose issues, simulate policy alternatives, obtain merchant approval, execute supported changes, verify the result and monitor outcomes.
 
-## Repository status
+## Current verified scope
 
-- Definitive specification: docs/PRODUCT_SPEC.md
-- Shopify React Router application foundation.
-- Initial authenticated Shopify order snapshot.
-- Deterministic money, reconciliation, diagnostics, historical replay and approval state-machine modules.
-- Initial unit tests and CI workflow.
+- Shopify React Router application foundation and authenticated merchant workspace.
+- Bounded latest-order shipping-revenue snapshot.
+- Deterministic money, reconciliation, diagnostics, historical policy replay and approval state-machine modules.
+- Carrier cost CSV import with duplicate invoice-line protection and explicit currency validation.
+- Initial unit tests and GitHub Actions CI.
 
-This is not a production launch. Shopify credentials, development-store verification, persistent ingestion jobs, carrier/3PL evidence adapters, billing, production infrastructure, App Store review and merchant validation remain outstanding.
+## Not yet production-ready
 
-Requires Node.js 20.19+ or 22.12+, PostgreSQL, Shopify Partner app configuration and a development store. Copy .env.example to .env, install dependencies, run npm run setup, link the app with Shopify CLI, configure real URLs and run npm run dev.
+Durable paginated order ingestion, end-to-end order-to-invoice reconciliation UI, PDF extraction, complete policy simulation UI, supported Shopify write execution, scheduled monitoring, Shopify billing, production infrastructure, legal/support operations, App Store review and merchant validation remain outstanding. See `docs/PRODUCT_SPEC.md` and `docs/CARRIER_CSV_FORMAT.md`.
 
-Never commit secrets, access tokens, environment files or merchant data. See docs/PRODUCT_SPEC.md.
+A repository commit is not a live Shopify integration or commercial launch. No savings or revenue claim is made until verified with real merchant data.
+
+## Local setup
+
+Requires Node.js 20.19+ or 22.12+, PostgreSQL, Shopify Partner app configuration and a development store. Copy `.env.example` to `.env`, configure credentials and URLs, install dependencies, run `npm run setup`, then `npm run dev`.
+
+Never commit secrets, access tokens, environment files or merchant data.
