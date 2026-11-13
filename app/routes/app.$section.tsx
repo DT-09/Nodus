@@ -39,18 +39,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const empty = {
     page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, rows: [] as OrderRow[],
-    evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
+    evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return empty;
 
   if (section === "evidence") {
-    const [costs, totalEvidence] = await Promise.all([
+    const [costs, totalEvidence, orders] = await Promise.all([
       prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "desc" }, take: 250 }),
       prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
+      prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250, select: { sourceOrderId: true, orderName: true } }),
     ]);
     return {
       ...empty, totalEvidence,
+      orderOptions: orders.map((order) => ({ id: order.sourceOrderId, name: order.orderName })),
       evidenceRows: costs.map((cost) => ({
         id: cost.id, sourceSystem: cost.sourceSystem, sourceRecordId: cost.sourceRecordId,
         sourceReference: cost.sourceReference, orderReference: cost.orderReference,
@@ -215,6 +217,31 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return { kind: "coverage" as const, ok: true, message: "Coverage review saved and recorded in the audit log." };
   }
 
+  if (params.section === "evidence" && form.get("intent") === "assign-evidence") {
+    const evidenceId = String(form.get("evidenceId") ?? "").trim();
+    const orderId = String(form.get("orderId") ?? "").trim();
+    if (!evidenceId || !orderId) return { kind: "evidence" as const, ok: false, message: "Choose an evidence row and an order." };
+    const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
+    if (!merchant) return { kind: "evidence" as const, ok: false, message: "Merchant record not found." };
+    const [cost, order] = await Promise.all([
+      prisma.shippingCost.findFirst({ where: { id: evidenceId, merchantId: merchant.id }, select: { id: true, orderReference: true } }),
+      prisma.shippingOrder.findFirst({ where: { merchantId: merchant.id, sourceOrderId: orderId }, select: { id: true, sourceOrderId: true, orderName: true, costCoverageStatus: true } }),
+    ]);
+    if (!cost || !order) return { kind: "evidence" as const, ok: false, message: "Evidence or order was not found in this shop." };
+    await prisma.$transaction([
+      prisma.shippingCost.update({ where: { id: cost.id }, data: { orderReference: order.sourceOrderId } }),
+      prisma.shippingOrder.update({ where: { id: order.id }, data: { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null } }),
+      prisma.auditEvent.create({
+        data: {
+          merchantId: merchant.id, actor: session.id, action: "shipping_cost_evidence_manually_matched",
+          subjectType: "shipping_cost", subjectId: cost.id,
+          detail: { previousReference: cost.orderReference, orderId: order.sourceOrderId, orderName: order.orderName },
+        },
+      }),
+    ]);
+    return { kind: "evidence" as const, ok: true, message: `Evidence matched to ${order.orderName}. Coverage review was reset.` };
+  }
+
   if (params.section === "evidence") {
     const file = form.get("file");
     if (!(file instanceof File)) return { kind: "evidence" as const, ok: false, message: "Choose a CSV file." };
@@ -311,10 +338,10 @@ export default function Section() {
           <button type="submit">Import evidence</button>
           {result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
         </Form>
-        <div className="data-table-wrap"><p className="table-caption">{data.totalEvidence} imported cost records · latest 250 shown</p>
-          <table className="data-table"><thead><tr><th>Invoice</th><th>Charge ID</th><th>Order reference</th><th>Tracking</th><th>Cost type</th><th>Amount</th><th>Date</th></tr></thead>
-            <tbody>{data.evidenceRows.map((row) => <tr key={row.id}><td>{row.sourceReference ?? "—"}</td><td>{row.sourceRecordId}</td><td>{row.orderReference ?? "—"}</td><td>{row.trackingNumber ?? "—"}</td><td>{row.costType}</td><td>{formatMinor(row.amountMinor,row.currency)}</td><td>{row.occurredAt ? new Date(row.occurredAt).toLocaleDateString() : "—"}</td></tr>)}
-            {!data.evidenceRows.length ? <tr><td colSpan={7}>No cost evidence imported yet.</td></tr> : null}</tbody>
+        <div className="data-table-wrap"><p className="table-caption">{data.totalEvidence} imported cost records · latest 250 shown</p>{result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
+          <table className="data-table"><thead><tr><th>Invoice</th><th>Charge ID</th><th>Order reference</th><th>Tracking</th><th>Cost type</th><th>Amount</th><th>Date</th><th>Order match</th></tr></thead>
+            <tbody>{data.evidenceRows.map((row) => <tr key={row.id}><td>{row.sourceReference ?? "—"}</td><td>{row.sourceRecordId}</td><td>{row.orderReference ?? "—"}</td><td>{row.trackingNumber ?? "—"}</td><td>{row.costType}</td><td>{formatMinor(row.amountMinor,row.currency)}</td><td>{row.occurredAt ? new Date(row.occurredAt).toLocaleDateString() : "—"}</td><td><Form method="post" className="coverage-review-form"><input type="hidden" name="intent" value="assign-evidence"/><input type="hidden" name="evidenceId" value={row.id}/><select name="orderId" defaultValue={data.orderOptions.find((order) => order.id === row.orderReference || order.name === row.orderReference)?.id ?? ""} aria-label={`Match ${row.sourceRecordId} to order`}><option value="">Unmatched</option>{data.orderOptions.map((order) => <option key={order.id} value={order.id}>{order.name}</option>)}</select><button type="submit">Match</button></Form></td></tr>)}
+            {!data.evidenceRows.length ? <tr><td colSpan={8}>No cost evidence imported yet.</td></tr> : null}</tbody>
           </table>
         </div>
       </> : null}
