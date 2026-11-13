@@ -8,38 +8,53 @@ datasource db {
 }
 
 model Session {
-  id                   String    @id
-  shop                 String
-  state                String
-  isOnline             Boolean   @default(false)
-  scope                String?
-  expires              DateTime?
-  accessToken          String
-  userId               BigInt?
-  firstName            String?
-  lastName             String?
-  email                String?
-  accountOwner         Boolean   @default(false)
-  locale               String?
-  collaborator         Boolean?  @default(false)
-  emailVerified        Boolean?  @default(false)
-  refreshToken         String?
+  id                    String    @id
+  shop                  String
+  state                 String
+  isOnline              Boolean   @default(false)
+  scope                 String?
+  expires               DateTime?
+  accessToken           String
+  userId                BigInt?
+  firstName             String?
+  lastName              String?
+  email                 String?
+  accountOwner          Boolean   @default(false)
+  locale                String?
+  collaborator          Boolean?  @default(false)
+  emailVerified         Boolean?  @default(false)
+  refreshToken          String?
   refreshTokenExpiresAt DateTime?
 
   @@index([shop])
 }
 
 model Merchant {
-  id           String          @id @default(cuid())
-  shop         String          @unique
+  id           String             @id @default(cuid())
+  shop         String             @unique
   shopName     String?
-  installedAt  DateTime        @default(now())
+  installedAt  DateTime           @default(now())
   uninstalledAt DateTime?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
   orders       ShippingOrder[]
   costs        ShippingCost[]
   auditEvents  AuditEvent[]
+  syncState    ShopifySyncState?
+}
+
+model ShopifySyncState {
+  id               String   @id @default(cuid())
+  merchantId       String   @unique
+  afterCursor      String?
+  hasMore          Boolean  @default(false)
+  pagesProcessed   Int      @default(0)
+  ordersProcessed  Int      @default(0)
+  lastPageAt       DateTime?
+  lastCompletedAt  DateTime?
+  lastError        String?
+  updatedAt        DateTime @updatedAt
+  merchant         Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 }
 
 model ShippingOrder {
@@ -80,15 +95,15 @@ model ShippingCost {
 }
 
 model AuditEvent {
-  id         String   @id @default(cuid())
-  merchantId String
-  actor      String
-  action     String
+  id          String   @id @default(cuid())
+  merchantId  String
+  actor       String
+  action      String
   subjectType String
-  subjectId  String
-  detail     Json?
-  createdAt  DateTime @default(now())
-  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  subjectId   String
+  detail      Json?
+  createdAt   DateTime @default(now())
+  merchant    Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
   @@index([merchantId, createdAt])
 }
