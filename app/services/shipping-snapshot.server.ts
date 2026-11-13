@@ -2,9 +2,9 @@ import { parseMoney } from "../domain/money";
 import { prisma } from "../db.server";
 
 type AdminGraphqlContext = { graphql(query: string, options?: { variables?: Record<string, unknown> }): Promise<Response> };
-const QUERY = `query NodusShippingSnapshot($after: String) {
+const QUERY = `query NodusShippingSnapshot($after: String, $updatedSince: String) {
   shop { name myshopifyDomain }
-  orders(first: 100, after: $after, sortKey: CREATED_AT, reverse: true) {
+  orders(first: 100, after: $after, query: $updatedSince, sortKey: UPDATED_AT, reverse: true) {
     nodes {
       id name createdAt
       totalShippingPriceSet { shopMoney { amount currencyCode } }
@@ -61,6 +61,9 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
   const previous = await prisma.shopifySyncState.findUnique({ where: { merchantId: merchant.id } });
   const continuing = Boolean(previous?.hasMore && previous.afterCursor);
   let cursor: string | null = continuing ? previous!.afterCursor : null;
+  const updatedSince = previous?.lastCompletedAt
+    ? `updated_at:>=${new Date(previous.lastCompletedAt.getTime() - 120_000).toISOString()}`
+    : null;
   let pagesThisRun = 0;
   let hasNextPage = true;
   const MAX_PAGES_PER_REQUEST = 25;
@@ -75,7 +78,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
 
   try {
     while (pagesThisRun < MAX_PAGES_PER_REQUEST && hasNextPage) {
-      const response = await admin.graphql(QUERY, { variables: { after: cursor } });
+      const response = await admin.graphql(QUERY, { variables: { after: cursor, updatedSince } });
       const body = await response.json() as ShopifyPage;
       if (!response.ok || body.errors?.length || !body.data?.orders) {
         throw new Error(body.errors?.map((error) => error.message).join("; ") || "Unable to retrieve Shopify orders.");
@@ -125,12 +128,12 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
         create: {
           merchantId: merchant.id, afterCursor: hasNextPage ? cursor : null, hasMore: hasNextPage,
           pagesProcessed: pagesThisRun, ordersProcessed: rows.length, lastPageAt: new Date(),
-          lastCompletedAt: hasNextPage ? null : new Date(), lastError: null,
+          ...(hasNextPage ? {} : { lastCompletedAt: new Date() }), lastError: null,
         },
         update: {
           afterCursor: hasNextPage ? cursor : null, hasMore: hasNextPage,
           pagesProcessed: { increment: 1 }, ordersProcessed: { increment: rows.length },
-          lastPageAt: new Date(), lastCompletedAt: hasNextPage ? null : new Date(), lastError: null,
+          lastPageAt: new Date(), ...(hasNextPage ? {} : { lastCompletedAt: new Date() }), lastError: null,
         },
       });
     }
