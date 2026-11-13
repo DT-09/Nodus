@@ -220,7 +220,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (params.section === "evidence" && form.get("intent") === "assign-evidence") {
     const evidenceId = String(form.get("evidenceId") ?? "").trim();
     const orderId = String(form.get("orderId") ?? "").trim();
-    if (!evidenceId || !orderId) return { kind: "evidence" as const, ok: false, message: "Choose an evidence row and an order." };
+    if (!evidenceId || !orderId) return { kind: "evidence" as const, ok: false, message: "Choose an evidence row and a destination order." };
     const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
     if (!merchant) return { kind: "evidence" as const, ok: false, message: "Merchant record not found." };
     const [cost, order] = await Promise.all([
@@ -228,9 +228,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
       prisma.shippingOrder.findFirst({ where: { merchantId: merchant.id, sourceOrderId: orderId }, select: { id: true, sourceOrderId: true, orderName: true, costCoverageStatus: true } }),
     ]);
     if (!cost || !order) return { kind: "evidence" as const, ok: false, message: "Evidence or order was not found in this shop." };
+    const previousOrder = cost.orderReference ? await prisma.shippingOrder.findFirst({
+      where: { merchantId: merchant.id, OR: [{ sourceOrderId: cost.orderReference }, { orderName: cost.orderReference }] },
+      select: { id: true, sourceOrderId: true },
+    }) : null;
+    const affectedOrderIds = [...new Set([order.id, ...(previousOrder ? [previousOrder.id] : [])])];
     await prisma.$transaction([
       prisma.shippingCost.update({ where: { id: cost.id }, data: { orderReference: order.sourceOrderId } }),
-      prisma.shippingOrder.update({ where: { id: order.id }, data: { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null } }),
+      prisma.shippingOrder.updateMany({ where: { id: { in: affectedOrderIds } }, data: { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null } }),
       prisma.auditEvent.create({
         data: {
           merchantId: merchant.id, actor: session.id, action: "shipping_cost_evidence_manually_matched",
@@ -340,7 +345,7 @@ export default function Section() {
         </Form>
         <div className="data-table-wrap"><p className="table-caption">{data.totalEvidence} imported cost records · latest 250 shown</p>{result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
           <table className="data-table"><thead><tr><th>Invoice</th><th>Charge ID</th><th>Order reference</th><th>Tracking</th><th>Cost type</th><th>Amount</th><th>Date</th><th>Order match</th></tr></thead>
-            <tbody>{data.evidenceRows.map((row) => <tr key={row.id}><td>{row.sourceReference ?? "—"}</td><td>{row.sourceRecordId}</td><td>{row.orderReference ?? "—"}</td><td>{row.trackingNumber ?? "—"}</td><td>{row.costType}</td><td>{formatMinor(row.amountMinor,row.currency)}</td><td>{row.occurredAt ? new Date(row.occurredAt).toLocaleDateString() : "—"}</td><td><Form method="post" className="coverage-review-form"><input type="hidden" name="intent" value="assign-evidence"/><input type="hidden" name="evidenceId" value={row.id}/><select name="orderId" defaultValue={data.orderOptions.find((order) => order.id === row.orderReference || order.name === row.orderReference)?.id ?? ""} aria-label={`Match ${row.sourceRecordId} to order`}><option value="">Unmatched</option>{data.orderOptions.map((order) => <option key={order.id} value={order.id}>{order.name}</option>)}</select><button type="submit">Match</button></Form></td></tr>)}
+            <tbody>{data.evidenceRows.map((row) => <tr key={row.id}><td>{row.sourceReference ?? "—"}</td><td>{row.sourceRecordId}</td><td>{row.orderReference ?? "—"}</td><td>{row.trackingNumber ?? "—"}</td><td>{row.costType}</td><td>{formatMinor(row.amountMinor,row.currency)}</td><td>{row.occurredAt ? new Date(row.occurredAt).toLocaleDateString() : "—"}</td><td><Form method="post" className="coverage-review-form"><input type="hidden" name="intent" value="assign-evidence"/><input type="hidden" name="evidenceId" value={row.id}/><select name="orderId" required defaultValue={data.orderOptions.find((order) => order.id === row.orderReference || order.name === row.orderReference)?.id ?? ""} aria-label={`Match ${row.sourceRecordId} to order`}><option value="" disabled>Select order</option>{data.orderOptions.map((order) => <option key={order.id} value={order.id}>{order.name}</option>)}</select><button type="submit">Match</button></Form></td></tr>)}
             {!data.evidenceRows.length ? <tr><td colSpan={8}>No cost evidence imported yet.</td></tr> : null}</tbody>
           </table>
         </div>
