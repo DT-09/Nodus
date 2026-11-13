@@ -23,17 +23,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const page = pages[params.section ?? ""];
   if (!page) throw new Response("Not found", { status: 404 });
 
-  if (params.section !== "orders" && params.section !== "diagnostics" && params.section !== "evidence") {
-    return { page, rows: [], findings: [], totalOrders: 0, evidence: [], evidenceCount: 0 };
+  if (params.section !== "orders" && params.section !== "diagnostics" && params.section !== "evidence" && params.section !== "reports") {
+    return { page, rows: [], findings: [], totalOrders: 0, totalEvidence: 0, auditEvents: [], evidence: [], evidenceCount: 0 };
   }
 
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
-  if (!merchant) return { page, rows: [], findings: [], totalOrders: 0, evidence: [], evidenceCount: 0 };
+  if (!merchant) return { page, rows: [], findings: [], totalOrders: 0, totalEvidence: 0, auditEvents: [], evidence: [], evidenceCount: 0 };
 
-  const [orders, costs, evidenceCount] = await Promise.all([
-    params.section === "evidence" ? Promise.resolve([]) : prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250 }),
+  const [orders, costs, evidenceCount, totalOrders, totalEvidence, auditEvents] = await Promise.all([
+    params.section === "evidence" || params.section === "reports" ? Promise.resolve([]) : prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "desc" }, take: 250 }),
     prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "desc" }, take: params.section === "evidence" ? 500 : 10000 }),
     params.section === "evidence" ? prisma.shippingCost.count({ where: { merchantId: merchant.id } }) : Promise.resolve(0),
+    prisma.shippingOrder.count({ where: { merchantId: merchant.id } }),
+    prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
+    prisma.auditEvent.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 25 }),
   ]);
 
   if (params.section === "evidence") {
