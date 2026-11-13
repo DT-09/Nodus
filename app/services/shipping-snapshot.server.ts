@@ -11,6 +11,7 @@ const SNAPSHOT_QUERY = `query NodusShippingSnapshot {
       name
       createdAt
       totalShippingPriceSet { shopMoney { amount currencyCode } }
+      currentSubtotalPriceSet { shopMoney { amount currencyCode } }
       fulfillments(first: 10) { trackingInfo { number } }
     }
   }
@@ -38,6 +39,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
           name: string;
           createdAt: string;
           totalShippingPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
+          currentSubtotalPriceSet?: { shopMoney?: { amount: string; currencyCode: string } } | null;
           fulfillments?: Array<{ trackingInfo?: Array<{ number?: string | null }> }>;
         }>;
       };
@@ -68,10 +70,14 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
       .filter(Boolean))];
     const orderedAt = new Date(order.createdAt);
     if (Number.isNaN(orderedAt.getTime())) throw new Error("Shopify returned an invalid order timestamp.");
-    return [{ order, money, parsed, trackingNumbers, orderedAt }];
+    const subtotal = order.currentSubtotalPriceSet?.shopMoney;
+    const subtotalMinor = subtotal && subtotal.currencyCode === money.currencyCode
+      ? parseMoney(subtotal.amount, subtotal.currencyCode).minor
+      : null;
+    return [{ order, money, parsed, subtotalMinor, trackingNumbers, orderedAt }];
   });
 
-  await prisma.$transaction(persistable.map(({ order, money, parsed, trackingNumbers, orderedAt }) =>
+  await prisma.$transaction(persistable.map(({ order, money, parsed, subtotalMinor, trackingNumbers, orderedAt }) =>
     prisma.shippingOrder.upsert({
       where: { merchantId_sourceOrderId: { merchantId: merchant.id, sourceOrderId: order.id } },
       create: {
@@ -81,6 +87,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
         orderedAt,
         currency: money.currencyCode,
         shippingRevenueMinor: parsed.minor,
+        subtotalMinor,
         trackingNumbers,
       },
       update: {
@@ -88,6 +95,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
         orderedAt,
         currency: money.currencyCode,
         shippingRevenueMinor: parsed.minor,
+        subtotalMinor,
         trackingNumbers,
       },
     }),

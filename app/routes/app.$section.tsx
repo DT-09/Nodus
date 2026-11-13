@@ -5,12 +5,14 @@ import { prisma } from "../db.server";
 import { importCarrierCostCsv } from "../services/cost-import.server";
 import { reconcileShipping } from "../domain/reconcile";
 import { diagnoseReconciliation } from "../domain/diagnostics";
+import { parseMoney } from "../domain/money";
+import { simulateHistoricalShippingRevenue } from "../domain/simulation";
 
 const pages: Record<string, { title: string; subtitle: string; heading: string; body: string }> = {
   orders: { title: "Order evidence", subtitle: "Order-level shipping revenue and fulfillment evidence.", heading: "Persisted Shopify order sample", body: "Orders are refreshed from the latest bounded Shopify sample. Imported cost records are matched only by an exact order reference or an unambiguous tracking number. Cost coverage remains partial until independently reviewed." },
   evidence: { title: "Source evidence", subtitle: "Carrier invoices, labels and 3PL records.", heading: "Import carrier cost evidence", body: "Upload a carrier CSV with invoice_id, charge_id, amount and currency. Optional columns: order_reference, tracking_number, occurred_at and cost_type. Imported costs are stored against your authenticated shop; ambiguous matches are not auto-allocated." },
   diagnostics: { title: "Diagnostics", subtitle: "Evidence-backed causes, not unexplained alerts.", heading: "Evidence coverage and findings", body: "Findings are generated from persisted Shopify orders and imported cost records. Missing evidence is reported as a coverage gap, never as zero cost or a confirmed loss." },
-  simulations: { title: "Policy simulations", subtitle: "Compare proposed policies against historical order scenarios.", heading: "Historical replay engine available", body: "Simulation compares shipping revenue for a supplied historical sample. It does not predict conversion, abandonment, order volume or profit." },
+  simulations: { title: "Policy simulations", subtitle: "Compare proposed policies against historical order scenarios.", heading: "Historical shipping-policy replay", body: "Replay a proposed flat rate and optional free-shipping threshold against the latest persisted order sample. This compares shipping revenue only; it does not predict demand, conversion, abandonment or profit." },
   policies: { title: "Policy control", subtitle: "Proposed changes, merchant approvals and verification.", heading: "Write access is disabled", body: "NODUS is read-only until each supported Shopify mutation, permission, baseline check and read-back verification has passed development-store tests. No shipping configuration has been changed." },
   monitoring: { title: "Continuous monitoring", subtitle: "Policy drift, new exceptions and post-change outcomes.", heading: "Monitoring is not active", body: "Scheduled jobs and durable event processing must be configured before NODUS can claim continuous monitoring." },
   reports: { title: "Reports", subtitle: "Traceable results, coverage and decision history.", heading: "No reports generated", body: "Reports will be available after the underlying evidence, reconciliation and review workflows are complete." }
@@ -76,18 +78,59 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const { session } = await authenticate.admin(request);
-  if (params.section !== "evidence") throw new Response("Not found", { status: 404 });
   const form = await request.formData();
-  const file = form.get("file");
-  if (!(file instanceof File)) return { ok: false, message: "Choose a CSV file." };
-  if (file.size < 1 || file.size > 5 * 1024 * 1024) return { ok: false, message: "CSV must be between 1 byte and 5 MB." };
-  if (!file.name.toLowerCase().endsWith(".csv")) return { ok: false, message: "Only .csv files are accepted." };
-  try {
-    const result = await importCarrierCostCsv(session.shop, await file.text());
-    return { ok: true, message: `Received ${result.received}; imported ${result.imported}; skipped ${result.duplicates} duplicate rows.` };
-  } catch (error) {
-    return { ok: false, message: error instanceof Error ? error.message : "Import failed." };
+
+  if (params.section === "evidence") {
+    const file = form.get("file");
+    if (!(file instanceof File)) return { kind: "evidence" as const, ok: false, message: "Choose a CSV file." };
+    if (file.size < 1 || file.size > 5 * 1024 * 1024) return { kind: "evidence" as const, ok: false, message: "CSV must be between 1 byte and 5 MB." };
+    if (!file.name.toLowerCase().endsWith(".csv")) return { kind: "evidence" as const, ok: false, message: "Only .csv files are accepted." };
+    try {
+      const result = await importCarrierCostCsv(session.shop, await file.text());
+      return { kind: "evidence" as const, ok: true, message: `Received ${result.received}; imported ${result.imported}; skipped ${result.duplicates} duplicate rows.` };
+    } catch (error) {
+      return { kind: "evidence" as const, ok: false, message: error instanceof Error ? error.message : "Import failed." };
+    }
   }
+
+  if (params.section === "simulations") {
+    try {
+      const currency = String(form.get("currency") ?? "").trim().toUpperCase();
+      const flatRate = parseMoney(String(form.get("flatRate") ?? ""), currency);
+      const thresholdText = String(form.get("freeShippingThreshold") ?? "").trim();
+      const threshold = thresholdText ? parseMoney(thresholdText, currency) : null;
+      const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
+      if (!merchant) return { kind: "simulation" as const, ok: false, message: "No Shopify order sample has been stored yet. Refresh the overview first." };
+      const orders = await prisma.shippingOrder.findMany({
+        where: { merchantId: merchant.id, subtotalMinor: { not: null } },
+        orderBy: { orderedAt: "desc" },
+        take: 250,
+      });
+      if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No orders with a verified subtotal are available. Refresh the overview and check Shopify data permissions." };
+      const result = simulateHistoricalShippingRevenue(orders.map((order) => ({
+        orderId: order.sourceOrderId,
+        subtotal: { minor: order.subtotalMinor!, currency: order.currency },
+        shippingCollected: { minor: order.shippingRevenueMinor, currency: order.currency },
+      })), { flatRate, freeShippingThreshold: threshold });
+      return {
+        kind: "simulation" as const,
+        ok: true,
+        result: {
+          sampleSize: result.sampleSize,
+          currency: result.currency,
+          observed: result.observedShippingRevenueMinor,
+          replayed: result.replayedShippingRevenueMinor,
+          delta: result.revenueDeltaMinor,
+          warning: result.warning,
+          assumptions: result.assumptions,
+        },
+      };
+    } catch (error) {
+      return { kind: "simulation" as const, ok: false, message: error instanceof Error ? error.message : "Simulation failed." };
+    }
+  }
+
+  throw new Response("Not found", { status: 404 });
 }
 
 function formatMinor(amount: string | null, currency: string) {
@@ -112,7 +155,7 @@ export default function Section() {
         <label htmlFor="cost-file">Carrier cost CSV</label>
         <input id="cost-file" name="file" type="file" accept=".csv,text/csv" required />
         <button type="submit">Import evidence</button>
-        {result ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
+        {result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
       </Form> : null}
       {page.title === "Order evidence" ? <div className="data-table-wrap">
         <p className="table-caption">{data.totalOrders} persisted orders · latest 250</p>
@@ -128,6 +171,26 @@ export default function Section() {
         </article>)}
         {!data.findings.length ? <p className="body-copy">No findings. This is not proof of zero shipping leakage; confirm that the order sample and cost evidence are complete.</p> : null}
       </div> : null}
+      {page.title === "Policy simulations" ? <Form method="post" className="import-form">
+        <label htmlFor="flat-rate">Proposed flat shipping rate</label>
+        <input id="flat-rate" name="flatRate" type="number" min="0" step="0.001" placeholder="e.g. 6.50" required />
+        <label htmlFor="currency">Currency (ISO 4217)</label>
+        <input id="currency" name="currency" type="text" minLength={3} maxLength={3} defaultValue="USD" required />
+        <label htmlFor="free-threshold">Optional free-shipping threshold</label>
+        <input id="free-threshold" name="freeShippingThreshold" type="number" min="0" step="0.001" placeholder="Leave blank to disable" />
+        <button type="submit">Run historical replay</button>
+        {result?.kind === "simulation" && !result.ok ? <p role="status" className="import-error">{result.message}</p> : null}
+        {result?.kind === "simulation" && result.ok ? <div className="simulation-result">
+          <p className="eyebrow">HISTORICAL REPLAY · {result.result.sampleSize} ORDERS</p>
+          <div className="simulation-metrics">
+            <div><small>Observed shipping revenue</small><strong>{formatMinor(result.result.observed,result.result.currency)}</strong></div>
+            <div><small>Replayed shipping revenue</small><strong>{formatMinor(result.result.replayed,result.result.currency)}</strong></div>
+            <div><small>Revenue difference</small><strong>{formatMinor(result.result.delta,result.result.currency)}</strong></div>
+          </div>
+          <p className="body-copy">{result.result.warning}</p>
+          <ul>{result.result.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
+        </div> : null}
+      </Form> : null}
     </section>
   </div>;
 }

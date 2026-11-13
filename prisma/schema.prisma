@@ -50,6 +50,7 @@ model ShippingOrder {
   orderedAt            DateTime
   currency             String
   shippingRevenueMinor BigInt
+  subtotalMinor        BigInt?
   trackingNumbers      Json?
   sourcePayload        Json?
   ingestedAt           DateTime @default(now())

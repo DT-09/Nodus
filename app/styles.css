@@ -17,3 +17,11 @@
 .finding-row strong{font:600 13px system-ui;color:#e8e5dd}
 .finding-row p{font-size:12px;line-height:1.6;color:#a9aca5;margin:6px 0}
 .finding-row small{font:10px "DM Mono",monospace;color:#858b84}
+
+.simulation-result{margin-top:24px;padding:20px;border:1px solid #454943;background:#1a1d1c}
+.simulation-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.simulation-metrics>div{padding:14px;background:#242827;border:1px solid #383e39}
+.simulation-metrics small{display:block;font-size:10px;color:#9fa49c;line-height:1.5}
+.simulation-metrics strong{display:block;margin-top:10px;font:600 19px Georgia,serif;color:#e9e5db;overflow-wrap:anywhere}
+.simulation-result ul{padding-left:18px;color:#9fa49c;font-size:11px;line-height:1.8}
+@media(max-width:680px){.simulation-metrics{grid-template-columns:1fr}}
