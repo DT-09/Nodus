@@ -38,7 +38,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
-    page, totalOrders: 0, totalEvidence: 0, rows: [] as OrderRow[],
+    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, rows: [] as OrderRow[],
     evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
@@ -81,13 +81,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   if (section === "reports") {
-    const [totalOrders, totalEvidence, events] = await Promise.all([
+    const [totalOrders, totalEvidence, totalSimulations, events] = await Promise.all([
       prisma.shippingOrder.count({ where: { merchantId: merchant.id } }),
       prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
+      prisma.policySimulation.count({ where: { merchantId: merchant.id } }),
       prisma.auditEvent.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 50 }),
     ]);
     return {
-      ...empty, totalOrders, totalEvidence,
+      ...empty, totalOrders, totalEvidence, totalSimulations,
       auditEvents: events.map((event) => ({
         id: event.id, actor: event.actor, action: event.action,
         subjectType: event.subjectType, subjectId: event.subjectId,
@@ -151,9 +152,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (params.section === "reports" && form.get("intent") === "export-report") {
     const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
     if (!merchant) return new Response("No merchant data is available.", { status: 404 });
-    const [orders, costs] = await Promise.all([
+    const [orders, costs, simulations] = await Promise.all([
       prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "asc" } }),
       prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "asc" } }),
+      prisma.policySimulation.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "asc" } }),
     ]);
     const csvCell = (value: string | number | null) => {
       let text = value === null ? "" : String(value);
@@ -164,12 +166,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
       ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference"],
       ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), order.costCoverageStatus, "", "", "", "", "", ""]),
       ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? ""]),
+      ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion]),
     ];
     const csv = records.map((record) => record.map(csvCell).join(",")).join("\r\n");
     await prisma.auditEvent.create({ data: {
       merchantId: merchant.id, actor: session.id, action: "report_exported",
       subjectType: "merchant", subjectId: session.shop,
-      detail: { orderCount: orders.length, evidenceCount: costs.length, format: "csv" },
+      detail: { orderCount: orders.length, evidenceCount: costs.length, simulationCount: simulations.length, format: "csv" },
     } });
     return new Response(csv, { headers: {
       "Content-Type": "text/csv; charset=utf-8",
@@ -347,7 +350,7 @@ export default function Section() {
         <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
-        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records</p>
+        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations</p>
         <p className="body-copy">Export stored Shopify order records, imported carrier-cost evidence and coverage-review status. Export actions are recorded in the audit log.</p>
         <Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form>
         <h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}
