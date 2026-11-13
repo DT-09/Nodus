@@ -52,33 +52,40 @@ export function reconcileShipping(orders: readonly OrderInput[], evidence: reado
   }
 
   const allocated = new Map<string, CostInput[]>();
+  const currencyMismatchOrders = new Set<string>();
   for (const item of evidence) {
     let matchedOrderId: string | null = null;
-    if (item.orderReference) matchedOrderId = referenceMap.get(item.orderReference.trim()) ?? null;
-    if (!matchedOrderId && item.trackingNumber) {
+    if (item.orderReference) {
+      matchedOrderId = referenceMap.get(item.orderReference.trim()) ?? null;
+    } else if (item.trackingNumber) {
       const owners = trackingOwners.get(item.trackingNumber.trim());
       if (owners?.size === 1) matchedOrderId = [...owners][0]!;
     }
     if (!matchedOrderId) continue;
     const order = orders.find((candidate) => candidate.orderId === matchedOrderId)!;
-    if (order.shippingRevenue.currency !== item.amount.currency) continue;
+    if (order.shippingRevenue.currency !== item.amount.currency) {
+      currencyMismatchOrders.add(matchedOrderId);
+      continue;
+    }
     allocated.set(matchedOrderId, [...(allocated.get(matchedOrderId) ?? []), item]);
   }
 
   return orders.map((order) => {
     const items = allocated.get(order.orderId) ?? [];
-    if (!items.length) {
+    if (!items.length && order.costCoverage !== "complete") {
       return {
         orderId: order.orderId,
         shippingRevenue: order.shippingRevenue,
         evidencedCost: null,
         evidenceIds: [],
-        coverage: "none" as const,
+        coverage: currencyMismatchOrders.has(order.orderId) ? "partial" as const : "none" as const,
         shippingContributionBeforeUnobservedCosts: null,
       };
     }
     const cost = items.reduce((sum, item) => addMoney(sum, item.amount), { minor: 0n, currency: order.shippingRevenue.currency });
-    const coverage = order.costCoverage === "complete" ? "complete" as const : "partial" as const;
+    const coverage = order.costCoverage === "complete" && !currencyMismatchOrders.has(order.orderId)
+      ? "complete" as const
+      : "partial" as const;
     return {
       orderId: order.orderId,
       shippingRevenue: order.shippingRevenue,
