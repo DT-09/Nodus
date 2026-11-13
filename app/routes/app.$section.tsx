@@ -42,7 +42,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     trackingNumbers: Array.isArray(order.trackingNumbers)
       ? order.trackingNumbers.filter((value): value is string => typeof value === "string")
       : [],
-    costCoverage: "partial" as const,
+    costCoverage: order.costCoverageStatus === "complete" ? "complete" as const : order.costCoverageStatus === "partial" ? "partial" as const : "unknown" as const,
   }));
   const costInputs = costs.map((cost) => ({
     evidenceId: `${cost.sourceSystem}:${cost.sourceRecordId}`,
@@ -64,6 +64,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       evidencedCostMinor: row.evidencedCost?.minor.toString() ?? null,
       evidenceCount: row.evidenceIds.length,
       coverage: row.coverage,
+      costCoverageStatus: orders.find((order) => order.sourceOrderId === row.orderId)?.costCoverageStatus ?? "unknown",
+      coverageReviewedAt: orders.find((order) => order.sourceOrderId === row.orderId)?.coverageReviewedAt?.toISOString() ?? null,
     })),
     findings: findings.map((finding) => ({
       ruleId: finding.ruleId,
@@ -79,6 +81,42 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export async function action({ request, params }: ActionFunctionArgs) {
   const { session } = await authenticate.admin(request);
   const form = await request.formData();
+
+  if (params.section === "orders" && form.get("intent") === "review-coverage") {
+    const orderId = String(form.get("orderId") ?? "").trim();
+    const status = String(form.get("coverageStatus") ?? "");
+    if (!orderId || !["unknown", "partial", "complete"].includes(status)) {
+      return { kind: "coverage" as const, ok: false, message: "Choose a valid order and coverage status." };
+    }
+    const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
+    if (!merchant) return { kind: "coverage" as const, ok: false, message: "Merchant record not found." };
+    const order = await prisma.shippingOrder.findFirst({
+      where: { merchantId: merchant.id, sourceOrderId: orderId },
+      select: { id: true, sourceOrderId: true, costCoverageStatus: true },
+    });
+    if (!order) return { kind: "coverage" as const, ok: false, message: "Order not found in this shop." };
+    await prisma.$transaction([
+      prisma.shippingOrder.update({
+        where: { id: order.id },
+        data: {
+          costCoverageStatus: status,
+          coverageReviewedAt: status === "unknown" ? null : new Date(),
+          coverageReviewedBy: status === "unknown" ? null : session.id,
+        },
+      }),
+      prisma.auditEvent.create({
+        data: {
+          merchantId: merchant.id,
+          actor: session.id,
+          action: "shipping_cost_coverage_reviewed",
+          subjectType: "shipping_order",
+          subjectId: order.sourceOrderId,
+          detail: { previousStatus: order.costCoverageStatus, newStatus: status },
+        },
+      }),
+    ]);
+    return { kind: "coverage" as const, ok: true, message: "Order coverage review saved and recorded in the audit log." };
+  }
 
   if (params.section === "evidence") {
     const file = form.get("file");
@@ -159,10 +197,10 @@ export default function Section() {
         {result?.kind === "evidence" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
       </Form> : null}
       {page.title === "Order evidence" ? <div className="data-table-wrap">
-        <p className="table-caption">{data.totalOrders} persisted orders · latest 250</p>
-        <table className="data-table"><thead><tr><th>Order</th><th>Shipping collected</th><th>Evidenced cost</th><th>Evidence rows</th><th>Coverage</th></tr></thead>
-          <tbody>{data.rows.map((row) => <tr key={row.orderId}><td>{row.orderName}</td><td>{formatMinor(row.collectedMinor,row.currency)}</td><td>{formatMinor(row.evidencedCostMinor,row.currency)}</td><td>{row.evidenceCount}</td><td>{row.coverage}</td></tr>)}
-          {!data.rows.length ? <tr><td colSpan={5}>No persisted orders yet. Open the overview to refresh the latest Shopify sample.</td></tr> : null}</tbody>
+        <p className="table-caption">{data.totalOrders} persisted orders · latest 250</p><p className="body-copy">Mark coverage complete only after all applicable carrier, label and 3PL costs for that order have been imported and checked. This is a merchant attestation, not an automatic inference.</p>{result?.kind === "coverage" ? <p role="status" className={result.ok ? "import-success" : "import-error"}>{result.message}</p> : null}
+        <table className="data-table"><thead><tr><th>Order</th><th>Shipping collected</th><th>Evidenced cost</th><th>Evidence rows</th><th>Coverage</th><th>Review</th></tr></thead>
+          <tbody>{data.rows.map((row) => <tr key={row.orderId}><td>{row.orderName}</td><td>{formatMinor(row.collectedMinor,row.currency)}</td><td>{formatMinor(row.evidencedCostMinor,row.currency)}</td><td>{row.evidenceCount}</td><td>{row.coverage} <small>({row.costCoverageStatus})</small></td><td><Form method="post" className="coverage-review-form"><input type="hidden" name="intent" value="review-coverage"/><input type="hidden" name="orderId" value={row.orderId}/><select name="coverageStatus" defaultValue={row.costCoverageStatus} aria-label={`Cost coverage for ${row.orderName}`}><option value="unknown">Unreviewed</option><option value="partial">Partial</option><option value="complete">Complete</option></select><button type="submit">Save review</button></Form>{row.coverageReviewedAt ? <small>Reviewed {new Date(row.coverageReviewedAt).toLocaleDateString()}</small> : null}</td></tr>)}
+          {!data.rows.length ? <tr><td colSpan={6}>No persisted orders yet. Open the overview to refresh the latest Shopify sample.</td></tr> : null}</tbody>
         </table>
       </div> : null}
       {page.title === "Diagnostics" ? <div className="finding-list">
