@@ -12,7 +12,7 @@ export type ParsedCarrierCost = {
 };
 
 function parseCsvRows(input: string): string[][] {
-  const source = input.replace(/^\\uFEFF/, "");
+  const source = input.replace(/^\uFEFF/, "");
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
