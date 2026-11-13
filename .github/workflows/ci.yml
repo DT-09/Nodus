@@ -9,6 +9,22 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nodus
+          POSTGRES_PASSWORD: nodus
+          POSTGRES_DB: nodus
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nodus -d nodus"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://nodus:nodus@localhost:5432/nodus?schema=public
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,6 +33,8 @@ jobs:
       - run: npm install --package-lock-only
       - run: npm ci
       - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - run: npx prisma migrate status
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
