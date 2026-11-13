@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const empty = {
     page, totalOrders: 0, totalEvidence: 0, rows: [] as OrderRow[],
-    evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[],
+    evidenceRows: [] as EvidenceRow[], findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return empty;
@@ -57,6 +57,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         trackingNumber: cost.trackingNumber, currency: cost.currency,
         amountMinor: cost.amountMinor.toString(), costType: cost.costType,
         occurredAt: cost.occurredAt?.toISOString() ?? null,
+      })),
+    };
+  }
+
+  if (section === "simulations") {
+    const simulations = await prisma.policySimulation.findMany({
+      where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 25,
+    });
+    return {
+      ...empty,
+      simulationRows: simulations.map((simulation) => ({
+        id: simulation.id, currency: simulation.currency,
+        flatRateMinor: simulation.flatRateMinor.toString(),
+        freeShippingThresholdMinor: simulation.freeShippingThresholdMinor?.toString() ?? null,
+        sampleSize: simulation.sampleSize,
+        observed: simulation.observedShippingRevenueMinor.toString(),
+        replayed: simulation.replayedShippingRevenueMinor.toString(),
+        delta: simulation.revenueDeltaMinor.toString(),
+        createdAt: simulation.createdAt.toISOString(), warning: simulation.warning,
       })),
     };
   }
@@ -224,6 +243,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
         subtotal: { minor: order.subtotalMinor!, currency: order.currency },
         shippingCollected: { minor: order.shippingRevenueMinor, currency: order.currency },
       })), { flatRate, freeShippingThreshold: threshold });
+      const merchantOrderDates = orders.map((order) => order.orderedAt.getTime()).sort((a, b) => a - b);
+      const saved = await prisma.policySimulation.create({
+        data: {
+          merchantId: merchant.id, currency,
+          flatRateMinor: flatRate.minor,
+          freeShippingThresholdMinor: threshold?.minor ?? null,
+          sampleSize: result.sampleSize,
+          sampleWindowStart: new Date(merchantOrderDates[0]!),
+          sampleWindowEnd: new Date(merchantOrderDates[merchantOrderDates.length - 1]!),
+          observedShippingRevenueMinor: BigInt(result.observedShippingRevenueMinor),
+          replayedShippingRevenueMinor: BigInt(result.replayedShippingRevenueMinor),
+          revenueDeltaMinor: BigInt(result.revenueDeltaMinor),
+          assumptions: result.assumptions,
+          warning: result.warning,
+        },
+      });
+      await prisma.auditEvent.create({
+        data: {
+          merchantId: merchant.id, actor: session.id, action: "policy_simulation_created",
+          subjectType: "policy_simulation", subjectId: saved.id,
+          detail: { currency, sampleSize: result.sampleSize, engineVersion: "v1" },
+        },
+      });
       return { kind: "simulation" as const, ok: true, result: {
         sampleSize: result.sampleSize, currency: result.currency,
         observed: result.observedShippingRevenueMinor.toString(),
@@ -302,6 +344,7 @@ export default function Section() {
           <div className="simulation-metrics"><div><small>Observed shipping revenue</small><strong>{formatMinor(simulationResult.observed,simulationResult.currency)}</strong></div><div><small>Replayed shipping revenue</small><strong>{formatMinor(simulationResult.replayed,simulationResult.currency)}</strong></div><div><small>Revenue difference</small><strong>{formatMinor(simulationResult.delta,simulationResult.currency)}</strong></div></div>
           <p className="body-copy">{simulationResult.warning}</p><ul>{simulationResult.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
         </div> : null}
+        <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
         <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records</p>
