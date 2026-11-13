@@ -95,7 +95,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       select: { id: true, sourceOrderId: true, costCoverageStatus: true },
     });
     if (!order) return { kind: "coverage" as const, ok: false, message: "Order not found in this shop." };
-    const actor = session.userId?.toString() ?? session.id;
+    const actor = session.id;
     await prisma.$transaction([
       prisma.shippingOrder.update({
         where: { id: order.id },
