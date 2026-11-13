@@ -66,6 +66,7 @@ model ShippingOrder {
   orderedAt            DateTime
   currency             String
   shippingRevenueMinor BigInt
+  taxesIncluded         Boolean  @default(false)
   subtotalMinor        BigInt?
   costCoverageStatus   String   @default("unknown")
   coverageReviewedAt   DateTime?
