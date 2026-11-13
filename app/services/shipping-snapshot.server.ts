@@ -99,7 +99,7 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
         return [{ order, money, parsed, subtotalMinor, trackingNumbers, orderedAt }];
       });
 
-      for ( (let start = 0; start < rows.length; start += 100) {
+      for (let start = 0; start < rows.length; start += 100) {
         const batch = rows.slice(start, start + 100);
         await prisma.$transaction(batch.map(({ order, money, parsed, subtotalMinor, trackingNumbers, orderedAt }) =>
           prisma.shippingOrder.upsert({
