@@ -23,7 +23,7 @@ const shopify = shopifyApp({
   future: { expiringOfflineAccessTokens: true }
 });
 
-export default shopify;
+export function requireShopifyConfiguration() {\n  const missing = ["SHOPIFY_API_KEY", "SHOPIFY_API_SECRET", "SHOPIFY_APP_URL", "DATABASE_URL", "DIRECT_URL"]\n    .filter((name) => !process.env[name]?.trim());\n  if (missing.length) {\n    throw new Response("NODUS merchant services are not configured yet.", { status: 503 });\n  }\n}\n\nexport default shopify;
 export const authenticate = shopify.authenticate;
 export const unauthenticated = shopify.unauthenticated;
 export const login = shopify.login;
