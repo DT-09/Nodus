@@ -3,7 +3,7 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 export const meta:MetaFunction=()=>[{title:"The NODUS platform — Shipping economics intelligence"},{name:"description",content:"Explore NODUS Shopify order ingestion, carrier-cost evidence, reconciliation, diagnostics and historical shipping-policy replay."}];
 const modules=[
-["01","Shipping revenue","Read order shipping charges and order context from the connected Shopify store. Coverage and sample windows remain visible.","evidence"],
+["01","Shipping revenue","Read order shipping charges and order context from the connected Shopify store. Coverage and sample windows remain visible.","shipping-revenue"],
 ["02","Cost evidence","Import supported carrier-cost CSV records with invoice-line identity, currency validation and duplicate protection.","evidence"],
 ["03","Reconciliation","Match by exact order reference or unambiguous tracking number. Unmatched and currency-mismatched records remain outside totals.","reconciliation"],
 ["04","Diagnostics","Surface missing evidence and supported cost exceptions with deterministic rule IDs and source references.","economics"],
