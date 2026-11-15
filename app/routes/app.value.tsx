@@ -27,6 +27,34 @@ export async function action({request}:ActionFunctionArgs) {
   const currency=String(f.get("currency")??"").trim().toUpperCase(), amountText=String(f.get("amount")??"").trim();
   const sourceReference=String(f.get("sourceReference")??"").trim(), realizationReference=String(f.get("realizationReference")??"").trim();
   const evidenceNote=String(f.get("evidenceNote")??"").trim(), dateText=String(f.get("occurredAt")??"").trim();
+  const intent=String(f.get("intent")??"create");
+  const merchant=await prisma.merchant.findUnique({where:{shop:session.shop},select:{id:true}});
+  if(!merchant)return {ok:false,message:"Open the overview first to initialize this merchant workspace."};
+
+  if(intent==="advance"){
+    const recordId=String(f.get("recordId")??"").trim();
+    const nextStatus=String(f.get("nextStatus")??"").trim();
+    const realizationReference=String(f.get("realizationReference")??"").trim();
+    const evidenceNote=String(f.get("evidenceNote")??"").trim();
+    if(!recordId||!statuses.has(nextStatus))return {ok:false,message:"Choose a valid record and next status."};
+    const existing=await prisma.economicValueRecord.findFirst({where:{id:recordId,merchantId:merchant.id}});
+    if(!existing)return {ok:false,message:"Value record not found in this merchant workspace."};
+    const allowed=existing.status==="identified"&&nextStatus==="validated"||existing.status==="validated"&&nextStatus==="realized";
+    if(!allowed)return {ok:false,message:"Value records must advance one stage at a time: identified → validated → realized."};
+    if(nextStatus==="realized"&&!realizationReference)return {ok:false,message:"A posted credit-note, refund or accounting reference is required for realized value."};
+    if(realizationReference.length>180||evidenceNote.length>2000)return {ok:false,message:"References or evidence notes exceed the allowed length."};
+    const updated=await prisma.$transaction(async tx=>{
+      const result=await tx.economicValueRecord.update({where:{id:existing.id},data:{
+        status:nextStatus,
+        realizationReference:nextStatus==="realized"?realizationReference:null,
+        evidenceNote:evidenceNote||existing.evidenceNote,
+      }});
+      await tx.auditEvent.create({data:{merchantId:merchant.id,actor:session.id,action:"economic_value_record_advanced",subjectType:"economic_value_record",subjectId:result.id,detail:{from:existing.status,to:nextStatus,realizationReference:nextStatus==="realized"?realizationReference:null}}});
+      return result;
+    });
+    return {ok:true,message:"Record advanced to "+updated.status+". The amount remains merchant-attested, not independently verified."};
+  }
+
   if(!categories.has(category)||!statuses.has(status))return {ok:false,message:"Choose a supported category and status."};
   if(!/^[A-Z]{3}$/.test(currency))return {ok:false,message:"Enter a three-letter ISO currency code."};
   if(!sourceReference||sourceReference.length>180)return {ok:false,message:"A source invoice, order, credit-note or policy reference is required."};
@@ -51,7 +79,7 @@ export default function EconomicValue(){
   <header className="topbar"><div><p className="eyebrow">NODUS / ECONOMIC PROOF</p><h1>Value ledger</h1><p className="muted">Separate identified exposure from validated and realized outcomes.</p></div></header>
   <section className="metric-grid">{d.totals.map(t=><article className="metric-card" key={t.currency}><span>{t.currency} · Identified</span><strong>{money(t.identified,t.currency)}</strong><small>Merchant-recorded opportunities; not verified savings.</small><div className="value-subtotals"><span>Validated: {money(t.validated,t.currency)}</span><span>Realized: {money(t.realized,t.currency)}</span></div></article>)}{!d.totals.length?<article className="metric-card"><span>Economic outcomes</span><strong>Not established</strong><small>A blank ledger is better than an invented ROI claim.</small></article>:null}</section>
   <section className="surface-card value-ledger-panel"><h3>Record a financial outcome</h3><p className="body-copy">Record a carrier credit, duplicate charge, surcharge dispute, rate correction or policy change. Realized value requires a posted credit or accounting reference. All statuses are merchant-attested.</p>
-   <Form method="post" className="value-record-form">
+   <Form method="post" className="value-record-form">\n    <input type="hidden" name="intent" value="create"/>
     <label>Category<select name="category" defaultValue="carrier_credit"><option value="carrier_credit">Carrier credit</option><option value="duplicate_charge">Duplicate charge</option><option value="surcharge_dispute">Surcharge dispute</option><option value="rate_correction">Rate correction</option><option value="policy_change">Policy change</option><option value="other">Other</option></select></label>
     <label>Status<select name="status" defaultValue="identified"><option value="identified">Identified opportunity</option><option value="validated">Validated by merchant</option><option value="realized">Realized / posted credit</option></select></label>
     <label>Amount<input name="amount" type="number" min="0.001" step="0.001" required placeholder="0.00"/></label>
@@ -64,9 +92,9 @@ export default function EconomicValue(){
    </Form>
   </section>
   <section className="surface-card"><div className="card-heading"><div><p className="eyebrow">AUDITABLE OUTCOMES</p><h3>Recorded evidence</h3></div><span className="tag">{d.records.length} records</span></div>
-   <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Category</th><th>Status</th><th>Amount</th><th>Source</th><th>Realization proof</th><th>Evidence note</th><th>Date</th></tr></thead><tbody>
-    {d.records.map(r=><tr key={r.id}><td>{labels[r.category]??r.category}</td><td>{r.status}</td><td>{money(r.amountMinor,r.currency)}</td><td>{r.sourceReference}</td><td>{r.realizationReference??"—"}</td><td>{r.evidenceNote}</td><td>{r.occurredAt?new Date(r.occurredAt).toLocaleDateString():new Date(r.createdAt).toLocaleDateString()}</td></tr>)}
-    {!d.records.length?<tr><td colSpan={7}>No value records yet. Do not publish a financial outcome without evidence.</td></tr>:null}
+   <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Category</th><th>Status</th><th>Amount</th><th>Source</th><th>Realization proof</th><th>Evidence note</th><th>Date</th><th>Update stage</th></tr></thead><tbody>
+    {d.records.map(r=><tr key={r.id}><td>{labels[r.category]??r.category}</td><td>{r.status}</td><td>{money(r.amountMinor,r.currency)}</td><td>{r.sourceReference}</td><td>{r.realizationReference??"—"}</td><td>{r.evidenceNote}</td><td>{r.occurredAt?new Date(r.occurredAt).toLocaleDateString():new Date(r.createdAt).toLocaleDateString()}</td><td>{r.status==="identified"||r.status==="validated"?<Form method="post" className="value-advance-form"><input type="hidden" name="intent" value="advance"/><input type="hidden" name="recordId" value={r.id}/><select name="nextStatus" defaultValue={r.status==="identified"?"validated":"realized"}><option value={r.status==="identified"?"validated":"realized"}>{r.status==="identified"?"Mark validated":"Mark realized / posted"}</option></select><input name="realizationReference" maxLength={180} placeholder="Posted reference (required for realized)"/><input name="evidenceNote" maxLength={2000} placeholder="Updated evidence note (optional)"/><button type="submit">Advance record</button></Form>:<span>Complete</span>}</td></tr>)}
+    {!d.records.length?<tr><td colSpan={8}>No value records yet. Do not publish a financial outcome without evidence.</td></tr>:null}
    </tbody></table></div><p className="footnote">Only realized records with a source realization reference may be included in realized-value claims. Merchant-entered statuses are not independently audited by NODUS.</p>
   </section>
  </div>;
