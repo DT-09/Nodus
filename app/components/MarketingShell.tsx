@@ -60,7 +60,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
         <div className="footer-column"><p>KNOWLEDGE</p><Link to="/methodology">Methodology</Link><Link to="/pricing">Pricing & evaluation</Link><Link to="/security">Security</Link><Link to="/support">Support</Link></div>
         <div className="footer-column"><p>COMPANY</p><Link to="/about">About NODUS</Link><a href="https://github.com/DT-09/Nodus" target="_blank" rel="noreferrer">Open-source record ↗</a><Link to="/app">Merchant workspace</Link></div>
       </div>
-      <div className="footer-bottom"><span>© {new Date().getFullYear()} NODUS. All rights reserved.</span><span>BUILT AROUND TRACEABLE EVIDENCE</span><span><Link to="/security">Privacy & security</Link><Link to="/support">Contact</Link></span></div>
+      <div className="footer-bottom"><span>© {new Date().getFullYear()} NODUS. All rights reserved.</span><span>BUILT AROUND TRACEABLE EVIDENCE</span><span><Link to="/security">Security & data</Link><Link to="/support">Contact</Link></span></div>
     </footer>
   </div>;
 }
