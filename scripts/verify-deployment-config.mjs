@@ -35,6 +35,10 @@ const cronSource = await readFile(new URL("../app/routes/api.cron.sync.ts", impo
 assert.match(cronSource, /authorization.*Bearer/);
 assert.match(cronSource, /status:\s*401/);
 
+const rootSource = await readFile(new URL("../app/root.tsx", import.meta.url), "utf8");
+assert.match(rootSource, /addDocumentResponseHeaders/);
+assert.match(rootSource, /export const headers/);
+
 const healthSource = await readFile(new URL("../app/routes/healthz.ts", import.meta.url), "utf8");
 assert.match(healthSource, /Cache-Control.*no-store/);
 assert.match(healthSource, /prisma\.\$queryRaw/);
