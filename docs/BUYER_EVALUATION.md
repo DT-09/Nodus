@@ -26,7 +26,7 @@ A subscription is considered only after delivery and only where the merchant agr
 4. Review unmatched records and manually assign only supported matches.
 5. Review cost coverage for each order. Missing or partial coverage is not treated as zero cost.
 6. Inspect diagnostics and replay a proposed flat rate or free-shipping threshold against the stored historical sample.
-7. Export the order, evidence, review and simulation records as CSV.
+7. Export the full evidence CSV and the reproducible JSON Shipping Economics Decision Pack. The JSON pack contains the complete stored order/evidence scope, deterministic reconciliation, matched/unmatched evidence states, diagnostics, per-currency summaries, policy replay history, value-ledger attestations, methodology limitations and a SHA-256 digest.
 
 ## What the merchant receives
 
@@ -36,6 +36,7 @@ A subscription is considered only after delivery and only where the merchant agr
 - Deterministic reconciliation and diagnostics.
 - Saved historical shipping-revenue replay with assumptions and sample window.
 - An exportable evidence register and audit trail.
+- A JSON Decision Pack with complete stored-scope reconciliation, source-linked findings, currency-separated summaries, reproducibility metadata and integrity digest.
 
 ## What this evaluation does not promise
 
@@ -65,7 +66,8 @@ The evaluation is useful only if the merchant can:
 - inspect a carrier cost record back to its imported source row;
 - distinguish matched, unmatched and incomplete evidence;
 - reproduce a saved historical replay from its recorded assumptions;
-- export the underlying records for independent review.
+- export the underlying records and JSON Decision Pack for independent review;
+- verify the pack's SHA-256 canonical-payload digest.
 
 ## Commercial status
 
