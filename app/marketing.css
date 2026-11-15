@@ -31,3 +31,9 @@
 .footer-wordmark{display:inline-flex;align-items:center;gap:12px}
 .footer-wordmark img{width:34px;height:38px;object-fit:contain}
 @media(max-width:700px){.site-brand-mark{width:30px;height:32px}.site-brand{min-width:0}.site-brand-caption{font-size:7px}}
+
+.method-list{margin-top:55px;border-top:1px solid var(--line)}.method-list article{display:grid;grid-template-columns:190px 1fr;gap:35px;padding:25px 0;border-bottom:1px solid var(--line)}.method-list article>b{font:9px ui-monospace,monospace;letter-spacing:.1em;color:var(--accent);padding-top:5px}.method-list h2{font:23px Georgia,serif;margin:0 0 10px;color:var(--text)}.method-list p{max-width:760px;font:12px/1.9 Inter,system-ui,sans-serif;color:var(--muted);margin:0}
+.site-menu{max-height:calc(100vh - 105px);overflow:auto}
+.marketing-site a:focus-visible,.marketing-site button:focus-visible{outline:2px solid var(--accent-2);outline-offset:4px}
+.footer-bottom a{white-space:nowrap}
+@media(max-width:700px){.method-list article{grid-template-columns:1fr;gap:10px}.footer-bottom>span:last-child{flex-wrap:wrap}}
