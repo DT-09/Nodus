@@ -47,7 +47,9 @@ A subscription is considered only after delivery and only where the merchant agr
 - Cross-currency normalization.
 - A substitute for accounting, tax, legal or financial advice.
 
-Download the blank [carrier-cost CSV template](../public/nodus-carrier-cost-template.csv) and map the carrier export to its required columns before evaluation.\n\n## Data required
+Download the blank [carrier-cost CSV template](../public/nodus-carrier-cost-template.csv) and map the carrier export to its required columns before evaluation.
+
+## Data required
 
 - An authorized Shopify store connection.
 - Carrier-cost CSV with `invoice_id`, `charge_id`, `amount` and `currency`.
