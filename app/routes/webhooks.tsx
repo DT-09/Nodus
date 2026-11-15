@@ -1,10 +1,10 @@
 import type { ActionFunctionArgs } from "react-router";
-import { authenticate } from "../shopify.server";
+import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { prisma } from "../db.server";
 
 type CustomerRedactionPayload = { orders_to_redact?: unknown };
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {\n  requireShopifyConfiguration();
   const { shop, topic, webhookId, payload } = await authenticate.webhook(request);
   if (!webhookId) return new Response("Missing webhook identifier", { status: 400 });
   const receipt = await prisma.webhookReceipt.upsert({
