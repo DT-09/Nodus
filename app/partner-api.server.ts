@@ -12,10 +12,10 @@ export async function fetchActiveSubscription(shopId: string): Promise<ActiveSub
   const orgId = process.env.SHOPIFY_PARTNER_ORG_ID;
   const token = process.env.SHOPIFY_PARTNER_API_ACCESS_TOKEN;
   const appId = process.env.SHOPIFY_APP_GID;
-  if (!orgId || !/^\\d+$/.test(orgId) || !token || !appId || !/^gid:\/\/shopify\/App\/\\d+$/.test(appId)) {
+  if (!orgId || !/^[0-9]+$/.test(orgId) || !token || !appId || !/^gid:\/\/shopify\/App\/[0-9]+$/.test(appId)) {
     throw new Error("Shopify App Pricing is enabled but Partner API configuration is incomplete.");
   }
-  if (!/^gid:\/\/shopify\/Shop\/\\d+$/.test(shopId)) throw new Error("Shopify returned an invalid shop identifier.");
+  if (!/^gid:\/\/shopify\/Shop\/[0-9]+$/.test(shopId)) throw new Error("Shopify returned an invalid shop identifier.");
   const cached = cache.get(shopId);
   if (cached && cached.expiresAt > Date.now()) return cached.value;
 
@@ -26,7 +26,7 @@ export async function fetchActiveSubscription(shopId: string): Promise<ActiveSub
     cache: "no-store",
   });
   const body = await response.json() as PartnerResponse;
-  if (!response.ok || body.errors?.length || body.data === undefined) {
+  if (!response.ok || body.errors?.length || body.data === undefined || !Object.prototype.hasOwnProperty.call(body.data, "activeSubscription")) {
     throw new Error("Shopify Partner API subscription verification failed. Access was not granted.");
   }
   const value = body.data.activeSubscription ?? null;
