@@ -63,6 +63,7 @@ npm run dev
 
 ## Release and public launch
 
+- [First-Principles Audit](docs/FIRST_PRINCIPLES_AUDIT.md) — evidence ledger, Bayesian hypotheses, technical risks and decision gates.
 - [Launch-Day Release Gate](docs/LAUNCH_DAY.md) — technical, product, security and commercial acceptance checklist.
 - [Go-Live Runbook](docs/GO_LIVE_RUNBOOK.md) — ordered sequence for public website, controlled pilot, paid pilot and public paid-app release.
 - [Buyer Evaluation](docs/BUYER_EVALUATION.md) — scope and acceptance criteria for a merchant evaluation.
