@@ -30,7 +30,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --ignore-scripts --package-lock-only
+      - name: Resolve dependency lockfile
+        run: npm install --ignore-scripts --package-lock-only || (cat ~/.npm/_logs/*debug-0.log; exit 1)
       - name: Capture dependency audit
         run: npm audit --json > npm-audit.json || true
       - name: Upload generated lockfile and dependency audit
