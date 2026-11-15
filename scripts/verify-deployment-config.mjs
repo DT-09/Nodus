@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const vercel = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
-const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
+const vercel = JSON.parse(await read("../vercel.json"));
+const pkg = JSON.parse(await read("../package.json"));
 const headers = new Map(
   (vercel.headers ?? []).flatMap((entry) =>
     (entry.headers ?? []).map((header) => [header.key.toLowerCase(), header.value]),
@@ -20,8 +21,7 @@ for (const [name, value] of Object.entries(requiredHeaders)) {
   assert.equal(headers.get(name), value, `Missing or incorrect production header: ${name}`);
 }
 
-// Shopify embedded apps must remain frameable by Shopify Admin; do not add a
-// blanket X-Frame-Options DENY/SAMEORIGIN policy here.
+// Shopify embedded apps must remain frameable by Shopify Admin.
 assert.equal(headers.has("x-frame-options"), false, "Do not block Shopify's embedded app frame.");
 
 assert.ok(
@@ -31,21 +31,24 @@ assert.ok(
 assert.equal(pkg.scripts?.["smoke:launch"], "node scripts/launch-smoke.mjs");
 assert.equal(pkg.scripts?.["verify:decision-pack"], "node scripts/verify-decision-pack.mjs");
 
-const cronSource = await readFile(new URL("../app/routes/api.cron.sync.ts", import.meta.url), "utf8");
+const cronSource = await read("../app/routes/api.cron.sync.ts");
 assert.match(cronSource, /authorization.*Bearer/);
 assert.match(cronSource, /status:\s*401/);
 
-const workflowSource = await readFile(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
+const workflowSource = await read("../.github/workflows/ci.yml");
 assert.match(workflowSource, /DIRECT_URL:\s*postgresql:\/\//);
 
-const rootSource = await readFile(new URL("../app/root.tsx", import.meta.url), "utf8");
-assert.match(rootSource, /addDocumentResponseHeaders/);
-assert.match(rootSource, /export const headers/);
+const entrySource = await read("../app/entry.server.tsx");
+assert.match(entrySource, /addDocumentResponseHeaders/);
+assert.match(entrySource, /addDocumentResponseHeaders\(request, responseHeaders\)/);
 
-const healthSource = await readFile(new URL("../app/routes/healthz.ts", import.meta.url), "utf8");
+const prismaSchema = await read("../prisma/schema.prisma");
+assert.match(prismaSchema, /url\s*=\s*env\("DATABASE_URL"\)/);
+assert.match(prismaSchema, /directUrl\s*=\s*env\("DIRECT_URL"\)/);
+
+const healthSource = await read("../app/routes/healthz.ts");
 assert.match(healthSource, /Cache-Control.*no-store/);
 assert.match(healthSource, /prisma\.\$queryRaw/);
-assert.match(healthSource, /DIRECT_URL/);
 assert.match(healthSource, /PUBLIC_CONTACT_EMAIL/);
 assert.match(healthSource, /CRON_SECRET/);
 assert.match(healthSource, /minimum 32 characters/);
