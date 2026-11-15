@@ -98,7 +98,9 @@ export function parseCarrierCostCsv(input: string): ParsedCarrierCost[] {
   if (new Set(normalizedHeaders).size !== normalizedHeaders.length) throw new Error("CSV contains duplicate column names.");
   const columns = new Map<string, number>();
   for (const [canonical, names] of Object.entries(aliases)) {
-    const matches = names.map(normalize).map((name) => normalizedHeaders.indexOf(name)).filter((index) => index >= 0);
+    // Several human-readable aliases normalize to the same canonical label (for example, `charge_id` and `charge id`). Deduplicate aliases before resolving headers so one CSV column is not mistaken for conflicting columns.
+    const normalizedAliases = [...new Set(names.map(normalize))];
+    const matches = normalizedAliases.map((name) => normalizedHeaders.indexOf(name)).filter((index) => index >= 0);
     if (matches.length > 1) throw new Error(`CSV has multiple columns that map to ${canonical}; keep only one.`);
     if (matches.length === 1) columns.set(canonical, matches[0]!);
   }
