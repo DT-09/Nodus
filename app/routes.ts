@@ -19,5 +19,8 @@ export default [
   route("product", "./routes/product.tsx"),
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
+  route("buyer-evaluation", "./routes/buyer-evaluation.tsx"),
+  route("robots.txt", "./routes/robots[.]txt.ts"),
+  route("sitemap.xml", "./routes/sitemap[.]xml.ts"),
   route("webhooks", "./routes/webhooks.tsx"),
 ] satisfies RouteConfig;
