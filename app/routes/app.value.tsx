@@ -3,6 +3,7 @@ import { Form, useActionData, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { prisma } from "../db.server";
 import { parseMoney } from "../domain/money";
+import { calculateOperatingValue } from "../domain/operating-value";
 
 const categories = new Set(["carrier_credit","duplicate_charge","surcharge_dispute","rate_correction","policy_change","operating_time_saved","other"]);
 const statuses = new Set(["identified","validated","realized"]);
@@ -71,15 +72,12 @@ export async function action({request}:ActionFunctionArgs) {
   try{
     if(category==="operating_time_saved"){
       const baseline=Number(baselineMinutesText), assisted=Number(assistedMinutesText);
-      if(!/^\d+$/.test(baselineMinutesText)||!/^\d+$/.test(assistedMinutesText)||!Number.isSafeInteger(baseline)||!Number.isSafeInteger(assisted)||baseline<=assisted||baseline>100000||assisted<0)return {ok:false,message:"Enter valid baseline and NODUS-assisted minutes. Baseline must exceed assisted time."};
+      if(!/^\d+$/.test(baselineMinutesText)||!/^\d+$/.test(assistedMinutesText))return {ok:false,message:"Enter whole-number baseline and NODUS-assisted minutes."};
       if(measurementPeriod.length<4||measurementPeriod.length>80)return {ok:false,message:"Enter the measurement period (for example, 2026-10-01 to 2026-10-31)."};
       const hourlyRate=parseMoney(hourlyRateText,currency);
-      if(hourlyRate.minor<=0n)return {ok:false,message:"Loaded hourly labor rate must be greater than zero."};
-      const minutesSaved=baseline-assisted;
-      const valueMinor=(BigInt(minutesSaved)*hourlyRate.minor+30n)/60n;
-      amount={minor:valueMinor,currency};
-      if(amount.minor<=0n)return {ok:false,message:"Measured time value rounds to zero at the selected currency precision."};
-      recordedEvidenceNote=evidenceNote+"\nBaseline minutes: "+baseline+"; NODUS-assisted minutes: "+assisted+"; minutes saved: "+minutesSaved+"; merchant-approved loaded hourly rate: "+hourlyRateText+" "+currency+"; measurement period: "+measurementPeriod+".";
+      const measured=calculateOperatingValue(baseline,assisted,hourlyRate);
+      amount=measured.value;
+      recordedEvidenceNote=evidenceNote+"\nBaseline minutes: "+baseline+"; NODUS-assisted minutes: "+assisted+"; minutes saved: "+measured.minutesSaved+"; merchant-approved loaded hourly rate: "+hourlyRateText+" "+currency+"; measurement period: "+measurementPeriod+".";
     }else{
       amount=parseMoney(amountText,currency);
       if(amount.minor<=0n)return {ok:false,message:"Amount must be greater than zero."};
