@@ -37,3 +37,36 @@
 .marketing-site a:focus-visible,.marketing-site button:focus-visible{outline:2px solid var(--accent-2);outline-offset:4px}
 .footer-bottom a{white-space:nowrap}
 @media(max-width:700px){.method-list article{grid-template-columns:1fr;gap:10px}.footer-bottom>span:last-child{flex-wrap:wrap}}
+
+.value-calculator,.pricing-targets,.proof-method,.pricing-contact{margin:55px 0;padding:34px;border:1px solid var(--line);background:var(--surface)}
+.calculator-heading>span,.pricing-target-heading>span,.proof-method>span,.pricing-contact>div>span{font:9px ui-monospace,monospace;letter-spacing:.14em;color:var(--accent)}
+.calculator-heading h2,.pricing-target-heading h2,.proof-method h2,.pricing-contact h2{font:400 clamp(32px,4vw,48px)/1.12 Georgia,serif;letter-spacing:-.03em;color:var(--text);margin:20px 0}
+.calculator-heading h2 em,.pricing-target-heading h2 em,.proof-method h2 em{color:var(--accent-2)}
+.calculator-heading p,.pricing-target-heading p,.pricing-contact>div>p{max-width:680px;font:12px/1.85 Inter,system-ui,sans-serif;color:var(--muted)}
+.calculator-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:28px 0}
+.calculator-controls label{display:grid;gap:8px;font:10px ui-monospace,monospace;letter-spacing:.05em;color:var(--muted)}
+.calculator-controls input,.calculator-controls select{width:100%;padding:12px;background:var(--ink-2);border:1px solid var(--line);color:var(--text);font:13px system-ui;border-radius:0}
+.calculator-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.calculator-results article{padding:18px;background:var(--ink-2);border:1px solid var(--line)}
+.calculator-results article>span{display:block;font:8px ui-monospace,monospace;letter-spacing:.1em;color:var(--muted-2)}
+.calculator-results strong{display:block;margin:15px 0 7px;font:27px Georgia,serif;color:var(--text)}
+.calculator-results small{font:10px/1.5 system-ui;color:var(--muted)}
+.positive-value{color:#9cb69c!important}.negative-value{color:#d39a8d!important}
+.calculator-verdict{margin-top:14px;padding:15px;border-left:2px solid var(--accent);background:var(--ink-2);font:12px/1.7 system-ui;color:var(--text)}
+.calculator-verdict b{color:var(--accent-2);margin-left:5px}
+.calculator-caveat,.pricing-disclaimer,.pricing-footnote{font:10px/1.8 ui-monospace,monospace;color:var(--muted-2);margin-top:16px}
+.pricing-targets{background:var(--paper);color:var(--paper);border-color:rgba(23,35,44,.2)}
+.pricing-target-heading h2{color:var(--paper)}.pricing-target-heading p{color:#657078}
+.pricing-options{margin-top:25px}.pricing-option{border-color:rgba(23,35,44,.2);background:rgba(255,255,255,.24)}
+.pricing-option h2,.pricing-option strong{color:var(--paper)}.pricing-option strong small{display:inline;font-size:11px;color:#69757a}
+.pricing-option .plan-gate{padding-top:10px;border-top:1px solid rgba(23,35,44,.15);color:#8a6744}
+.pricing-option button{margin-top:10px;padding:10px 12px;border:1px solid #92764d;background:transparent;color:var(--paper);font:9px ui-monospace,monospace;letter-spacing:.08em;cursor:pointer}
+.pricing-option button:hover{background:rgba(146,118,77,.12)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);margin-top:30px}
+.proof-grid article{padding:20px 18px 10px 0;border-right:1px solid var(--line);margin-right:18px}.proof-grid article:last-child{border:0;margin:0}
+.proof-grid b{font:10px ui-monospace,monospace;color:var(--accent)}.proof-grid h3{font:20px Georgia,serif;color:var(--text);margin:18px 0 8px}
+.proof-grid p,.evaluation-steps p{font:11px/1.8 Inter,system-ui,sans-serif;color:var(--muted)}
+.evaluation-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 25px;margin:25px 0}
+.evaluation-steps b{color:var(--accent);font:10px ui-monospace,monospace;margin-right:10px}
+.pricing-contact .primary-cta{display:inline-flex;margin-top:10px}.pricing-footnote a{color:var(--accent-2);text-decoration:none}
+@media(max-width:750px){.value-calculator,.pricing-targets,.proof-method,.pricing-contact{padding:22px;margin:35px 0}.calculator-controls,.calculator-results{grid-template-columns:1fr}.proof-grid{grid-template-columns:repeat(2,1fr)}.proof-grid article:nth-child(2){border-right:0;margin-right:0}.proof-grid article:nth-child(n+3){border-top:1px solid var(--line)}.evaluation-steps{grid-template-columns:1fr}}
