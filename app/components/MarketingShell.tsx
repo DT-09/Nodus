@@ -24,7 +24,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     setTheme(next);
     window.localStorage.setItem("nodus-site-theme",next);
   }
-  return <main className="marketing-site" data-theme={theme}>
+  return <div className="marketing-site" data-theme={theme} data-page={active}>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <header className="site-header">
       <Link className="site-brand" to="/" aria-label="NODUS home">
@@ -61,5 +61,5 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
       </div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} NODUS. All rights reserved.</span><span>BUILT AROUND TRACEABLE EVIDENCE</span><span><Link to="/security">Privacy & security</Link><Link to="/support">Contact</Link></span></div>
     </footer>
-  </main>;
+  </div>;
 }
