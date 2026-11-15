@@ -65,7 +65,7 @@ NODUS uses the React Router Vercel preset and a Node.js server runtime. Use Verc
   ```bash
   NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch
   ```
-- [ ] Confirm public homepage, product, methodology, pricing, security and support pages load.
+- [ ] Confirm public homepage, product, synthetic demo, methodology, pricing, security and support pages load.
 - [ ] Confirm the carrier-cost CSV template is downloadable and contains the documented columns.
 - [ ] Confirm the unauthenticated cron endpoint returns HTTP 401 (not 200 or 503).
 - [ ] Confirm `/app` requires Shopify authentication.
