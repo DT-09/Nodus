@@ -25,7 +25,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 
 ## Not represented as live capabilities
 
-The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Recurring subscription billing and server-side paid-plan entitlements are not implemented. Carrier invoice polling, policy-drift detection and merchant alerting are not implemented. Scheduled Shopify order refresh exists in the repository but is not production-verified. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
+The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Shopify App Pricing subscription lookup and a fail-closed server-side access gate are implemented behind a feature flag; the Partner Dashboard plans, credentials, live subscription lifecycle and production entitlement behaviour are not configured or verified. Shopify hosts plan selection and billing for new public apps; NODUS must not claim paid self-service readiness until the configured plans and full lifecycle tests pass. Carrier invoice polling, policy-drift detection and merchant alerting are not implemented. Scheduled Shopify order refresh exists in the repository but is not production-verified. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
 
 Do not advertise these as available, accept payment for them, or imply App Store approval. A production deployment is not the same as a commercially complete product.
 
@@ -87,9 +87,13 @@ Carrier invoice CSV imports accept the canonical template and common header alia
 
 ## Shopify App Pricing integration
 
-The application includes Partner API subscription verification and an app-level access gate. It remains disabled until plans are configured in the authorized Shopify Partner Dashboard and all Partner API environment variables are supplied. Set `SHOPIFY_APP_PRICING_ENABLED=true` only after configuring the app handle, Partner organization ID, Partner API token, app GID and the exact plan handles. The gate fails closed on Partner API errors and redirects merchants without an active plan to Shopify's hosted plan selection page.
+The repository contains Partner API subscription verification and a fail-closed app-level access gate. It remains disabled until the authorized operator configures plans in Shopify Partner Dashboard and supplies the app handle, Partner organization ID, Partner API token, app GID and exact plan handles. Set `SHOPIFY_APP_PRICING_ENABLED=true` only after those settings are verified in a test app/store. The gate redirects merchants without an active recognized plan to Shopify's hosted plan selection page and denies access if verification fails. Shopify hosts plan selection and billing for new public apps; the application does not implement a separate card checkout. Approval, activation, plan changes, cancellation, delinquency, refund and uninstall lifecycle tests remain release gates.
 
-For new public apps, Shopify recommends Shopify App Pricing rather than custom Billing API charges. See [Shopify's billing guidance](https://shopify.dev/docs/apps/launch/billing/shopify-app-pricing).
+For new public apps, Shopify App Pricing is the default and recommended billing method. See [Shopify's billing guidance](https://shopify.dev/docs/apps/launch/billing).
+
+## Shopify API network security
+
+Shopify's current security guidance requires public apps to restrict Admin API access to approved server IP addresses, with enforcement milestones beginning November 20, 2026. NODUS currently has no configured production egress allowlist. Before public production use, select a hosting architecture with stable outbound IPs, configure those addresses in the Shopify app's API access restrictions, and verify that all Admin API requests originate from the approved addresses. Vercel Static IPs are a paid Pro feature/add-on; verify current project pricing and usage before choosing it. Do not assume ordinary Vercel function egress is fixed. See [Shopify security requirements](https://shopify.dev/docs/apps/build/security) and [Vercel Static IP availability](https://vercel.com/changelog/static-ips-are-now-available-for-more-secure-connectivity).
 
 ## Scheduled Shopify refresh
 
