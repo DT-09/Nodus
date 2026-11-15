@@ -4,7 +4,8 @@ import { prisma } from "../db.server";
 
 type CustomerRedactionPayload = { orders_to_redact?: unknown };
 
-export async function action({ request }: ActionFunctionArgs) {\n  requireShopifyConfiguration();
+export async function action({ request }: ActionFunctionArgs) {
+  requireShopifyConfiguration();
   const { shop, topic, webhookId, payload } = await authenticate.webhook(request);
   if (!webhookId) return new Response("Missing webhook identifier", { status: 400 });
   const receipt = await prisma.webhookReceipt.upsert({
