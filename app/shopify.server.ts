@@ -7,6 +7,25 @@ const key = process.env.SHOPIFY_API_KEY;
 const secret = process.env.SHOPIFY_API_SECRET;
 const url = process.env.SHOPIFY_APP_URL;
 
+const merchantServicesConfigured = Boolean(
+  key?.trim() &&
+  secret?.trim() &&
+  url?.trim() &&
+  process.env.DATABASE_URL?.trim() &&
+  process.env.DIRECT_URL?.trim()
+);
+
+// Public marketing routes must not open a database connection merely because the
+// Shopify adapter is imported. Authenticated routes fail closed until all
+// production settings exist, so this inert store is never used for merchant auth.
+const unavailableSessionStorage = {
+  async storeSession() { return false; },
+  async loadSession() { return undefined; },
+  async deleteSession() { return false; },
+  async deleteSessions() { return false; },
+  async findSessionsByShop() { return []; },
+};
+
 const shopify = shopifyApp({
   apiKey: key ?? "development-placeholder",
   apiSecretKey: secret ?? "development-placeholder",
@@ -14,7 +33,9 @@ const shopify = shopifyApp({
   apiVersion: ApiVersion.July26,
   scopes: (process.env.SCOPES ?? "read_orders,read_products,read_fulfillments,read_shipping,read_markets").split(",").map((scope) => scope.trim()).filter(Boolean),
   authPathPrefix: "/auth",
-  sessionStorage: new PrismaSessionStorage(prisma),
+  sessionStorage: merchantServicesConfigured
+    ? new PrismaSessionStorage(prisma)
+    : unavailableSessionStorage,
   distribution: AppDistribution.AppStore,
   future: { expiringOfflineAccessTokens: true }
 });
