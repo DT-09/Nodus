@@ -6,7 +6,7 @@ This is the operational checklist for moving from a passing codebase to a real m
 
 - [ ] An appropriately authorized adult/business operator owns the commercial relationship, legal terms, Shopify Partner account and payout arrangements.
 - [ ] Confirm the NODUS name and domain can be used commercially; complete trademark and domain clearance.
-- [ ] Publish a business-owned support and privacy contact. Do not publish a minor's personal contact details.
+- [ ] Publish a business-owned support and privacy contact. Do not publish a minor's personal contact details. Set `PUBLIC_CONTACT_EMAIL` to that authorized business inbox; the public evaluation and support pages stay closed when it is unset.
 - [ ] Approve Terms of Service, Privacy Policy, data retention/deletion policy and support commitments with qualified review.
 
 ## 2. Shopify app

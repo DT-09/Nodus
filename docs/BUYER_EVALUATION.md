@@ -39,7 +39,7 @@ NODUS connects those records and keeps the evidence and assumptions visible.
 - Cross-currency normalization.
 - A substitute for accounting, tax, legal or financial advice.
 
-## Data required
+Download the blank [carrier-cost CSV template](../public/nodus-carrier-cost-template.csv) and map the carrier export to its required columns before evaluation.\n\n## Data required
 
 - An authorized Shopify store connection.
 - Carrier-cost CSV with `invoice_id`, `charge_id`, `amount` and `currency`.
