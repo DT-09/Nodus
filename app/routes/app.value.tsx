@@ -9,7 +9,8 @@ const categories = new Set(["carrier_credit","duplicate_charge","surcharge_dispu
 const statuses = new Set(["identified","validated","realized"]);
 const labels: Record<string,string> = {carrier_credit:"Carrier credit",duplicate_charge:"Duplicate charge",surcharge_dispute:"Surcharge dispute",rate_correction:"Rate correction",policy_change:"Policy change",operating_time_saved:"Operating time saved",other:"Other"};
 
-export async function loader({request}:LoaderFunctionArgs) {\n  requireShopifyConfiguration();
+export async function loader({request}:LoaderFunctionArgs) {
+  requireShopifyConfiguration();
   const {session}=await authenticate.admin(request);
   const merchant=await prisma.merchant.findUnique({where:{shop:session.shop},select:{id:true}});
   if(!merchant)return {records:[],totals:[] as Array<{currency:string;category:string;identified:string;validated:string;realized:string}>};
@@ -24,7 +25,8 @@ export async function loader({request}:LoaderFunctionArgs) {\n  requireShopifyCo
   return {totals,records:rows.map(r=>({...r,amountMinor:r.amountMinor.toString(),occurredAt:r.occurredAt?.toISOString()??null,createdAt:r.createdAt.toISOString()}))};
 }
 
-export async function action({request}:ActionFunctionArgs) {\n  requireShopifyConfiguration();
+export async function action({request}:ActionFunctionArgs) {
+  requireShopifyConfiguration();
   const {session}=await authenticate.admin(request); const f=await request.formData();
   const category=String(f.get("category")??""), status=String(f.get("status")??"");
   const currency=String(f.get("currency")??"").trim().toUpperCase(), amountText=String(f.get("amount")??"").trim();
