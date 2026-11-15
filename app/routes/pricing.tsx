@@ -6,7 +6,7 @@ export async function loader(_args:LoaderFunctionArgs){return {contactEmail:proc
 export default function Pricing(){
  const {contactEmail}=useLoaderData<typeof loader>();
  const subject=encodeURIComponent("NODUS merchant evaluation");
- const body=encodeURIComponent("Hello NODUS,\\n\\nI would like to discuss a merchant evaluation.\\n\\nShopify store URL:\\nApproximate monthly order volume:\\nCarrier / 3PL cost CSV available (yes/no):\\nPrimary shipping question:\\n\\n");
+ const body=encodeURIComponent("Hello NODUS,\n\nI would like to discuss a merchant evaluation.\n\nShopify store URL:\nApproximate monthly order volume:\nCarrier / 3PL cost CSV available (yes/no):\nPrimary shipping question:\n\n");
  return <MarketingShell><main className="content-page"><header><p className="page-eyebrow">COMMERCIAL / PROPOSED PRICING</p><h1>Pay for better decisions.<br/>Not another dashboard.</h1><p className="page-lede">The proposed NODUS structure separates evidence-led intelligence from controlled policy workflows and multi-store governance. These prices are hypotheses to validate with qualified merchants—not active checkout offers.</p></header>
  <section className="pricing-options">
   <article className="pricing-option"><span>01 / INTELLIGENCE</span><h2>Understand</h2><p>Shopify order context, carrier-cost imports, evidence review, reconciliation, diagnostics and exportable reports.</p><strong>$99 <small>/ month proposed</small></strong></article>
