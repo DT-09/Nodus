@@ -2,9 +2,12 @@ import type {LinksFunction} from "react-router";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
+import {NODUS_MARK} from "./components/nodus-mark";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
+  {rel:"icon",href:NODUS_MARK,type:"image/png"},
+  {rel:"apple-touch-icon",href:NODUS_MARK},
 ];
 export default function Root(){
   return <html lang="en">
