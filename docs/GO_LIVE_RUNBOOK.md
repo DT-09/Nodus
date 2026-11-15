@@ -30,6 +30,7 @@ NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is
 - [ ] Use a unique high-entropy `CRON_SECRET` per environment. Keep secrets server-side.
 - [ ] Confirm the five-minute Cron schedule is enabled on the Production project and supported by the selected plan.
 - [ ] Configure uptime and error monitoring.
+- [ ] Verify production security response headers with `npm run smoke:launch`; confirm Shopify Admin can still embed the app.
 
 ## 3. Shopify Partner configuration
 
