@@ -34,6 +34,7 @@ type FindingRow = { ruleId: string; orderId: string; severity: string; title: st
 type AuditRow = { id: string; actor: string; action: string; subjectType: string; subjectId: string; createdAt: string };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
+  requireShopifyConfiguration();
   const { session, admin } = await authenticate.admin(request);
   const section = params.section ?? "";
   const page = pages[section];
@@ -164,6 +165,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  requireShopifyConfiguration();
   const { session } = await authenticate.admin(request);
   const form = await request.formData();
 
