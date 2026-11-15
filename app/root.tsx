@@ -2,6 +2,44 @@ import type {LinksFunction} from "react-router";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
-export const links:LinksFunction=()=>[{rel:"stylesheet",href:css},{rel:"stylesheet",href:marketingCss}];
-export default function Root(){return <html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><Meta/><Links/></head><body><Outlet/><ScrollRestoration/><Scripts/></body></html>}
-export function ErrorBoundary(){const e=useRouteError();const m=isRouteErrorResponse(e)?e.statusText:e instanceof Error?e.message:"Unexpected application error";return <main className="error-page"><p className="eyebrow">NODUS / SYSTEM MESSAGE</p><h1>Something went wrong.</h1><p>{m}</p><a href="/">Return to NODUS</a></main>}
+
+export const links:LinksFunction=()=>[
+  {rel:"stylesheet",href:css},
+  {rel:"stylesheet",href:marketingCss},
+];
+
+export default function Root(){
+  return <html lang="en">
+    <head>
+      <meta charSet="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <Meta/>
+      <Links/>
+    </head>
+    <body>
+      <Outlet/>
+      <ScrollRestoration/>
+      <Scripts/>
+    </body>
+  </html>;
+}
+
+export function ErrorBoundary(){
+  const error=useRouteError();
+  const status=isRouteErrorResponse(error)?error.status:500;
+  const message=process.env.NODE_ENV==="production"
+    ? "The request could not be completed. Please try again. If the problem persists, contact NODUS support with the approximate time."
+    : isRouteErrorResponse(error)
+      ? error.statusText
+      : error instanceof Error
+        ? error.message
+        : "Unexpected application error";
+
+  return <main className="error-page">
+    <p className="eyebrow">NODUS / SYSTEM MESSAGE</p>
+    <h1>Something went wrong.</h1>
+    <p role="status">{message}</p>
+    <p className="muted">Reference: HTTP {status}</p>
+    <a href="/">Return to NODUS</a>
+  </main>;
+}
