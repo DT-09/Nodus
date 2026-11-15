@@ -1,45 +1,108 @@
-import type { MetaFunction } from "react-router";
-import { Link } from "react-router";
+import type {MetaFunction} from "react-router";
+import {Link} from "react-router";
+import {useState} from "react";
+import {MarketingShell} from "../components/MarketingShell";
 
-export const meta: MetaFunction = () => [
-  { title: "NODUS — Shipping economics intelligence for Shopify" },
-  { name: "description", content: "Reconcile shipping revenue with carrier-cost evidence, diagnose operational gaps and evaluate policy changes before they reach checkout." },
-  { property: "og:title", content: "NODUS — The intelligence behind shipping decisions" },
-  { property: "og:description", content: "Evidence before calculation. Review before conclusion. Exportable records." },
+export const meta:MetaFunction=()=>[
+  {title:"NODUS — Shipping economics, with the evidence attached"},
+  {name:"description",content:"Connect Shopify shipping revenue with carrier-cost evidence. Review coverage, reconcile supported records and replay shipping policies against historical orders."},
+  {property:"og:title",content:"NODUS — Shipping economics, with the evidence attached"},
+  {property:"og:description",content:"Evidence before recommendation. Approval before execution. Verification after."},
+  {name:"theme-color",content:"#101820"},
 ];
 
-const steps = [
-  ["01", "Connect", "Bring Shopify orders and supported shipping records into one merchant-scoped workspace."],
-  ["02", "Review evidence", "Import carrier-cost CSV records, inspect order references and keep ambiguous charges unmatched."],
-  ["03", "Diagnose", "See missing cost evidence and supported exceptions without treating unknown costs as zero."],
-  ["04", "Simulate", "Replay a flat rate and free-shipping threshold against stored historical order baskets."],
-  ["05", "Export", "Download a merchant-scoped evidence register and review history for independent analysis."],
-  
+const thread=[
+  {label:"ORDER",number:"01",title:"A customer order",detail:"Shopify provides the order, destination, shipping line and the order context available under the merchant's granted permissions.",record:"Source: Shopify order",state:"SOURCE RECORD"},
+  {label:"FULFILLMENT",number:"02",title:"A shipment is fulfilled",detail:"Available fulfillment and tracking references establish the operational link. Split shipments remain separate rather than being collapsed into one assumed parcel.",record:"Source: Shopify fulfillment",state:"OPERATIONAL RECORD"},
+  {label:"CARRIER COST",number:"03",title:"A carrier charge arrives",detail:"A supported carrier-cost CSV import contributes an invoice or charge record. Original identifiers and currency remain visible; ambiguous rows stay unmatched.",record:"Source: merchant-provided CSV",state:"IMPORTED EVIDENCE"},
+  {label:"RECONCILIATION",number:"04",title:"The records are evaluated",detail:"NODUS uses supported references to match records. Duplicate, unmatched, incomplete and currency-mismatched evidence is kept explicit.",record:"Method: deterministic matching",state:"REVIEWABLE RESULT"},
+  {label:"DECISION",number:"05",title:"A finding can be inspected",detail:"A conclusion should link to its source records, calculation, coverage and limitations. Historical replay describes observed baskets; it is not a conversion forecast.",record:"Output: traceable analysis",state:"EVIDENCE-QUALIFIED"},
 ];
 
-export default function Home() {
-  return <main className="marketing">
-    <nav className="marketing-nav">
-      <a className="brand" href="/"><span className="brand-mark">N</span><span>NODUS<small>SHIPPING INTELLIGENCE</small></span></a>
-      <div className="marketing-links"><Link to="/product">Product</Link><Link to="/methodology">Methodology</Link><Link to="/pricing">Pricing</Link><Link to="/security">Trust</Link></div>
-      <Link to="/app" className="nav-cta">Merchant sign in ↗</Link>
-    </nav>
-    <section className="hero">
-      <p className="eyebrow">SHOPIFY SHIPPING ECONOMICS / POLICY INTELLIGENCE</p>
-      <h1>Shipping decisions,<br/><em>with the evidence attached.</em></h1>
-      <p className="hero-copy">Bring Shopify shipping charges and carrier-cost evidence together. Review coverage, inspect exceptions and replay rate scenarios against historical orders.</p>
-      <div className="hero-actions"><Link to="/app" className="primary-cta">Open merchant workspace ↗</Link><Link to="/product">Explore the product →</Link></div>
-      <div className="hero-rule"><span>OBSERVE</span><span>RECONCILE</span><span>DIAGNOSE</span><span>SIMULATE</span><span>EXPORT</span></div>
-    </section>
-    <section className="marketing-section">
-      <p className="eyebrow">THE NODUS OPERATING LOOP</p><h2>From fragmented shipping data<br/>to controlled decisions.</h2>
-      <div className="marketing-grid">{steps.map(([n,title,body]) => <article key={n}><span>{n}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
-    </section>
-    <section className="proof-section">
-      <div><p className="eyebrow">BUILT FOR OPERATIONAL CLARITY</p><h2>Not another shipping dashboard.</h2><p>Dashboards show totals. NODUS is designed to connect each finding to its source, explain what is known, separate assumptions from facts and keep production changes under merchant control.</p></div>
-      <div className="proof-list"><p><b>01</b><span>Every financial result has a traceable evidence path.</span></p><p><b>02</b><span>Missing evidence stays missing. It is never treated as zero cost.</span></p><p><b>03</b><span>Historical replay is not dressed up as a conversion forecast.</span></p><p><b>04</b><span>New evidence invalidates prior complete-coverage attestations.</span></p></div>
-    </section>
-    <section className="closing-cta"><p className="eyebrow">A BETTER SHIPPING DECISION STARTS WITH A BETTER RECORD</p><h2>Know the economics.<br/>Keep control of the policy.</h2><Link to="/app" className="primary-cta">Enter NODUS ↗</Link></section>
-    <footer className="marketing-footer"><span>NODUS © 2026</span><span>Shipping economics intelligence</span><span><Link to="/methodology">Methodology</Link> · <Link to="/security">Security</Link> · <Link to="/support">Support</Link></span></footer>
-  </main>;
+const live=[
+  ["01","Shopify order ingestion","Read-only order synchronisation with persisted merchant-scoped records."],
+  ["02","Carrier-cost CSV intake","Import records with source identity, duplicate protection and currency checks."],
+  ["03","Evidence review","Inspect candidate matches and keep ambiguous or incomplete records visible."],
+  ["04","Reconciliation & diagnostics","Deterministic results that do not treat missing cost evidence as zero."],
+  ["05","Historical policy replay","Evaluate supported flat-rate and free-shipping threshold scenarios against stored orders."],
+  ["06","Evidence exports","Download merchant-scoped records and review history for independent analysis."],
+];
+
+export default function Home(){
+  const [active,setActive]=useState(0);
+  const current=thread[active]!;
+  return <MarketingShell active="home">
+    <main className="home-page">
+      <section className="home-hero">
+        <div className="hero-copy-column">
+          <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
+          <h1>Shipping is an economic system.<br/><em>Make every decision traceable.</em></h1>
+          <p className="hero-intro">NODUS connects Shopify shipping revenue with carrier-cost evidence, reconciliation and historical policy analysis—so merchants can see what the data supports before they act.</p>
+          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+          <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
+        </div>
+        <div className="hero-network" aria-label="Illustration of connected Shopify, fulfillment, carrier evidence, reconciliation and decision nodes">
+          <div className="network-orbit orbit-one"></div><div className="network-orbit orbit-two"></div>
+          <svg viewBox="0 0 560 500" role="img" aria-hidden="true">
+            <defs><linearGradient id="nodeLine" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#B79A69" stopOpacity=".18"/><stop offset=".52" stopColor="#D5C29B" stopOpacity=".9"/><stop offset="1" stopColor="#6C8794" stopOpacity=".3"/></linearGradient><radialGradient id="nodeGlow"><stop offset="0" stopColor="#D5C29B" stopOpacity=".3"/><stop offset="1" stopColor="#D5C29B" stopOpacity="0"/></radialGradient></defs>
+            <g className="network-links" fill="none" stroke="url(#nodeLine)" strokeWidth="1.15"><path d="M90 102 L248 78 L420 155 L355 330 L170 390 L90 102"/><path d="M90 102 L170 250 L355 330 L420 155"/><path d="M248 78 L170 250 L170 390"/><path d="M248 78 L355 330"/><path d="M170 250 L420 155"/></g>
+            <g fill="url(#nodeGlow)"><circle cx="90" cy="102" r="44"/><circle cx="248" cy="78" r="44"/><circle cx="420" cy="155" r="44"/><circle cx="355" cy="330" r="44"/><circle cx="170" cy="390" r="44"/><circle cx="170" cy="250" r="54"/></g>
+            <g className="network-points"><circle cx="90" cy="102" r="5"/><circle cx="248" cy="78" r="5"/><circle cx="420" cy="155" r="5"/><circle cx="355" cy="330" r="5"/><circle cx="170" cy="390" r="5"/><circle cx="170" cy="250" r="7"/></g>
+          </svg>
+          <span className="network-label label-shopify">SHOPIFY / ORDERS</span><span className="network-label label-fulfil">FULFILMENT</span><span className="network-label label-carrier">CARRIER COSTS</span><span className="network-label label-evidence">EVIDENCE</span><span className="network-label label-policy">POLICY</span>
+          <div className="network-core"><span className="core-ring"></span><b>NODUS</b><small>INTELLIGENCE LAYER</small></div>
+          <div className="network-caption"><span>FIG. 01</span><span>CONNECTED SHIPPING ECONOMICS</span></div>
+        </div>
+      </section>
+
+      <section className="manifesto-band">
+        <div><span className="section-index">01 / THE PRINCIPLE</span><h2>A number is not an answer<br/><em>until you can inspect its origin.</em></h2></div>
+        <p>Shipping costs are distributed across orders, fulfillments, carrier statements and store policy. NODUS is built to connect those records, expose missing evidence and keep the reasoning visible.</p>
+      </section>
+
+      <section className="live-system section-light" id="platform">
+        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One connected record.<br/><em>Not six disconnected dashboards.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
+        <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
+      </section>
+
+      <section className="evidence-thread" id="evidence">
+        <div className="section-heading"><div><span className="section-index">03 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Explore an illustrative workflow. It explains the evidence model; it is not a live merchant record or a claim that every source integration is available.</p></div>
+        <div className="thread-layout">
+          <div className="thread-steps" role="tablist" aria-label="Evidence workflow stages">{thread.map((item,i)=><button type="button" role="tab" aria-selected={active===i} className={"thread-step"+(active===i?" is-active":"")} key={item.number} onClick={()=>setActive(i)}><span>{item.number}</span><b>{item.label}</b><i>{active===i?"SELECTED":"VIEW STEP"}</i></button>)}</div>
+          <article className="thread-detail" role="tabpanel">
+            <div className="detail-top"><span>ILLUSTRATIVE RECORD / NOT LIVE DATA</span><span>{current.state}</span></div>
+            <span className="detail-number">{current.number}</span><h3>{current.title}</h3><p>{current.detail}</p>
+            <div className="detail-source"><span>PROVENANCE</span><b>{current.record}</b></div>
+            <div className="detail-path">{thread.map((item,i)=><span className={i<=active?"path-done":""} key={item.number}></span>)}</div>
+            <div className="detail-foot"><span>TRACEABLE BY DESIGN</span><span>{String(active+1).padStart(2,"0")} / 05</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section className="trust-section">
+        <div className="trust-heading"><span className="section-index">04 / TRUST IS A PRODUCT FEATURE</span><h2>We show what is known.<br/><em>And what is not.</em></h2><p>Trust should not depend on a badge or a testimonial. It should be visible in the way the product handles evidence, access, uncertainty and control.</p></div>
+        <div className="trust-grid">
+          <article><span className="trust-symbol">01</span><h3>Evidence coverage</h3><p>Every analysis must disclose its source window, matched records, unmatched records and missing inputs.</p></article>
+          <article><span className="trust-symbol">02</span><h3>Inspectable methods</h3><p>Published methodology explains matching, calculations, assumptions and the limits of historical replay.</p></article>
+          <article><span className="trust-symbol">03</span><h3>Merchant authority</h3><p>Store access is authenticated. Policy changes remain read-only until an explicitly supported, approved and verified workflow exists.</p></article>
+          <article><span className="trust-symbol">04</span><h3>Honest capability status</h3><p>Live functionality is separated from planned integrations. No invented customer outcomes, certifications or savings claims.</p></article>
+        </div>
+        <div className="trust-links"><Link to="/methodology">READ THE METHODOLOGY <span>↗</span></Link><Link to="/security">REVIEW SECURITY & DATA BOUNDARIES <span>↗</span></Link></div>
+      </section>
+
+      <section className="capability-ledger section-light">
+        <div className="section-heading"><div><span className="section-index">05 / RELEASE TRANSPARENCY</span><h2>Know exactly what<br/><em>you are evaluating.</em></h2></div><p>We will not sell a roadmap as a working integration. The current release boundary is explicit.</p></div>
+        <div className="ledger">
+          <div className="ledger-column"><div className="ledger-heading"><span className="ledger-dot live"></span><b>AVAILABLE IN THE CURRENT REPOSITORY BUILD</b></div><ul><li>Shopify order ingestion</li><li>Carrier-cost CSV imports</li><li>Evidence matching and review</li><li>Deterministic reconciliation and diagnostics</li><li>Historical flat-rate and threshold replay</li><li>CSV evidence exports</li></ul></div>
+          <div className="ledger-column planned"><div className="ledger-heading"><span className="ledger-dot planned-dot"></span><b>NOT YET VERIFIED AS LIVE</b></div><ul><li>UPS, FedEx and USPS direct API integrations</li><li>PDF invoice extraction</li><li>Recurring subscription billing</li><li>Scheduled monitoring and alerts</li><li>Automated Shopify policy writes</li><li>Public App Store approval</li></ul></div>
+        </div>
+        <p className="ledger-note">This status describes the repository's documented implementation, not a verified production deployment. Live availability must be confirmed in the deployed service before purchase.</p>
+      </section>
+
+      <section className="closing-section">
+        <span className="section-index">06 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>Inspect the current workflow, review its boundaries and decide whether NODUS fits your shipping operation.</p>
+        <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+      </section>
+    </main>
+  </MarketingShell>;
 }
