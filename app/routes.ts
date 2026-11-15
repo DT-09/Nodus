@@ -21,6 +21,7 @@ export default [
   route("support", "./routes/support.tsx"),
   route("buyer-evaluation", "./routes/buyer-evaluation.tsx"),
   route("shipping-cost-reconciliation", "./routes/shipping-cost-reconciliation.tsx"),
+  route("free-shipping-threshold-analysis", "./routes/free-shipping-threshold-analysis.tsx"),
   route("robots.txt", "./routes/robots[.]txt.ts"),
   route("sitemap.xml", "./routes/sitemap[.]xml.ts"),
   route("webhooks", "./routes/webhooks.tsx"),
