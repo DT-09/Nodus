@@ -26,10 +26,12 @@ export type ReconciliationRow = Readonly<{
 
 export function reconcileShipping(orders: readonly OrderInput[], evidence: readonly CostInput[]): ReconciliationRow[] {
   const ids = new Set<string>();
+  const orderById = new Map<string, OrderInput>();
   const referenceMap = new Map<string, string | null>();
   for (const order of orders) {
     if (!order.orderId || ids.has(order.orderId)) throw new Error("Order IDs must be unique.");
     ids.add(order.orderId);
+    orderById.set(order.orderId, order);
     for (const reference of [order.orderId, order.orderName].filter((value): value is string => Boolean(value))) {
       const normalized = reference.trim();
       if (!normalized) continue;
@@ -64,7 +66,7 @@ export function reconcileShipping(orders: readonly OrderInput[], evidence: reado
       if (owners?.size === 1) matchedOrderId = [...owners][0]!;
     }
     if (!matchedOrderId) continue;
-    const order = orders.find((candidate) => candidate.orderId === matchedOrderId)!;
+    const order = orderById.get(matchedOrderId)!;
     if (order.shippingRevenue.currency !== item.amount.currency) {
       currencyMismatchOrders.add(matchedOrderId);
       continue;
