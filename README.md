@@ -41,8 +41,9 @@ Do not advertise these as available, accept payment for them, or imply App Store
    - `SCOPES` — must match `shopify.app.toml`
    - `DATABASE_URL` — PostgreSQL connection string
    - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
+   - `CRON_SECRET` — high-entropy secret used only by the protected scheduled-sync endpoint
    - `NODE_ENV=production`
-6. Use a separate Preview database. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
+6. Use a separate Preview database and distinct `CRON_SECRET` values for Preview and Production. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
 7. Deploy once, copy the stable production URL, then update `application_url` and every redirect URL in `shopify.app.toml` and the Shopify Partner configuration. Redeploy after the URLs match exactly.
 8. Verify OAuth install, order sync, privacy webhooks, uninstall, database persistence and `/healthz` against a real development store before inviting merchants.
 
