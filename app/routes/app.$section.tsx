@@ -236,6 +236,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }));
     const reconciled = reconcileShipping(orderInputs, costInputs);
     const findings = diagnoseReconciliation(reconciled);
+    const sourceOrdersById = new Map(orders.map((order) => [order.sourceOrderId, order]));
     const matchedEvidence = new Set(reconciled.flatMap((row) => [...row.evidenceIds]));
     const coverage = {
       complete: reconciled.filter((row) => row.coverage === "complete").length,
@@ -305,7 +306,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       },
       summary: { coverage, currencySummaries, findingCount: findings.length },
       orders: reconciled.map((row) => {
-        const source = orders.find((order) => order.sourceOrderId === row.orderId)!;
+        const source = sourceOrdersById.get(row.orderId)!;
         return {
           orderId: row.orderId,
           orderName: source.orderName,
