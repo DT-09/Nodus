@@ -5,6 +5,7 @@ import { prisma } from "../db.server";
 import { getShippingSnapshot } from "../services/shipping-snapshot.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  requireShopifyConfiguration();
   const { admin, session } = await authenticate.admin(request);
   try {
     const snapshot = await getShippingSnapshot(admin);
