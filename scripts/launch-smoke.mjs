@@ -36,6 +36,7 @@ const checks = [
   { path: "/methodology", label: "Methodology page", expected: (r) => r.status === 200, html: true },
   { path: "/pricing", label: "Pricing and evaluation page", expected: (r) => r.status === 200, html: true },
   { path: "/security", label: "Security disclosure page", expected: (r) => r.status === 200, html: true },
+  { path: "/privacy", label: "Privacy and data-handling notice", expected: (r) => r.status === 200, html: true },
   { path: "/support", label: "Support page", expected: (r) => r.status === 200, html: true },
   { path: "/nodus-carrier-cost-template.csv", label: "Carrier-cost CSV template", expected: (r) => r.status === 200, csv: true },
   { path: "/healthz", label: "Application and database health", expected: (r) => r.status === 200, jsonStatus: "ok" },
