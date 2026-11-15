@@ -21,11 +21,11 @@ This runbook separates a public website launch, a controlled merchant evaluation
 
 NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is Vercel, not static Cloudflare Pages.
 
-- [ ] Use a Vercel commercial plan suitable for business hosting. The five-minute sync scheduler runs through GitHub Actions to avoid Vercel Hobby Cron restrictions; configure repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET`. Upgrade hosting only when the required commercial security, egress and operational features are approved.
+- [ ] Use a Vercel commercial plan suitable for business hosting. Vercel Hobby is restricted to personal, non-commercial use and is not eligible for operating NODUS as a commercial product. The five-minute sync scheduler runs through GitHub Actions; configure repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET`.
 - [ ] Connect `DT-09/Nodus` to the intended Vercel project. Root directory: repository root.
-- [ ] Set Node.js 22 and build command `npm run vercel-build`.
+- [ ] Set Node.js 22 and build command `npm run vercel-build`. This generates Prisma Client and builds the app; it does not apply production migrations.
 - [ ] Attach managed PostgreSQL with backups and a tested restore procedure.
-- [ ] Use separate Production and Preview databases. Set `DATABASE_URL` to the provider's pooled runtime URL and `DIRECT_URL` to its direct connection URL for migrations; both must target the same environment database.
+- [ ] Use separate Production and Preview databases. Set `DATABASE_URL` to the provider's pooled runtime URL and `DIRECT_URL` to its direct connection URL for migrations; both must target the same environment database. Apply Production migrations only through the protected manual GitHub Actions workflow after configuring its production database secrets and environment approval.
 - [ ] Configure Production and Preview independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Use a unique high-entropy `CRON_SECRET` per environment. Keep secrets server-side.
 - [ ] Confirm the GitHub Actions `NODUS scheduled sync` workflow runs every five minutes. Verify both repository secrets are set and a successful authenticated sync returns HTTP 200.
@@ -38,7 +38,7 @@ NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is
 - [ ] Replace placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
 - [ ] Make Partner Dashboard URLs, `SHOPIFY_APP_URL` and TOML URLs match exactly.
 - [ ] Confirm scopes match the features and current Shopify policy.
-- [ ] Configure fixed outbound egress IPs and restrict Shopify Admin API access to those addresses. Shopify's public-app security guidance has a November 20, 2026 enforcement milestone; confirm the exact current requirements in the Partner Dashboard before launch. Ordinary Vercel function egress is dynamic. Vercel Static IPs are a paid Pro add-on; compare the complete hosting cost with other fixed-egress hosting options.
+- [ ] Configure Shopify Admin API network restrictions before external installs. Shopify supports IP/CIDR ranges and provider ASNs for dynamic serverless egress. Identify the actual Vercel egress network and deployment countries, configure the matching allowlist in the Shopify Dev Dashboard, and test it against recent API traffic. Do not guess an ASN. The public-app deadline is November 20, 2026; without an allowlist, new installs are blocked and the app is delisted from the App Store.
 - [ ] Verify OAuth, offline session persistence, order sync and uninstall using a controlled development store.
 - [ ] Verify `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact` webhooks.
 - [ ] Confirm order-history permissions and limits. Do not claim access to all historical orders unless Shopify grants it.
