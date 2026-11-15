@@ -35,6 +35,9 @@ const cronSource = await readFile(new URL("../app/routes/api.cron.sync.ts", impo
 assert.match(cronSource, /authorization.*Bearer/);
 assert.match(cronSource, /status:\s*401/);
 
+const workflowSource = await readFile(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
+assert.match(workflowSource, /DIRECT_URL:\s*postgresql:\/\//);
+
 const rootSource = await readFile(new URL("../app/root.tsx", import.meta.url), "utf8");
 assert.match(rootSource, /addDocumentResponseHeaders/);
 assert.match(rootSource, /export const headers/);
