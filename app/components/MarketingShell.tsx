@@ -1,3 +1,4 @@
+import {NODUS_MARK} from "./nodus-mark";
 import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
@@ -28,7 +29,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     <a className="skip-link" href="#main-content">Skip to content</a>
     <header className="site-header">
       <Link className="site-brand" to="/" aria-label="NODUS home">
-        <span className="site-brand-word">NODUS</span>
+        <img className="site-brand-mark" src={NODUS_MARK} alt="" /><span className="site-brand-word">NODUS</span>
         <span className="site-brand-caption">SHIPPING INTELLIGENCE</span>
       </Link>
       <div className="site-header-right">
@@ -54,7 +55,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     <div id="main-content">{children}</div>
     <footer className="site-footer">
       <div className="footer-main">
-        <div className="footer-identity"><Link to="/" className="footer-wordmark">NODUS<span>®</span></Link><p>Shipping economics intelligence.<br/>Evidence before recommendation.<br/>Approval before execution.</p><Link to="/product" className="footer-cta">EXPLORE THE PLATFORM <span>↗</span></Link></div>
+        <div className="footer-identity"><Link to="/" className="footer-wordmark"><img src={NODUS_MARK} alt="" />NODUS<span>®</span></Link><p>Shipping economics intelligence.<br/>Evidence before recommendation.<br/>Approval before execution.</p><Link to="/product" className="footer-cta">EXPLORE THE PLATFORM <span>↗</span></Link></div>
         <div className="footer-column"><p>PLATFORM</p><Link to="/product">Overview</Link><Link to="/product#evidence">Evidence</Link><Link to="/product#economics">Economics</Link><Link to="/product#policy">Policy intelligence</Link></div>
         <div className="footer-column"><p>KNOWLEDGE</p><Link to="/methodology">Methodology</Link><Link to="/pricing">Pricing & evaluation</Link><Link to="/security">Security</Link><Link to="/support">Support</Link></div>
         <div className="footer-column"><p>COMPANY</p><Link to="/about">About NODUS</Link><a href="https://github.com/DT-09/Nodus" target="_blank" rel="noreferrer">Open-source record ↗</a><Link to="/app">Merchant workspace</Link></div>
