@@ -1,0 +1,46 @@
+name: NODUS production database migration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nodus-production-migrations
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.NODUS_DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.NODUS_DIRECT_URL }}
+    steps:
+      - name: Require production database credentials
+        run: |
+          set -euo pipefail
+          test -n "$DATABASE_URL" || { echo "Missing NODUS_DATABASE_URL"; exit 1; }
+          test -n "$DIRECT_URL" || { echo "Missing NODUS_DIRECT_URL"; exit 1; }
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm install --global npm@11.6.0
+          npm ci --no-audit --no-fund
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Apply production migrations
+        run: npx prisma migrate deploy
+
+      - name: Verify production migration state
+        run: npx prisma migrate status
