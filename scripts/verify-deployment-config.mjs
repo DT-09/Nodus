@@ -27,7 +27,7 @@ assert.equal(headers.has("x-frame-options"), false, "Do not block Shopify's embe
 assert.equal(vercel.crons?.length ?? 0, 0, "Vercel Hobby does not support the five-minute sync schedule; use the GitHub scheduled runner.");
 
 const syncWorkflow = await read("../.github/workflows/scheduled-sync.yml");
-assert.match(syncWorkflow, /cron:\s*["']\\*\\/5 \\* \\* \\* \\*["']/);
+assert.ok(syncWorkflow.includes('cron: "*/5 * * * *"'), "The five-minute sync schedule must be configured in GitHub Actions.");
 assert.match(syncWorkflow, /NODUS_BASE_URL/);
 assert.match(syncWorkflow, /NODUS_CRON_SECRET/);
 assert.equal(pkg.scripts?.["smoke:launch"], "node scripts/launch-smoke.mjs");
