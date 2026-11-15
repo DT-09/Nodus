@@ -55,17 +55,17 @@ export default function Home(){
         </div>
       </section>
 
-      <section className="manifesto-band">
+      <section className="manifesto-band" data-reveal>
         <div><span className="section-index">01 / THE PRINCIPLE</span><h2>A number is not an answer<br/><em>until you can inspect its origin.</em></h2></div>
         <p>Shipping costs are distributed across orders, fulfillments, carrier statements and store policy. NODUS is built to connect those records, expose missing evidence and keep the reasoning visible.</p>
       </section>
 
-      <section className="live-system section-light" id="platform">
+      <section className="live-system section-light" id="platform" data-reveal>
         <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One connected record.<br/><em>Not six disconnected dashboards.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
         <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
       </section>
 
-      <section className="evidence-thread" id="evidence">
+      <section className="evidence-thread" id="evidence" data-reveal>
         <div className="section-heading"><div><span className="section-index">03 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Explore an illustrative workflow. It explains the evidence model; it is not a live merchant record or a claim that every source integration is available.</p></div>
         <div className="thread-layout">
           <div className="thread-steps" role="tablist" aria-label="Evidence workflow stages">{thread.map((item,i)=><button type="button" role="tab" aria-selected={active===i} className={"thread-step"+(active===i?" is-active":"")} key={item.number} onClick={()=>setActive(i)}><span>{item.number}</span><b>{item.label}</b><i>{active===i?"SELECTED":"VIEW STEP"}</i></button>)}</div>
@@ -79,7 +79,7 @@ export default function Home(){
         </div>
       </section>
 
-      <section className="trust-section">
+      <section className="trust-section" data-reveal>
         <div className="trust-heading"><span className="section-index">04 / TRUST IS A PRODUCT FEATURE</span><h2>We show what is known.<br/><em>And what is not.</em></h2><p>Trust should not depend on a badge or a testimonial. It should be visible in the way the product handles evidence, access, uncertainty and control.</p></div>
         <div className="trust-grid">
           <article><span className="trust-symbol">01</span><h3>Evidence coverage</h3><p>Every analysis must disclose its source window, matched records, unmatched records and missing inputs.</p></article>
@@ -90,7 +90,7 @@ export default function Home(){
         <div className="trust-links"><Link to="/methodology">READ THE METHODOLOGY <span>↗</span></Link><Link to="/security">REVIEW SECURITY & DATA BOUNDARIES <span>↗</span></Link></div>
       </section>
 
-      <section className="capability-ledger section-light">
+      <section className="capability-ledger section-light" data-reveal>
         <div className="section-heading"><div><span className="section-index">05 / RELEASE TRANSPARENCY</span><h2>Know exactly what<br/><em>you are evaluating.</em></h2></div><p>We will not sell a roadmap as a working integration. The current release boundary is explicit. Scheduled Shopify order refresh is available; carrier billing is not automatically polled.</p></div>
         <div className="ledger">
           <div className="ledger-column"><div className="ledger-heading"><span className="ledger-dot live"></span><b>AVAILABLE IN THE CURRENT REPOSITORY BUILD</b></div><ul><li>Shopify order ingestion</li><li>Carrier-cost CSV imports</li><li>Evidence matching and review</li><li>Deterministic reconciliation and diagnostics</li><li>Historical flat-rate and threshold replay</li><li>CSV evidence exports</li><li>Scheduled Shopify order refresh (order data only)</li><li>Merchant-attested economic value ledger</li></ul></div>
@@ -99,7 +99,7 @@ export default function Home(){
         <p className="ledger-note">This status describes the repository's documented implementation, not a verified production deployment. Live availability must be confirmed in the deployed service before purchase.</p>
       </section>
 
-      <section className="closing-section">
+      <section className="closing-section" data-reveal>
         <span className="section-index">06 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>Inspect the current workflow, review its boundaries and decide whether NODUS fits your shipping operation.</p>
         <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
       </section>
