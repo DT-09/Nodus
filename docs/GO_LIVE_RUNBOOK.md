@@ -21,14 +21,14 @@ This runbook separates a public website launch, a controlled merchant evaluation
 
 NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is Vercel, not static Cloudflare Pages.
 
-- [ ] Use a Vercel commercial plan suitable for business hosting and the configured five-minute Cron schedule. Hobby is not a commercial hosting plan and has tighter Cron limits.
+- [ ] Use a Vercel commercial plan suitable for business hosting. The five-minute sync scheduler runs through GitHub Actions to avoid Vercel Hobby Cron restrictions; configure repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET`. Upgrade hosting only when the required commercial security, egress and operational features are approved.
 - [ ] Connect `DT-09/Nodus` to the intended Vercel project. Root directory: repository root.
 - [ ] Set Node.js 22 and build command `npm run vercel-build`.
 - [ ] Attach managed PostgreSQL with backups and a tested restore procedure.
 - [ ] Use separate Production and Preview databases. Set `DATABASE_URL` to the provider's pooled runtime URL and `DIRECT_URL` to its direct connection URL for migrations; both must target the same environment database.
 - [ ] Configure Production and Preview independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Use a unique high-entropy `CRON_SECRET` per environment. Keep secrets server-side.
-- [ ] Confirm the five-minute Cron schedule is enabled on the Production project and supported by the selected plan.
+- [ ] Confirm the GitHub Actions `NODUS scheduled sync` workflow runs every five minutes. Verify both repository secrets are set and a successful authenticated sync returns HTTP 200.
 - [ ] Configure uptime and error monitoring.
 - [ ] Verify production security response headers with `npm run smoke:launch`; confirm Shopify Admin can still embed the app.
 
