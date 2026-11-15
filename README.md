@@ -6,7 +6,7 @@ NODUS connects Shopify order-level shipping revenue with carrier-cost evidence, 
 
 ## Deployment target
 
-NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL. A commercial deployment must use Vercel Pro or Enterprise; Vercel Hobby is restricted to personal, non-commercial use. The configured five-minute cron schedule also requires Pro or Enterprise because Hobby cron jobs can run only once per day. See [Vercel plan terms](https://vercel.com/legal/terms) and [Cron Job limits](https://vercel.com/docs/schedules/cron-jobs/usage-and-pricing).
+NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL. Vercel Hobby is restricted to personal, non-commercial use; it is not an eligible plan for operating NODUS as a commercial product. Use an eligible commercial hosting plan before accepting merchants or revenue. The five-minute sync runner is GitHub Actions, not Vercel Cron. See [Vercel plan terms](https://vercel.com/legal/terms).
 
 ## Implemented capabilities
 
@@ -34,7 +34,7 @@ Do not advertise these as available, accept payment for them, or imply App Store
 1. Create the production Shopify app in the authorized Shopify Partner account.
 2. Create a managed PostgreSQL database.
 3. Import `DT-09/Nodus` into Vercel. Keep the repository root as the project root.
-4. Use Node.js 22 and the build command `npm run vercel-build`. This generates Prisma Client, applies committed migrations, then builds the React Router application.
+4. Use Node.js 22 and the build command `npm run vercel-build`. This generates Prisma Client and builds the React Router application. Apply production migrations separately through the protected, manual GitHub Actions workflow after configuring its production database secrets; deployment builds do not mutate the database.
 5. Add these Vercel environment variables:
    - `SHOPIFY_API_KEY`
    - `SHOPIFY_API_SECRET`
@@ -45,7 +45,7 @@ Do not advertise these as available, accept payment for them, or imply App Store
    - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
    - `CRON_SECRET` — high-entropy secret used only by the protected scheduled-sync endpoint
    - `NODE_ENV=production`
-6. Use a separate Preview database and distinct `CRON_SECRET` values for Preview and Production. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
+6. Use a separate Preview database and distinct `CRON_SECRET` values for Preview and Production. Never point Preview deployments at Production. Apply production migrations only through the protected manual migration workflow.
 7. Deploy once, copy the stable production URL, then update `application_url` and every redirect URL in `shopify.app.toml` and the Shopify Partner configuration. Redeploy after the URLs match exactly.
 8. Verify OAuth install, order sync, privacy webhooks, uninstall, database persistence and `/healthz` against a real development store before inviting merchants.
 
@@ -93,7 +93,7 @@ For new public apps, Shopify App Pricing is the default and recommended billing 
 
 ## Shopify API network security
 
-Shopify's current security guidance requires public apps to restrict Admin API access to approved server IP addresses, with enforcement milestones beginning November 20, 2026. NODUS currently has no configured production egress allowlist. Before public production use, select a hosting architecture with stable outbound IPs, configure those addresses in the Shopify app's API access restrictions, and verify that all Admin API requests originate from the approved addresses. Vercel Static IPs are a paid Pro feature/add-on; verify current project pricing and usage before choosing it. Do not assume ordinary Vercel function egress is fixed. See [Shopify security requirements](https://shopify.dev/docs/apps/build/security) and [Vercel Static IP availability](https://vercel.com/changelog/static-ips-are-now-available-for-more-secure-connectivity).
+Shopify's current security guidance requires public apps to restrict Admin API access through an IP/CIDR allowlist, an approved hosting-provider ASN, or both. NODUS currently has no configured production allowlist. Before external installs, identify the actual Vercel egress network and deployment countries, configure the matching IP/ASN restrictions in Shopify's Dev Dashboard, and test them against recent API traffic. Do not guess an ASN or assume a static IP. See [Shopify security requirements](https://shopify.dev/docs/apps/build/security) and [Shopify IP allowlist guidance](https://shopify.dev/docs/apps/build/dev-dashboard/ip-allowlist).
 
 ## Scheduled Shopify refresh
 
@@ -101,4 +101,4 @@ The Vercel deployment includes a protected cron endpoint at `/api/cron/sync`, sc
 
 Set a strong random `CRON_SECRET` in Vercel Production and in local development if testing the endpoint manually. Vercel sends the secret as an Authorization bearer token. Do not expose it to browser code or commit it.
 
-This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, detect shipping-policy drift, send merchant alerts, adjudicate disputed charges or independently verify recovered value. Production operation requires a configured `CRON_SECRET`, a verified production database, and Vercel Pro or Enterprise: Hobby is limited to personal, non-commercial use and daily Cron schedules, while this repository configures a five-minute schedule. See [Vercel plan limits](https://vercel.com/docs/plans/hobby) and [Cron configuration](https://vercel.com/docs/project-configuration/vercel-ts). An appropriately authorized adult/business operator must own the commercial hosting, Shopify Partner, legal and payout arrangements.
+This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, detect shipping-policy drift, send merchant alerts, adjudicate disputed charges or independently verify recovered value. Production operation requires a configured `CRON_SECRET`, a verified production database, and the GitHub repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET`. Vercel Hobby remains restricted to personal, non-commercial use and cannot host NODUS as a commercial service. An appropriately authorized adult/business operator must own the commercial hosting, Shopify Partner, legal and payout arrangements.
