@@ -52,7 +52,7 @@ This checklist separates deployable repository work from external account setup 
 ## 5. Commercial readiness — blocking
 
 - [ ] Run the scoped Founding Merchant Value Programme before proposing any subscription. Do not publish fixed prices until ongoing value, scope and willingness to pay are established.
-- [ ] Before any paid conversion, implement Shopify-supported recurring billing, server-side entitlement enforcement, explicit plan limits and approval/activation/change/cancellation/delinquency/uninstall tests.
+- [ ] Before any paid conversion, configure Shopify App Pricing plans and verify the existing Partner API subscription lookup and fail-closed access gate against real test subscriptions. Complete approval, activation, plan-change, cancellation, delinquency, refund and uninstall lifecycle tests.
 - [ ] Test approval, activation, plan changes, cancellation, delinquency and uninstall.
 - [ ] Do not accept payment until advertised paid capabilities are implemented and verified.
 - [ ] Publish accurate Terms, Privacy Policy, data retention/deletion policy and business-owned support contact.
@@ -72,7 +72,7 @@ This checklist separates deployable repository work from external account setup 
 | Historical policy simulation | Implemented |
 | Shopify policy writes | Disabled |
 | Scheduled Shopify order refresh | Implemented; production activation and live-store verification required. Does not poll carrier billing systems |
-| Recurring billing and entitlements | Not implemented |
+| Shopify App Pricing subscription lookup | Implemented behind a feature flag; Partner configuration and live lifecycle tests required |\n| Server-side subscription access gate | Implemented behind a feature flag; fail-closed behavior requires live verification |\n| Plan setup and billing lifecycle | Not verified; Partner plan configuration and lifecycle acceptance remain release gates |
 | App Store approval | External; not verified |
 
 ## 7. Release verification record
