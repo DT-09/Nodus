@@ -15,6 +15,7 @@ export default [
   route("healthz", "./routes/healthz.ts"),
   route("methodology", "./routes/methodology.tsx"),
   route("pricing", "./routes/pricing.tsx"),
+  route("privacy", "./routes/privacy.tsx"),
   route("product", "./routes/product.tsx"),
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
