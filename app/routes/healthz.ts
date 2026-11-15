@@ -2,7 +2,7 @@ import { prisma } from "../db.server";
 
 export async function loader() {
   const production = process.env.NODE_ENV === "production";
-  const missing = ["SHOPIFY_API_KEY", "SHOPIFY_API_SECRET", "SHOPIFY_APP_URL", "DATABASE_URL"]
+  const missing = ["SHOPIFY_API_KEY", "SHOPIFY_API_SECRET", "SHOPIFY_APP_URL", "DATABASE_URL", "DIRECT_URL"]
     .filter((key) => !process.env[key]?.trim());
   const appUrl = process.env.SHOPIFY_APP_URL?.trim() ?? "";
   let parsedAppUrl: URL | null = null;
