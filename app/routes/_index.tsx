@@ -36,9 +36,9 @@ export default function Home(){
       <section className="home-hero">
         <div className="hero-copy-column">
           <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
-          <h1>Shipping is an economic system.<br/><em>Make every decision traceable.</em></h1>
-          <p className="hero-intro">NODUS connects Shopify shipping revenue with carrier-cost evidence, reconciliation and historical policy analysis—so merchants can see what the data supports before they act.</p>
-          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/demo" className="cta-secondary">VIEW SAMPLE RECONCILIATION <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+          <h1>What did shipping<br/><em>actually cost?</em></h1>
+          <p className="hero-intro">NODUS connects Shopify order shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence, then produce a decision pack your operations or finance team can inspect.</p>
+          <div className="hero-ctas"><Link to="/shipping-cost-reconciliation" className="cta-primary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
         <div className="hero-network" aria-label="Illustration of connected Shopify, fulfillment, carrier evidence, reconciliation and decision nodes">
@@ -61,12 +61,12 @@ export default function Home(){
       </section>
 
       <section className="live-system section-light" id="platform" data-reveal>
-        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One connected record.<br/><em>Not six disconnected dashboards.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
+        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One reviewable workflow.<br/><em>From Shopify orders to billed costs.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
         <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
       </section>
 
       <section className="evidence-thread" id="evidence" data-reveal>
-        <div className="section-heading"><div><span className="section-index">03 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Explore an illustrative workflow. It explains the evidence model; it is not a live merchant record or a claim that every source integration is available.</p></div>
+        <div className="section-heading"><div><span className="section-index">03 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Follow the records from Shopify order to carrier charge and reviewed finding. This is an illustrative workflow, not a live merchant record.</p></div>
         <div className="thread-layout">
           <div className="thread-steps" role="tablist" aria-label="Evidence workflow stages">{thread.map((item,i)=><button type="button" role="tab" aria-selected={active===i} className={"thread-step"+(active===i?" is-active":"")} key={item.number} onClick={()=>setActive(i)}><span>{item.number}</span><b>{item.label}</b><i>{active===i?"SELECTED":"VIEW STEP"}</i></button>)}</div>
           <article className="thread-detail" role="tabpanel">
@@ -100,8 +100,8 @@ export default function Home(){
       </section>
 
       <section className="closing-section" data-reveal>
-        <span className="section-index">06 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>Inspect the current workflow, review its boundaries and decide whether NODUS fits your shipping operation.</p>
-        <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+        <span className="section-index">06 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
+        <div className="hero-ctas"><Link to="/shipping-cost-reconciliation" className="cta-primary">EXPLORE THE RECONCILIATION WORKFLOW <span>↗</span></Link><Link to="/buyer-evaluation" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
       </section>
     </main>
   </MarketingShell>;
