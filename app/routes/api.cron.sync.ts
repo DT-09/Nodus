@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { prisma } from "../db.server";
-import { unauthenticated } from "../shopify.server";
+import { unauthenticated, requireShopifyConfiguration } from "../shopify.server";
 import { getShippingSnapshot } from "../services/shipping-snapshot.server";
 
 const MAX_MERCHANTS_PER_RUN = 3;
@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return new Response("Unauthorized.", { status: 401 });
   }
 
-  const now = new Date();
+  try { requireShopifyConfiguration(); } catch { return new Response("Shopify sync is not configured.", { status: 503 }); }\n\n  const now = new Date();
   const merchants = await prisma.merchant.findMany({
     where: { uninstalledAt: null },
     select: { id: true },
