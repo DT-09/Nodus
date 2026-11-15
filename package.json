@@ -15,7 +15,8 @@
     "typecheck": "react-router typegen && tsc --noEmit",
     "test": "vitest run",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy && react-router build"
+    "vercel-build": "prisma generate && prisma migrate deploy && react-router build",
+    "smoke:launch": "node scripts/launch-smoke.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",

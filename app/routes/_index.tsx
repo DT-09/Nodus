@@ -38,7 +38,7 @@ export default function Home(){
           <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
           <h1>Shipping is an economic system.<br/><em>Make every decision traceable.</em></h1>
           <p className="hero-intro">NODUS connects Shopify shipping revenue with carrier-cost evidence, reconciliation and historical policy analysis—so merchants can see what the data supports before they act.</p>
-          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/demo" className="cta-secondary">VIEW SAMPLE RECONCILIATION <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
         <div className="hero-network" aria-label="Illustration of connected Shopify, fulfillment, carrier evidence, reconciliation and decision nodes">

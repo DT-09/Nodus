@@ -2,6 +2,7 @@ import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
   index("./routes/_index.tsx"),
+  route("demo", "./routes/demo.tsx"),
   route("about", "./routes/about.tsx"),
   route("api/cron/sync", "./routes/api.cron.sync.ts"),
   route("app", "./routes/app.tsx", [
@@ -14,6 +15,7 @@ export default [
   route("healthz", "./routes/healthz.ts"),
   route("methodology", "./routes/methodology.tsx"),
   route("pricing", "./routes/pricing.tsx"),
+  route("privacy", "./routes/privacy.tsx"),
   route("product", "./routes/product.tsx"),
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
