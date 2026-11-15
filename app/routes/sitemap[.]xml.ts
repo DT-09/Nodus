@@ -1,6 +1,6 @@
 import type {LoaderFunctionArgs} from "react-router";
 
-const publicPaths=["/","/product","/demo","/buyer-evaluation","/methodology","/pricing","/about","/security","/privacy","/support"];
+const publicPaths=["/","/product","/demo","/buyer-evaluation","/methodology","/pricing","/about","/security","/privacy","/support","/guides/shopify-shipping-cost-reconciliation","/guides/free-shipping-threshold-analysis"];
 
 export async function loader({request}:LoaderFunctionArgs){
   const configured=process.env.SHOPIFY_APP_URL?.trim();
