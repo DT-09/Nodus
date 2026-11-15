@@ -41,15 +41,34 @@ Use integer minor units and explicit ISO currencies. Never sum currencies withou
 7. Store the realization reference and date. Keep identified, validated and realized totals separate.
 8. Report with evidence coverage, sample window, exclusions and limitations.
 
-## ROI calculator
-The public calculator uses only merchant-entered values: monthly carrier spend, confirmed monthly credits/corrections and selected target subscription price. It calculates break-even, confirmed-value coverage and net amount after the fee. It does not estimate recovery, forecast savings or claim NODUS caused credits.
+## Value measurement
+Measure three distinct forms of value and never silently combine them:
 
-## Pricing hypotheses
-- Evidence: $99/month
-- Control: $199/month
-- Portfolio: $299/month
+1. **Realized financial value:** posted carrier credits, refunds or accounting adjustments with source and realization references. Mark as merchant-attested unless an independent finance control verifies the posting.
+2. **Operating value:** measured reduction in time spent importing, matching, investigating and preparing shipping-cost reviews. Record a baseline and follow-up using the same task definition. Convert hours to money only with a merchant-approved loaded labor rate.
+3. **Decision value:** better-supported shipping policy and carrier decisions. Report the decision, source window and subsequent observed result. Historical replay alone is not realized value.
 
-These are target prices, not active checkout offers. Before selling, define and enforce plan limits, complete corresponding features, configure Shopify App Pricing in the Partner Dashboard, and verify the buyer journey in development stores. Portfolio must not be sold until multi-store and scheduled governance are implemented and tested.
+For every value statement, disclose the currency, time window, evidence coverage, attribution method, exclusions and whether it is realized, avoided, estimated or operational. Do not attribute an outcome to NODUS merely because it was recorded in NODUS. Avoid double counting a carrier credit and the same correction as separate benefits.
+
+## Founding Merchant Value Programme
+The first commercial motion is a limited, no-fee, no-obligation assessment for a small founding cohort. Scope each assessment to one Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost export.
+
+Deliver:
+- a data and evidence coverage statement;
+- a matched/unmatched/incomplete evidence register;
+- a deterministic exception worklist with source references;
+- a historical shipping-policy replay where the data supports it;
+- an economic value ledger that separates identified, validated and realized records;
+- a written limitations section and a review with the merchant.
+
+The merchant makes the final decision about whether an exception is valid and whether a credit was posted. Do not promise a recovery or ask for payment before the assessment is delivered. Participation does not require a positive review, testimonial or public case study. Obtain separate explicit permission before publishing any quote, logo, metric or case study. Never fabricate or purchase reviews.
+
+## Subscription decision rule
+Do not publish a fixed price list before there is evidence of willingness to pay and ongoing operating value. After the assessment, propose a monthly subscription only if there is a credible recurring job for NODUS to perform and the merchant agrees that the continuing scope matters.
+
+As an internal value-fit threshold, aim for conservative, merchant-accepted recurring value of at least 3× the proposed monthly fee. This is a pricing discipline, not a guarantee or a claim that NODUS caused all measured outcomes. If recurring value is not demonstrated, do not recommend a subscription.
+
+Set the fee from the actual ongoing scope: order volume, number of stores, carrier evidence volume, review cadence, required reporting and support. Begin with monthly billing. Consider annual billing only after retention and sustained value are established. Do not charge a percentage of disputed or merely identified exposure. Do not activate paid plans until Shopify-supported recurring billing, server-side entitlements, plan limits and lifecycle tests are complete.
 
 ## Carrier integration truth
 Carrier rate, tracking and label APIs are not equivalent to carrier invoice access. Rate quotes are estimates and can differ from negotiated account rates, surcharges, adjustments, taxes and final invoiced amounts.
