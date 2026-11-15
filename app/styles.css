@@ -22,3 +22,8 @@
 .value-record-form button{justify-self:start;padding:11px 16px;background:#b39a68;border:1px solid #b39a68;color:#17191b;font:600 11px system-ui;cursor:pointer}
 .value-record-form button:hover{background:#c5ad7c}
 @media(max-width:700px){.value-record-form{grid-template-columns:1fr}.value-record-form .value-note-field{grid-column:auto}}
+
+.value-advance-form{display:grid;gap:7px;min-width:220px}
+.value-advance-form select,.value-advance-form input{width:100%;min-width:0;padding:7px 8px;background:#191c1c;border:1px solid #414440;color:#d9d6cc;font:10px system-ui}
+.value-advance-form button{justify-self:start;padding:7px 10px;background:#b39a68;border:1px solid #b39a68;color:#17191b;font:600 10px system-ui;cursor:pointer}
+.value-advance-form button:hover{background:#c5ad7c}
