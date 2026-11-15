@@ -32,7 +32,7 @@ export async function action({request}:ActionFunctionArgs) {
   if(!sourceReference||sourceReference.length>180)return {ok:false,message:"A source invoice, order, credit-note or policy reference is required."};
   if(evidenceNote.length<20||evidenceNote.length>2000)return {ok:false,message:"Evidence note must contain 20–2,000 characters."};
   if(status==="realized"&&!realizationReference)return {ok:false,message:"A posted credit-note, refund or accounting reference is required for realized value."};
-  let amount; try{amount=parseMoney(amountText,currency)}catch(e){return {ok:false,message:e instanceof Error?e.message:"Invalid amount."}}
+  let amount: ReturnType<typeof parseMoney>; try{amount=parseMoney(amountText,currency)}catch(e){return {ok:false,message:e instanceof Error?e.message:"Invalid amount."}}
   if(amount.minor<=0n)return {ok:false,message:"Amount must be greater than zero."};
   const occurredAt=dateText?new Date(dateText):null;
   if(occurredAt&&Number.isNaN(occurredAt.getTime()))return {ok:false,message:"Invalid event date."};
