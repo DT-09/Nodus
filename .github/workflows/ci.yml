@@ -29,7 +29,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
+      # npm 10.9.x has a known Arborist peer-resolution crash with Vitest's
+      # optional peer graph. Pin the fixed resolver instead of bypassing peers.
+      - name: Pin npm resolver
+        run: |
+          npm install --global npm@11.6.0
+          npm --version
       - name: Resolve dependency lockfile
         run: npm install --ignore-scripts --package-lock-only || (cat ~/.npm/_logs/*debug-0.log; exit 1)
       - name: Capture dependency audit
