@@ -10,6 +10,14 @@ Shopify shipping charges and carrier-cost records often live in separate systems
 
 NODUS connects those records and keeps the evidence and assumptions visible.
 
+## Founding assessment terms
+
+The first assessment is no-fee and no-obligation. Scope it to one authorized Shopify store, one reporting currency, the accessible order-history window, and one supported carrier-cost CSV export. Do not collect payment details or auto-enrol the merchant in a subscription.
+
+The deliverable is a dated assessment pack containing: (1) sample window and Shopify permission boundary, (2) evidence-coverage statement, (3) matched/unmatched/incomplete exception register with source references, (4) reproducible calculations and any supported historical policy replay, (5) an economic value ledger separating identified, merchant-validated and merchant-attested realized outcomes, and (6) limitations and follow-up actions. The merchant reviews and confirms its own records. A discrepancy is not a recovered credit.
+
+A subscription is considered only after delivery and only where the merchant agrees there is a recurring job worth paying for. No positive review or public case study is required to participate.
+
 ## Evaluation workflow
 
 1. Connect an authorized Shopify development or merchant store.
@@ -35,11 +43,13 @@ NODUS connects those records and keeps the evidence and assumptions visible.
 - A complete ledger beyond the Shopify permissions granted to the app.
 - PDF invoice extraction or automatic carrier portal integrations.
 - Automated changes to live Shopify shipping settings.
-- Scheduled monitoring or alerts.
+- Automated carrier billing monitoring or carrier alerts. Scheduled Shopify order refresh is separate and requires a configured production cron.
 - Cross-currency normalization.
 - A substitute for accounting, tax, legal or financial advice.
 
-Download the blank [carrier-cost CSV template](../public/nodus-carrier-cost-template.csv) and map the carrier export to its required columns before evaluation.\n\n## Data required
+Download the blank [carrier-cost CSV template](../public/nodus-carrier-cost-template.csv) and map the carrier export to its required columns before evaluation.
+
+## Data required
 
 - An authorized Shopify store connection.
 - Carrier-cost CSV with `invoice_id`, `charge_id`, `amount` and `currency`.
