@@ -38,5 +38,8 @@ assert.match(cronSource, /status:\s*401/);
 const healthSource = await readFile(new URL("../app/routes/healthz.ts", import.meta.url), "utf8");
 assert.match(healthSource, /Cache-Control.*no-store/);
 assert.match(healthSource, /prisma\.\$queryRaw/);
+assert.match(healthSource, /PUBLIC_CONTACT_EMAIL/);
+assert.match(healthSource, /CRON_SECRET/);
+assert.match(healthSource, /minimum 32 characters/);
 
 console.log("NODUS deployment configuration checks passed.");
