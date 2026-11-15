@@ -11,3 +11,14 @@
 .coverage-review-form{display:flex;gap:6px;align-items:center;min-width:190px}.coverage-review-form select{min-width:105px;padding:7px 8px;background:#191c1c;border:1px solid #414440;color:#d9d6cc;font:11px system-ui}.coverage-review-form button{padding:7px 9px;background:#b39a68;border:1px solid #b39a68;color:#17191b;font:600 10px system-ui;cursor:pointer}.coverage-review-form button:hover{background:#c5ad7c}.data-table td small{display:block;margin-top:5px;color:#8f968d;font:9px monospace}
 
 .policy-snapshot{display:grid;gap:14px}.market-card{padding:18px;border:1px solid var(--line,#353833);background:rgba(255,255,255,.018)}.market-card .card-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.market-card h4{margin:0;font-family:Georgia,serif;font-size:20px;font-weight:400}.market-option{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:12px 0;border-top:1px solid rgba(255,255,255,.08)}.market-option strong,.market-option small{display:block}.market-option small{margin-top:5px;color:#969a91;font:10px monospace}.market-option>div:last-child{text-align:right}.market-option>div:last-child span{display:block;color:#d8c39a;font:12px monospace}.market-option>div:last-child small{color:#a9a18d}@media(max-width:700px){.market-option{grid-template-columns:1fr}.market-option>div:last-child{text-align:left}.market-card .card-heading{display:block}}
+
+.value-subtotals{display:flex;flex-direction:column;gap:5px;margin-top:12px;color:#b7b4aa;font-size:10px}
+.value-ledger-panel{margin-bottom:22px}
+.value-record-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.value-record-form label{display:grid;gap:7px;color:#bdb9ad;font-size:11px}
+.value-record-form input,.value-record-form select,.value-record-form textarea{width:100%;padding:10px 11px;background:#191c1c;border:1px solid #414440;color:#e0ddd3;font:12px system-ui;border-radius:0}
+.value-record-form textarea{resize:vertical;line-height:1.6}
+.value-record-form .value-note-field{grid-column:1/-1}
+.value-record-form button{justify-self:start;padding:11px 16px;background:#b39a68;border:1px solid #b39a68;color:#17191b;font:600 11px system-ui;cursor:pointer}
+.value-record-form button:hover{background:#c5ad7c}
+@media(max-width:700px){.value-record-form{grid-template-columns:1fr}.value-record-form .value-note-field{grid-column:auto}}
