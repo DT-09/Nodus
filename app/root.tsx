@@ -4,7 +4,11 @@ import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
 import {addDocumentResponseHeaders} from "./shopify.server";
 
-export const headers:HeadersFunction=(headersArgs)=>addDocumentResponseHeaders(headersArgs);
+export const headers:HeadersFunction=({request,loaderHeaders})=>{
+  const responseHeaders=new Headers(loaderHeaders);
+  addDocumentResponseHeaders(request,responseHeaders);
+  return responseHeaders;
+};
 
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
