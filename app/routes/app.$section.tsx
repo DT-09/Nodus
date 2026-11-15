@@ -208,11 +208,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     });
     if (!merchant) return new Response("No merchant data is available.", { status: 404 });
 
-    const [orders, costs, simulations, valueRecords] = await Promise.all([
+    const [orders, costs, simulations, valueRecords, shopifySync, scheduledSync] = await Promise.all([
       prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: [{ orderedAt: "asc" }, { sourceOrderId: "asc" }] }),
       prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: [{ occurredAt: "asc" }, { sourceSystem: "asc" }, { sourceRecordId: "asc" }] }),
       prisma.policySimulation.findMany({ where: { merchantId: merchant.id }, orderBy: [{ createdAt: "asc" }, { id: "asc" }] }),
       prisma.economicValueRecord.findMany({ where: { merchantId: merchant.id }, orderBy: [{ createdAt: "asc" }, { id: "asc" }] }),
+      prisma.shopifySyncState.findUnique({ where: { merchantId: merchant.id } }),
+      prisma.scheduledSyncState.findUnique({ where: { merchantId: merchant.id } }),
     ]);
 
     const orderInputs = orders.map((order) => ({
@@ -284,6 +286,22 @@ export async function action({ request, params }: ActionFunctionArgs) {
         orderWindowEnd: orders.at(-1)?.orderedAt.toISOString() ?? null,
         orderCount: orders.length,
         costEvidenceCount: costs.length,
+        shopifyOrderSync: shopifySync ? {
+          pagesProcessed: shopifySync.pagesProcessed,
+          ordersProcessed: shopifySync.ordersProcessed,
+          hasMore: shopifySync.hasMore,
+          lastPageAt: shopifySync.lastPageAt?.toISOString() ?? null,
+          lastCompletedAt: shopifySync.lastCompletedAt?.toISOString() ?? null,
+          lastError: shopifySync.lastError,
+        } : null,
+        scheduledRefresh: scheduledSync ? {
+          status: scheduledSync.status,
+          nextRunAt: scheduledSync.nextRunAt.toISOString(),
+          lastRunAt: scheduledSync.lastRunAt?.toISOString() ?? null,
+          lastSuccessAt: scheduledSync.lastSuccessAt?.toISOString() ?? null,
+          failureCount: scheduledSync.failureCount,
+          lastError: scheduledSync.lastError,
+        } : null,
       },
       summary: { coverage, currencySummaries, findingCount: findings.length },
       orders: reconciled.map((row) => {
@@ -324,6 +342,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
         title: finding.title,
         explanation: finding.explanation,
         evidenceIds: [...finding.evidenceIds],
+        amountMinor: finding.amountMinor,
+        currency: finding.currency,
+        recommendedNextStep: finding.ruleId === "shipping.cost_evidence_missing.v1"
+          ? "Import the applicable carrier, label or 3PL charge records for this order, then review coverage."
+          : finding.ruleId === "shipping.cost_coverage_partial.v1"
+            ? "Inspect the matched and unmatched source rows; confirm whether all applicable fulfillment costs are present before attesting complete coverage."
+            : finding.ruleId === "shipping.tax_inclusive_charge.v1"
+              ? "Obtain a reliable tax-exclusive shipping amount before using this order in contribution analysis."
+              : finding.ruleId === "shipping.under_recovery_evidenced.v1"
+                ? "Review the linked carrier charges, contracted rate and service conditions; merchant validation is required before recording any adjustment."
+                : "Review the linked source records and confirm the appropriate operational action.",
       })),
       policySimulations: simulations.map((simulation) => ({
         id: simulation.id,
