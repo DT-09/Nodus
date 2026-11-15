@@ -42,6 +42,7 @@ assert.match(rootSource, /export const headers/);
 const healthSource = await readFile(new URL("../app/routes/healthz.ts", import.meta.url), "utf8");
 assert.match(healthSource, /Cache-Control.*no-store/);
 assert.match(healthSource, /prisma\.\$queryRaw/);
+assert.match(healthSource, /DIRECT_URL/);
 assert.match(healthSource, /PUBLIC_CONTACT_EMAIL/);
 assert.match(healthSource, /CRON_SECRET/);
 assert.match(healthSource, /minimum 32 characters/);
