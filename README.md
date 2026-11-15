@@ -80,3 +80,11 @@ Carrier invoice CSV imports accept the canonical template and common header alia
 The application includes Partner API subscription verification and an app-level access gate. It remains disabled until plans are configured in the authorized Shopify Partner Dashboard and all Partner API environment variables are supplied. Set `SHOPIFY_APP_PRICING_ENABLED=true` only after configuring the app handle, Partner organization ID, Partner API token, app GID and the exact plan handles. The gate fails closed on Partner API errors and redirects merchants without an active plan to Shopify's hosted plan selection page.
 
 For new public apps, Shopify recommends Shopify App Pricing rather than custom Billing API charges. See [Shopify's billing guidance](https://shopify.dev/docs/apps/launch/billing/shopify-app-pricing).
+
+## Scheduled Shopify refresh
+
+The Vercel deployment includes a protected cron endpoint at `/api/cron/sync`, scheduled every five minutes. It processes a bounded batch of installed shops, resumes incomplete Shopify order pagination, uses a short lease to avoid duplicate workers, and applies exponential backoff after failures. The merchant Monitoring page exposes the last run, next run and failure state.
+
+Set a strong random `CRON_SECRET` in Vercel Production and in local development if testing the endpoint manually. Vercel sends the secret as an Authorization bearer token. Do not expose it to browser code or commit it.
+
+This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, adjudicate disputed charges or independently verify recovered value. Vercel Hobby is for non-commercial personal projects; a revenue-generating deployment requires an appropriate commercial hosting plan and account owner.
