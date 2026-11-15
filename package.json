@@ -9,7 +9,7 @@
     "build": "react-router build",
     "dev": "shopify app dev",
     "start": "react-router-serve ./build/server/index.js",
-    "start:prod": "prisma migrate deploy && react-router-serve ./build/server/index.js",
+    "start:prod": "react-router-serve ./build/server/index.js",
     "setup": "prisma generate && prisma db push",
     "migrate:deploy": "prisma migrate deploy",
     "typecheck": "react-router typegen && tsc --noEmit",
