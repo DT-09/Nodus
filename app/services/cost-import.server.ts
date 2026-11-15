@@ -20,7 +20,7 @@ export async function importCarrierCostCsv(shop: string, csv: string) {
       const inserted = await tx.shippingCost.createMany({
         data: batch.map((cost) => ({
           merchantId: merchant.id,
-          sourceSystem: "carrier_csv",
+          sourceSystem: cost.sourceSystem,
           sourceRecordId: cost.sourceRecordId,
           orderReference: cost.orderReference,
           trackingNumber: cost.trackingNumber,
