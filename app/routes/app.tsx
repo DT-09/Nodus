@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { NavLink, Outlet } from "react-router";
-import { authenticate } from "../shopify.server";
+import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { fetchActiveSubscription } from "../partner-api.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
