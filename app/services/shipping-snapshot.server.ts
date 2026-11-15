@@ -18,7 +18,7 @@ const INCREMENTAL_QUERY = `query NodusIncrementalShippingSnapshot($after: String
   shop { name myshopifyDomain }
   orders(first: 100, after: $after, query: $updatedSince, sortKey: UPDATED_AT, reverse: true) {
     nodes {
-      id name createdAt
+      id name createdAt taxesIncluded
       currentShippingPriceSet { shopMoney { amount currencyCode } }
       currentSubtotalPriceSet { shopMoney { amount currencyCode } }
       fulfillments(first: 10) { nodes { trackingInfo { number } } }

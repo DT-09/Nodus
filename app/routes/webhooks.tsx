@@ -5,7 +5,7 @@ import { prisma } from "../db.server";
 type CustomerRedactionPayload = { orders_to_redact?: unknown };
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { shop, topic, webhookId } = await authenticate.webhook(request);
+  const { shop, topic, webhookId, payload } = await authenticate.webhook(request);
   if (!webhookId) return new Response("Missing webhook identifier", { status: 400 });
   const receipt = await prisma.webhookReceipt.upsert({
     where: { webhookId },
@@ -28,9 +28,9 @@ export async function action({ request }: ActionFunctionArgs) {
       ]);
       break;
     case "CUSTOMERS_REDACT": {
-      const payload = await request.json() as CustomerRedactionPayload;
-      const ids = Array.isArray(payload.orders_to_redact)
-        ? payload.orders_to_redact.filter((id): id is number => typeof id === "number" && Number.isSafeInteger(id) && id > 0)
+      const customerPayload = payload as CustomerRedactionPayload;
+      const ids = Array.isArray(customerPayload.orders_to_redact)
+        ? customerPayload.orders_to_redact.filter((id): id is number => typeof id === "number" && Number.isSafeInteger(id) && id > 0)
         : [];
       if (ids.length) {
         const sourceOrderIds = ids.map((id) => `gid://shopify/Order/${id}`);

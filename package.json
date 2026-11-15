@@ -14,7 +14,8 @@
     "migrate:deploy": "prisma migrate deploy",
     "typecheck": "react-router typegen && tsc --noEmit",
     "test": "vitest run",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy && react-router build"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",
