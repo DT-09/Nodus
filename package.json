@@ -40,5 +40,9 @@
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "ajv": "^8.18.0",
+    "minimatch": "^11.0.1"
   }
 }
