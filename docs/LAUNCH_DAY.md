@@ -5,15 +5,16 @@ This checklist separates deployable repository work from external account setup 
 ## 1. Deployment architecture
 
 - [ ] Deploy the React Router application to Vercel using the preset configured in `react-router.config.ts`.
-- [ ] Use a Vercel Pro or Enterprise account for commercial deployment; Hobby is personal/non-commercial only. The configured five-minute cron requires Pro or Enterprise; Hobby supports daily cron execution only.
+- [ ] Use Vercel Pro or Enterprise for commercial hosting and the configured five-minute Cron schedule. Hobby is for personal, non-commercial use and limits Cron to daily schedules ([plan limits](https://vercel.com/docs/plans/hobby), [Cron configuration](https://vercel.com/docs/project-configuration/vercel-ts)). Verify the schedule appears in the production project.
 - [ ] Ensure an authorized adult/business operator owns the hosting account, billing and production access.
 - [ ] Use managed PostgreSQL with durable backups and a documented restore procedure.
 - [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command runs Prisma migrations.
 - [ ] Use Node.js 22 and the repository root as the Vercel project root.
 - [ ] Set the Vercel build command to `npm run vercel-build`.
-- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, and `NODE_ENV=production`.
+- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Keep credentials server-side. Never expose secrets through client-side environment variables.
 - [ ] Confirm Production and Preview use separate databases.
+- [ ] Generate distinct high-entropy `CRON_SECRET` values for Production and Preview. Keep them server-side and out of source control.
 
 ## 2. Shopify application configuration
 
