@@ -109,7 +109,7 @@ export function parseCarrierCostCsv(input: string): ParsedCarrierCost[] {
   const seen = new Set<string>();
 
   return rows.slice(1).map((values, rowIndex) => {
-    if (values.length !== headers.length) throw new Error(`CSV row ${rowIndex + 2} has ${values.length} fields; expected ${headers.length}.`);
+    if (values.length !== rawHeaders.length) throw new Error(`CSV row ${rowIndex + 2} has ${values.length} fields; expected ${rawHeaders.length}.`);
     const invoiceId = cell(values, "invoice_id");
     const chargeId = cell(values, "charge_id");
     if (!invoiceId || !chargeId) throw new Error(`CSV row ${rowIndex + 2} requires invoice_id and charge_id.`);
