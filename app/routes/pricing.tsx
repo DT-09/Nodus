@@ -45,7 +45,7 @@ export default function Pricing(){
    <p className="calculator-caveat">Identified discrepancies are not recovered savings. A value is treated as realized only when the merchant can point to a posted credit, refund or accounting adjustment. NODUS does not independently audit that posting.</p>
   </section>
 
-  <section className="operating-value-lab" aria-labelledby="operating-value-title">
+  <section className="operating-value-lab" data-reveal aria-labelledby="operating-value-title">
    <div className="lab-intro"><span>INTERACTIVE / MEASURED OPERATING VALUE</span><h2 id="operating-value-title">Measure the work.<br/><em>Do not guess the return.</em></h2><p>Enter a timed reconciliation task before and after using NODUS, plus the merchant-approved loaded hourly rate. The calculator reports the value of time saved for that one observed cycle only.</p></div>
    <div className="lab-inputs">
     <label>BASELINE TASK TIME / MINUTES<input inputMode="numeric" type="number" min="1" max="100000" step="1" value={baseline} onChange={e=>setBaseline(e.target.value)} placeholder="Enter observed minutes"/></label>
@@ -59,7 +59,7 @@ export default function Pricing(){
    <p className="lab-method">FORMULA / (BASELINE MINUTES − ASSISTED MINUTES) ÷ 60 × LOADED HOURLY RATE. Use comparable tasks and record the measurement method before relying on the result.</p>
   </section>
 
-  <section className="pricing-targets">
+  <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
     <h2>A subscription must<br/><em>leave the merchant better off.</em></h2>
@@ -73,7 +73,7 @@ export default function Pricing(){
    <p className="calculator-verdict">Our proposed pricing rule: the conservative, merchant-accepted monthly value should be at least 3× the proposed monthly fee. This is a decision threshold, not a promised return. If recurring value cannot be demonstrated, there is no subscription recommendation.</p>
   </section>
 
-  <section className="proof-method">
+  <section className="proof-method" data-reveal>
    <span>03 / WHAT CONTINUING SERVICE MEANS</span>
    <h2>Not a one-time report.<br/><em>A continuing control system.</em></h2>
    <div className="proof-grid">
@@ -85,7 +85,7 @@ export default function Pricing(){
    <p className="calculator-caveat">The current product supports scheduled Shopify order refresh, but not automated carrier billing feeds or automated policy writes. Carrier evidence is imported by the merchant. The programme will not describe those unsupported functions as live.</p>
   </section>
 
-  <section className="pricing-contact">
+  <section className="pricing-contact" data-reveal>
    <div>
     <span>04 / APPLY FOR AN ASSESSMENT</span>
     <h2>Let the evidence make the case.</h2>
