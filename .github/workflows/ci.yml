@@ -27,6 +27,8 @@ jobs:
       DATABASE_URL: postgresql://nodus:nodus@localhost:5432/nodus?schema=public
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
