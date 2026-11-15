@@ -91,4 +91,4 @@ This checklist separates deployable repository work from external account setup 
 
 ## Current release decision
 
-The repository can be deployed to Vercel after real credentials, database and Shopify URLs are configured. That does **not** make NODUS enterprise-production complete or commercially launch-ready. Direct carrier APIs, recurring billing, entitlement enforcement and scheduled monitoring remain release blockers for a product marketed with those capabilities. Do not charge merchants for unimplemented functionality.
+The repository can be deployed to Vercel after real credentials, database and Shopify URLs are configured. That does **not** make NODUS enterprise-production complete or commercially launch-ready. Direct carrier APIs remain unimplemented. Shopify App Pricing configuration, full billing-lifecycle verification and scheduled-sync production activation remain external release gates. Do not charge merchants for unimplemented functionality.

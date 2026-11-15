@@ -23,7 +23,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 
 ## Not represented as live capabilities
 
-The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Recurring subscription billing and server-side paid-plan entitlements are not implemented. Scheduled monitoring is not active. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
+The repository does **not** currently contain live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Direct carrier APIs are not implemented. Shopify App Pricing subscription lookup and a fail-closed app access gate are present, but Partner configuration and billing-lifecycle acceptance are not verified. Scheduled Shopify refresh is implemented in code but is not active until the production cron secret and deployment are configured. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
 
 Do not advertise these as available, accept payment for them, or imply App Store approval. A production deployment is not the same as a commercially complete product.
 
