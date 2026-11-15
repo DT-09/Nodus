@@ -1,7 +1,10 @@
-import type {LinksFunction} from "react-router";
+import type {HeadersFunction,LinksFunction} from "react-router";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
+import {addDocumentResponseHeaders} from "./shopify.server";
+
+export const headers:HeadersFunction=(headersArgs)=>addDocumentResponseHeaders(headersArgs);
 
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
