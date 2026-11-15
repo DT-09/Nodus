@@ -11,9 +11,9 @@ This checklist separates deployable repository work from external account setup 
 - [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command runs Prisma migrations.
 - [ ] Use Node.js 22 and the repository root as the Vercel project root.
 - [ ] Set the Vercel build command to `npm run vercel-build`.
-- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
+- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Keep credentials server-side. Never expose secrets through client-side environment variables.
-- [ ] Confirm Production and Preview use separate databases.
+- [ ] Confirm Production and Preview use separate databases. Use the provider's pooled URL for `DATABASE_URL` and direct/non-pooled URL for `DIRECT_URL`; both must target the same environment database.
 - [ ] Generate distinct high-entropy `CRON_SECRET` values for Production and Preview. Keep them server-side and out of source control.
 
 ## 2. Shopify application configuration
