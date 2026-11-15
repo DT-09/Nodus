@@ -17,7 +17,8 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 - Deterministic reconciliation and diagnostics that keep missing evidence unknown.
 - Historical flat-rate and free-shipping-threshold replay.
 - Read-only Shopify Markets shipping configuration.
-- Merchant-scoped CSV evidence export and audit events.\n- Economic value ledger with stage progression, posted-credit references and measured operating-time value, kept separate from realized cash.
+- Merchant-scoped CSV evidence export and audit events.
+- Economic value ledger with stage progression, posted-credit references and measured operating-time value, kept separate from realized cash.
 - Shopify privacy/uninstall webhook handlers.
 - Prisma migrations, health endpoint and CI quality checks.
 
