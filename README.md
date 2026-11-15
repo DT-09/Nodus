@@ -6,7 +6,7 @@ NODUS connects Shopify order-level shipping revenue with carrier-cost evidence, 
 
 ## Deployment target
 
-NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL.
+NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL. A commercial deployment must use Vercel Pro or Enterprise; Vercel Hobby is restricted to personal, non-commercial use. The configured five-minute cron schedule also requires Pro or Enterprise because Hobby cron jobs can run only once per day. See [Vercel plan terms](https://vercel.com/legal/terms) and [Cron Job limits](https://vercel.com/docs/schedules/cron-jobs/usage-and-pricing).
 
 ## Implemented capabilities
 
