@@ -43,7 +43,6 @@
   },
   "overrides": {
     "ajv": "^8.18.0",
-    "deepmerge-ts": "^8.0.2",
-    "minimatch": "^10.2.5"
+    "deepmerge-ts": "^8.0.2"
   }
 }
