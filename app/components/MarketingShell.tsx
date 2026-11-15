@@ -3,7 +3,7 @@ import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
 const groups = [
-  {label:"PLATFORM", links:[["The platform","/product"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
+  {label:"PLATFORM", links:[["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
   {label:"EXPLORE", links:[["Product walkthrough","/demo"],["Merchant evaluation guide","/buyer-evaluation"],["How NODUS works","/methodology"],["Pricing & evaluation","/pricing"]]},
   {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
@@ -70,7 +70,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-identity"><Link to="/" className="footer-wordmark"><img src={NODUS_MARK} alt="" />NODUS<span>®</span></Link><p>Shipping economics intelligence.<br/>Evidence before recommendation.<br/>Approval before execution.</p><Link to="/product" className="footer-cta">EXPLORE THE PLATFORM <span>↗</span></Link></div>
-        <div className="footer-column"><p>PLATFORM</p><Link to="/product">Overview</Link><Link to="/product#evidence">Evidence</Link><Link to="/product#economics">Economics</Link><Link to="/product#policy">Policy intelligence</Link></div>
+        <div className="footer-column"><p>PLATFORM</p><Link to="/product">Overview</Link><Link to="/shipping-cost-reconciliation">Shipping cost reconciliation</Link><Link to="/product#evidence">Evidence</Link><Link to="/product#economics">Economics</Link><Link to="/product#policy">Policy intelligence</Link></div>
         <div className="footer-column"><p>KNOWLEDGE</p><Link to="/demo">Sample reconciliation</Link><Link to="/buyer-evaluation">Merchant evaluation guide</Link><Link to="/methodology">Methodology</Link><Link to="/pricing">Pricing & evaluation</Link><Link to="/security">Security</Link><Link to="/privacy">Privacy & data</Link><Link to="/support">Support</Link></div>
         <div className="footer-column"><p>COMPANY</p><Link to="/about">About NODUS</Link><a href="https://github.com/DT-09/Nodus" target="_blank" rel="noreferrer">Open-source record ↗</a><Link to="/app">Merchant workspace</Link></div>
       </div>
