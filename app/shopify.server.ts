@@ -7,10 +7,6 @@ const key = process.env.SHOPIFY_API_KEY;
 const secret = process.env.SHOPIFY_API_SECRET;
 const url = process.env.SHOPIFY_APP_URL;
 
-if ((!key || !secret || !url) && process.env.NODE_ENV === "production") {
-  throw new Error("Missing Shopify application environment configuration.");
-}
-
 const shopify = shopifyApp({
   apiKey: key ?? "development-placeholder",
   apiSecretKey: secret ?? "development-placeholder",
