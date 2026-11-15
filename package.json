@@ -15,7 +15,7 @@
     "typecheck": "react-router typegen && tsc --noEmit",
     "test": "vitest run",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy && react-router build",
+    "vercel-build": "prisma generate && react-router build",
     "smoke:launch": "node scripts/launch-smoke.mjs",
     "verify:decision-pack": "node scripts/verify-decision-pack.mjs",
     "verify:deployment": "node scripts/verify-deployment-config.mjs"
