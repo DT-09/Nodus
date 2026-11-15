@@ -67,9 +67,9 @@ NODUS makes no unverified savings, recovery, customer, revenue or integration cl
 
 The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
 
-The public pricing page includes a break-even calculator. It uses merchant-entered carrier spend and confirmed credits only; it does not forecast savings or claim NODUS caused a recovery. Target prices ($99/$199/$299) are not live checkout offers.
+The public commercial page offers a no-fee, no-obligation Founding Merchant Value Programme. It scopes one store, one reporting currency, available permitted order history and one supported carrier-cost export. The merchant receives an evidence coverage statement, exception register, supported historical policy replay, value ledger and review. A monthly subscription is proposed only if a credible ongoing use case and conservative recurring value are established. The internal value-fit threshold is at least 3× the proposed monthly fee; this is a pricing discipline, not a promised return. No fixed price list or live checkout is presented.
 
-See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for definitions, evidence requirements and pricing gates.
+See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for value definitions, evidence requirements, the founding programme and subscription decision rules.
 
 ## Carrier cost evidence
 
