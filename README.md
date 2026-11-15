@@ -6,7 +6,7 @@ NODUS connects Shopify order-level shipping revenue with carrier-cost evidence, 
 
 ## Deployment target
 
-NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL.
+NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL. A commercial deployment must use Vercel Pro or Enterprise; Vercel Hobby is restricted to personal, non-commercial use. The configured five-minute cron schedule also requires Pro or Enterprise because Hobby cron jobs can run only once per day. See [Vercel plan terms](https://vercel.com/legal/terms) and [Cron Job limits](https://vercel.com/docs/schedules/cron-jobs/usage-and-pricing).
 
 ## Implemented capabilities
 
@@ -18,6 +18,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 - Historical flat-rate and free-shipping-threshold replay.
 - Read-only Shopify Markets shipping configuration.
 - Merchant-scoped CSV evidence export and audit events.
+- Economic value ledger with stage progression, posted-credit references and measured operating-time value, kept separate from realized cash.
 - Shopify privacy/uninstall webhook handlers.
 - Prisma migrations, health endpoint and CI quality checks.
 
@@ -40,9 +41,9 @@ Do not advertise these as available, accept payment for them, or imply App Store
    - `SCOPES` — must match `shopify.app.toml`
    - `DATABASE_URL` — PostgreSQL connection string
    - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
-   - `CRON_SECRET` — strong, unique server-side secret for the protected scheduled-sync endpoint
+   - `CRON_SECRET` — high-entropy secret used only by the protected scheduled-sync endpoint
    - `NODE_ENV=production`
-6. Use a separate Preview database. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
+6. Use a separate Preview database and distinct `CRON_SECRET` values for Preview and Production. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
 7. Deploy once, copy the stable production URL, then update `application_url` and every redirect URL in `shopify.app.toml` and the Shopify Partner configuration. Redeploy after the URLs match exactly.
 8. Verify OAuth install, order sync, privacy webhooks, uninstall, database persistence and `/healthz` against a real development store before inviting merchants.
 
@@ -68,9 +69,9 @@ NODUS makes no unverified savings, recovery, customer, revenue or integration cl
 
 The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
 
-The public pricing page includes a break-even calculator. It uses merchant-entered carrier spend and confirmed credits only; it does not forecast savings or claim NODUS caused a recovery. Target prices ($99/$199/$299) are not live checkout offers.
+The public commercial page offers a no-fee, no-obligation Founding Merchant Value Programme. It scopes one store, one reporting currency, available permitted order history and one supported carrier-cost export. The merchant receives an evidence coverage statement, exception register, supported historical policy replay, value ledger and review. A monthly subscription is proposed only if a credible ongoing use case and conservative recurring value are established. The internal value-fit threshold is at least 3× the proposed monthly fee; this is a pricing discipline, not a promised return. No fixed price list or live checkout is presented.
 
-See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for definitions, evidence requirements and pricing gates.
+See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for value definitions, evidence requirements, the founding programme and subscription decision rules.
 
 ## Carrier cost evidence
 
