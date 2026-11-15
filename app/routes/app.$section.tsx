@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
-    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, totalValueRecords: 0, valueTotals: [] as Array<{currency:string;status:string;amountMinor:string;count:number}>, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
+    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, totalValueRecords: 0, valueTotals: [] as Array<{currency:string;category:string;status:string;amountMinor:string;count:number}>, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
     markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
     evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
@@ -99,12 +99,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
       prisma.policySimulation.count({ where: { merchantId: merchant.id } }),
       prisma.economicValueRecord.count({ where: { merchantId: merchant.id } }),
-      prisma.economicValueRecord.groupBy({ by: ["currency", "status"], where: { merchantId: merchant.id }, _sum: { amountMinor: true }, _count: { _all: true } }),
+      prisma.economicValueRecord.groupBy({ by: ["currency", "category", "status"], where: { merchantId: merchant.id }, _sum: { amountMinor: true }, _count: { _all: true } }),
       prisma.auditEvent.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 50 }),
     ]);
     return {
       ...empty, totalOrders, totalEvidence, totalSimulations, totalValueRecords,
-      valueTotals: valueGroups.map((group) => ({ currency: group.currency, status: group.status, amountMinor: (group._sum.amountMinor ?? 0n).toString(), count: group._count._all })),
+      valueTotals: valueGroups.map((group) => ({ currency: group.currency, category: group.category, status: group.status, amountMinor: (group._sum.amountMinor ?? 0n).toString(), count: group._count._all })),
       auditEvents: events.map((event) => ({
         id: event.id, actor: event.actor, action: event.action,
         subjectType: event.subjectType, subjectId: event.subjectId,
@@ -416,7 +416,7 @@ export default function Section() {
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
         <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations · {data.totalValueRecords} value records</p>
-        <p className="body-copy">Export the full merchant-scoped evidence register, historical simulations and economic value ledger. The value rows retain identified, validated and realized stages, source references and realization references. Export actions are recorded in the audit log.</p>\n        <div className="value-subtotals">{data.valueTotals.map((group) => <span key={group.currency+group.status}>{group.currency} · {group.status}: {formatMinor(group.amountMinor,group.currency)} ({group.count} records)</span>)}{!data.valueTotals.length?<span>No financial outcomes recorded. No ROI claim is available.</span>:null}</div>
+        <p className="body-copy">Export the full merchant-scoped evidence register, historical simulations and economic value ledger. The value rows retain identified, validated and realized stages, source references and realization references. Export actions are recorded in the audit log.</p>\n        <div className="value-subtotals">{data.valueTotals.map((group) => <span key={group.currency+group.status}>{group.category.replaceAll("_"," ")} · {group.currency} · {group.status}: {formatMinor(group.amountMinor,group.currency)} ({group.count} records)</span>)}{!data.valueTotals.length?<span>No financial outcomes recorded. No ROI claim is available.</span>:null}</div>
         <Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form>
         <h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}
           {!data.auditEvents.length ? <p className="body-copy">No audit activity recorded yet.</p> : null}</div>
