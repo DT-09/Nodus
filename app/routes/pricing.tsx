@@ -1,5 +1,6 @@
 import type {MetaFunction} from "react-router";
 import {Link} from "react-router";
+import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
@@ -8,6 +9,17 @@ export const meta:MetaFunction=()=>[
 ];
 
 export default function Pricing(){
+ const [baseline,setBaseline]=useState("");
+ const [assisted,setAssisted]=useState("");
+ const [hourlyRate,setHourlyRate]=useState("");
+ const [currency,setCurrency]=useState("USD");
+ const baseMinutes=Number(baseline);
+ const assistedMinutes=Number(assisted);
+ const rate=Number(hourlyRate);
+ const valid=baseline!==""&&assisted!==""&&hourlyRate!==""&&Number.isInteger(baseMinutes)&&Number.isInteger(assistedMinutes)&&baseMinutes>assistedMinutes&&baseMinutes<=100000&&assistedMinutes>=0&&rate>0&&Number.isFinite(rate);
+ const minutesSaved=valid?baseMinutes-assistedMinutes:0;
+ const cycleValue=valid?(minutesSaved/60)*rate:0;
+ const formattedValue=valid?new Intl.NumberFormat("en",{style:"currency",currency,maximumFractionDigits:3}).format(cycleValue):"";
  const email=process.env.PUBLIC_CONTACT_EMAIL?.trim();
  const subject=encodeURIComponent("NODUS Founding Merchant Value Programme");
  const body=encodeURIComponent("Hello NODUS,\n\nI would like to be considered for the Founding Merchant Value Programme.\n\nShopify store URL:\nApproximate monthly order volume:\nMonthly carrier spend and currency:\nCarrier / 3PL invoice export available (yes/no):\nPrimary shipping economics question:\n\n");
@@ -31,6 +43,20 @@ export default function Pricing(){
     <article><b>04</b><h3>Review together</h3><p>Walk through what is actionable, what needs carrier or finance confirmation and what cannot yet be concluded.</p></article>
    </div>
    <p className="calculator-caveat">Identified discrepancies are not recovered savings. A value is treated as realized only when the merchant can point to a posted credit, refund or accounting adjustment. NODUS does not independently audit that posting.</p>
+  </section>
+
+  <section className="operating-value-lab" aria-labelledby="operating-value-title">
+   <div className="lab-intro"><span>INTERACTIVE / MEASURED OPERATING VALUE</span><h2 id="operating-value-title">Measure the work.<br/><em>Do not guess the return.</em></h2><p>Enter a timed reconciliation task before and after using NODUS, plus the merchant-approved loaded hourly rate. The calculator reports the value of time saved for that one observed cycle only.</p></div>
+   <div className="lab-inputs">
+    <label>BASELINE TASK TIME / MINUTES<input inputMode="numeric" type="number" min="1" max="100000" step="1" value={baseline} onChange={e=>setBaseline(e.target.value)} placeholder="Enter observed minutes"/></label>
+    <label>NODUS-ASSISTED TIME / MINUTES<input inputMode="numeric" type="number" min="0" max="100000" step="1" value={assisted} onChange={e=>setAssisted(e.target.value)} placeholder="Enter observed minutes"/></label>
+    <label>LOADED HOURLY RATE<input inputMode="decimal" type="number" min="0.01" step="0.01" value={hourlyRate} onChange={e=>setHourlyRate(e.target.value)} placeholder="Merchant-approved rate"/></label>
+    <label>REPORTING CURRENCY<select value={currency} onChange={e=>setCurrency(e.target.value)}><option value="USD">USD — US dollar</option><option value="GBP">GBP — Pound sterling</option><option value="EUR">EUR — Euro</option><option value="CAD">CAD — Canadian dollar</option><option value="AUD">AUD — Australian dollar</option><option value="INR">INR — Indian rupee</option></select></label>
+   </div>
+   <div className="lab-result" aria-live="polite">
+    {valid?<><div><span>OBSERVED TIME REDUCTION</span><strong>{minutesSaved.toLocaleString("en")} min</strong></div><div><span>OPERATING VALUE / ONE CYCLE</span><strong>{formattedValue}</strong></div><p>Calculated from the values entered. This is measured operating-time value, not recovered cash, carrier credits, profit or a monthly forecast.</p></>:<div className="lab-empty"><span>AWAITING OBSERVED INPUTS</span><p>Enter a baseline greater than the assisted time and a positive hourly rate. No sample figures are preloaded.</p></div>}
+   </div>
+   <p className="lab-method">FORMULA / (BASELINE MINUTES − ASSISTED MINUTES) ÷ 60 × LOADED HOURLY RATE. Use comparable tasks and record the measurement method before relying on the result.</p>
   </section>
 
   <section className="pricing-targets">
