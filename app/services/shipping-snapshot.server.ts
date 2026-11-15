@@ -71,6 +71,12 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
     select: { id: true },
   });
 
+  await prisma.scheduledSyncState.upsert({
+    where: { merchantId: merchant.id },
+    create: { merchantId: merchant.id, nextRunAt: new Date(Date.now() + 15 * 60 * 1000) },
+    update: {},
+  });
+
   const previous = await prisma.shopifySyncState.findUnique({ where: { merchantId: merchant.id } });
   const continuing = Boolean(previous?.hasMore && previous.afterCursor);
   let cursor: string | null = continuing ? previous!.afterCursor : null;
