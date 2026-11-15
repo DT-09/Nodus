@@ -1,4 +1,5 @@
 import { parseMoney } from "../domain/money";
+import { hasMaterialShippingSourceChange } from "../domain/shipping-order-source";
 import { prisma } from "../db.server";
 
 type AdminGraphqlContext = { graphql(query: string, options?: { variables?: Record<string, unknown> }): Promise<Response> };
@@ -125,19 +126,44 @@ export async function getShippingSnapshot(admin: AdminGraphqlContext): Promise<S
 
       for (let start = 0; start < rows.length; start += 100) {
         const batch = rows.slice(start, start + 100);
-        await prisma.$transaction(batch.map(({ order, money, parsed, subtotalMinor, trackingNumbers, orderedAt }) =>
-          prisma.shippingOrder.upsert({
-            where: { merchantId_sourceOrderId: { merchantId: merchant.id, sourceOrderId: order.id } },
-            create: {
-              merchantId: merchant.id, sourceOrderId: order.id, orderName: order.name, orderedAt,
-              currency: money.currencyCode, shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
-            },
-            update: {
-              orderName: order.name, orderedAt, currency: money.currencyCode,
-              shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
-            },
-          }),
-        ));
+        for (const { order, money, parsed, subtotalMinor, trackingNumbers, orderedAt } of batch) {
+        const where = { merchantId_sourceOrderId: { merchantId: merchant.id, sourceOrderId: order.id } };
+        const existing = await prisma.shippingOrder.findUnique({ where });
+        const sourceChanged = existing !== null && hasMaterialShippingSourceChange(
+          {
+            orderName: existing.orderName,
+            currency: existing.currency,
+            shippingRevenueMinor: existing.shippingRevenueMinor,
+            taxesIncluded: existing.taxesIncluded,
+            subtotalMinor: existing.subtotalMinor,
+            trackingNumbers: Array.isArray(existing.trackingNumbers)
+              ? existing.trackingNumbers.filter((value): value is string => typeof value === "string")
+              : [],
+          },
+          {
+            orderName: order.name,
+            currency: money.currencyCode,
+            shippingRevenueMinor: parsed.minor,
+            taxesIncluded: order.taxesIncluded,
+            subtotalMinor,
+            trackingNumbers,
+          },
+        );
+        await prisma.shippingOrder.upsert({
+          where,
+          create: {
+            merchantId: merchant.id, sourceOrderId: order.id, orderName: order.name, orderedAt,
+            currency: money.currencyCode, shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
+          },
+          update: {
+            orderName: order.name, orderedAt, currency: money.currencyCode,
+            shippingRevenueMinor: parsed.minor, taxesIncluded: order.taxesIncluded, subtotalMinor, trackingNumbers,
+            ...(sourceChanged && existing?.costCoverageStatus === "complete"
+              ? { costCoverageStatus: "partial", coverageReviewedAt: null, coverageReviewedBy: null }
+              : {}),
+          },
+        });
+      }
       }
 
       cursor = page.pageInfo.endCursor;
