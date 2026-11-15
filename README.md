@@ -18,6 +18,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 - Historical flat-rate and free-shipping-threshold replay.
 - Read-only Shopify Markets shipping configuration.
 - Merchant-scoped CSV evidence export and audit events.
+- Full-scope JSON Shipping Economics Decision Pack with order-level reconciliation, evidence provenance, coverage summary, exception findings, saved policy replays, economic-value attestations, explicit limitations and a SHA-256 integrity digest.
 - Economic value ledger with stage progression, posted-credit references and measured operating-time value, kept separate from realized cash.
 - Shopify privacy/uninstall webhook handlers.
 - Prisma migrations, health endpoint and CI quality checks.
@@ -73,7 +74,7 @@ NODUS makes no unverified savings, recovery, customer, revenue or integration cl
 
 ## Economic proof and commercial value
 
-The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
+The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. The Reports workspace now exports both the full evidence CSV and a reproducible JSON Decision Pack. The JSON pack includes all stored orders and cost records, deterministic reconciliation, matched/unmatched states, diagnostics, per-currency complete-coverage summaries, saved policy simulations, merchant-attested value records, scope, methodology limitations and a SHA-256 digest of its canonical payload. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
 
 The public commercial page offers a no-fee, no-obligation Founding Merchant Value Programme. It scopes one store, one reporting currency, available permitted order history and one supported carrier-cost export. The merchant receives an evidence coverage statement, exception register, supported historical policy replay, value ledger and review. A monthly subscription is proposed only if a credible ongoing use case and conservative recurring value are established. The internal value-fit threshold is at least 3× the proposed monthly fee; this is a pricing discipline, not a promised return. No fixed price list or live checkout is presented.
 
