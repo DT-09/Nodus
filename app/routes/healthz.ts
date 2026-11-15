@@ -1,11 +1,20 @@
 import { prisma } from "../db.server";
 
 export async function loader() {
+  const production = process.env.NODE_ENV === "production";
   const missing = ["SHOPIFY_API_KEY", "SHOPIFY_API_SECRET", "SHOPIFY_APP_URL", "DATABASE_URL"]
     .filter((key) => !process.env[key]?.trim());
   const appUrl = process.env.SHOPIFY_APP_URL?.trim() ?? "";
-  const invalidAppUrl = !appUrl.startsWith("https://") || appUrl.includes("example.invalid");
+  let parsedAppUrl: URL | null = null;
+  try { parsedAppUrl = new URL(appUrl); } catch { /* validated below */ }
+  const invalidAppUrl = !parsedAppUrl || parsedAppUrl.protocol !== "https:" || parsedAppUrl.hostname.endsWith("example.invalid");
   if (invalidAppUrl && !missing.includes("SHOPIFY_APP_URL")) missing.push("SHOPIFY_APP_URL");
+
+  if (production) {
+    const contact = process.env.PUBLIC_CONTACT_EMAIL?.trim() ?? "";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) missing.push("PUBLIC_CONTACT_EMAIL");
+    if ((process.env.CRON_SECRET?.length ?? 0) < 32) missing.push("CRON_SECRET (minimum 32 characters)");
+  }
 
   if (missing.length) {
     return Response.json(
