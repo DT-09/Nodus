@@ -41,17 +41,15 @@ export default function Home(){
           <div className="hero-ctas"><Link to="/shipping-cost-reconciliation" className="cta-primary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
-        <div className="hero-network" aria-label="Illustration of connected Shopify, fulfillment, carrier evidence, reconciliation and decision nodes">
-          <div className="network-orbit orbit-one"></div><div className="network-orbit orbit-two"></div>
-          <svg viewBox="0 0 560 500" role="img" aria-hidden="true">
-            <defs><linearGradient id="nodeLine" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#B79A69" stopOpacity=".18"/><stop offset=".52" stopColor="#D5C29B" stopOpacity=".9"/><stop offset="1" stopColor="#6C8794" stopOpacity=".3"/></linearGradient><radialGradient id="nodeGlow"><stop offset="0" stopColor="#D5C29B" stopOpacity=".3"/><stop offset="1" stopColor="#D5C29B" stopOpacity="0"/></radialGradient></defs>
-            <g className="network-links" fill="none" stroke="url(#nodeLine)" strokeWidth="1.15"><path d="M90 102 L248 78 L420 155 L355 330 L170 390 L90 102"/><path d="M90 102 L170 250 L355 330 L420 155"/><path d="M248 78 L170 250 L170 390"/><path d="M248 78 L355 330"/><path d="M170 250 L420 155"/></g>
-            <g fill="url(#nodeGlow)"><circle cx="90" cy="102" r="44"/><circle cx="248" cy="78" r="44"/><circle cx="420" cy="155" r="44"/><circle cx="355" cy="330" r="44"/><circle cx="170" cy="390" r="44"/><circle cx="170" cy="250" r="54"/></g>
-            <g className="network-points"><circle cx="90" cy="102" r="5"/><circle cx="248" cy="78" r="5"/><circle cx="420" cy="155" r="5"/><circle cx="355" cy="330" r="5"/><circle cx="170" cy="390" r="5"/><circle cx="170" cy="250" r="7"/></g>
-          </svg>
-          <span className="network-label label-shopify">SHOPIFY / ORDERS</span><span className="network-label label-fulfil">FULFILMENT</span><span className="network-label label-carrier">CARRIER COSTS</span><span className="network-label label-evidence">EVIDENCE</span><span className="network-label label-policy">POLICY</span>
-          <div className="network-core"><span className="core-ring"></span><b>NODUS</b><small>INTELLIGENCE LAYER</small></div>
-          <div className="network-caption"><span>FIG. 01</span><span>CONNECTED SHIPPING ECONOMICS</span></div>
+        <div className="hero-console" aria-label="Illustrative shipping reconciliation workspace">
+          <div className="console-top"><div className="console-brand"><span className="console-mark">N</span><span>NODUS / RECONCILIATION</span></div><span className="console-state"><i></i> SAMPLE WORKSPACE</span></div>
+          <div className="console-heading"><div><span className="console-kicker">SHIPPING ECONOMICS / OVERVIEW</span><h2>Cost evidence</h2></div><span className="console-period">ILLUSTRATIVE DATA</span></div>
+          <div className="console-stats"><article><span>ORDER SHIPPING</span><strong>$4,820.00</strong><small>Shopify shipping revenue</small></article><article><span>CARRIER CHARGES</span><strong>$3,964.50</strong><small>Imported cost records</small></article><article><span>REVIEW QUEUE</span><strong>12 <small>records</small></strong><small>Require evidence review</small></article></div>
+          <div className="console-table-head"><span>RECORD</span><span>REFERENCE</span><span>REVIEW STATUS</span></div>
+          <div className="console-row"><span><b>Order #10482</b><small>Shopify order</small></span><span>FUL-8821</span><em className="state-matched">MATCHED</em></div>
+          <div className="console-row"><span><b>Carrier invoice</b><small>Imported CSV</small></span><span>INV-24018</span><em className="state-review">REVIEW</em></div>
+          <div className="console-row"><span><b>Order #10479</b><small>Shopify order</small></span><span>FUL-8814</span><em className="state-unmatched">UNMATCHED</em></div>
+          <div className="console-foot"><span>Source-linked records. No inferred zero-cost rows.</span><span>PREVIEW / 01</span></div>
         </div>
       </section>
 
