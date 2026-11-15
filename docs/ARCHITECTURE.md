@@ -13,6 +13,7 @@ NODUS is a Shopify-first modular monolith built with React Router, TypeScript, P
 - **Policy visibility:** read-only Shopify Markets shipping snapshot.
 - **Reporting:** merchant-scoped CSV export and audit events.
 - **Operations:** PostgreSQL migrations, Docker image, readiness endpoint and CI.
+- **Scheduled order refresh:** a protected GitHub Actions trigger calls a bounded sync endpoint; the endpoint processes up to three due merchants per invocation and schedules successful refreshes after 15 minutes. This is a small-cohort order refresh, not a general-purpose queue or proof of production operation.
 
 ## Financial representation
 
@@ -26,11 +27,12 @@ The current Markets integration reads shipping configuration. It does not mutate
 
 ## Explicitly not implemented
 
-- Production deployment, production secrets and managed database provisioning.
-- Shopify Partner app registration, live install validation and App Store approval.
-- Subscription billing and server-side plan entitlements.
+- Verified production deployment, production secrets and managed database provisioning.
+- Verified Shopify Partner app registration, live install validation and App Store approval.
+- Configured and end-to-end verified subscription billing and server-side plan entitlements (code-level Partner API lookup/access-gate work exists behind a feature flag).
 - Automated policy writes and post-write verification.
-- Scheduled monitoring and durable background job processing.
+- Carrier invoice polling, carrier-cost refresh, policy-drift monitoring and merchant alerts.
+- General-purpose durable background job processing and scalable queue orchestration.
 - PDF invoice extraction.
 - Email delivery, merchant notifications and a private commercial enquiry intake.
 - Completed legal/privacy review, incident response and tested production backup restoration.
