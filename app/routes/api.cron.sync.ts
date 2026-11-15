@@ -54,7 +54,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         where: { id: state.id },
         data: {
           status: completed ? "healthy" : "syncing",
-          nextRunAt: new Date(Date.now() + (completed ? 15 : 2) * 60 * 1000),
+          nextRunAt: new Date(Date.now() + (completed ? 15 : 5) * 60 * 1000),
           lastRunAt: new Date(),
           lastSuccessAt: new Date(),
           failureCount: 0,
