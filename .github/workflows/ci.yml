@@ -61,7 +61,7 @@ jobs:
             }
             await github.rest.repos.createOrUpdateFileContents({
               owner, repo, path: "package-lock.json", branch,
-              message: "build: commit resolved npm lockfile [skip ci]",
+              message: "build: commit resolved npm lockfile",
               content: bytes.toString("base64"),
               ...(sha ? { sha } : {})
             });
