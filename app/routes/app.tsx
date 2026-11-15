@@ -4,6 +4,7 @@ import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { fetchActiveSubscription } from "../partner-api.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  requireShopifyConfiguration();
   const { admin, redirect, session } = await authenticate.admin(request);
   if (process.env.SHOPIFY_APP_PRICING_ENABLED === "true") {
     const appHandle = process.env.SHOPIFY_APP_HANDLE;
