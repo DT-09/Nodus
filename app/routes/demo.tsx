@@ -12,6 +12,7 @@ const rows = [
   { order: "#1043", shipping: "$6.00", cost: "$9.40", variance: "−$3.40", state: "Matched", note: "Unambiguous tracking number" },
   { order: "#1044", shipping: "$0.00", cost: "—", variance: "Excluded", state: "Incomplete", note: "No carrier-cost evidence imported" },
   { order: "#1045", shipping: "$12.00", cost: "$10.30", variance: "+$1.70", state: "Matched", note: "Two supported charge records" },
+  { order: "Invoice #C-77", shipping: "—", cost: "$14.60", variance: "Excluded", state: "Unmatched", note: "No unique order reference" },
 ];
 
 export default function Demo() {
@@ -49,7 +50,7 @@ export default function Demo() {
           <h2>Order-level evidence register</h2>
           <div className="demo-table-wrap">
             <table className="demo-table">
-              <thead><tr><th>Order</th><th>Shipping collected</th><th>Carrier cost</th><th>Variance*</th><th>Evidence state</th></tr></thead>
+              <thead><tr><th>Order / source</th><th>Shipping collected</th><th>Carrier cost</th><th>Variance*</th><th>Evidence state</th></tr></thead>
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.order}>
@@ -57,7 +58,7 @@ export default function Demo() {
                     <td>{row.shipping}</td>
                     <td>{row.cost}</td>
                     <td>{row.variance}</td>
-                    <td><span className={row.state === "Incomplete" ? "demo-state demo-state-warning" : "demo-state"}>{row.state}</span><small>{row.note}</small></td>
+                    <td><span className={row.state === "Matched" ? "demo-state" : "demo-state demo-state-warning"}>{row.state}</span><small>{row.note}</small></td>
                   </tr>
                 ))}
               </tbody>
