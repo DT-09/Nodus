@@ -25,8 +25,8 @@ NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is
 - [ ] Connect `DT-09/Nodus` to the intended Vercel project. Root directory: repository root.
 - [ ] Set Node.js 22 and build command `npm run vercel-build`.
 - [ ] Attach managed PostgreSQL with backups and a tested restore procedure.
-- [ ] Use separate Production and Preview databases.
-- [ ] Configure Production and Preview independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
+- [ ] Use separate Production and Preview databases. Set `DATABASE_URL` to the provider's pooled runtime URL and `DIRECT_URL` to its direct connection URL for migrations; both must target the same environment database.
+- [ ] Configure Production and Preview independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Use a unique high-entropy `CRON_SECRET` per environment. Keep secrets server-side.
 - [ ] Confirm the five-minute Cron schedule is enabled on the Production project and supported by the selected plan.
 - [ ] Configure uptime and error monitoring.
