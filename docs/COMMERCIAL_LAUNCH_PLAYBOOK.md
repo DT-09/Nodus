@@ -17,6 +17,24 @@ NODUS sells a repeatable reconciliation workflow—not generic analytics, a carr
 
 Do not claim guaranteed savings, recovered credits, profit improvement, conversion lift, universal carrier coverage, direct UPS/FedEx/USPS invoice APIs, PDF/OCR ingestion, automated carrier invoice polling, policy writes, App Store approval or live subscription billing.
 
+## Competitive reality (reviewed 2026-11-15)
+
+NODUS enters an existing Shopify shipping-analytics category. The following public pages show that checkout-versus-cost comparison is already offered elsewhere:
+
+- **OCT Shipping Analytics PRO** describes comparing Shopify shipping revenue with merchant-entered actual shipping costs, including method, destination and order-value breakdowns. Its Shopify App Store listing showed a free price point and no reviews when reviewed.
+- **Shopvibe** describes matching checkout charges with Shopify labels, carrier invoice lines and 3PL bills; adjustment review and dispute packets; and CSV/PDF/photo bill intake. Its public pricing showed a free tier and a $29/month Launch plan.
+- **Oh Ship!** describes carrier-adjustment detection, shipping-margin analysis and notifications. Its public listing showed free, $39/month, $99/month and $249/month tiers.
+
+References:
+- https://apps.shopify.com/shipping-analytics-pro
+- https://shopvibe.app/
+- https://apps.shopify.com/shopvibe
+- https://apps.shopify.com/oh-ship
+
+These are snapshots of public positioning and listed prices, not evidence of market share, retention, satisfaction or willingness to pay. Recheck before using externally.
+
+**Decision:** do not claim NODUS is the first, only or most automated shipping-cost product. Do not position it as superior to products with broader invoice-format and dispute workflows. NODUS's plausible wedge is a transparent, reproducible evidence pack and historical policy replay for merchants whose cost data is available as a supported CSV. That wedge is a hypothesis until a merchant uses it to make a real decision.
+
 ## 2. Initial customer profile
 
 Prioritize Shopify merchants that:
