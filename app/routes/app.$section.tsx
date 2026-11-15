@@ -94,14 +94,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   if (section === "reports") {
-    const [totalOrders, totalEvidence, totalSimulations, events] = await Promise.all([
+    const [totalOrders, totalEvidence, totalSimulations, totalValueRecords, valueGroups, events] = await Promise.all([
       prisma.shippingOrder.count({ where: { merchantId: merchant.id } }),
       prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
       prisma.policySimulation.count({ where: { merchantId: merchant.id } }),
+      prisma.economicValueRecord.count({ where: { merchantId: merchant.id } }),
+      prisma.economicValueRecord.groupBy({ by: ["currency", "status"], where: { merchantId: merchant.id }, _sum: { amountMinor: true }, _count: { _all: true } }),
       prisma.auditEvent.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 50 }),
     ]);
     return {
-      ...empty, totalOrders, totalEvidence, totalSimulations,
+      ...empty, totalOrders, totalEvidence, totalSimulations, totalValueRecords,
+      valueTotals: valueGroups.map((group) => ({ currency: group.currency, status: group.status, amountMinor: (group._sum.amountMinor ?? 0n).toString(), count: group._count._all })),
       auditEvents: events.map((event) => ({
         id: event.id, actor: event.actor, action: event.action,
         subjectType: event.subjectType, subjectId: event.subjectId,
@@ -166,10 +169,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (params.section === "reports" && form.get("intent") === "export-report") {
     const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
     if (!merchant) return new Response("No merchant data is available.", { status: 404 });
-    const [orders, costs, simulations] = await Promise.all([
+    const [orders, costs, simulations, valueRecords] = await Promise.all([
       prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "asc" } }),
       prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "asc" } }),
       prisma.policySimulation.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "asc" } }),
+      prisma.economicValueRecord.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "asc" } }),
     ]);
     const csvCell = (value: string | number | null) => {
       let text = value === null ? "" : String(value);
