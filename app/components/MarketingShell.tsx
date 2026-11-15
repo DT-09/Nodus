@@ -16,6 +16,20 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     if(saved==="light"||saved==="dark") setTheme(saved);
   },[]);
   useEffect(()=>{
+    const root=document.querySelector(".marketing-site");
+    const targets=Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if(!root||targets.length===0)return;
+    if(!("IntersectionObserver" in window))return;
+    root.setAttribute("data-motion-ready","true");
+    const observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(entry.isIntersecting){entry.target.setAttribute("data-visible","true");observer.unobserve(entry.target)}
+      }
+    },{threshold:0.12,rootMargin:"0px 0px -7% 0px"});
+    targets.forEach(target=>observer.observe(target));
+    return ()=>observer.disconnect();
+  },[]);
+  useEffect(()=>{
     const close=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false)};
     window.addEventListener("keydown",close);
     return ()=>window.removeEventListener("keydown",close);
