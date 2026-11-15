@@ -25,6 +25,7 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: postgresql://nodus:nodus@localhost:5432/nodus?schema=public
+    DIRECT_URL: postgresql://nodus:nodus@localhost:5432/nodus?schema=public
     steps:
       - uses: actions/checkout@v4
         with:
