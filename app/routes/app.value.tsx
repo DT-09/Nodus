@@ -11,12 +11,14 @@ const labels: Record<string,string> = {carrier_credit:"Carrier credit",duplicate
 export async function loader({request}:LoaderFunctionArgs) {
   const {session}=await authenticate.admin(request);
   const merchant=await prisma.merchant.findUnique({where:{shop:session.shop},select:{id:true}});
-  if(!merchant)return {records:[],totals:[] as Array<{currency:string;identified:string;validated:string;realized:string}>};
+  if(!merchant)return {records:[],totals:[] as Array<{currency:string;category:string;identified:string;validated:string;realized:string}>};
   const rows=await prisma.economicValueRecord.findMany({where:{merchantId:merchant.id},orderBy:{createdAt:"desc"},take:500});
-  const totals=[...new Set(rows.map(r=>r.currency))].map(currency=>{
-    const group=rows.filter(r=>r.currency===currency);
+  const keys=[...new Set(rows.map(r=>r.currency+"::"+r.category))];
+  const totals=keys.map(key=>{
+    const [currency,category]=key.split("::");
+    const group=rows.filter(r=>r.currency===currency&&r.category===category);
     const sum=(status:string)=>group.filter(r=>r.status===status).reduce((n,r)=>n+r.amountMinor,0n).toString();
-    return {currency,identified:sum("identified"),validated:sum("validated"),realized:sum("realized")};
+    return {currency:currency!,category:category!,identified:sum("identified"),validated:sum("validated"),realized:sum("realized")};
   });
   return {totals,records:rows.map(r=>({...r,amountMinor:r.amountMinor.toString(),occurredAt:r.occurredAt?.toISOString()??null,createdAt:r.createdAt.toISOString()}))};
 }
@@ -99,8 +101,8 @@ export default function EconomicValue(){
  const d=useLoaderData<typeof loader>(), result=useActionData<typeof action>();
  return <div className="page-wrap">
   <header className="topbar"><div><p className="eyebrow">NODUS / ECONOMIC PROOF</p><h1>Value ledger</h1><p className="muted">Separate identified exposure from validated and realized outcomes.</p></div></header>
-  <section className="metric-grid">{d.totals.map(t=><article className="metric-card" key={t.currency}><span>{t.currency} · Identified</span><strong>{money(t.identified,t.currency)}</strong><small>Merchant-recorded opportunities; not verified savings.</small><div className="value-subtotals"><span>Validated: {money(t.validated,t.currency)}</span><span>Realized: {money(t.realized,t.currency)}</span></div></article>)}{!d.totals.length?<article className="metric-card"><span>Economic outcomes</span><strong>Not established</strong><small>A blank ledger is better than an invented ROI claim.</small></article>:null}</section>
-  <section className="surface-card value-ledger-panel"><h3>Record a financial outcome</h3><p className="body-copy">Record a financial outcome or measured operating time saved. Time value is calculated from the merchant-approved loaded labor rate and before/after task minutes; it remains operating value, never realized cash. Financial realizations require a posted credit or accounting reference.</p>
+  <section className="metric-grid">{d.totals.map(t=><article className="metric-card" key={t.currency+t.category}><span>{labels[t.category]??t.category} · {t.currency}</span><strong>{money(t.identified,t.currency)}</strong><small>Merchant-recorded opportunities; not verified savings.</small><div className="value-subtotals"><span>Validated: {money(t.validated,t.currency)}</span><span>Realized: {money(t.realized,t.currency)}</span></div></article>)}{!d.totals.length?<article className="metric-card"><span>Economic outcomes</span><strong>Not established</strong><small>A blank ledger is better than an invented ROI claim.</small></article>:null}</section>
+  <section className="surface-card value-ledger-panel"><h3>Record a financial outcome</h3><p className="body-copy">Record a financial outcome or measured operating time saved. Financial opportunities and time value are reported separately. Time value is calculated from the merchant-approved loaded labor rate and before/after task minutes; it remains operating value, never realized cash. Financial realizations require a posted credit or accounting reference.</p>
    <Form method="post" className="value-record-form">
     <input type="hidden" name="intent" value="create"/>
     <label>Category<select name="category" defaultValue="carrier_credit"><option value="carrier_credit">Carrier credit</option><option value="duplicate_charge">Duplicate charge</option><option value="surcharge_dispute">Surcharge dispute</option><option value="rate_correction">Rate correction</option><option value="policy_change">Policy change</option><option value="operating_time_saved">Operating time saved</option><option value="other">Other</option></select></label>
