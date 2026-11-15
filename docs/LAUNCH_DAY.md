@@ -31,6 +31,7 @@ This checklist separates deployable repository work from external account setup 
 ## 3. Production infrastructure
 
 - [ ] Confirm `/healthz` returns HTTP 200 after migrations and database connectivity are available.
+- [ ] Confirm the deployed responses include HSTS, `X-Content-Type-Options: nosniff`, the documented `Referrer-Policy` and restrictive `Permissions-Policy`; keep Shopify Admin embedding functional.
 - [ ] Confirm Prisma migrations are applied to the intended database.
 - [ ] Enable encrypted automated backups and complete a restore test.
 - [ ] Configure uptime, error and resource alerts.
