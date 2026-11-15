@@ -1,6 +1,6 @@
 import type {MetaFunction} from "react-router";
 import {Link} from "react-router";
-import {MarketingShell} from "../../components/MarketingShell";
+import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
   {title:"Shopify Free Shipping Threshold Analysis | NODUS"},
