@@ -64,10 +64,11 @@ export async function action({request}:ActionFunctionArgs) {
   if(amount.minor<=0n)return {ok:false,message:"Amount must be greater than zero."};
   const occurredAt=dateText?new Date(dateText):null;
   if(occurredAt&&Number.isNaN(occurredAt.getTime()))return {ok:false,message:"Invalid event date."};
-  const merchant=await prisma.merchant.findUnique({where:{shop:session.shop},select:{id:true}});
-  if(!merchant)return {ok:false,message:"Open the overview first to initialize this merchant workspace."};
-  const record=await prisma.economicValueRecord.create({data:{merchantId:merchant.id,category,status,amountMinor:amount.minor,currency,sourceReference,realizationReference:realizationReference||null,evidenceNote,occurredAt,createdBy:session.id}});
-  await prisma.auditEvent.create({data:{merchantId:merchant.id,actor:session.id,action:"economic_value_record_created",subjectType:"economic_value_record",subjectId:record.id,detail:{category,status,amountMinor:amount.minor.toString(),currency,sourceReference,realizationReference:realizationReference||null}}});
+  const record=await prisma.$transaction(async tx=>{
+    const created=await tx.economicValueRecord.create({data:{merchantId:merchant.id,category,status,amountMinor:amount.minor,currency,sourceReference,realizationReference:realizationReference||null,evidenceNote,occurredAt,createdBy:session.id}});
+    await tx.auditEvent.create({data:{merchantId:merchant.id,actor:session.id,action:"economic_value_record_created",subjectType:"economic_value_record",subjectId:created.id,detail:{category,status,amountMinor:amount.minor.toString(),currency,sourceReference,realizationReference:realizationReference||null}}});
+    return created;
+  });
   return {ok:true,message:"Saved. Status is merchant-attested, not independently verified by NODUS."};
 }
 
