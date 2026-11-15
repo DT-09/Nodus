@@ -43,6 +43,7 @@ model Merchant {
   syncState    ShopifySyncState?
   simulations  PolicySimulation[]
   valueRecords  EconomicValueRecord[]
+  scheduledSyncState ScheduledSyncState?
 }
 
 model ShopifySyncState {
@@ -165,4 +166,20 @@ model EconomicValueRecord {
 
   @@index([merchantId, status, currency])
   @@index([merchantId, createdAt])
+}
+
+model ScheduledSyncState {
+  id            String   @id @default(cuid())
+  merchantId    String   @unique
+  status        String   @default("scheduled")
+  nextRunAt     DateTime @default(now())
+  lastRunAt     DateTime?
+  lastSuccessAt DateTime?
+  failureCount  Int      @default(0)
+  lastError     String?
+  lockedUntil   DateTime?
+  updatedAt     DateTime @updatedAt
+  merchant      Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([status, nextRunAt])
 }
