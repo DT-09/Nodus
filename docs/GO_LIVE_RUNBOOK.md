@@ -47,7 +47,7 @@ NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is
 - [ ] Confirm migrations are applied to the intended Production database.
 - [ ] Confirm `/healthz` returns HTTP 200 and `{"status":"ok","service":"nodus"}`.
 - [ ] Run `NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch`.
-- [ ] Confirm homepage, product, demo, methodology, pricing, security and support routes load.
+- [ ] Confirm homepage, product, demo, methodology, pricing, security, privacy and support routes load.
 - [ ] Confirm the carrier-cost CSV template downloads with the documented headers.
 - [ ] Confirm unauthenticated `/api/cron/sync` returns HTTP 401.
 - [ ] Confirm `/app` requires Shopify authentication.
@@ -77,7 +77,8 @@ Deliver the evidence coverage statement, matched/unmatched/incomplete register, 
 ## 6. Public exposure without cold outreach
 
 - [ ] Choose and verify the canonical production domain.
-- [ ] Publish accurate privacy, terms, retention/deletion, support and evaluation disclosures approved by the responsible operator.
+- [ ] Complete and legally review the factual [privacy and data-handling notice](/privacy), including legal identity, jurisdiction, database provider, retention and backup-expiry periods, and regional disclosures.
+- [ ] Publish terms, support, evaluation and deletion disclosures approved by the responsible operator.
 - [ ] Verify evaluation and support links from desktop and mobile.
 - [ ] Publish the synthetic demo, CSV template and buyer evaluation guide. Keep synthetic data labelled as synthetic.
 - [ ] Add canonical metadata, social preview metadata, sitemap and robots policy after the final domain is chosen.
