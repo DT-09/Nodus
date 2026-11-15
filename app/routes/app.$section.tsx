@@ -15,7 +15,7 @@ const pages: Record<string, { title: string; subtitle: string; heading: string; 
   diagnostics: { title: "Diagnostics", subtitle: "Evidence-backed causes, not unexplained alerts.", heading: "Evidence coverage and findings", body: "Findings are generated from stored orders and imported cost records. Missing evidence is a coverage gap, never zero cost or a confirmed loss." },
   simulations: { title: "Policy simulations", subtitle: "Compare proposed policies against historical order scenarios.", heading: "Historical shipping-policy replay", body: "Replay a proposed flat rate and optional free-shipping threshold against stored order history. This compares shipping revenue only; it does not predict demand, conversion, abandonment or profit." },
   policies: { title: "Policy control", subtitle: "Proposed changes, merchant approvals and verification.", heading: "Live policy writes are disabled", body: "NODUS remains read-only until supported Shopify mutations, permissions, baseline checks and read-back verification have passed development-store tests." },
-  monitoring: { title: "Continuous monitoring", subtitle: "Policy drift, new exceptions and post-change outcomes.", heading: "Scheduled monitoring is not active", body: "Continuous monitoring requires a production scheduler and durable event processing. NODUS does not claim background monitoring yet." },
+  monitoring: { title: "Shopify sync monitoring", subtitle: "Scheduled order refresh, resumable backfill and failure recovery.", heading: "Scheduled Shopify refresh", body: "NODUS runs a protected, bounded Shopify order refresh through Vercel Cron when CRON_SECRET is configured. This does not monitor carrier billing, adjudicate disputes or verify recovered value." },
   reports: { title: "Reports", subtitle: "Traceable results, coverage and decision history.", heading: "Export your evidence register", body: "Download the stored Shopify orders and imported carrier-cost evidence for independent review. Exports are merchant-scoped and recorded in the audit log." }
 };
 
@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
-    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
+    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, totalValueRecords: 0, valueTotals: [] as Array<{currency:string;category:string;status:string;amountMinor:string;count:number}>, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
     markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
     evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
@@ -94,14 +94,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   if (section === "reports") {
-    const [totalOrders, totalEvidence, totalSimulations, events] = await Promise.all([
+    const [totalOrders, totalEvidence, totalSimulations, totalValueRecords, valueGroups, events] = await Promise.all([
       prisma.shippingOrder.count({ where: { merchantId: merchant.id } }),
       prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
       prisma.policySimulation.count({ where: { merchantId: merchant.id } }),
+      prisma.economicValueRecord.count({ where: { merchantId: merchant.id } }),
+      prisma.economicValueRecord.groupBy({ by: ["currency", "category", "status"], where: { merchantId: merchant.id }, _sum: { amountMinor: true }, _count: { _all: true } }),
       prisma.auditEvent.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "desc" }, take: 50 }),
     ]);
     return {
-      ...empty, totalOrders, totalEvidence, totalSimulations,
+      ...empty, totalOrders, totalEvidence, totalSimulations, totalValueRecords,
+      valueTotals: valueGroups.map((group) => ({ currency: group.currency, category: group.category, status: group.status, amountMinor: (group._sum.amountMinor ?? 0n).toString(), count: group._count._all })),
       auditEvents: events.map((event) => ({
         id: event.id, actor: event.actor, action: event.action,
         subjectType: event.subjectType, subjectId: event.subjectId,
@@ -166,10 +169,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (params.section === "reports" && form.get("intent") === "export-report") {
     const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
     if (!merchant) return new Response("No merchant data is available.", { status: 404 });
-    const [orders, costs, simulations] = await Promise.all([
+    const [orders, costs, simulations, valueRecords] = await Promise.all([
       prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: { orderedAt: "asc" } }),
       prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: { occurredAt: "asc" } }),
       prisma.policySimulation.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "asc" } }),
+      prisma.economicValueRecord.findMany({ where: { merchantId: merchant.id }, orderBy: { createdAt: "asc" } }),
     ]);
     const csvCell = (value: string | number | null) => {
       let text = value === null ? "" : String(value);
@@ -177,16 +181,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
       return `"${text.replaceAll('"', '""')}"`;
     };
     const records = [
-      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","taxes_included","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions"],
-      ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), String(order.taxesIncluded), order.costCoverageStatus, "", "", "", "", "", "", order.coverageReviewedAt?.toISOString() ?? "", order.coverageReviewedBy ?? "", "", "", "", ""]),
-      ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? "", "", "", "", "", "", ""]),
-      ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "", "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion, "", "", String(simulation.sampleSize), simulation.sampleWindowStart?.toISOString() ?? "", simulation.sampleWindowEnd?.toISOString() ?? "", JSON.stringify(simulation.assumptions)]),
+      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","taxes_included","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions","value_category","value_status","value_amount_minor","value_realization_reference","value_source_reference","value_evidence_note"],
+      ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), String(order.taxesIncluded), order.costCoverageStatus, "", "", "", "", "", "", order.coverageReviewedAt?.toISOString() ?? "", order.coverageReviewedBy ?? "", "", "", "", "", "", "", "", "", "", ""]),
+      ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? "", "", "", "", "", "", "", "", "", "", "", "", ""]),
+      ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "", "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion, "", "", String(simulation.sampleSize), simulation.sampleWindowStart?.toISOString() ?? "", simulation.sampleWindowEnd?.toISOString() ?? "", JSON.stringify(simulation.assumptions), "", "", "", "", "", ""]),
+      ...valueRecords.map((record) => ["economic_value", "", "", record.occurredAt?.toISOString() ?? record.createdAt.toISOString(), record.currency, "", "", record.status, "", record.amountMinor.toString(), record.category, "", "", record.sourceReference, "", record.createdBy, "", "", "", record.evidenceNote, record.category, record.status, record.amountMinor.toString(), record.realizationReference ?? "", record.sourceReference, record.evidenceNote]),
     ];
     const csv = records.map((record) => record.map(csvCell).join(",")).join("\r\n");
     await prisma.auditEvent.create({ data: {
       merchantId: merchant.id, actor: session.id, action: "report_exported",
       subjectType: "merchant", subjectId: session.shop,
-      detail: { orderCount: orders.length, evidenceCount: costs.length, simulationCount: simulations.length, format: "csv" },
+      detail: { orderCount: orders.length, evidenceCount: costs.length, simulationCount: simulations.length, valueRecordCount: valueRecords.length, format: "csv" },
     } });
     return new Response(csv, { headers: {
       "Content-Type": "text/csv; charset=utf-8",
@@ -410,8 +415,8 @@ export default function Section() {
         <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""}{run.sampleWindowStart && run.sampleWindowEnd ? " · Orders "+new Date(run.sampleWindowStart).toLocaleDateString()+"–"+new Date(run.sampleWindowEnd).toLocaleDateString() : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
-        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations</p>
-        <p className="body-copy">Export stored Shopify order records, imported carrier-cost evidence and coverage-review status. Export actions are recorded in the audit log.</p>
+        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations · {data.totalValueRecords} value records</p>
+        <p className="body-copy">Export the full merchant-scoped evidence register, historical simulations and economic value ledger. The value rows retain identified, validated and realized stages, source references and realization references. Export actions are recorded in the audit log.</p>\n        <div className="value-subtotals">{data.valueTotals.map((group) => <span key={group.currency+group.status}>{group.category.replaceAll("_"," ")} · {group.currency} · {group.status}: {formatMinor(group.amountMinor,group.currency)} ({group.count} records)</span>)}{!data.valueTotals.length?<span>No financial outcomes recorded. No ROI claim is available.</span>:null}</div>
         <Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form>
         <h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}
           {!data.auditEvents.length ? <p className="body-copy">No audit activity recorded yet.</p> : null}</div>
