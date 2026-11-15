@@ -125,9 +125,9 @@ A concise merchant-facing brief containing:
 - the policy scenario worth reviewing, if any;
 - a clear statement of what NODUS cannot conclude from the available data.
 
-### F. Evidence export
+### F. Reproducible evidence export
 
-CSV exports of the underlying orders, imported cost rows, match/review states, exceptions, and scenario inputs/results, so the merchant can independently inspect the work.
+The workspace exports (1) a full merchant-scoped CSV register and (2) a JSON Shipping Economics Decision Pack. The JSON pack contains the complete stored order and cost-evidence scope, deterministic order-level reconciliation, matched/unmatched evidence states, exception findings, per-currency complete-coverage summaries, saved policy replays, economic-value attestations, methodology limitations and a SHA-256 digest of the canonical payload. It is designed for independent inspection and repeatable comparison. It does not independently verify merchant coverage attestations or accounting outcomes.
 
 ## 5. What NODUS sells first
 
@@ -246,7 +246,7 @@ These are product and release constraints, not footnotes. Public copy and sales 
 
 Prioritize work in this order:
 
-1. Make the Decision Pack complete, clear, exportable, and independently reproducible from the current supported CSV workflow.
+1. Complete and validate the full-scope JSON Decision Pack and CSV register, including deterministic totals, evidence coverage, limitations and integrity digest. The first implementation is now in the Reports workspace; CI and adversarial export tests remain required.
 2. Make first-run onboarding tell the merchant exactly what data is needed, why it is needed, and what result they will receive.
 3. Improve match review and exception prioritization; make uncertainty visible.
 4. Validate the policy replay with adversarial fixtures and explain its assumptions in the UI and export.
