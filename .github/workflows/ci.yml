@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
 permissions:
-  contents: read
+  contents: write
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
       # npm 10.9.x has a known Arborist peer-resolution crash with Vitest's
       # optional peer graph. Pin the fixed resolver instead of bypassing peers.
       - name: Pin npm resolver
@@ -38,6 +38,15 @@ jobs:
           npm --version
       - name: Resolve dependency lockfile
         run: npm install --ignore-scripts --package-lock-only || (cat ~/.npm/_logs/*debug-0.log; exit 1)
+      - name: Commit reproducible dependency lockfile
+        run: |
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "build: commit resolved npm lockfile [skip ci]"
+            git push
+          fi
       - name: Capture dependency audit
         run: npm audit --json > npm-audit.json || true
       - name: Upload generated lockfile and dependency audit
