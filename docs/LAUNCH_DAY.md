@@ -5,12 +5,12 @@ This checklist separates deployable repository work from external account setup 
 ## 1. Deployment architecture
 
 - [ ] Deploy the React Router application to Vercel using the preset configured in `react-router.config.ts`.
-- [ ] Use Vercel Pro or Enterprise for commercial hosting and the configured five-minute Cron schedule. Hobby is for personal, non-commercial use and limits Cron to daily schedules ([plan limits](https://vercel.com/docs/plans/hobby), [Cron configuration](https://vercel.com/docs/project-configuration/vercel-ts)). Verify the schedule appears in the production project.
+- [ ] Use a Vercel commercial plan for the commercial NODUS service. Vercel Hobby is restricted to personal, non-commercial use ([plan terms](https://vercel.com/legal/terms)). The five-minute sync runner is configured in GitHub Actions, not Vercel Cron; verify its repository secrets and successful authenticated execution.
 - [ ] Ensure an authorized adult/business operator owns the hosting account, billing and production access.
 - [ ] Use managed PostgreSQL with durable backups and a documented restore procedure.
-- [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command runs Prisma migrations.
+- [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command does not apply migrations; apply production migrations through the protected manual GitHub Actions workflow.
 - [ ] Use Node.js 22 and the repository root as the Vercel project root.
-- [ ] Set the Vercel build command to `npm run vercel-build`.
+- [ ] Set the Vercel build command to `npm run vercel-build`; it generates Prisma Client and builds the app without mutating the production database.
 - [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Keep credentials server-side. Never expose secrets through client-side environment variables.
 - [ ] Confirm Production and Preview use separate databases. Use the provider's pooled URL for `DATABASE_URL` and direct/non-pooled URL for `DIRECT_URL`; both must target the same environment database.
@@ -23,7 +23,7 @@ This checklist separates deployable repository work from external account setup 
 - [ ] Replace the placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
 - [ ] Make Shopify Partner Dashboard URLs and TOML URLs match exactly.
 - [ ] Confirm requested scopes and current Shopify review requirements.
-- [ ] Configure stable outbound egress IPs and restrict Admin API access to those addresses in Shopify. Shopify's public-app security enforcement begins November 20, 2026; do not launch without confirming the applicable current deadline and allowlist status. Vercel Static IPs require a paid Pro feature/add-on; ordinary function egress is not a fixed allowlist.
+- [ ] Configure Shopify Admin API network restrictions. Shopify supports IP/CIDR allowlists and provider ASNs for dynamic serverless egress. Identify the actual Vercel egress network and deployment countries, configure the corresponding Dev Dashboard allowlist, and test it against recent API traffic. Do not guess network identifiers. The public-app deadline is November 20, 2026; without an allowlist, new installs are blocked and the app is delisted from the App Store.
 - [ ] Install on a controlled development store and test OAuth, session persistence, order sync and configured webhooks.
 - [ ] Test `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact`.
 - [ ] Verify the 60-day order-access boundary; seek `read_all_orders` approval if older orders are required.
