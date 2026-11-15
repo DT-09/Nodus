@@ -72,7 +72,7 @@ This checklist separates deployable repository work from external account setup 
 | Reconciliation and diagnostics | Implemented; validation required |
 | Historical policy simulation | Implemented |
 | Shopify policy writes | Disabled |
-| Scheduled Shopify order refresh | Implemented; production activation and live-store verification required. Does not poll carrier billing systems |
+| Scheduled Shopify order refresh | Implemented in repository; production Cron, credentials and execution not verified |
 | Shopify App Pricing subscription lookup | Implemented behind a feature flag; Partner configuration and live lifecycle tests required |\n| Server-side subscription access gate | Implemented behind a feature flag; fail-closed behavior requires live verification |\n| Plan setup and billing lifecycle | Not verified; Partner plan configuration and lifecycle acceptance remain release gates |
 | App Store approval | External; not verified |
 
@@ -95,3 +95,6 @@ This checklist separates deployable repository work from external account setup 
 ## Current release decision
 
 The repository can be deployed to Vercel after real credentials, database and Shopify URLs are configured. That does **not** make NODUS enterprise-production complete or commercially launch-ready. Direct carrier invoice APIs remain unimplemented. Shopify App Pricing configuration, full billing-lifecycle verification and scheduled-sync production verification remain external release gates. The public offer should be the no-fee Founding Merchant Value Programme until recurring value is established. Do not charge merchants for unimplemented functionality.
+
+
+The current product offer remains the no-fee Founding Merchant Value Programme. Subscription discussions must follow delivery of the evidence pack and merchant agreement that recurring value exists. The current app access gate and Shopify App Pricing lookup are code-level implementations only; live Partner configuration and complete lifecycle tests are still required.
