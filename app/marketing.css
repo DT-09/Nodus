@@ -101,3 +101,7 @@
 .lab-empty p{max-width:520px}
 .lab-method{margin:17px 0 0;color:var(--muted-2);font-size:8px;line-height:1.8}
 @media(max-width:650px){.lab-inputs,.lab-result{grid-template-columns:1fr}.lab-result p{grid-column:auto}.operating-value-lab{margin:35px 0}}
+
+
+/* Synthetic reconciliation walkthrough */
+.demo-table-wrap{width:100%;overflow-x:auto;margin:24px 0}.demo-table{width:100%;border-collapse:collapse;min-width:720px;text-align:left}.demo-table th,.demo-table td{padding:15px 13px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:top}.demo-table thead th{font:9px ui-monospace,monospace;letter-spacing:.09em;color:var(--muted);text-transform:uppercase}.demo-table tbody th{font:12px ui-monospace,monospace;color:var(--text);white-space:nowrap}.demo-table td{color:var(--muted)}.demo-table td small{display:block;margin-top:6px;color:var(--muted-2);font-size:10px;line-height:1.5}.demo-state{display:inline-block;padding:4px 7px;border:1px solid rgba(139,163,141,.35);color:#a9c4a9;font:9px ui-monospace,monospace;text-transform:uppercase}.demo-state-warning{border-color:rgba(197,169,120,.4);color:var(--accent-2)}
