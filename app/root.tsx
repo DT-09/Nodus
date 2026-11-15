@@ -2,12 +2,10 @@ import type {LinksFunction} from "react-router";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
-import {NODUS_MARK} from "./components/nodus-mark";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
-  {rel:"icon",href:NODUS_MARK,type:"image/png"},
-  {rel:"apple-touch-icon",href:NODUS_MARK},
+  {rel:"icon",href:"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cpath d=%22M20 4 34 13 29 31 20 36 6 27 6 13Z M6 13 20 21 34 13 M20 21V36 M11 29 20 21 29 29 M11 11 20 21 29 11%22 fill=%22none%22 stroke=%22%23596451%22 stroke-width=%221.6%22/%3E%3C/svg%3E",type:"image/svg+xml"},
 ];
 export default function Root(){
   return <html lang="en">
