@@ -23,6 +23,7 @@ This checklist separates deployable repository work from external account setup 
 - [ ] Replace the placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
 - [ ] Make Shopify Partner Dashboard URLs and TOML URLs match exactly.
 - [ ] Confirm requested scopes and current Shopify review requirements.
+- [ ] Configure stable outbound egress IPs and restrict Admin API access to those addresses in Shopify. Shopify's public-app security enforcement begins November 20, 2026; do not launch without confirming the applicable current deadline and allowlist status. Vercel Static IPs require a paid Pro feature/add-on; ordinary function egress is not a fixed allowlist.
 - [ ] Install on a controlled development store and test OAuth, session persistence, order sync and configured webhooks.
 - [ ] Test `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact`.
 - [ ] Verify the 60-day order-access boundary; seek `read_all_orders` approval if older orders are required.
@@ -36,6 +37,7 @@ This checklist separates deployable repository work from external account setup 
 - [ ] Enable encrypted automated backups and complete a restore test.
 - [ ] Configure uptime, error and resource alerts.
 - [ ] Ensure logs redact credentials, session tokens and merchant-sensitive payloads.
+- [ ] Verify the hosting provider's outbound IPs are stable, documented and the same IPs configured in Shopify's Admin API access restrictions.
 - [ ] Assign an operational owner and incident response procedure.
 - [ ] Verify database connection limits under concurrent serverless requests.
 
