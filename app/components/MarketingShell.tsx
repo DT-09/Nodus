@@ -1,4 +1,3 @@
-import {NODUS_MARK} from "./nodus-mark";
 import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
@@ -8,8 +7,9 @@ const groups = [
   {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
 
+function NodusLogo(){return <svg className="nodus-logo" viewBox="0 0 40 40" role="img" aria-label="NODUS mark"><g fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round"><path d="M20 4 34 13 29 31 20 36 6 27 6 13 20 4Z"/><path d="M6 13 20 21 34 13M20 21v15M11 29l9-8 9 8M11 11l9 10 9-10"/></g><g fill="currentColor"><circle cx="20" cy="4" r="2.3"/><circle cx="34" cy="13" r="2.3"/><circle cx="29" cy="31" r="2.3"/><circle cx="20" cy="36" r="2.3"/><circle cx="6" cy="27" r="2.3"/><circle cx="6" cy="13" r="2.3"/><circle cx="20" cy="21" r="2.2"/></g></svg>}
+
 export function MarketingShell({children, active="home"}:{children:ReactNode;active?:string}) {
-  const [theme,setTheme]=useState<"dark"|"light">("dark");
   const [menuOpen,setMenuOpen]=useState(false);
   useEffect(()=>{
     const saved=window.localStorage.getItem("nodus-site-theme");
@@ -34,23 +34,15 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     window.addEventListener("keydown",close);
     return ()=>window.removeEventListener("keydown",close);
   },[]);
-  function toggleTheme(){
-    const next=theme==="dark"?"light":"dark";
-    setTheme(next);
-    window.localStorage.setItem("nodus-site-theme",next);
-  }
-  return <div className="marketing-site" data-theme={theme} data-page={active}>
+  return <div className="marketing-site" data-theme="light" data-page={active}>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <header className="site-header">
       <Link className="site-brand" to="/" aria-label="NODUS home">
-        <img className="site-brand-mark" src={NODUS_MARK} alt="" /><span className="site-brand-word">NODUS</span>
+        <NodusLogo/><span className="site-brand-word">NODUS</span>
         <span className="site-brand-caption">SHIPPING INTELLIGENCE</span>
       </Link>
       <div className="site-header-right">
         <span className="header-context">SHOPIFY / SHIPPING ECONOMICS</span>
-        <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={theme==="dark"?"Switch to light appearance":"Switch to dark appearance"} title={theme==="dark"?"Switch to light appearance":"Switch to dark appearance"}>
-          <span aria-hidden="true">{theme==="dark"?"◐":"◑"}</span><span className="theme-toggle-label">{theme==="dark"?"LIGHT":"DARK"}</span>
-        </button>
         <button className={"menu-trigger"+(menuOpen?" is-open":"")} type="button" aria-expanded={menuOpen} aria-controls="site-menu" onClick={()=>setMenuOpen(v=>!v)} aria-label={menuOpen?"Close navigation":"Open navigation"}>
           <span></span><span></span><span></span>
         </button>
