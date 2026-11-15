@@ -32,6 +32,7 @@ if (base.protocol !== "https:" && base.hostname !== "localhost") {
 const checks = [
   { path: "/", label: "Public homepage", expected: (r) => r.status === 200, html: true },
   { path: "/product", label: "Product page", expected: (r) => r.status === 200, html: true },
+  { path: "/demo", label: "Synthetic reconciliation walkthrough", expected: (r) => r.status === 200, html: true },
   { path: "/methodology", label: "Methodology page", expected: (r) => r.status === 200, html: true },
   { path: "/pricing", label: "Pricing and evaluation page", expected: (r) => r.status === 200, html: true },
   { path: "/security", label: "Security disclosure page", expected: (r) => r.status === 200, html: true },
