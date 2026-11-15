@@ -13,7 +13,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return new Response("Unauthorized.", { status: 401 });
   }
 
-  try { requireShopifyConfiguration(); } catch { return new Response("Shopify sync is not configured.", { status: 503 }); }\n\n  const now = new Date();
+  try { requireShopifyConfiguration(); } catch { return new Response("Shopify sync is not configured.", { status: 503 }); }
+
+  const now = new Date();
   const merchants = await prisma.merchant.findMany({
     where: { uninstalledAt: null },
     select: { id: true },
