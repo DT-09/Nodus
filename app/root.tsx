@@ -6,12 +6,15 @@ export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
 ];
-
 export default function Root(){
   return <html lang="en">
     <head>
       <meta charSet="utf-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <meta property="og:site_name" content="NODUS"/>
+      <meta property="og:type" content="website"/>
+      <meta name="twitter:card" content="summary"/>
+      <meta name="theme-color" content="#101820"/>
       <Meta/>
       <Links/>
     </head>
@@ -22,7 +25,6 @@ export default function Root(){
     </body>
   </html>;
 }
-
 export function ErrorBoundary(){
   const error=useRouteError();
   const status=isRouteErrorResponse(error)?error.status:500;
@@ -33,7 +35,6 @@ export function ErrorBoundary(){
       : error instanceof Error
         ? error.message
         : "Unexpected application error";
-
   return <main className="error-page">
     <p className="eyebrow">NODUS / SYSTEM MESSAGE</p>
     <h1>Something went wrong.</h1>
