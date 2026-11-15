@@ -9,9 +9,11 @@ This checklist separates deployable repository work from external account setup 
 - [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command runs Prisma migrations.
 - [ ] Use Node.js 22 and the repository root as the Vercel project root.
 - [ ] Set the Vercel build command to `npm run vercel-build`.
-- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, and `NODE_ENV=production`.
+- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
 - [ ] Keep credentials server-side. Never expose secrets through client-side environment variables.
 - [ ] Confirm Production and Preview use separate databases.
+- [ ] Confirm the selected Vercel plan supports the configured five-minute Cron schedule; verify the schedule appears in the production project.
+- [ ] Generate distinct high-entropy `CRON_SECRET` values for Production and Preview. Keep them server-side and out of source control.
 
 ## 2. Shopify application configuration
 
@@ -69,7 +71,8 @@ This checklist separates deployable repository work from external account setup 
 | Reconciliation and diagnostics | Implemented; validation required |
 | Historical policy simulation | Implemented |
 | Shopify policy writes | Disabled |
-| Scheduled monitoring | Not implemented |
+| Scheduled Shopify order refresh | Implemented in repository; production Cron, credentials and execution not verified |
+| Carrier invoice polling, policy-drift detection and merchant alerts | Not implemented |
 | Recurring billing and entitlements | Not implemented |
 | App Store approval | External; not verified |
 
@@ -91,4 +94,4 @@ This checklist separates deployable repository work from external account setup 
 
 ## Current release decision
 
-The repository can be deployed to Vercel after real credentials, database and Shopify URLs are configured. That does **not** make NODUS enterprise-production complete or commercially launch-ready. Direct carrier APIs, recurring billing, entitlement enforcement and scheduled monitoring remain release blockers for a product marketed with those capabilities. Do not charge merchants for unimplemented functionality.
+The repository contains a deployable Vercel-targeted application and a protected scheduled Shopify order-refresh endpoint. A successful build still does **not** prove production readiness. The current product can be evaluated as a CSV-first, evidence-led workflow after Shopify OAuth, database isolation, webhooks, tenant boundaries, backups and scheduled execution pass real-store acceptance tests. Do not market direct carrier invoice APIs, policy-drift alerts, or autonomous policy writes: they are not implemented. Do not accept recurring subscription payments until Shopify App Pricing, server-side entitlements, plan limits and the complete subscription lifecycle are configured and tested. Public commercial operation also requires an appropriately authorized adult/business operator for legal, financial, Shopify Partner and payout responsibilities.
