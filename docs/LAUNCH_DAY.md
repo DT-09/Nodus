@@ -5,6 +5,8 @@ This checklist separates deployable repository work from external account setup 
 ## 1. Deployment architecture
 
 - [ ] Deploy the React Router application to Vercel using the preset configured in `react-router.config.ts`.
+- [ ] Use a Vercel Pro or Enterprise account for commercial deployment; Hobby is personal/non-commercial only. The configured five-minute cron requires Pro or Enterprise; Hobby supports daily cron execution only.
+- [ ] Ensure an authorized adult/business operator owns the hosting account, billing and production access.
 - [ ] Use managed PostgreSQL with durable backups and a documented restore procedure.
 - [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command runs Prisma migrations.
 - [ ] Use Node.js 22 and the repository root as the Vercel project root.
