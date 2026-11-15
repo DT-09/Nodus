@@ -23,7 +23,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 
 ## Not represented as live capabilities
 
-The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Recurring subscription billing and server-side paid-plan entitlements are not implemented. Scheduled monitoring is not active. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
+The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Recurring subscription billing and server-side paid-plan entitlements are not implemented. Carrier invoice polling, policy-drift detection and merchant alerting are not implemented. Scheduled Shopify order refresh exists in the repository but is not production-verified. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
 
 Do not advertise these as available, accept payment for them, or imply App Store approval. A production deployment is not the same as a commercially complete product.
 
@@ -40,6 +40,7 @@ Do not advertise these as available, accept payment for them, or imply App Store
    - `SCOPES` — must match `shopify.app.toml`
    - `DATABASE_URL` — PostgreSQL connection string
    - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
+   - `CRON_SECRET` — strong, unique server-side secret for the protected scheduled-sync endpoint
    - `NODE_ENV=production`
 6. Use a separate Preview database. The Vercel build command runs `prisma migrate deploy`; never point Preview deployments at Production.
 7. Deploy once, copy the stable production URL, then update `application_url` and every redirect URL in `shopify.app.toml` and the Shopify Partner configuration. Redeploy after the URLs match exactly.
@@ -87,4 +88,4 @@ The Vercel deployment includes a protected cron endpoint at `/api/cron/sync`, sc
 
 Set a strong random `CRON_SECRET` in Vercel Production and in local development if testing the endpoint manually. Vercel sends the secret as an Authorization bearer token. Do not expose it to browser code or commit it.
 
-This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, adjudicate disputed charges or independently verify recovered value. Vercel Hobby is for non-commercial personal projects; a revenue-generating deployment requires an appropriate commercial hosting plan and account owner.
+This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, detect shipping-policy drift, send merchant alerts, adjudicate disputed charges or independently verify recovered value. Production operation requires a configured `CRON_SECRET`, a Vercel plan that supports the configured five-minute schedule, and a verified production database. An appropriately authorized adult/business operator must own the commercial hosting, Shopify Partner, legal and payout arrangements.
