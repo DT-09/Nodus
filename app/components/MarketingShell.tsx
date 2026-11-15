@@ -5,7 +5,7 @@ import {Link} from "react-router";
 const groups = [
   {label:"PLATFORM", links:[["The platform","/product"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
   {label:"EXPLORE", links:[["Product walkthrough","/demo"],["How NODUS works","/methodology"],["Methodology","/methodology"],["Pricing & evaluation","/pricing"]]},
-  {label:"TRUST", links:[["Security & data","/security"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
+  {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
 
 export function MarketingShell({children, active="home"}:{children:ReactNode;active?:string}) {
