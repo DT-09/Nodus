@@ -42,6 +42,7 @@ model Merchant {
   auditEvents  AuditEvent[]
   syncState    ShopifySyncState?
   simulations  PolicySimulation[]
+  valueRecords  EconomicValueRecord[]
 }
 
 model ShopifySyncState {
@@ -143,5 +144,25 @@ model PolicySimulation {
   createdAt                   DateTime @default(now())
   merchant                    Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
+  @@index([merchantId, createdAt])
+}
+
+model EconomicValueRecord {
+  id                    String   @id @default(cuid())
+  merchantId            String
+  category              String
+  status                String   @default("identified")
+  amountMinor           BigInt
+  currency              String
+  sourceReference       String
+  realizationReference String?
+  evidenceNote          String
+  occurredAt            DateTime?
+  createdBy             String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  merchant              Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, status, currency])
   @@index([merchantId, createdAt])
 }
