@@ -27,7 +27,7 @@ export default function Monitoring() {
     <section className="metric-grid">
       <article className="metric-card"><span>Scheduler</span><strong className="metric-pending">{configured ? "Configured" : "Awaiting secret"}</strong><small>Vercel Cron must be deployed and authorized.</small></article>
       <article className="metric-card"><span>Last successful sync</span><strong>{date(state?.lastSuccessAt ?? null)}</strong><small>Only successful Shopify refreshes are recorded.</small></article>
-      <article className="metric-card"><span>Next scheduled run</span><strong>{date(state?.nextRunAt ?? null)}</strong><small>15-minute cadence; 2-minute continuation while a backfill remains.</small></article>
+      <article className="metric-card"><span>Next scheduled run</span><strong>{date(state?.nextRunAt ?? null)}</strong><small>15-minute normal refresh; 5-minute continuation while a backfill remains.</small></article>
     </section>
     <section className="surface-card">
       <h3>Operational status</h3>
