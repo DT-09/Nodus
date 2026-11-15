@@ -3,7 +3,8 @@ import { useLoaderData } from "react-router";
 import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { prisma } from "../db.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {\n  requireShopifyConfiguration();
+export async function loader({ request }: LoaderFunctionArgs) {
+  requireShopifyConfiguration();
   const { session } = await authenticate.admin(request);
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return { state: null, configured: Boolean(process.env.CRON_SECRET) };
