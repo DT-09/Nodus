@@ -58,6 +58,20 @@ for (const check of checks) {
     let detail = `HTTP ${response.status}`;
     let valid = check.expected(response);
 
+    const securityHeaders = [
+      ["x-content-type-options", "nosniff"],
+      ["referrer-policy", "strict-origin-when-cross-origin"],
+      ["permissions-policy", "camera=(), microphone=(), geolocation=()"],
+      ["strict-transport-security", "max-age=31536000"],
+    ];
+    const missingSecurityHeaders = securityHeaders
+      .filter(([name, expected]) => response.headers.get(name) !== expected)
+      .map(([name]) => name);
+    valid &&= missingSecurityHeaders.length === 0;
+    if (missingSecurityHeaders.length) {
+      detail += `; missing/incorrect security headers: ${missingSecurityHeaders.join(", ")}`;
+    }
+
     if (check.html) {
       const type = response.headers.get("content-type") ?? "";
       valid &&= type.includes("text/html");
