@@ -17,7 +17,8 @@
     "postinstall": "prisma generate",
     "vercel-build": "prisma generate && prisma migrate deploy && react-router build",
     "smoke:launch": "node scripts/launch-smoke.mjs",
-    "verify:decision-pack": "node scripts/verify-decision-pack.mjs"
+    "verify:decision-pack": "node scripts/verify-decision-pack.mjs",
+    "verify:deployment": "node scripts/verify-deployment-config.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",
