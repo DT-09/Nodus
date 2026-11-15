@@ -1,132 +1,92 @@
 # NODUS Go-Live Runbook
 
-This runbook defines the final sequence from repository release to public exposure. It deliberately separates a public marketing launch, a controlled merchant pilot, and a generally available paid Shopify app. They are different release states.
+This runbook separates a public website launch, a controlled merchant evaluation, a paid pilot and a generally available paid Shopify app. Do not claim a later release state before its acceptance gates pass.
 
 ## Release states
 
-| State | What may be claimed | What must be true |
+| State | Permitted claim | Required evidence |
 |---|---|---|
-| Public website | NODUS is accepting evaluation requests | Public pages, contact route, privacy disclosures and production health checks work |
-| Controlled pilot | A named merchant can evaluate the implemented workflow | Authorized store install, data scope, evidence workflow, tenant isolation and support ownership are verified |
-| Paid pilot | A merchant has agreed to a specific paid deliverable | Scope, acceptance criteria, price, invoice/payment terms and authorized business operator are in place |
-| Public paid app | Eligible merchants can install and subscribe without manual intervention | Shopify distribution/review, production billing, entitlement lifecycle, support and operational controls are verified |
+| Public website | NODUS is open for merchant evaluations | Public pages, working evaluation route, privacy disclosures, production health and smoke checks |
+| No-fee founding evaluation | A merchant can assess the supported workflow | Authorized store connection, defined data scope, tenant isolation, source-linked deliverable and support owner |
+| Paid pilot | A merchant has agreed to a defined paid deliverable | Written scope, acceptance criteria, price, payment terms and authorized business operator |
+| Public paid app | Eligible merchants can install and subscribe self-serve | Shopify distribution/review, tested billing lifecycle, server-side entitlements, plan limits, support and operations |
 
-Do not describe one state as another.
+## 1. Business ownership and account access
 
-## 1. Account and ownership gate
+- [ ] An appropriately authorized adult/business operator owns commercial hosting, Shopify Partner organization, domain, contracts, invoices, tax obligations and payment/payout accounts.
+- [ ] The operator approves the legal entity, jurisdiction, support contact and person responsible for merchant data requests and incidents.
+- [ ] Do not place credentials, API tokens, customer records or payment data in source control, public demos or GitHub issues.
 
-- [ ] An appropriately authorized adult/business operator owns the Shopify Partner organization, Vercel billing, domain registration, merchant contracts, invoicing, tax obligations and payment/payout accounts.
-- [ ] The operator approves the public support contact and the person responsible for merchant data requests and incidents.
-- [ ] The operator confirms the legal entity and jurisdiction that will contract with merchants.
-- [ ] Never place personal credentials, payment data, customer data or API tokens in GitHub issues, public demos or source control.
+## 2. Vercel production deployment
 
-## 2. Vercel production setup
+NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is Vercel, not static Cloudflare Pages.
 
-NODUS uses the React Router Vercel preset and a Node.js server runtime. Use Vercel for the app; do not deploy it as a static Cloudflare Pages site.
-
-- [ ] Use a commercial Vercel plan appropriate for the business workload and five-minute Cron configuration. Confirm the plan's current limits in Vercel before enabling the schedule.
-- [ ] Connect the intended GitHub repository and confirm the root directory is the repository root.
-- [ ] Set Node.js to 22.
-- [ ] Set build command to `npm run vercel-build`.
-- [ ] Attach a managed PostgreSQL database with backups and a tested restore procedure.
-- [ ] Use separate Production and Preview databases. The Vercel build runs `prisma migrate deploy`.
-- [ ] Configure Production and Preview variables independently:
-  - `SHOPIFY_API_KEY`
-  - `SHOPIFY_API_SECRET`
-  - `SHOPIFY_APP_URL`
-  - `SCOPES`
-  - `DATABASE_URL`
-  - `PUBLIC_CONTACT_EMAIL`
-  - `CRON_SECRET`
-  - `NODE_ENV=production`
-- [ ] Keep all credentials server-side. Never use a `NEXT_PUBLIC_` or other client-exposed prefix for secrets.
-- [ ] Set `SHOPIFY_APP_URL` to the exact canonical HTTPS origin.
-- [ ] Set a unique high-entropy `CRON_SECRET` for each environment.
-- [ ] Confirm the Vercel Cron schedule is present on the Production project and that the selected plan supports it.
-- [ ] Configure uptime/error monitoring and operational alerts.
+- [ ] Use a Vercel commercial plan suitable for business hosting and the configured five-minute Cron schedule. Hobby is not a commercial hosting plan and has tighter Cron limits.
+- [ ] Connect `DT-09/Nodus` to the intended Vercel project. Root directory: repository root.
+- [ ] Set Node.js 22 and build command `npm run vercel-build`.
+- [ ] Attach managed PostgreSQL with backups and a tested restore procedure.
+- [ ] Use separate Production and Preview databases.
+- [ ] Configure Production and Preview independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
+- [ ] Use a unique high-entropy `CRON_SECRET` per environment. Keep secrets server-side.
+- [ ] Confirm the five-minute Cron schedule is enabled on the Production project and supported by the selected plan.
+- [ ] Configure uptime and error monitoring.
 
 ## 3. Shopify Partner configuration
 
-- [ ] Create or select the production app in the authorized Partner organization.
-- [ ] Replace the placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
-- [ ] Make the Partner Dashboard URLs, `SHOPIFY_APP_URL` and TOML URLs match exactly.
-- [ ] Confirm requested scopes match the enabled features and current Shopify policy.
-- [ ] Confirm the intended distribution mode. App Store distribution does not mean App Store approval.
-- [ ] Do not claim public App Store availability before Shopify approval.
-- [ ] Verify OAuth and offline session persistence using a controlled development store.
+- [ ] The authorized operator creates or selects the production app in the Partner organization.
+- [ ] Replace placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
+- [ ] Make Partner Dashboard URLs, `SHOPIFY_APP_URL` and TOML URLs match exactly.
+- [ ] Confirm scopes match the features and current Shopify policy.
+- [ ] Verify OAuth, offline session persistence, order sync and uninstall using a controlled development store.
 - [ ] Verify `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact` webhooks.
-- [ ] Verify the granted order-history window. The current configuration does not claim `read_all_orders`.
+- [ ] Confirm order-history permissions and limits. Do not claim access to all historical orders unless Shopify grants it.
+- [ ] Do not claim App Store availability or approval before Shopify has granted it.
 
-## 4. Database and application acceptance
+## 4. Production acceptance
 
 - [ ] Confirm migrations are applied to the intended Production database.
 - [ ] Confirm `/healthz` returns HTTP 200 and `{"status":"ok","service":"nodus"}`.
-- [ ] Run the public HTTP smoke test:
-  ```bash
-  NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch
-  ```
-- [ ] Confirm public homepage, product, synthetic demo, methodology, pricing, security and support pages load.
-- [ ] Confirm the carrier-cost CSV template is downloadable and contains the documented columns.
-- [ ] Confirm the unauthenticated cron endpoint returns HTTP 401 (not 200 or 503).
+- [ ] Run `NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch`.
+- [ ] Confirm homepage, product, demo, methodology, pricing, security and support routes load.
+- [ ] Confirm the carrier-cost CSV template downloads with the documented headers.
+- [ ] Confirm unauthenticated `/api/cron/sync` returns HTTP 401.
 - [ ] Confirm `/app` requires Shopify authentication.
-- [ ] Install the app on a controlled store and complete the first order sync.
-- [ ] Test pagination continuation, incremental refresh, duplicate imports, malformed CSV rows, invalid currencies and ambiguous matches.
+- [ ] Install on a controlled store and complete the first order sync.
+- [ ] Test pagination continuation, incremental refresh, duplicate imports, malformed CSV, invalid currencies and ambiguous matches.
 - [ ] Verify incomplete cost coverage is never silently treated as zero.
-- [ ] Verify tax-inclusive orders and mixed currencies are properly qualified.
 - [ ] Verify one merchant cannot access another merchant's records or exports.
-- [ ] Verify uninstall and privacy webhooks remove or redact the applicable data.
-- [ ] Test backup restoration, not just backup creation.
+- [ ] Verify uninstall and privacy webhooks remove or redact applicable data.
+- [ ] Restore a backup in a non-production environment and verify it.
 
-The smoke test is a read-only HTTP check. It does not prove Shopify API correctness, tenant isolation, webhook behaviour, billing, security certification or legal compliance.
+The HTTP smoke test is read-only. It does not prove Shopify API correctness, tenant isolation, webhook behaviour, billing, security certification or legal compliance.
 
-## 5. Commercial and payment gate
+## 5. Merchant evaluation and payment
 
-The current repository contains subscription-verification scaffolding, but recurring billing and complete server-side entitlement enforcement are not release-complete. The $99, $199 and $299 figures are pricing hypotheses, not live offers.
+The first offer is the no-fee, no-obligation Founding Merchant Value Programme. It is deliberately limited to one store, one reporting currency, permitted order history and one supported carrier-cost CSV export.
 
-Before recurring checkout is enabled:
+Deliver the evidence coverage statement, matched/unmatched/incomplete register, deterministic exception worklist, supported historical policy replay where the data permits it, economic value ledger and limitations. The merchant reviews and confirms its own records. A discrepancy is not a recovered credit.
 
-- [ ] Define each plan's exact store count, order volume, data retention, support, and feature entitlements.
-- [ ] Remove or defer plan features that are not implemented and verified.
-- [ ] Configure the corresponding Shopify App Pricing plans in the authorized Partner Dashboard.
-- [ ] Configure the app handle, Partner organization ID, Partner API token, app GID and exact plan handles as server-side environment variables.
-- [ ] Enable `SHOPIFY_APP_PRICING_ENABLED=true` only after configuration is complete.
-- [ ] Verify access is denied when subscription verification fails or a plan is inactive.
-- [ ] Test purchase approval, activation, plan change, cancellation, delinquency, reactivation and uninstall.
-- [ ] Verify plan changes take effect within the documented entitlement-cache window.
-- [ ] Publish clear recurring price, billing cadence, cancellation and refund terms.
-
-A paid pilot may be offered only as a separately scoped business engagement with a written deliverable, acceptance criteria, price and payment terms. An authorized adult/business operator must own the agreement, invoice and payment collection. Do not collect payment for unimplemented features or promise a financial recovery.
+- [ ] Confirm evaluation scope and data handling before connecting a store.
+- [ ] Deliver the evidence pack before discussing a subscription.
+- [ ] Propose a monthly fee only if there is a credible recurring job and conservative merchant-accepted recurring value supports it.
+- [ ] Keep realized credits, operating-time value and decision value separate. Do not claim NODUS caused a recovery without evidence.
+- [ ] A paid pilot requires a written scope, acceptance criteria, price and payment terms. An authorized adult/business operator owns the agreement, invoice and collection.
+- [ ] Do not enable recurring checkout until Shopify App Pricing configuration, plan limits, server-side entitlements and approval/activation/change/cancellation/delinquency/uninstall lifecycle tests pass.
+- [ ] Do not accept payment for direct carrier APIs, automated invoice polling, policy writes, alerts or other unimplemented capabilities.
 
 ## 6. Public exposure without cold outreach
 
-- [ ] Make the public website the single source of truth for supported capabilities, limitations, evaluation process and support.
-- [ ] Set a business-owned support inbox in `PUBLIC_CONTACT_EMAIL`; test the evaluation and support links from desktop and mobile.
-- [ ] Publish accurate privacy, terms, data-retention/deletion, refund and support disclosures approved by the responsible operator.
-- [ ] Add a clearly labelled synthetic-data walkthrough. Never present synthetic data as a customer result.
-- [ ] Publish the CSV template and a concise evaluation guide.
-- [ ] Add search metadata, social preview metadata, canonical URL and sitemap/robots policy after the final domain is chosen.
-- [ ] Publish the Shopify App Store listing only when distribution and approval permit it.
-- [ ] Use public discovery: searchable product pages, useful documentation, a transparent demo and permitted public founder/product channels.
-- [ ] Do not fabricate testimonials, merchant logos, savings figures, app approval or customer counts.
+- [ ] Choose and verify the canonical production domain.
+- [ ] Publish accurate privacy, terms, retention/deletion, support and evaluation disclosures approved by the responsible operator.
+- [ ] Verify evaluation and support links from desktop and mobile.
+- [ ] Publish the synthetic demo, CSV template and buyer evaluation guide. Keep synthetic data labelled as synthetic.
+- [ ] Add canonical metadata, social preview metadata, sitemap and robots policy after the final domain is chosen.
+- [ ] Publish a Shopify App Store listing only when distribution and approval permit it.
+- [ ] Use public discovery: searchable product pages, useful documentation, transparent demos and permitted public product/founder channels.
+- [ ] Never fabricate testimonials, merchant logos, savings, customer counts or App Store approval.
 
-## 7. Release decision
+## 7. Release record
 
-A release is **GO** only when all gates for the intended release state are checked and evidenced.
-
-Record:
-- Release commit:
-- Production deployment URL:
-- Canonical domain:
-- Production database and migration status:
-- Health check timestamp:
-- Smoke-test result:
-- Development-store install result:
-- Tenant-isolation result:
-- Webhook/privacy result:
-- Backup restore result:
-- Billing lifecycle result (if paid app):
-- Shopify distribution/review status:
-- Responsible business operator:
-- Support and incident owner:
+Record the release commit, production URL, canonical domain, database/migration status, health-check timestamp, smoke-test result, development-store install result, tenant-isolation result, privacy-webhook result, backup-restore result, billing status (if applicable), Shopify distribution status, responsible business operator and support/incident owner.
 
 If any item is unknown, record it as unknown. Do not convert an unchecked requirement into a launch claim.
