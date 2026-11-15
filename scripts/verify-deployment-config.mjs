@@ -24,10 +24,12 @@ for (const [name, value] of Object.entries(requiredHeaders)) {
 // Shopify embedded apps must remain frameable by Shopify Admin.
 assert.equal(headers.has("x-frame-options"), false, "Do not block Shopify's embedded app frame.");
 
-assert.ok(
-  vercel.crons?.some((cron) => cron.path === "/api/cron/sync" && cron.schedule === "*/5 * * * *"),
-  "The expected protected sync cron must be configured.",
-);
+assert.equal(vercel.crons?.length ?? 0, 0, "Vercel Hobby does not support the five-minute sync schedule; use the GitHub scheduled runner.");
+
+const syncWorkflow = await read("../.github/workflows/scheduled-sync.yml");
+assert.match(syncWorkflow, /cron:\s*["']\\*\\/5 \\* \\* \\* \\*["']/);
+assert.match(syncWorkflow, /NODUS_BASE_URL/);
+assert.match(syncWorkflow, /NODUS_CRON_SECRET/);
 assert.equal(pkg.scripts?.["smoke:launch"], "node scripts/launch-smoke.mjs");
 assert.equal(pkg.scripts?.["verify:decision-pack"], "node scripts/verify-decision-pack.mjs");
 
