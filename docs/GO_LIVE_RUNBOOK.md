@@ -38,6 +38,7 @@ NODUS requires a Node.js server runtime and PostgreSQL. The deployment target is
 - [ ] Replace placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
 - [ ] Make Partner Dashboard URLs, `SHOPIFY_APP_URL` and TOML URLs match exactly.
 - [ ] Confirm scopes match the features and current Shopify policy.
+- [ ] Configure fixed outbound egress IPs and restrict Shopify Admin API access to those addresses. Shopify's public-app security guidance has a November 20, 2026 enforcement milestone; confirm the exact current requirements in the Partner Dashboard before launch. Ordinary Vercel function egress is dynamic. Vercel Static IPs are a paid Pro add-on; compare the complete hosting cost with other fixed-egress hosting options.
 - [ ] Verify OAuth, offline session persistence, order sync and uninstall using a controlled development store.
 - [ ] Verify `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact` webhooks.
 - [ ] Confirm order-history permissions and limits. Do not claim access to all historical orders unless Shopify grants it.
