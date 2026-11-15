@@ -20,6 +20,8 @@ NODUS is a Shopify-first shipping economics workspace. It brings current Shopify
 
 ## Production release is not yet authorized or verified
 
+See [Merchant Evaluation](docs/BUYER_EVALUATION.md) for the exact first-buyer workflow and [Launch-Day Release Gate](docs/LAUNCH_DAY.md) for the external setup and verification required before launch.
+
 The repository is not a public, revenue-generating launch. It still requires a configured Shopify Partner app, a real development store, approved scopes, production URL, hosting, managed PostgreSQL, secrets, backups, monitoring, legal/privacy materials, billing and App Store review. The live policy-write path remains disabled. PDF invoice extraction and continuous monitoring are not implemented.
 
 The Shopify app configuration contains placeholders until the production app and URL are supplied. A passing CI run verifies code against a test PostgreSQL service; it does not verify Shopify installation, real merchant data or production deployment.
