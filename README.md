@@ -40,7 +40,8 @@ Do not advertise these as available, accept payment for them, or imply App Store
    - `SHOPIFY_API_SECRET`
    - `SHOPIFY_APP_URL` — exact public HTTPS origin
    - `SCOPES` — must match `shopify.app.toml`
-   - `DATABASE_URL` — PostgreSQL connection string
+   - `DATABASE_URL` — pooled PostgreSQL connection string for serverless runtime
+   - `DIRECT_URL` — direct PostgreSQL connection string for Prisma migrations and administrative operations
    - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
    - `CRON_SECRET` — high-entropy secret used only by the protected scheduled-sync endpoint
    - `NODE_ENV=production`
