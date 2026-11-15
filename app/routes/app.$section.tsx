@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!page) throw new Response("Not found", { status: 404 });
 
   const empty = {
-    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
+    page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, totalValueRecords: 0, valueTotals: [] as Array<{currency:string;status:string;amountMinor:string;count:number}>, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
     markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
     evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
@@ -177,7 +177,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       return `"${text.replaceAll('"', '""')}"`;
     };
     const records = [
-      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","taxes_included","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions"],
+      ["record_type","order_id","order_name","date","currency","shipping_revenue_minor","taxes_included","coverage_status","evidence_id","cost_amount_minor","cost_type","order_reference","tracking_number","source_reference","coverage_reviewed_at","coverage_reviewed_by","sample_size","sample_window_start","sample_window_end","assumptions","value_category","value_status","value_amount_minor","value_realization_reference","value_source_reference","value_evidence_note"],
       ...orders.map((order) => ["order", order.sourceOrderId, order.orderName, order.orderedAt.toISOString(), order.currency, order.shippingRevenueMinor.toString(), String(order.taxesIncluded), order.costCoverageStatus, "", "", "", "", "", "", order.coverageReviewedAt?.toISOString() ?? "", order.coverageReviewedBy ?? "", "", "", "", ""]),
       ...costs.map((cost) => ["cost_evidence", "", "", cost.occurredAt?.toISOString() ?? "", cost.currency, "", "", "", `${cost.sourceSystem}:${cost.sourceRecordId}`, cost.amountMinor.toString(), cost.costType, cost.orderReference ?? "", cost.trackingNumber ?? "", cost.sourceReference ?? "", "", "", "", "", "", ""]),
       ...simulations.map((simulation) => ["policy_simulation", simulation.id, "", simulation.createdAt.toISOString(), simulation.currency, simulation.observedShippingRevenueMinor.toString(), "", "historical_replay", "", simulation.replayedShippingRevenueMinor.toString(), `flat_rate_minor=${simulation.flatRateMinor};threshold_minor=${simulation.freeShippingThresholdMinor ?? ""};delta_minor=${simulation.revenueDeltaMinor}`, "", "", simulation.engineVersion, "", "", String(simulation.sampleSize), simulation.sampleWindowStart?.toISOString() ?? "", simulation.sampleWindowEnd?.toISOString() ?? "", JSON.stringify(simulation.assumptions)]),
@@ -186,7 +186,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     await prisma.auditEvent.create({ data: {
       merchantId: merchant.id, actor: session.id, action: "report_exported",
       subjectType: "merchant", subjectId: session.shop,
-      detail: { orderCount: orders.length, evidenceCount: costs.length, simulationCount: simulations.length, format: "csv" },
+      detail: { orderCount: orders.length, evidenceCount: costs.length, simulationCount: simulations.length, valueRecordCount: valueRecords.length, format: "csv" },
     } });
     return new Response(csv, { headers: {
       "Content-Type": "text/csv; charset=utf-8",
@@ -410,8 +410,8 @@ export default function Section() {
         <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""}{run.sampleWindowStart && run.sampleWindowEnd ? " · Orders "+new Date(run.sampleWindowStart).toLocaleDateString()+"–"+new Date(run.sampleWindowEnd).toLocaleDateString() : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
-        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations</p>
-        <p className="body-copy">Export stored Shopify order records, imported carrier-cost evidence and coverage-review status. Export actions are recorded in the audit log.</p>
+        <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations · {data.totalValueRecords} value records</p>
+        <p className="body-copy">Export the full merchant-scoped evidence register, historical simulations and economic value ledger. The value rows retain identified, validated and realized stages, source references and realization references. Export actions are recorded in the audit log.</p>\n        <div className="value-subtotals">{data.valueTotals.map((group) => <span key={group.currency+group.status}>{group.currency} · {group.status}: {formatMinor(group.amountMinor,group.currency)} ({group.count} records)</span>)}{!data.valueTotals.length?<span>No financial outcomes recorded. No ROI claim is available.</span>:null}</div>
         <Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form>
         <h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}
           {!data.auditEvents.length ? <p className="body-copy">No audit activity recorded yet.</p> : null}</div>
