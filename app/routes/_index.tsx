@@ -4,10 +4,10 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — Shipping economics, with the evidence attached"},
-  {name:"description",content:"Connect Shopify shipping revenue with carrier-cost evidence. Review coverage, reconcile supported records and replay shipping policies against historical orders."},
-  {property:"og:title",content:"NODUS — Shipping economics, with the evidence attached"},
-  {property:"og:description",content:"Evidence before recommendation. Approval before execution. Verification after."},
+  {title:"Shopify Shipping Cost Reconciliation & Policy Analysis — NODUS"},
+  {name:"description",content:"Compare Shopify checkout shipping charges with merchant-provided carrier and 3PL cost evidence. Review match coverage, supported discrepancies and historical shipping-policy scenarios."},
+  {property:"og:title",content:"NODUS — Shopify Shipping Cost Reconciliation"},
+  {property:"og:description",content:"Connect Shopify shipping charges to carrier/3PL cost evidence. Inspect coverage, exceptions and historical policy scenarios."},
   {name:"theme-color",content:"#101820"},
 ];
 
@@ -36,9 +36,9 @@ export default function Home(){
       <section className="home-hero">
         <div className="hero-copy-column">
           <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
-          <h1>Shipping is an economic system.<br/><em>Make every decision traceable.</em></h1>
-          <p className="hero-intro">NODUS connects Shopify shipping revenue with carrier-cost evidence, reconciliation and historical policy analysis—so merchants can see what the data supports before they act.</p>
-          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/demo" className="cta-secondary">VIEW SAMPLE RECONCILIATION <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A MERCHANT EVALUATION <span>↗</span></Link></div>
+          <h1>Know what checkout collected.<br/><em>See what your cost records support.</em></h1>
+          <p className="hero-intro">NODUS connects Shopify order shipping charges with merchant-provided carrier and 3PL cost exports. Review match coverage, supported differences and historical policy scenarios without hiding missing evidence.</p>
+          <div className="hero-ctas"><Link to="/product" className="cta-primary">EXPLORE THE PLATFORM <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE DECISION PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
         <div className="hero-network" aria-label="Illustration of connected Shopify, fulfillment, carrier evidence, reconciliation and decision nodes">
