@@ -20,6 +20,7 @@ export default [
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
   route("buyer-evaluation", "./routes/buyer-evaluation.tsx"),
+  route("shipping-cost-reconciliation", "./routes/shipping-cost-reconciliation.tsx"),
   route("robots.txt", "./routes/robots[.]txt.ts"),
   route("sitemap.xml", "./routes/sitemap[.]xml.ts"),
   route("webhooks", "./routes/webhooks.tsx"),
