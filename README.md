@@ -65,7 +65,7 @@ npm run dev
 - [Buyer Evaluation](docs/BUYER_EVALUATION.md) — scope and acceptance criteria for a merchant evaluation.
 - [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) — evidence definitions, financial calculations and pricing gates.
 
-A read-only production HTTP smoke test is available:
+The public site includes a clearly labelled [synthetic reconciliation walkthrough](/demo) so prospective merchants can inspect the evidence model before connecting a store. It is illustrative data, not a customer result.\n\nA read-only production HTTP smoke test is available:
 
 ```bash
 NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch
