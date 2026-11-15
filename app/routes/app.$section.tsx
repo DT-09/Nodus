@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData } from "react-router";
-import { authenticate } from "../shopify.server";
+import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { prisma } from "../db.server";
 import { importCarrierCostCsv } from "../services/cost-import.server";
 import { reconcileShipping } from "../domain/reconcile";
