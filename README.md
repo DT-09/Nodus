@@ -62,3 +62,21 @@ npm run dev
 See [Launch-Day Release Gate](docs/LAUNCH_DAY.md) and [Buyer Evaluation](docs/BUYER_EVALUATION.md). These distinguish repository work from external Shopify, hosting, legal, security, billing and App Store requirements.
 
 NODUS makes no unverified savings, recovery, customer, revenue or integration claims.
+
+## Economic proof and commercial value
+
+The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
+
+The public pricing page includes a break-even calculator. It uses merchant-entered carrier spend and confirmed credits only; it does not forecast savings or claim NODUS caused a recovery. Target prices ($99/$199/$299) are not live checkout offers.
+
+See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for definitions, evidence requirements and pricing gates.
+
+## Carrier cost evidence
+
+Carrier invoice CSV imports accept the canonical template and common header aliases. If a file contains a carrier/provider column, its value is retained as the evidence source label. This is invoice-evidence intake, not a direct carrier API connection. Rate quotes and tracking APIs are not substitutes for the final billed invoice.
+
+## Shopify App Pricing integration
+
+The application includes Partner API subscription verification and an app-level access gate. It remains disabled until plans are configured in the authorized Shopify Partner Dashboard and all Partner API environment variables are supplied. Set `SHOPIFY_APP_PRICING_ENABLED=true` only after configuring the app handle, Partner organization ID, Partner API token, app GID and the exact plan handles. The gate fails closed on Partner API errors and redirects merchants without an active plan to Shopify's hosted plan selection page.
+
+For new public apps, Shopify recommends Shopify App Pricing rather than custom Billing API charges. See [Shopify's billing guidance](https://shopify.dev/docs/apps/launch/billing/shopify-app-pricing).
