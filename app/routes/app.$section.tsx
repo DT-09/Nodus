@@ -8,6 +8,7 @@ import { diagnoseReconciliation } from "../domain/diagnostics";
 import { parseMoney } from "../domain/money";
 import { simulateHistoricalShippingRevenue } from "../domain/simulation";
 import { getMarketShippingSnapshot } from "../services/shipping-policy.server";
+import { createHash } from "node:crypto";
 
 const pages: Record<string, { title: string; subtitle: string; heading: string; body: string }> = {
   orders: { title: "Order evidence", subtitle: "Order-level shipping revenue and fulfillment evidence.", heading: "Persisted Shopify orders", body: "Orders are stored through a resumable Shopify backfill. Imported costs are matched by exact order reference or an unambiguous tracking number. Cost coverage must be reviewed before contribution is calculated." },
@@ -196,6 +197,177 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return new Response(csv, { headers: {
       "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="nodus-evidence-report-${new Date().toISOString().slice(0,10)}.csv"`,
+      "Cache-Control": "no-store",
+    } });
+  }
+
+  if (params.section === "reports" && form.get("intent") === "export-decision-pack") {
+    const merchant = await prisma.merchant.findUnique({
+      where: { shop: session.shop },
+      select: { id: true, shop: true, shopName: true, installedAt: true },
+    });
+    if (!merchant) return new Response("No merchant data is available.", { status: 404 });
+
+    const [orders, costs, simulations, valueRecords] = await Promise.all([
+      prisma.shippingOrder.findMany({ where: { merchantId: merchant.id }, orderBy: [{ orderedAt: "asc" }, { sourceOrderId: "asc" }] }),
+      prisma.shippingCost.findMany({ where: { merchantId: merchant.id }, orderBy: [{ occurredAt: "asc" }, { sourceSystem: "asc" }, { sourceRecordId: "asc" }] }),
+      prisma.policySimulation.findMany({ where: { merchantId: merchant.id }, orderBy: [{ createdAt: "asc" }, { id: "asc" }] }),
+      prisma.economicValueRecord.findMany({ where: { merchantId: merchant.id }, orderBy: [{ createdAt: "asc" }, { id: "asc" }] }),
+    ]);
+
+    const orderInputs = orders.map((order) => ({
+      orderId: order.sourceOrderId,
+      orderName: order.orderName,
+      shippingRevenue: { minor: order.shippingRevenueMinor, currency: order.currency },
+      trackingNumbers: Array.isArray(order.trackingNumbers)
+        ? order.trackingNumbers.filter((value): value is string => typeof value === "string")
+        : [],
+      costCoverage: order.costCoverageStatus === "complete" ? "complete" as const
+        : order.costCoverageStatus === "partial" ? "partial" as const : "unknown" as const,
+      taxesIncluded: order.taxesIncluded,
+    }));
+    const costInputs = costs.map((cost) => ({
+      evidenceId: `${cost.sourceSystem}:${cost.sourceRecordId}`,
+      amount: { minor: cost.amountMinor, currency: cost.currency },
+      orderReference: cost.orderReference,
+      trackingNumber: cost.trackingNumber,
+    }));
+    const reconciled = reconcileShipping(orderInputs, costInputs);
+    const findings = diagnoseReconciliation(reconciled);
+    const matchedEvidence = new Set(reconciled.flatMap((row) => [...row.evidenceIds]));
+    const coverage = {
+      complete: reconciled.filter((row) => row.coverage === "complete").length,
+      partial: reconciled.filter((row) => row.coverage === "partial").length,
+      incomplete: reconciled.filter((row) => row.coverage === "none").length,
+      matchedEvidenceRows: matchedEvidence.size,
+      unmatchedEvidenceRows: costs.length - matchedEvidence.size,
+    };
+    const currencySummaries = [...new Set(orders.map((order) => order.currency))].sort().map((currency) => {
+      const rows = reconciled.filter((row) => row.shippingRevenue.currency === currency);
+      const complete = rows.filter((row) => row.coverage === "complete" && !row.taxesIncluded && row.shippingContributionBeforeUnobservedCosts !== null);
+      const sum = (values: typeof complete, pick: (row: typeof complete[number]) => bigint) =>
+        values.reduce((total, row) => total + pick(row), 0n).toString();
+      return {
+        currency,
+        orderCount: rows.length,
+        completeComparableOrderCount: complete.length,
+        shippingRevenueMinorCompleteComparable: sum(complete, (row) => row.shippingRevenue.minor),
+        evidencedCostMinorCompleteComparable: sum(complete, (row) => row.evidencedCost?.minor ?? 0n),
+        shippingContributionBeforeUnobservedCostsMinor: sum(complete, (row) => row.shippingContributionBeforeUnobservedCosts?.minor ?? 0n),
+        note: "Only merchant-reviewed complete-coverage orders with tax-exclusive shipping revenue are included. This is not profit.",
+      };
+    });
+    const payload = {
+      schema: "nodus.shipping-economics-decision-pack.v1",
+      methodology: {
+        engine: "NODUS deterministic reconciliation",
+        engineVersion: "v1",
+        matching: "Exact order ID/name reference; otherwise an unambiguous tracking number. Explicit unmatched order references do not fall back to tracking.",
+        money: "Integer minor units with ISO currency codes; currencies are never combined.",
+        coverage: "Missing or partial evidence is excluded from complete-coverage calculations. Complete coverage is a merchant attestation.",
+        limitations: [
+          "A merchant-attested complete coverage state is not independently audited.",
+          "Shipping contribution is shipping revenue less imported evidenced cost only; it is not profit.",
+          "Tax-inclusive shipping revenue is excluded from contribution calculations.",
+          "Historical policy simulations are not demand, conversion or profit forecasts.",
+          "Identified or validated opportunities are not realized cash. Realized records remain merchant-attested.",
+          "This pack reflects records stored at export time and does not prove that every carrier or 3PL charge was supplied.",
+        ],
+      },
+      scope: {
+        shop: merchant.shop,
+        shopName: merchant.shopName,
+        merchantInstalledAt: merchant.installedAt.toISOString(),
+        generatedAt: new Date().toISOString(),
+        reportingCurrencies: [...new Set([...orders.map((row) => row.currency), ...costs.map((row) => row.currency)])].sort(),
+        orderWindowStart: orders[0]?.orderedAt.toISOString() ?? null,
+        orderWindowEnd: orders.at(-1)?.orderedAt.toISOString() ?? null,
+        orderCount: orders.length,
+        costEvidenceCount: costs.length,
+      },
+      summary: { coverage, currencySummaries, findingCount: findings.length },
+      orders: reconciled.map((row) => {
+        const source = orders.find((order) => order.sourceOrderId === row.orderId)!;
+        return {
+          orderId: row.orderId,
+          orderName: source.orderName,
+          orderedAt: source.orderedAt.toISOString(),
+          currency: row.shippingRevenue.currency,
+          shippingRevenueMinor: row.shippingRevenue.minor.toString(),
+          taxesIncluded: row.taxesIncluded,
+          coverage: row.coverage,
+          merchantCoverageStatus: source.costCoverageStatus,
+          coverageReviewedAt: source.coverageReviewedAt?.toISOString() ?? null,
+          coverageReviewedBy: source.coverageReviewedBy,
+          evidencedCostMinor: row.evidencedCost?.minor.toString() ?? null,
+          evidenceIds: [...row.evidenceIds],
+          shippingContributionBeforeUnobservedCostsMinor: row.shippingContributionBeforeUnobservedCosts?.minor.toString() ?? null,
+        };
+      }),
+      evidence: costs.map((cost) => ({
+        evidenceId: `${cost.sourceSystem}:${cost.sourceRecordId}`,
+        sourceSystem: cost.sourceSystem,
+        sourceRecordId: cost.sourceRecordId,
+        sourceReference: cost.sourceReference,
+        orderReference: cost.orderReference,
+        trackingNumber: cost.trackingNumber,
+        occurredAt: cost.occurredAt?.toISOString() ?? null,
+        currency: cost.currency,
+        amountMinor: cost.amountMinor.toString(),
+        costType: cost.costType,
+        matched: matchedEvidence.has(`${cost.sourceSystem}:${cost.sourceRecordId}`),
+      })),
+      findings: findings.map((finding) => ({
+        ruleId: finding.ruleId,
+        orderId: finding.orderId,
+        severity: finding.severity,
+        title: finding.title,
+        explanation: finding.explanation,
+        evidenceIds: [...finding.evidenceIds],
+      })),
+      policySimulations: simulations.map((simulation) => ({
+        id: simulation.id,
+        createdAt: simulation.createdAt.toISOString(),
+        currency: simulation.currency,
+        flatRateMinor: simulation.flatRateMinor.toString(),
+        freeShippingThresholdMinor: simulation.freeShippingThresholdMinor?.toString() ?? null,
+        sampleSize: simulation.sampleSize,
+        sampleWindowStart: simulation.sampleWindowStart?.toISOString() ?? null,
+        sampleWindowEnd: simulation.sampleWindowEnd?.toISOString() ?? null,
+        observedShippingRevenueMinor: simulation.observedShippingRevenueMinor.toString(),
+        replayedShippingRevenueMinor: simulation.replayedShippingRevenueMinor.toString(),
+        revenueDeltaMinor: simulation.revenueDeltaMinor.toString(),
+        assumptions: simulation.assumptions,
+        warning: simulation.warning,
+        engineVersion: simulation.engineVersion,
+      })),
+      economicValueLedger: valueRecords.map((record) => ({
+        id: record.id,
+        category: record.category,
+        status: record.status,
+        amountMinor: record.amountMinor.toString(),
+        currency: record.currency,
+        sourceReference: record.sourceReference,
+        realizationReference: record.realizationReference,
+        evidenceNote: record.evidenceNote,
+        occurredAt: record.occurredAt?.toISOString() ?? null,
+        createdAt: record.createdAt.toISOString(),
+        updatedAt: record.updatedAt.toISOString(),
+        attestation: "Merchant-entered record; not independently verified by NODUS.",
+      })),
+    };
+    const canonical = JSON.stringify(payload);
+    const contentSha256 = createHash("sha256").update(canonical).digest("hex");
+    const pack = JSON.stringify({ ...payload, integrity: { algorithm: "SHA-256", canonicalPayloadDigest: contentSha256 } }, null, 2);
+
+    await prisma.auditEvent.create({ data: {
+      merchantId: merchant.id, actor: session.id, action: "decision_pack_exported",
+      subjectType: "merchant", subjectId: session.shop,
+      detail: { orderCount: orders.length, evidenceCount: costs.length, findingCount: findings.length, simulationCount: simulations.length, valueRecordCount: valueRecords.length, format: "json", contentSha256 },
+    } });
+    return new Response(pack, { headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Disposition": `attachment; filename="nodus-decision-pack-${new Date().toISOString().slice(0,10)}.json"`,
       "Cache-Control": "no-store",
     } });
   }
@@ -418,6 +590,8 @@ export default function Section() {
         <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations · {data.totalValueRecords} value records</p>
         <p className="body-copy">Export the full merchant-scoped evidence register, historical simulations and economic value ledger. The value rows retain identified, validated and realized stages, source references and realization references. Export actions are recorded in the audit log.</p>\n        <div className="value-subtotals">{data.valueTotals.map((group) => <span key={group.currency+group.status}>{group.category.replaceAll("_"," ")} · {group.currency} · {group.status}: {formatMinor(group.amountMinor,group.currency)} ({group.count} records)</span>)}{!data.valueTotals.length?<span>No financial outcomes recorded. No ROI claim is available.</span>:null}</div>
         <Form method="post"><input type="hidden" name="intent" value="export-report"/><button type="submit">Export complete evidence CSV</button></Form>
+        <Form method="post"><input type="hidden" name="intent" value="export-decision-pack"/><button type="submit">Export reproducible decision pack (JSON)</button></Form>
+        <p className="footnote">The decision pack includes all stored orders and cost evidence, matched/unmatched states, deterministic findings, saved policy replays, value-ledger attestations, scope, limitations and a SHA-256 digest of its canonical payload.</p>
         <h4>Recent audit activity</h4><div className="finding-list">{data.auditEvents.map((event) => <article className="finding-row" key={event.id}><span className="tag">{event.action}</span><div><strong>{event.subjectType}: {event.subjectId}</strong><p>{event.actor}</p><small>{new Date(event.createdAt).toLocaleString()}</small></div></article>)}
           {!data.auditEvents.length ? <p className="body-copy">No audit activity recorded yet.</p> : null}</div>
       </div> : null}
