@@ -2,6 +2,7 @@ import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
   index("./routes/_index.tsx"),
+  route("demo", "./routes/demo.tsx"),
   route("about", "./routes/about.tsx"),
   route("api/cron/sync", "./routes/api.cron.sync.ts"),
   route("app", "./routes/app.tsx", [
