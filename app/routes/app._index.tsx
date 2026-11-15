@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
-import { authenticate } from "../shopify.server";
+import { authenticate, requireShopifyConfiguration } from "../shopify.server";
 import { prisma } from "../db.server";
 import { getShippingSnapshot } from "../services/shipping-snapshot.server";
 
