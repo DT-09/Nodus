@@ -1,0 +1,2 @@
+invoice_id,charge_id,amount,currency,order_reference,tracking_number,occurred_at,cost_type,carrier
+INV-001,LINE-001,6.40,USD,#1001,1Z999AA10123456784,2026-10-02,shipping,UPS
