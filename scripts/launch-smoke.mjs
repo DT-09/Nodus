@@ -35,6 +35,13 @@ const checks = [
   { path: "/demo", label: "Synthetic reconciliation walkthrough", expected: (r) => r.status === 200, html: true },
   { path: "/methodology", label: "Methodology page", expected: (r) => r.status === 200, html: true },
   { path: "/pricing", label: "Pricing and evaluation page", expected: (r) => r.status === 200, html: true },
+  { path: "/connect", label: "Shopify connection gate", expected: (r) => r.status === 200, html: true },
+  { path: "/install", label: "Cross-device app installation guide", expected: (r) => r.status === 200, html: true },
+  { path: "/manual-data", label: "Manual data analysis workflow", expected: (r) => r.status === 200, html: true },
+  { path: "/manifest.webmanifest", label: "PWA installation manifest", expected: (r) => r.status === 200, manifest: true },
+  { path: "/sw.js", label: "PWA service worker", expected: (r) => r.status === 200, serviceWorker: true },
+  { path: "/offline.html", label: "PWA offline fallback", expected: (r) => r.status === 200, html: true },
+  { path: "/templates/nodus-orders-template.csv", label: "Order CSV template", expected: (r) => r.status === 200, csv: true },
   { path: "/security", label: "Security disclosure page", expected: (r) => r.status === 200, html: true },
   { path: "/privacy", label: "Privacy and data-handling notice", expected: (r) => r.status === 200, html: true },
   { path: "/support", label: "Support page", expected: (r) => r.status === 200, html: true },
@@ -78,7 +85,7 @@ for (const check of checks) {
       detail += `; content-type ${type || "missing"}`;
     }
 
-    if (check.csv) {
+    if (check.manifest) {\n      const body = await response.json().catch(() => null);\n      valid &&= body?.name === "NODUS — Shipping Intelligence" && body?.display === "standalone" && Array.isArray(body?.icons) && body.icons.length > 0;\n      detail += `; manifest ${body?.name ?? "invalid"}`;\n    }\n\n    if (check.serviceWorker) {\n      const body = await response.text();\n      valid &&= body.includes("self.addEventListener(\\"install\\"") && body.includes("/offline.html") && body.includes("/app");\n      detail += `; install/offline/privacy handlers ${valid ? "present" : "missing"}`;\n    }\n\n    if (check.csv) {
       const type = response.headers.get("content-type") ?? "";
       const body = await response.text();
       valid &&= body.includes("invoice_id") && body.includes("charge_id") && body.includes("amount") && body.includes("currency");
