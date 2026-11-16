@@ -93,7 +93,7 @@ for (const check of checks) {
 
     if (check.csvHeaders) {
       const body = await response.text();
-      const header = body.split(/\\r?\\n/, 1)[0] ?? "";
+      const header = body.split(String.fromCharCode(10), 1)[0] ?? "";
       valid &&= check.csvHeaders.every((column) => header.includes(column));
       detail += `; template headers ${check.csvHeaders.every((column) => header.includes(column)) ? "present" : "missing"}`;
     }
@@ -117,7 +117,7 @@ for (const check of checks) {
   }
 }
 
-console.log(`\\nNODUS smoke test: ${checks.length - failed}/${checks.length} passed.`);
+console.log(`NODUS smoke test: ${checks.length - failed}/${checks.length} passed.`);
 if (failed > 0) {
   console.error("Release blocked. Resolve every failed check and rerun against the intended deployment.");
   process.exit(1);
