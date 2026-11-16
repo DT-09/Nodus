@@ -33,6 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }));
   const findings = diagnoseReconciliation(reconcileShipping(orderInputs, costInputs));
   const now = new Date();
+  await prisma.shippingReviewCase.updateMany({ where: { merchantId: merchant.id }, data: { active: false } });
   for (const finding of findings) {
     const fingerprint = `${finding.ruleId}:${finding.orderId}`;
     await prisma.shippingReviewCase.upsert({
@@ -40,11 +41,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
       create: {
         merchantId: merchant.id, fingerprint, orderId: finding.orderId,
         title: finding.title, severity: finding.severity, explanation: finding.explanation,
-        lastSeenAt: now,
+        lastSeenAt: now, active: true,
       },
       update: {
         title: finding.title, severity: finding.severity, explanation: finding.explanation,
-        lastSeenAt: now,
+        lastSeenAt: now, active: true,
       },
     });
   }
@@ -59,7 +60,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return {
     cases: cases.map(item => ({
       id: item.id, orderId: item.orderId, title: item.title, severity: item.severity,
-      explanation: item.explanation, status: item.status, note: item.note,
+      explanation: item.explanation, status: item.status, note: item.note, active: item.active,
       firstSeenAt: item.firstSeenAt.toISOString(), lastSeenAt: item.lastSeenAt.toISOString(),
     })),
     totals, analyzedAt: now.toISOString(),
@@ -110,11 +111,11 @@ export default function ReviewQueue() {
       <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Finding</th><th>Order</th><th>Severity</th><th>Status</th><th>Last observed</th><th>Review action</th></tr></thead>
         <tbody>{data.cases.map(item => <tr key={item.id}>
           <td><b>{item.title}</b><small>{item.explanation}</small>{item.note ? <small>Merchant note: {item.note}</small> : null}</td>
-          <td>{item.orderId}</td><td>{item.severity}</td><td>{item.status}</td><td>{new Date(item.lastSeenAt).toLocaleString()}</td>
+          <td>{item.orderId}</td><td>{item.severity}</td><td>{item.status}{!item.active ? <small>Not in latest analysis</small> : null}</td><td>{new Date(item.lastSeenAt).toLocaleString()}</td>
           <td><Form method="post" className="coverage-review-form"><input type="hidden" name="caseId" value={item.id}/><select name="status" defaultValue={item.status} aria-label={`Status for ${item.title}`}><option value="open">Open</option><option value="investigating">Investigating</option><option value="resolved">Resolved</option><option value="ignored">Ignored</option></select><input name="note" maxLength={2000} defaultValue={item.note ?? ""} placeholder="Investigation note" aria-label="Investigation note"/><button type="submit">Save</button></Form></td>
         </tr>)}
         {!data.cases.length ? <tr><td colSpan={6}>No current findings. Import a carrier-cost file and review order coverage to build a useful exception register.</td></tr> : null}</tbody></table></div>
-      <p className="footnote">Last recalculated: {new Date(data.analyzedAt).toLocaleString()}. A resolved case remains in the history; if its underlying finding is still present, it will continue to show as resolved until the merchant changes its status.</p>
+      <p className="footnote">Cases marked inactive are no longer present in the latest analysis; their investigation history is retained. Last recalculated: {new Date(data.analyzedAt).toLocaleString()}. A resolved case remains in the history; if its underlying finding is still present, it will continue to show as resolved until the merchant changes its status.</p>
     </section>
   </div>;
 }
