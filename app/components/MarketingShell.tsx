@@ -2,7 +2,7 @@ import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
 const groups = [
-  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
+  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["Install NODUS","/install"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
   {label:"EXPLORE", links:[["Product walkthrough","/demo"],["Merchant evaluation guide","/buyer-evaluation"],["Shipping cost reconciliation guide","/guides/shopify-shipping-cost-reconciliation"],["Free-shipping threshold guide","/guides/free-shipping-threshold-analysis"],["How NODUS works","/methodology"],["Pricing & evaluation","/pricing"]]},
   {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
@@ -11,6 +11,9 @@ function NodusLogo(){return <svg className="nodus-logo" viewBox="0 0 40 40" role
 
 export function MarketingShell({children, active="home"}:{children:ReactNode;active?:string}) {
   const [menuOpen,setMenuOpen]=useState(false);
+  useEffect(()=>{
+    if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});
+  },[]);
   useEffect(()=>{
     const root=document.querySelector(".marketing-site");
     const targets=Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -50,7 +53,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
           <div className="menu-groups">
             {groups.map(group=><section className="menu-group" key={group.label}><p>{group.label}</p>{group.links.map(([label,to])=>to.startsWith("http")?<a key={label} href={to} target="_blank" rel="noreferrer" onClick={()=>setMenuOpen(false)}>{label}<span>↗</span></a>:<Link key={label} to={to} onClick={()=>setMenuOpen(false)}>{label}<span>↗</span></Link>)}</section>)}
           </div>
-          <div className="menu-bottom"><div><span className="menu-status-dot"></span><span>Evidence before recommendation.</span></div><Link to="/connect" className="menu-cta" onClick={()=>setMenuOpen(false)}>CONNECT SHOPIFY <span>↗</span></Link></div>
+          <div className="menu-bottom"><div><span className="menu-status-dot"></span><span>Evidence before recommendation.</span></div><div className="menu-actions"><Link to="/install" className="menu-cta menu-cta-secondary" onClick={()=>setMenuOpen(false)}>INSTALL NODUS <span>↗</span></Link><Link to="/connect" className="menu-cta" onClick={()=>setMenuOpen(false)}>CONNECT SHOPIFY <span>↗</span></Link></div></div>
         </nav>
       </>:null}
     </header>
@@ -60,7 +63,7 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
         <div className="footer-identity"><Link to="/" className="footer-wordmark"><NodusLogo/>NODUS<span>®</span></Link><p>Shipping economics intelligence.<br/>Evidence before recommendation.<br/>Approval before execution.</p><Link to="/product" className="footer-cta">EXPLORE THE PLATFORM <span>↗</span></Link></div>
         <div className="footer-column"><p>PLATFORM</p><Link to="/product">Overview</Link><Link to="/shipping-cost-reconciliation">Shipping cost reconciliation</Link><Link to="/product#evidence">Evidence</Link><Link to="/product#economics">Economics</Link><Link to="/product#policy">Policy intelligence</Link></div>
         <div className="footer-column"><p>KNOWLEDGE</p><Link to="/demo">Sample reconciliation</Link><Link to="/buyer-evaluation">Merchant evaluation guide</Link><Link to="/guides/shopify-shipping-cost-reconciliation">Shipping cost reconciliation</Link><Link to="/guides/free-shipping-threshold-analysis">Free-shipping threshold analysis</Link><Link to="/methodology">Methodology</Link><Link to="/pricing">Pricing & evaluation</Link><Link to="/security">Security</Link><Link to="/privacy">Privacy & data</Link><Link to="/support">Support</Link></div>
-        <div className="footer-column"><p>COMPANY</p><Link to="/about">About NODUS</Link><a href="https://github.com/DT-09/Nodus" target="_blank" rel="noreferrer">Open-source record ↗</a><Link to="/connect">Connect Shopify</Link></div>
+        <div className="footer-column"><p>COMPANY</p><Link to="/about">About NODUS</Link><a href="https://github.com/DT-09/Nodus" target="_blank" rel="noreferrer">Open-source record ↗</a><Link to="/connect">Connect Shopify</Link><Link to="/install">Install NODUS</Link></div>
       </div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} NODUS. All rights reserved.</span><span>BUILT AROUND TRACEABLE EVIDENCE</span><span><Link to="/security">Security & data</Link><Link to="/support">Contact</Link></span></div>
     </footer>
