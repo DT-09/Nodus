@@ -85,7 +85,7 @@ for (const check of checks) {
       detail += `; content-type ${type || "missing"}`;
     }
 
-    if (check.manifest) {\n      const body = await response.json().catch(() => null);\n      valid &&= body?.name === "NODUS — Shipping Intelligence" && body?.display === "standalone" && Array.isArray(body?.icons) && body.icons.length > 0;\n      detail += `; manifest ${body?.name ?? "invalid"}`;\n    }\n\n    if (check.serviceWorker) {\n      const body = await response.text();\n      valid &&= body.includes("self.addEventListener(\\"install\\"") && body.includes("/offline.html") && body.includes("/app");\n      detail += `; install/offline/privacy handlers ${valid ? "present" : "missing"}`;\n    }\n\n    if (check.csv) {
+    if (check.manifest) {\n      const body = await response.json().catch(() => null);\n      valid &&= body?.name === "NODUS — Shipping Intelligence" && body?.display === "standalone" && Array.isArray(body?.icons) && body.icons.length > 0;\n      detail += `; manifest ${body?.name ?? "invalid"}`;\n    }\n\n    if (check.serviceWorker) {\n      const body = await response.text();\n      valid &&= body.includes("self.addEventListener") && body.includes("/offline.html") && body.includes("/app");\n      detail += `; install/offline/privacy handlers ${valid ? "present" : "missing"}`;\n    }\n\n    if (check.csv) {
       const type = response.headers.get("content-type") ?? "";
       const body = await response.text();
       valid &&= body.includes("invoice_id") && body.includes("charge_id") && body.includes("amount") && body.includes("currency");
