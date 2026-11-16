@@ -196,6 +196,7 @@ model ShippingReviewCase {
   severity    String
   explanation String
   status      String   @default("open")
+  active      Boolean  @default(true)
   note        String?
   firstSeenAt DateTime @default(now())
   lastSeenAt  DateTime @default(now())
