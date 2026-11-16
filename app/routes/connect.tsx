@@ -40,6 +40,11 @@ export default function Connect() {
       <Link to="/pricing" className="cta-primary">REVIEW THE FOUNDING ASSESSMENT ↗</Link>
     </section>}
     <section className="content-note">
+      <h2>No Shopify connection? Use manual data.</h2>
+      <p>Upload an order CSV and a carrier-cost CSV for a browser-local evidence review. Files stay on the device and are not uploaded to NODUS. Download the review CSV or JSON pack. This manual route does not create a saved merchant workspace or recurring sync.</p>
+      <Link to="/manual-data" className="cta-primary">START MANUAL DATA REVIEW ↗</Link>
+    </section>
+    <section className="content-note">
       <h2>What the merchant gets</h2>
       <ul>
         <li>Order-level shipping revenue and fulfillment evidence from Shopify.</li>
