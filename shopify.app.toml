@@ -1,6 +1,6 @@
 client_id = "SET_WITH_SHOPIFY_CLI"
 name = "NODUS"
-application_url = "https://example.invalid"
+application_url = "https://nodus-dt09.vercel.app"
 embedded = true
 
 [build]
@@ -10,7 +10,7 @@ automatically_update_urls_on_dev = true
 scopes = "read_orders,read_products,read_fulfillments,read_shipping,read_markets"
 
 [auth]
-redirect_urls = ["https://example.invalid/auth/callback", "https://example.invalid/auth/shopify/callback", "https://example.invalid/api/auth/callback"]
+redirect_urls = ["https://nodus-dt09.vercel.app/auth/callback", "https://nodus-dt09.vercel.app/auth/shopify/callback", "https://nodus-dt09.vercel.app/api/auth/callback"]
 
 [webhooks]
 api_version = "2026-07"
