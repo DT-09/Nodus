@@ -38,7 +38,7 @@ export default function Home(){
           <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
           <h1>What did shipping<br/><em>actually cost?</em></h1>
           <p className="hero-intro">NODUS connects Shopify order shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence, then produce a decision pack your operations or finance team can inspect.</p>
-          <div className="hero-ctas"><Link to="/shipping-cost-reconciliation" className="cta-primary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
+          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
         <div className="hero-console" aria-label="Illustrative shipping reconciliation workspace">
@@ -63,8 +63,21 @@ export default function Home(){
         <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
       </section>
 
+
+      <section className="merchant-outputs section-light" id="merchant-outputs" data-reveal>
+        <div className="section-heading"><div><span className="section-index">03 / WHAT YOUR TEAM GETS</span><h2>Useful work products.<br/><em>Not another dashboard.</em></h2></div><p>Every output is built from the store data and carrier evidence the merchant has actually connected. Unknowns remain visible.</p></div>
+        <div className="outputs-grid">
+          <article><span>01 / OPERATIONS</span><h3>Exception work queue</h3><p>Keep unmatched charges, incomplete coverage and reconciliation findings in a persistent register. Assign a review status and retain investigation notes.</p><Link to="/product#evidence">HOW EVIDENCE REVIEW WORKS ↗</Link></article>
+          <article><span>02 / FINANCE</span><h3>Shipping economics decision pack</h3><p>Export order-level records, evidence coverage, calculations, exceptions, policy replays and stated limitations as merchant-scoped CSV and JSON assets.</p><Link to="/demo">INSPECT A SYNTHETIC SAMPLE ↗</Link></article>
+          <article><span>03 / STRATEGY</span><h3>Historical policy scenarios</h3><p>Compare supported flat-rate and free-shipping threshold alternatives against historical orders. See assumptions and exclusions before changing store policy.</p><Link to="/guides/free-shipping-threshold-analysis">READ THE POLICY GUIDE ↗</Link></article>
+          <article><span>04 / ACCOUNTABILITY</span><h3>Economic outcome ledger</h3><p>Record identified opportunities, merchant-validated outcomes, posted credits and measured operating time separately. Merchant attestations are not independent verification.</p><Link to="/product#economics">UNDERSTAND THE VALUE MODEL ↗</Link></article>
+          <article><span>05 / CONTROL</span><h3>Review history and audit trail</h3><p>Retain case decisions and relevant audit events so the team can explain what was reviewed, changed and recorded.</p><Link to="/security">REVIEW DATA BOUNDARIES ↗</Link></article>
+          <article><span>06 / CONTINUITY</span><h3>Store data refresh</h3><p>Refresh Shopify order data on a schedule and resume incomplete history syncs. Carrier billing still requires supported merchant-provided CSV imports.</p><Link to="/product">SEE CURRENT CAPABILITIES ↗</Link></article>
+        </div>
+      </section>
+
       <section className="evidence-thread" id="evidence" data-reveal>
-        <div className="section-heading"><div><span className="section-index">03 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Follow the records from Shopify order to carrier charge and reviewed finding. This is an illustrative workflow, not a live merchant record.</p></div>
+        <div className="section-heading"><div><span className="section-index">04 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Follow the records from Shopify order to carrier charge and reviewed finding. This is an illustrative workflow, not a live merchant record.</p></div>
         <div className="thread-layout">
           <div className="thread-steps" role="tablist" aria-label="Evidence workflow stages">{thread.map((item,i)=><button type="button" role="tab" aria-selected={active===i} className={"thread-step"+(active===i?" is-active":"")} key={item.number} onClick={()=>setActive(i)}><span>{item.number}</span><b>{item.label}</b><i>{active===i?"SELECTED":"VIEW STEP"}</i></button>)}</div>
           <article className="thread-detail" role="tabpanel">
@@ -78,7 +91,7 @@ export default function Home(){
       </section>
 
       <section className="trust-section" data-reveal>
-        <div className="trust-heading"><span className="section-index">04 / TRUST IS A PRODUCT FEATURE</span><h2>We show what is known.<br/><em>And what is not.</em></h2><p>Trust should not depend on a badge or a testimonial. It should be visible in the way the product handles evidence, access, uncertainty and control.</p></div>
+        <div className="trust-heading"><span className="section-index">05 / TRUST IS A PRODUCT FEATURE</span><h2>We show what is known.<br/><em>And what is not.</em></h2><p>Trust should not depend on a badge or a testimonial. It should be visible in the way the product handles evidence, access, uncertainty and control.</p></div>
         <div className="trust-grid">
           <article><span className="trust-symbol">01</span><h3>Evidence coverage</h3><p>Every analysis must disclose its source window, matched records, unmatched records and missing inputs.</p></article>
           <article><span className="trust-symbol">02</span><h3>Inspectable methods</h3><p>Published methodology explains matching, calculations, assumptions and the limits of historical replay.</p></article>
@@ -89,7 +102,7 @@ export default function Home(){
       </section>
 
       <section className="capability-ledger section-light" data-reveal>
-        <div className="section-heading"><div><span className="section-index">05 / RELEASE TRANSPARENCY</span><h2>Know exactly what<br/><em>you are evaluating.</em></h2></div><p>We will not sell a roadmap as a working integration. The current release boundary is explicit. Scheduled Shopify order refresh is available; carrier billing is not automatically polled.</p></div>
+        <div className="section-heading"><div><span className="section-index">06 / RELEASE TRANSPARENCY</span><h2>Know exactly what<br/><em>you are evaluating.</em></h2></div><p>We will not sell a roadmap as a working integration. The current release boundary is explicit. Scheduled Shopify order refresh is available; carrier billing is not automatically polled.</p></div>
         <div className="ledger">
           <div className="ledger-column"><div className="ledger-heading"><span className="ledger-dot live"></span><b>AVAILABLE IN THE CURRENT REPOSITORY BUILD</b></div><ul><li>Shopify order ingestion</li><li>Carrier-cost CSV imports</li><li>Evidence matching and review</li><li>Deterministic reconciliation and diagnostics</li><li>Historical flat-rate and threshold replay</li><li>CSV evidence exports</li><li>Scheduled Shopify order refresh (order data only)</li><li>Merchant-attested economic value ledger</li></ul></div>
           <div className="ledger-column planned"><div className="ledger-heading"><span className="ledger-dot planned-dot"></span><b>NOT YET VERIFIED AS LIVE</b></div><ul><li>UPS, FedEx and USPS direct API integrations</li><li>PDF invoice extraction</li><li>Recurring subscription billing</li><li>Automated carrier invoice feeds and carrier alerts</li><li>Automated Shopify policy writes</li><li>Public App Store approval</li></ul></div>
@@ -98,8 +111,8 @@ export default function Home(){
       </section>
 
       <section className="closing-section" data-reveal>
-        <span className="section-index">06 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
-        <div className="hero-ctas"><Link to="/shipping-cost-reconciliation" className="cta-primary">EXPLORE THE RECONCILIATION WORKFLOW <span>↗</span></Link><Link to="/buyer-evaluation" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
+        <span className="section-index">07 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
+        <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">EXPLORE THE RECONCILIATION WORKFLOW <span>↗</span></Link><Link to="/buyer-evaluation" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
       </section>
     </main>
   </MarketingShell>;
