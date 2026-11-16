@@ -1,4 +1,5 @@
 import type {LinksFunction} from "react-router";
+import {useEffect} from "react";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
@@ -10,6 +11,7 @@ export const links:LinksFunction=()=>[
   {rel:"manifest",href:"/manifest.webmanifest"},
 ];
 export default function Root(){
+  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});},[]);
   return <html lang="en">
     <head>
       <meta charSet="utf-8"/>
