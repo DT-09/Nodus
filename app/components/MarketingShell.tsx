@@ -2,7 +2,7 @@ import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
 const groups = [
-  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["Install NODUS","/install"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
+  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["Install NODUS","/install"],["Manual data analysis","/manual-data"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
   {label:"EXPLORE", links:[["Product walkthrough","/demo"],["Merchant evaluation guide","/buyer-evaluation"],["Shipping cost reconciliation guide","/guides/shopify-shipping-cost-reconciliation"],["Free-shipping threshold guide","/guides/free-shipping-threshold-analysis"],["How NODUS works","/methodology"],["Pricing & evaluation","/pricing"]]},
   {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
