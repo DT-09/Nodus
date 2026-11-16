@@ -38,7 +38,7 @@ export default function Home(){
           <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
           <h1>What did shipping<br/><em>actually cost?</em></h1>
           <p className="hero-intro">NODUS connects Shopify order shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence, then produce a decision pack your operations or finance team can inspect.</p>
-          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
+          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/install" className="cta-secondary">INSTALL NODUS <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
           <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
         </div>
         <div className="hero-console" aria-label="Illustrative shipping reconciliation workspace">
