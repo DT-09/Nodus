@@ -12,9 +12,6 @@ function NodusLogo(){return <svg className="nodus-logo" viewBox="0 0 40 40" role
 export function MarketingShell({children, active="home"}:{children:ReactNode;active?:string}) {
   const [menuOpen,setMenuOpen]=useState(false);
   useEffect(()=>{
-    if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});
-  },[]);
-  useEffect(()=>{
     const root=document.querySelector(".marketing-site");
     const targets=Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if(!root||targets.length===0)return;
