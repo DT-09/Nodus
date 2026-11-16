@@ -99,6 +99,7 @@ export default function Pricing(){
     <p><b>05</b> Decide whether ongoing monthly service is worth it.</p>
    </div>
    {email?<a className="primary-cta" href={"mailto:"+email+"?subject="+subject+"&body="+body}>Request a founding merchant assessment ↗</a>:<p className="import-error">Business-owned enquiry intake is not configured. Public applications must remain closed until a monitored business contact channel is set.</p>}
+   <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A MANUAL DATA REVIEW ↗</Link><Link to="/connect" className="cta-secondary">CONNECT SHOPIFY ↗</Link></div>
    <p className="pricing-disclaimer">No card is collected. No subscription starts automatically. Feedback is welcome but is never a condition of participation, and any testimonial or case study requires separate, explicit permission. We do not publish invented reviews, customer logos or financial outcomes.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
