@@ -419,3 +419,19 @@
 @media(prefers-reduced-motion:reduce){
  .marketing-site [data-reveal]{opacity:1;transform:none;transition:none}
 }
+
+/* Merchant deliverables section */
+.outputs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:42px;background:var(--line);border:1px solid var(--line)}
+.outputs-grid article{padding:25px;background:var(--surface);min-height:230px;display:flex;flex-direction:column;align-items:flex-start}
+.outputs-grid article>span{font:9px ui-monospace,monospace;letter-spacing:.12em;color:var(--accent)}
+.outputs-grid h3{font:22px Georgia,serif;margin:23px 0 10px;color:var(--text)}
+.outputs-grid p{font:12px/1.85 Inter,system-ui,sans-serif;color:var(--muted);margin:0 0 20px}
+.outputs-grid a{margin-top:auto;color:var(--accent-2);font:9px ui-monospace,monospace;letter-spacing:.07em;text-decoration:none}
+.connect-form{display:grid;gap:12px;max-width:560px;margin-top:24px}
+.connect-form label{display:grid;gap:8px;font:10px ui-monospace,monospace;letter-spacing:.08em;color:var(--muted)}
+.connect-form input{width:100%;padding:14px 15px;background:var(--surface);border:1px solid var(--line);color:var(--text);font:14px Inter,system-ui,sans-serif}
+.connect-form input:focus{outline:2px solid var(--accent);outline-offset:2px}
+.connect-form button{justify-self:start;border:0;cursor:pointer}
+.connect-status{padding:16px 18px;border:1px solid var(--line);background:var(--surface);font:12px/1.8 Inter,system-ui,sans-serif;color:var(--muted)}
+@media(max-width:950px){.outputs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.outputs-grid{grid-template-columns:1fr}.outputs-grid article{min-height:0}}
