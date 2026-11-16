@@ -33,7 +33,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }));
   const findings = diagnoseReconciliation(reconcileShipping(orderInputs, costInputs));
   const now = new Date();
-  await prisma.shippingReviewCase.updateMany({ where: { merchantId: merchant.id }, data: { active: false } });
+  const analysisTruncated = orders.length === 500 || costs.length === 10000;
+  if (!analysisTruncated) {
+    await prisma.shippingReviewCase.updateMany({ where: { merchantId: merchant.id }, data: { active: false } });
+  }
   for (const finding of findings) {
     const fingerprint = `${finding.ruleId}:${finding.orderId}`;
     await prisma.shippingReviewCase.upsert({
@@ -52,11 +55,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const cases = await prisma.shippingReviewCase.findMany({
     where: { merchantId: merchant.id },
-    orderBy: [{ status: "asc" }, { lastSeenAt: "desc" }],
+    orderBy: [{ active: "desc" }, { status: "asc" }, { lastSeenAt: "desc" }],
     take: 500,
   });
   const totals = { open: 0, investigating: 0, resolved: 0, ignored: 0 };
-  for (const item of cases) if (item.status in totals) totals[item.status as keyof typeof totals] += 1;
+  for (const item of cases) if (item.active && item.status in totals) totals[item.status as keyof typeof totals] += 1;
   return {
     cases: cases.map(item => ({
       id: item.id, orderId: item.orderId, title: item.title, severity: item.severity,
@@ -64,7 +67,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       firstSeenAt: item.firstSeenAt.toISOString(), lastSeenAt: item.lastSeenAt.toISOString(),
     })),
     totals, analyzedAt: now.toISOString(),
-    limited: orders.length === 500 || costs.length === 10000,
+    limited: analysisTruncated,
   };
 }
 
