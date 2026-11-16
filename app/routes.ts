@@ -8,6 +8,7 @@ export default [
   route("app", "./routes/app.tsx", [
     index("./routes/app._index.tsx"),
     route("monitoring", "./routes/app.monitoring.tsx"),
+    route("cases", "./routes/app.cases.tsx"),
     route("value", "./routes/app.value.tsx"),
     route(":section", "./routes/app.$section.tsx"),
   ]),
