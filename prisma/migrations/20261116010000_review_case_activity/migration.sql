@@ -1,0 +1,1 @@
+ALTER TABLE "ShippingReviewCase" ADD COLUMN "active" BOOLEAN NOT NULL DEFAULT true;
