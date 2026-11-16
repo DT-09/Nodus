@@ -1,4 +1,4 @@
-const VERSION = "nodus-shell-v1";
+const VERSION = "nodus-shell-v2";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(VERSION).then((cache) => cache.add(OFFLINE)).then(() => self.skipWaiting()));
@@ -15,7 +15,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetch(request).catch(() => caches.match(OFFLINE)));
     return;
   }
-  if (/\\.(?:css|js|svg|woff2?)$/i.test(url.pathname)) {
+  if (/\.(?:css|js|svg|woff2?)$/i.test(url.pathname)) {
     event.respondWith(caches.match(request).then((cached) => cached || fetch(request).then((response) => {
       if (response.ok && response.type === "basic") {
         const copy = response.clone();
