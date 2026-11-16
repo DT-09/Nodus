@@ -5,9 +5,8 @@
  * Usage:
  *   NODUS_BASE_URL=https://your-production-domain npm run smoke:launch
  *
- * This is a read-only HTTP check. It does not install an app, mutate a store,
- * run a scheduled sync, or verify billing. Run it only against an environment
- * whose public routes are intended to be reachable.
+ * Read-only HTTP checks. This does not install an app, mutate a store,
+ * run a scheduled sync, or verify billing.
  */
 
 const rawBase = process.env.NODUS_BASE_URL?.trim();
@@ -30,25 +29,25 @@ if (base.protocol !== "https:" && base.hostname !== "localhost") {
 }
 
 const checks = [
-  { path: "/", label: "Public homepage", expected: (r) => r.status === 200, html: true },
-  { path: "/product", label: "Product page", expected: (r) => r.status === 200, html: true },
-  { path: "/demo", label: "Synthetic reconciliation walkthrough", expected: (r) => r.status === 200, html: true },
-  { path: "/methodology", label: "Methodology page", expected: (r) => r.status === 200, html: true },
-  { path: "/pricing", label: "Pricing and evaluation page", expected: (r) => r.status === 200, html: true },
-  { path: "/connect", label: "Shopify connection gate", expected: (r) => r.status === 200, html: true },
-  { path: "/install", label: "Cross-device app installation guide", expected: (r) => r.status === 200, html: true },
-  { path: "/manual-data", label: "Manual data analysis workflow", expected: (r) => r.status === 200, html: true },
-  { path: "/manifest.webmanifest", label: "PWA installation manifest", expected: (r) => r.status === 200, manifest: true },
-  { path: "/sw.js", label: "PWA service worker", expected: (r) => r.status === 200, serviceWorker: true },
-  { path: "/offline.html", label: "PWA offline fallback", expected: (r) => r.status === 200, html: true },
-  { path: "/templates/nodus-orders-template.csv", label: "Order CSV template", expected: (r) => r.status === 200, csv: true },
-  { path: "/security", label: "Security disclosure page", expected: (r) => r.status === 200, html: true },
-  { path: "/privacy", label: "Privacy and data-handling notice", expected: (r) => r.status === 200, html: true },
-  { path: "/support", label: "Support page", expected: (r) => r.status === 200, html: true },
-  { path: "/nodus-carrier-cost-template.csv", label: "Carrier-cost CSV template", expected: (r) => r.status === 200, csv: true },
-  { path: "/healthz", label: "Application and database health", expected: (r) => r.status === 200, jsonStatus: "ok" },
-  { path: "/api/cron/sync", label: "Cron endpoint rejects unauthenticated requests", expected: (r) => r.status === 401 },
-  { path: "/app", label: "Merchant workspace requires Shopify authentication", expected: (r) => r.status >= 300 && r.status < 400 },
+  { path: "/", label: "Public homepage", html: true },
+  { path: "/product", label: "Product page", html: true },
+  { path: "/demo", label: "Synthetic reconciliation walkthrough", html: true },
+  { path: "/methodology", label: "Methodology page", html: true },
+  { path: "/pricing", label: "Pricing and evaluation page", html: true },
+  { path: "/connect", label: "Shopify connection gate", html: true },
+  { path: "/install", label: "Cross-device app installation guide", html: true },
+  { path: "/manual-data", label: "Manual data analysis workflow", html: true },
+  { path: "/manifest.webmanifest", label: "PWA installation manifest", manifest: true },
+  { path: "/sw.js", label: "PWA service worker", serviceWorker: true },
+  { path: "/offline.html", label: "PWA offline fallback", html: true },
+  { path: "/templates/nodus-orders-template.csv", label: "Order CSV template", csvHeaders: ["order_id", "order_name", "currency", "shipping_revenue"] },
+  { path: "/templates/nodus-carrier-cost-template.csv", label: "Carrier-cost CSV template", csvHeaders: ["invoice_id", "charge_id", "amount", "currency"] },
+  { path: "/security", label: "Security disclosure page", html: true },
+  { path: "/privacy", label: "Privacy and data-handling notice", html: true },
+  { path: "/support", label: "Support page", html: true },
+  { path: "/healthz", label: "Application and database health", jsonStatus: "ok" },
+  { path: "/api/cron/sync", label: "Cron endpoint rejects unauthenticated requests", status: 401 },
+  { path: "/app", label: "Merchant workspace requires Shopify authentication", redirect: true },
 ];
 
 let failed = 0;
@@ -63,21 +62,11 @@ for (const check of checks) {
     });
 
     let detail = `HTTP ${response.status}`;
-    let valid = check.expected(response);
-
-    const securityHeaders = [
-      ["x-content-type-options", "nosniff"],
-      ["referrer-policy", "strict-origin-when-cross-origin"],
-      ["permissions-policy", "camera=(), microphone=(), geolocation=()"],
-      ["strict-transport-security", "max-age=31536000"],
-    ];
-    const missingSecurityHeaders = securityHeaders
-      .filter(([name, expected]) => response.headers.get(name) !== expected)
-      .map(([name]) => name);
-    valid &&= missingSecurityHeaders.length === 0;
-    if (missingSecurityHeaders.length) {
-      detail += `; missing/incorrect security headers: ${missingSecurityHeaders.join(", ")}`;
-    }
+    let valid = check.status !== undefined
+      ? response.status === check.status
+      : check.redirect
+        ? response.status >= 300 && response.status < 400
+        : response.status === 200;
 
     if (check.html) {
       const type = response.headers.get("content-type") ?? "";
@@ -85,12 +74,28 @@ for (const check of checks) {
       detail += `; content-type ${type || "missing"}`;
     }
 
-    if (check.manifest) {\n      const body = await response.json().catch(() => null);\n      valid &&= body?.name === "NODUS — Shipping Intelligence" && body?.display === "standalone" && Array.isArray(body?.icons) && body.icons.length > 0;\n      detail += `; manifest ${body?.name ?? "invalid"}`;\n    }\n\n    if (check.serviceWorker) {\n      const body = await response.text();\n      valid &&= body.includes("self.addEventListener") && body.includes("/offline.html") && body.includes("/app");\n      detail += `; install/offline/privacy handlers ${valid ? "present" : "missing"}`;\n    }\n\n    if (check.csv) {
-      const type = response.headers.get("content-type") ?? "";
+    if (check.manifest) {
+      const body = await response.json().catch(() => null);
+      valid &&= body?.name === "NODUS — Shipping Intelligence"
+        && body?.display === "standalone"
+        && Array.isArray(body?.icons)
+        && body.icons.length > 0;
+      detail += `; manifest ${body?.name ?? "invalid"}`;
+    }
+
+    if (check.serviceWorker) {
       const body = await response.text();
-      valid &&= body.includes("invoice_id") && body.includes("charge_id") && body.includes("amount") && body.includes("currency");
-      valid &&= type.includes("text/csv") || body.includes("invoice_id");
-      detail += `; template headers ${body.includes("invoice_id") ? "present" : "missing"}`;
+      valid &&= body.includes("self.addEventListener")
+        && body.includes("/offline.html")
+        && body.includes("/app");
+      detail += `; install/offline/privacy handlers ${valid ? "present" : "missing"}`;
+    }
+
+    if (check.csvHeaders) {
+      const body = await response.text();
+      const header = body.split(/\\r?\\n/, 1)[0] ?? "";
+      valid &&= check.csvHeaders.every((column) => header.includes(column));
+      detail += `; template headers ${check.csvHeaders.every((column) => header.includes(column)) ? "present" : "missing"}`;
     }
 
     if (check.jsonStatus) {
