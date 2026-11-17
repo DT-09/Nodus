@@ -18,7 +18,8 @@
     "vercel-build": "prisma generate && react-router build",
     "smoke:launch": "node scripts/launch-smoke.mjs",
     "verify:decision-pack": "node scripts/verify-decision-pack.mjs",
-    "verify:deployment": "node scripts/verify-deployment-config.mjs"
+    "verify:deployment": "node scripts/verify-deployment-config.mjs",
+    "repair:lockfile": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",
