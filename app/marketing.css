@@ -523,3 +523,38 @@
 @media(max-width:420px){.nd-domain-grid,.nd-loop-grid{grid-template-columns:1fr}.nd-domain-grid article{min-height:0}.nd-loop-grid article{min-height:0}.nd-orbit-caption{font-size:6px}.nd-window-metrics small{font-size:6px}.nd-window-metrics article>span{line-height:1.5}}
 @media(prefers-reduced-motion:no-preference){.nd-orbit-a{animation:nd-orbit 36s linear infinite}.nd-orbit-b{animation:nd-orbit-reverse 52s linear infinite}.nd-orbit-c{animation:nd-orbit 64s linear infinite}.nd-orbit-core{animation:nd-core-glow 7s ease-in-out infinite alternate}@keyframes nd-orbit{to{transform:rotate(333deg)}}@keyframes nd-orbit-reverse{to{transform:rotate(-326deg)}}@keyframes nd-core-glow{to{box-shadow:0 0 0 20px rgba(195,166,110,.025),0 0 110px rgba(195,166,110,.17),inset 0 0 55px rgba(195,166,110,.12)}}}
 @media(prefers-reduced-motion:reduce){.nd-orbit,.nd-orbit-core{animation:none!important}}
+
+/* NODUS architecture page */
+.nd-architecture .page-eyebrow,.nd-architecture .nd-architecture-heading>span,.nd-architecture-principle>span,.nd-architecture-current>div>span{font:9px ui-monospace,monospace;letter-spacing:.15em;color:#9b8053}
+.nd-architecture>header h1{font:400 clamp(48px,6vw,78px)/1.04 Georgia,serif;letter-spacing:-.055em;color:#29262d}
+.nd-architecture>header h1 em{color:#94764a}
+.nd-architecture-principle{margin:45px 0;padding:34px;background:#24212b!important;border-color:rgba(195,166,110,.3)!important;color:#eee9df}
+.nd-architecture-principle h2{font:24px/1.5 Georgia,serif;color:#e4d4ad;margin:18px 0}
+.nd-architecture-principle p{font:12px/1.9 Inter,system-ui,sans-serif;color:#bdb6aa;margin:0}
+.nd-architecture-engines,.nd-architecture-domains,.nd-architecture-control{margin:75px 0}
+.nd-architecture-heading>span{font:9px ui-monospace,monospace;letter-spacing:.15em;color:#94764a}
+.nd-architecture-heading h2{font:400 clamp(36px,4.5vw,54px)/1.08 Georgia,serif;letter-spacing:-.04em;color:#29262d;margin:17px 0}
+.nd-architecture-heading h2 em{color:#94764a}
+.nd-engine-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#d4ccbd;border:1px solid #d4ccbd;margin-top:34px}
+.nd-engine-grid article{padding:25px;background:#eee9df;min-height:170px}
+.nd-engine-grid article>span{font:8px ui-monospace,monospace;letter-spacing:.12em;color:#94764a}
+.nd-engine-grid h3{font:23px Georgia,serif;color:#302d32;margin:18px 0 8px}
+.nd-engine-grid p{font:11px/1.8 Inter,system-ui,sans-serif;color:#666861;margin:0;max-width:470px}
+.nd-architecture-domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#d4ccbd;border:1px solid #d4ccbd;margin-top:30px}
+.nd-architecture-domain-grid>div{display:flex;align-items:center;gap:15px;padding:18px;background:#eee9df}
+.nd-architecture-domain-grid b{font:9px ui-monospace,monospace;color:#94764a}.nd-architecture-domain-grid span{font:13px Inter,system-ui,sans-serif;color:#38363a}
+.nd-architecture-note{font:10px/1.8 Inter,system-ui,sans-serif;color:#77766f;margin-top:15px}
+.nd-architecture-control{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px;align-items:start}
+.nd-architecture-control .nd-architecture-heading>p{font:11px/1.9 Inter,system-ui,sans-serif;color:#666861}
+.nd-autonomy-list{border-top:1px solid #d4ccbd}
+.nd-autonomy-list article{display:grid;grid-template-columns:1fr auto;gap:8px;padding:15px 2px;border-bottom:1px solid #d4ccbd}
+.nd-autonomy-list article>span{font:8px ui-monospace,monospace;letter-spacing:.1em;color:#94764a}.nd-autonomy-list article>b{font:10px Inter,system-ui,sans-serif;color:#3a383b}
+.nd-autonomy-list article>p{grid-column:1/3;font:10px/1.7 Inter,system-ui,sans-serif;color:#686962;margin:0}
+.nd-architecture-current{display:grid;grid-template-columns:1fr 1fr;gap:35px;padding:34px;background:#24212b;color:#eee9df;margin:65px 0}
+.nd-architecture-current h2{font:36px/1.1 Georgia,serif;color:#eee9df;margin:16px 0}
+.nd-architecture-current h2 em{color:#c9b17e}
+.nd-architecture-current p,.nd-architecture-current li{font:11px/1.9 Inter,system-ui,sans-serif;color:#b9b3a9}
+.nd-architecture-current a{display:inline-block;margin-top:15px;font:8px ui-monospace,monospace;letter-spacing:.1em;color:#d7c18f}
+.nd-architecture-current h3{font:22px Georgia,serif;color:#eee9df;margin:14px 0}
+.nd-architecture-current ul{padding-left:17px}
+@media(max-width:700px){.nd-engine-grid,.nd-architecture-domain-grid{grid-template-columns:1fr}.nd-architecture-control,.nd-architecture-current{grid-template-columns:1fr}.nd-architecture-principle{padding:22px}.nd-architecture-principle h2{font-size:19px}.nd-architecture-current{padding:24px}}
