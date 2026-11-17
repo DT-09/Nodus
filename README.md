@@ -1,8 +1,8 @@
 # NODUS
 
-**Shipping economics intelligence for Shopify.**
+**Shipping margin control for Shopify.**
 
-NODUS connects Shopify order-level shipping revenue with carrier-cost evidence, merchant-reviewed coverage, deterministic reconciliation, historical shipping-policy replay and auditable exports.
+NODUS helps Shopify merchants compare shipping charges collected at checkout with carrier and 3PL costs they import, review evidence gaps, and test flat-rate or free-shipping policies against historical orders. It sells an evidence-backed shipping decision workflow—not a generic profit dashboard.
 
 ## Deployment target
 
@@ -68,7 +68,8 @@ npm run dev
 - [Go-Live Runbook](docs/GO_LIVE_RUNBOOK.md) — ordered sequence for public website, controlled pilot, paid pilot and public paid-app release.
 - [Buyer Evaluation](docs/BUYER_EVALUATION.md) — scope and acceptance criteria for a merchant evaluation.
 - [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) — evidence definitions, financial calculations and pricing gates.
-- [Commercial Offer and Buyer Definition](docs/COMMERCIAL_OFFER.md) — target buyer, concrete decision-pack deliverable, competitive positioning and demand-validation gates.
+- [Commercial Product Definition](docs/COMMERCIAL_PRODUCT.md) — product positioning, buyer, recurring job, $29/month pricing hypothesis, acquisition system and release gates.
+- [Commercial Offer and Buyer Definition](docs/COMMERCIAL_OFFER.md) — offer scope and buyer qualification.
 
 The public site includes a clearly labelled [synthetic reconciliation walkthrough](/demo) and a factual [privacy and data-handling notice](/privacy). The demo is illustrative data, not a customer result. The privacy notice still requires the responsible operator to complete its legal identity, jurisdiction, processor, retention and regional disclosures before public merchant onboarding. A read-only production HTTP smoke test is available with `NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch`; it does not replace real-store, tenant-isolation, webhook, backup-restore, billing, security or legal verification.
 
