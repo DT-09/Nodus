@@ -4,10 +4,10 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — Shipping economics, with the evidence attached"},
-  {name:"description",content:"Connect Shopify shipping revenue with carrier-cost evidence. Review coverage, reconcile supported records and replay shipping policies against historical orders."},
-  {property:"og:title",content:"NODUS — Shipping economics, with the evidence attached"},
-  {property:"og:description",content:"Evidence before recommendation. Approval before execution. Verification after."},
+  {title:"NODUS — Shipping margin control for Shopify"},
+  {name:"description",content:"See what shipping costs your store. Reconcile Shopify shipping charges with carrier-cost evidence and test better shipping policies against historical orders."},
+  {property:"og:title",content:"NODUS — Shipping margin control for Shopify"},
+  {property:"og:description",content:"Shipping costs, matched to evidence. Policy decisions, tested against your orders."},
   {name:"theme-color",content:"#101820"},
 ];
 
@@ -35,15 +35,15 @@ export default function Home(){
     <main className="home-page">
       <section className="home-hero">
         <div className="hero-copy-column">
-          <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
-          <h1>What did shipping<br/><em>actually cost?</em></h1>
-          <p className="hero-intro">NODUS connects Shopify order shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence, then produce a decision pack your operations or finance team can inspect.</p>
-          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/install" className="cta-secondary">INSTALL NODUS <span>↗</span></Link><Link to="/manual-data" className="cta-secondary">ANALYSE MANUAL DATA <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
-          <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
+          <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING MARGIN CONTROL / SHOPIFY</p>
+          <h1>Stop guessing what<br/><em>free shipping costs.</em></h1>
+          <p className="hero-intro">NODUS compares shipping charges collected at checkout with carrier and 3PL costs you import. Find underfunded shipping policies, inspect unmatched charges, and test flat rates or free-shipping thresholds against your store's historical orders.</p>
+          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT SHOPIFY <span>↗</span></Link><Link to="/install" className="cta-secondary">INSTALL NODUS <span>↗</span></Link><Link to="/manual-data" className="cta-secondary">IMPORT COST DATA <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">HOW THE ANALYSIS WORKS <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">SEE PRICING <span>↗</span></Link></div>
+          <div className="hero-proofline"><span>ORDER-LEVEL COST EVIDENCE</span><i></i><span>POLICY SCENARIOS</span><i></i><span>NO ASSUMED ZERO-COSTS</span></div>
         </div>
         <div className="hero-console" aria-label="Illustrative shipping reconciliation workspace">
           <div className="console-top"><div className="console-brand"><span className="console-mark">N</span><span>NODUS / RECONCILIATION</span></div><span className="console-state"><i></i> SAMPLE WORKSPACE</span></div>
-          <div className="console-heading"><div><span className="console-kicker">SHIPPING ECONOMICS / OVERVIEW</span><h2>Cost evidence</h2></div><span className="console-period">ILLUSTRATIVE DATA</span></div>
+          <div className="console-heading"><div><span className="console-kicker">SHIPPING MARGIN / OVERVIEW</span><h2>Policy exposure</h2></div><span className="console-period">ILLUSTRATIVE DATA</span></div>
           <div className="console-stats"><article><span>ORDER SHIPPING</span><strong>$4,820.00</strong><small>Shopify shipping revenue</small></article><article><span>CARRIER CHARGES</span><strong>$3,964.50</strong><small>Imported cost records</small></article><article><span>REVIEW QUEUE</span><strong>12 <small>records</small></strong><small>Require evidence review</small></article></div>
           <div className="console-table-head"><span>RECORD</span><span>REFERENCE</span><span>REVIEW STATUS</span></div>
           <div className="console-row"><span><b>Order #10482</b><small>Shopify order</small></span><span>FUL-8821</span><em className="state-matched">MATCHED</em></div>
@@ -54,12 +54,12 @@ export default function Home(){
       </section>
 
       <section className="manifesto-band" data-reveal>
-        <div><span className="section-index">01 / THE PRINCIPLE</span><h2>A number is not an answer<br/><em>until you can inspect its origin.</em></h2></div>
-        <p>Shipping costs are distributed across orders, fulfillments, carrier statements and store policy. NODUS is built to connect those records, expose missing evidence and keep the reasoning visible.</p>
+        <div><span className="section-index">01 / THE PRINCIPLE</span><h2>Free shipping isn't free.<br/><em>Know the subsidy before it compounds.</em></h2></div>
+        <p>Shipping revenue, carrier invoices and store policies live in separate places. NODUS connects the evidence, shows where shipping is underfunded, and lets you test policy changes before you make them.</p>
       </section>
 
       <section className="live-system section-light" id="platform" data-reveal>
-        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One reviewable workflow.<br/><em>From Shopify orders to billed costs.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
+        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One decision workflow.<br/><em>From checkout charge to carrier cost.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
         <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
       </section>
 
@@ -111,7 +111,7 @@ export default function Home(){
       </section>
 
       <section className="closing-section" data-reveal>
-        <span className="section-index">07 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
+        <span className="section-index">07 / BEGIN WITH THE EVIDENCE</span><h2>Set a shipping policy<br/><em>your evidence can defend.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
         <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">EXPLORE THE RECONCILIATION WORKFLOW <span>↗</span></Link><Link to="/buyer-evaluation" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
       </section>
     </main>
