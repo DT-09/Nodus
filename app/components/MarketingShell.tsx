@@ -2,8 +2,8 @@ import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
 
 const groups = [
-  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["Install NODUS","/install"],["Manual data analysis","/manual-data"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping economics","/product#economics"],["Policy intelligence","/product#policy"]]},
-  {label:"EXPLORE", links:[["Product walkthrough","/demo"],["Merchant evaluation guide","/buyer-evaluation"],["Shipping cost reconciliation guide","/guides/shopify-shipping-cost-reconciliation"],["Free-shipping threshold guide","/guides/free-shipping-threshold-analysis"],["How NODUS works","/methodology"],["Pricing & evaluation","/pricing"]]},
+  {label:"PLATFORM", links:[["Connect Shopify","/connect"],["Install NODUS","/install"],["Manual data analysis","/manual-data"],["The platform","/product"],["Shipping cost reconciliation","/shipping-cost-reconciliation"],["Evidence & reconciliation","/product#evidence"],["Shipping margin analysis","/product#economics"],["Policy intelligence","/product#policy"]]},
+  {label:"EXPLORE", links:[["Product walkthrough","/demo"],["Merchant evaluation guide","/buyer-evaluation"],["Shipping cost reconciliation guide","/guides/shopify-shipping-cost-reconciliation"],["Free-shipping threshold guide","/guides/free-shipping-threshold-analysis"],["How NODUS works","/methodology"],["Plans & pricing","/pricing"]]},
   {label:"TRUST", links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
 
@@ -35,10 +35,10 @@ export function MarketingShell({children, active="home"}:{children:ReactNode;act
     <header className="site-header">
       <Link className="site-brand" to="/" aria-label="NODUS home">
         <NodusLogo/><span className="site-brand-word">NODUS</span>
-        <span className="site-brand-caption">SHIPPING INTELLIGENCE</span>
+        <span className="site-brand-caption">SHIPPING MARGIN CONTROL</span>
       </Link>
       <div className="site-header-right">
-        <span className="header-context">SHOPIFY / SHIPPING ECONOMICS</span>
+        <span className="header-context">SHOPIFY / SHIPPING MARGIN CONTROL</span>
         <button className={"menu-trigger"+(menuOpen?" is-open":"")} type="button" aria-expanded={menuOpen} aria-controls="site-menu" onClick={()=>setMenuOpen(v=>!v)} aria-label={menuOpen?"Close navigation":"Open navigation"}>
           <span></span><span></span><span></span>
         </button>
