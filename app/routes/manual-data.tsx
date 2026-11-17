@@ -32,7 +32,7 @@ function buildResults(orders:Order[],costs:Cost[]):Analysis{
  const orderResults=orders.map(order=>{const matched=byOrder.get(order.id)??[];return{order,matched,costMinor:matched.reduce((sum,c)=>sum+c.amountMinor,0n),status:matched.length?"Matched evidence":"No unambiguous cost match"};});
  return {orders:orderResults,unmatchedCosts};
 }
-(amount:bigint,currency:string){const digits=new Intl.NumberFormat("en",{style:"currency",currency}).resolvedOptions().maximumFractionDigits;return new Intl.NumberFormat(undefined,{style:"currency",currency,minimumFractionDigits:digits,maximumFractionDigits:digits}).format(Number(amount)/10**digits);}
+function money(amount:bigint,currency:string){const digits=new Intl.NumberFormat("en",{style:"currency",currency}).resolvedOptions().maximumFractionDigits;return new Intl.NumberFormat(undefined,{style:"currency",currency,minimumFractionDigits:digits,maximumFractionDigits:digits}).format(Number(amount)/10**digits);}
 function download(name:string,type:string,body:string){const blob=new Blob([body],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
 function safeCsv(v:string){return '"'+( /^[\s]*[=+@-]/.test(v)?"'"+v:v).replaceAll('"','""')+'"';}
 
