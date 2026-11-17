@@ -20,13 +20,13 @@ export default function Pricing(){
  const minutesSaved=valid?baseMinutes-assistedMinutes:0;
  const cycleValue=valid?(minutesSaved/60)*rate:0;
  const formattedValue=valid?new Intl.NumberFormat("en",{style:"currency",currency,maximumFractionDigits:3}).format(cycleValue):"";
- const email=process.env.PUBLIC_CONTACT_EMAIL?.trim();
+ const email=process.env.PUBLIC_CONTACT_EMAIL?.trim() || "dhairytopia@gmail.com";
  const subject=encodeURIComponent("NODUS Founding Merchant Value Programme");
  const body=encodeURIComponent("Hello NODUS,\n\nI would like to be considered for the Founding Merchant Value Programme.\n\nShopify store URL:\nApproximate monthly order volume:\nMonthly carrier spend and currency:\nCarrier / 3PL invoice export available (yes/no):\nPrimary shipping economics question:\n\n");
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>First, prove the value.<br/>Then decide what it is worth.</h1>
+   <h1>Start with a review.<br/>Continue only if it pays.</h1>
    <p className="page-lede">NODUS does not ask a merchant to trust a pricing page. We begin with a defined shipping-economics assessment, show the source records and calculations, and only discuss an ongoing subscription if the evidence supports it.</p>
   </header>
 
@@ -34,7 +34,7 @@ export default function Pricing(){
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Get the work done<br/><em>before the sales pitch.</em></h2>
-    <p>The first assessment is offered at no charge to a small founding cohort. No payment details, no automatic conversion and no obligation to subscribe.</p>
+    <p>Start with a no-obligation diagnostic. If the data shows a useful opportunity, NODUS can scope a paid, human-reviewed shipping economics engagement. Any ongoing software trial begins only when the live merchant workspace is operational; there is no automatic conversion.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -87,7 +87,7 @@ export default function Pricing(){
 
   <section className="pricing-contact" data-reveal>
    <div>
-    <span>04 / APPLY FOR AN ASSESSMENT</span>
+    <span>04 / REQUEST A REVIEW</span>
     <h2>Let the evidence make the case.</h2>
     <p>Suitable merchants have recurring parcel or 3PL charges, an authorized Shopify store and access to a carrier invoice or cost export. The initial assessment is deliberately narrow so that the result is useful, inspectable and repeatable.</p>
    </div>
@@ -98,9 +98,9 @@ export default function Pricing(){
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
     <p><b>05</b> Decide whether ongoing monthly service is worth it.</p>
    </div>
-   {email?<a className="primary-cta" href={"mailto:"+email+"?subject="+subject+"&body="+body}>Request a founding merchant assessment ↗</a>:<p className="import-error">Business-owned enquiry intake is not configured. Public applications must remain closed until a monitored business contact channel is set.</p>}
+   {email?<a className="primary-cta" href={"mailto:"+email+"?subject="+subject+"&body="+body}>Request a private NODUS review ↗</a>:<p className="import-error">Business-owned enquiry intake is not configured. Public applications must remain closed until a monitored business contact channel is set.</p>}
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A MANUAL DATA REVIEW ↗</Link><Link to="/connect" className="cta-secondary">CONNECT SHOPIFY ↗</Link></div>
-   <p className="pricing-disclaimer">No card is collected. No subscription starts automatically. Feedback is welcome but is never a condition of participation, and any testimonial or case study requires separate, explicit permission. We do not publish invented reviews, customer logos or financial outcomes.</p>
+   <p className="pricing-disclaimer">No automatic billing. Any service fee is agreed in writing before work begins. Any later seven-day software pilot will have a stated data limit, end date and opt-in subscription decision. Feedback is voluntary; testimonials require separate permission. We do not publish invented reviews, customer logos or financial outcomes.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
