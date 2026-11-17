@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader(_args: LoaderFunctionArgs) {
-  return { contactEmail: process.env.PUBLIC_CONTACT_EMAIL?.trim() || null };
+  return { contactEmail: process.env.PUBLIC_CONTACT_EMAIL?.trim() || "dhairytopia@gmail.com" };
 }
 
 export default function Support() {
