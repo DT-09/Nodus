@@ -1,119 +1,111 @@
 import type {MetaFunction} from "react-router";
 import {Link} from "react-router";
-import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — Shipping economics, with the evidence attached"},
-  {name:"description",content:"Connect Shopify shipping revenue with carrier-cost evidence. Review coverage, reconcile supported records and replay shipping policies against historical orders."},
-  {property:"og:title",content:"NODUS — Shipping economics, with the evidence attached"},
-  {property:"og:description",content:"Evidence before recommendation. Approval before execution. Verification after."},
-  {name:"theme-color",content:"#101820"},
+  {title:"NODUS — The operating intelligence for your business"},
+  {name:"description",content:"Understand your business, find what needs attention, and turn evidence into controlled action. NODUS is building an autonomous business operating system for Shopify merchants."},
+  {property:"og:title",content:"NODUS — Your business, understood and advanced"},
+  {property:"og:description",content:"One connected operating system for business intelligence, diagnosis, strategy and execution."},
+  {name:"theme-color",content:"#17151d"},
 ];
 
-const thread=[
-  {label:"ORDER",number:"01",title:"A customer order",detail:"Shopify provides the order, destination, shipping line and the order context available under the merchant's granted permissions.",record:"Source: Shopify order",state:"SOURCE RECORD"},
-  {label:"FULFILLMENT",number:"02",title:"A shipment is fulfilled",detail:"Available fulfillment and tracking references establish the operational link. Split shipments remain separate rather than being collapsed into one assumed parcel.",record:"Source: Shopify fulfillment",state:"OPERATIONAL RECORD"},
-  {label:"CARRIER COST",number:"03",title:"A carrier charge arrives",detail:"A supported carrier-cost CSV import contributes an invoice or charge record. Original identifiers and currency remain visible; ambiguous rows stay unmatched.",record:"Source: merchant-provided CSV",state:"IMPORTED EVIDENCE"},
-  {label:"RECONCILIATION",number:"04",title:"The records are evaluated",detail:"NODUS uses supported references to match records. Duplicate, unmatched, incomplete and currency-mismatched evidence is kept explicit.",record:"Method: deterministic matching",state:"REVIEWABLE RESULT"},
-  {label:"DECISION",number:"05",title:"A finding can be inspected",detail:"A conclusion should link to its source records, calculation, coverage and limitations. Historical replay describes observed baskets; it is not a conversion forecast.",record:"Output: traceable analysis",state:"EVIDENCE-QUALIFIED"},
+const domains=[
+ ["01","Finance","Margin, cash signals, expenses and financial exposure","FINANCIAL INTELLIGENCE"],
+ ["02","Sales & revenue","Demand, pricing, conversion and repeat purchase","REVENUE INTELLIGENCE"],
+ ["03","Marketing & growth","Acquisition, retention, campaigns and performance","GROWTH INTELLIGENCE"],
+ ["04","Customers","Segments, behaviour, loyalty and customer value","CUSTOMER INTELLIGENCE"],
+ ["05","Products & inventory","SKU performance, stock risk and demand planning","PRODUCT INTELLIGENCE"],
+ ["06","Supply chain","Suppliers, fulfilment, shipping and returns","OPERATIONS INTELLIGENCE"],
+ ["07","Business operations","Workflows, exceptions, tasks and recurring work","OPERATIONAL INTELLIGENCE"],
+ ["08","Strategy","Priorities, opportunities and scenario planning","STRATEGIC INTELLIGENCE"],
+ ["09","Risk & control","Anomalies, exposure, permissions and audit","RISK INTELLIGENCE"],
 ];
 
-const live=[
-  ["01","Shopify order ingestion","Read-only order synchronisation with persisted merchant-scoped records."],
-  ["02","Carrier-cost CSV intake","Import records with source identity, duplicate protection and currency checks."],
-  ["03","Evidence review","Inspect candidate matches and keep ambiguous or incomplete records visible."],
-  ["04","Reconciliation & diagnostics","Deterministic results that do not treat missing cost evidence as zero."],
-  ["05","Historical policy replay","Evaluate supported flat-rate and free-shipping threshold scenarios against stored orders."],
-  ["06","Evidence exports","Download merchant-scoped records and review history for independent analysis."],
+const loop=[
+ ["SENSE","Connect the signals","Bring together the business records and operational events the merchant authorises."],
+ ["UNDERSTAND","Build the business picture","Resolve entities, measure performance and preserve source, freshness and confidence."],
+ ["INVESTIGATE","Find the real cause","Test explanations against evidence. Separate a verified finding from a plausible hypothesis."],
+ ["STRATEGIZE","Choose the intervention","Rank actions by expected impact, confidence, cost, time, risk and feasibility."],
+ ["EXECUTE","Put approved work in motion","Prepare and run supported actions within explicit permissions and approval boundaries."],
+ ["VERIFY","Check what changed","Read back external state and compare actual outcomes with the intended result."],
 ];
 
 export default function Home(){
-  const [active,setActive]=useState(0);
-  const current=thread[active]!;
-  return <MarketingShell active="home">
-    <main className="home-page">
-      <section className="home-hero">
-        <div className="hero-copy-column">
-          <p className="eyebrow"><span className="eyebrow-line"></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
-          <h1>What did shipping<br/><em>actually cost?</em></h1>
-          <p className="hero-intro">NODUS connects Shopify order shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence, then produce a decision pack your operations or finance team can inspect.</p>
-          <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/install" className="cta-secondary">INSTALL NODUS <span>↗</span></Link><Link to="/manual-data" className="cta-secondary">ANALYSE MANUAL DATA <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">SEE SHIPPING COST RECONCILIATION <span>↗</span></Link><Link to="/demo" className="cta-secondary">INSPECT THE SAMPLE PACK <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT <span>↗</span></Link></div>
-          <div className="hero-proofline"><span>READ-ONLY BY DEFAULT</span><i></i><span>SOURCE-LINKED RESULTS</span><i></i><span>MERCHANT CONTROL</span></div>
-        </div>
-        <div className="hero-console" aria-label="Illustrative shipping reconciliation workspace">
-          <div className="console-top"><div className="console-brand"><span className="console-mark">N</span><span>NODUS / RECONCILIATION</span></div><span className="console-state"><i></i> SAMPLE WORKSPACE</span></div>
-          <div className="console-heading"><div><span className="console-kicker">SHIPPING ECONOMICS / OVERVIEW</span><h2>Cost evidence</h2></div><span className="console-period">ILLUSTRATIVE DATA</span></div>
-          <div className="console-stats"><article><span>ORDER SHIPPING</span><strong>$4,820.00</strong><small>Shopify shipping revenue</small></article><article><span>CARRIER CHARGES</span><strong>$3,964.50</strong><small>Imported cost records</small></article><article><span>REVIEW QUEUE</span><strong>12 <small>records</small></strong><small>Require evidence review</small></article></div>
-          <div className="console-table-head"><span>RECORD</span><span>REFERENCE</span><span>REVIEW STATUS</span></div>
-          <div className="console-row"><span><b>Order #10482</b><small>Shopify order</small></span><span>FUL-8821</span><em className="state-matched">MATCHED</em></div>
-          <div className="console-row"><span><b>Carrier invoice</b><small>Imported CSV</small></span><span>INV-24018</span><em className="state-review">REVIEW</em></div>
-          <div className="console-row"><span><b>Order #10479</b><small>Shopify order</small></span><span>FUL-8814</span><em className="state-unmatched">UNMATCHED</em></div>
-          <div className="console-foot"><span>Source-linked records. No inferred zero-cost rows.</span><span>PREVIEW / 01</span></div>
-        </div>
-      </section>
+ return <MarketingShell active="home">
+  <main className="nd-home">
+   <section className="nd-hero">
+    <div className="nd-hero-copy">
+     <p className="nd-eyebrow"><span></span> BUSINESS OPERATING INTELLIGENCE / NODUS</p>
+     <h1>Your business.<br/><em>Understood.</em><br/>Advanced.</h1>
+     <p className="nd-lede">A business should not need a dozen disconnected tools to understand itself. NODUS is being built to connect the signals, diagnose what matters, shape the next move and carry approved work through to verified outcomes.</p>
+     <div className="nd-actions">
+      <Link to="/pricing" className="nd-button nd-button-primary">START A FOUNDING ASSESSMENT <span>↗</span></Link>
+      <Link to="/product" className="nd-button nd-button-quiet">EXPLORE THE SYSTEM <span>↗</span></Link>
+     </div>
+     <div className="nd-proofline"><span>ONE BUSINESS MODEL</span><i></i><span>TRACEABLE DECISIONS</span><i></i><span>CONTROLLED EXECUTION</span></div>
+    </div>
+    <div className="nd-orbit-stage" aria-label="Abstract NODUS business intelligence network illustration">
+     <div className="nd-orbit nd-orbit-a"></div><div className="nd-orbit nd-orbit-b"></div><div className="nd-orbit nd-orbit-c"></div>
+     <div className="nd-orbit-core"><div className="nd-core-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M50 10 86 34 73 78 50 90 14 66 14 34 50 10Z"/><path d="m14 34 36 21 36-21M50 55v35M27 73l23-18 23 18M27 26l23 29 23-29"/></g><g fill="currentColor"><circle cx="50" cy="10" r="4"/><circle cx="86" cy="34" r="4"/><circle cx="73" cy="78" r="4"/><circle cx="50" cy="90" r="4"/><circle cx="14" cy="66" r="4"/><circle cx="14" cy="34" r="4"/></g></svg></div><span>NODUS</span><small>BUSINESS INTELLIGENCE</small></div>
+     <div className="nd-orbit-label nd-label-one"><b>01</b><span>FINANCE</span></div><div className="nd-orbit-label nd-label-two"><b>02</b><span>OPERATIONS</span></div><div className="nd-orbit-label nd-label-three"><b>03</b><span>GROWTH</span></div><div className="nd-orbit-label nd-label-four"><b>04</b><span>STRATEGY</span></div>
+     <div className="nd-orbit-caption">ONE CONNECTED BUSINESS MODEL <span>·</span> MANY SPECIALIST ENGINES</div>
+    </div>
+   </section>
 
-      <section className="manifesto-band" data-reveal>
-        <div><span className="section-index">01 / THE PRINCIPLE</span><h2>A number is not an answer<br/><em>until you can inspect its origin.</em></h2></div>
-        <p>Shipping costs are distributed across orders, fulfillments, carrier statements and store policy. NODUS is built to connect those records, expose missing evidence and keep the reasoning visible.</p>
-      </section>
+   <section className="nd-manifesto">
+    <div><span className="nd-index">01 / THE IDEA</span><h2>Not another dashboard.<br/><em>A system that moves work forward.</em></h2></div>
+    <p>Dashboards report what happened. NODUS is designed to understand why it happened, decide what deserves attention, prepare the work and verify whether the business improved. Every conclusion must remain tied to its evidence.</p>
+   </section>
 
-      <section className="live-system section-light" id="platform" data-reveal>
-        <div className="section-heading"><div><span className="section-index">02 / THE SYSTEM</span><h2>One reviewable workflow.<br/><em>From Shopify orders to billed costs.</em></h2></div><p>Each capability has a defined input, a visible method and an inspectable output.</p></div>
-        <div className="system-grid">{live.map(([n,title,body])=><article className="system-cell" key={n}><span className="cell-number">{n}</span><div className="cell-node"><i></i><i></i><i></i></div><h3>{title}</h3><p>{body}</p><span className="cell-rule">NODUS / CORE WORKFLOW</span></article>)}</div>
-      </section>
+   <section className="nd-command" id="platform">
+    <div className="nd-section-head"><div><span className="nd-index">02 / THE OPERATING SYSTEM</span><h2>One business.<br/><em>One connected intelligence.</em></h2></div><p>Specialist capabilities share one business model, one objective system and one controlled execution layer. No isolated module guessing at the rest of the company.</p></div>
+    <div className="nd-domain-grid">{domains.map(([n,title,desc,tag])=><article key={n}><span className="nd-domain-no">{n}</span><div className="nd-domain-glyph"><i></i><i></i><i></i></div><h3>{title}</h3><p>{desc}</p><small>{tag}</small></article>)}</div>
+    <div className="nd-domain-foot"><span>THE ARCHITECTURE EXTENDS BEYOND THESE FIRST DOMAINS</span><Link to="/product">VIEW PRODUCT ARCHITECTURE ↗</Link></div>
+   </section>
 
+   <section className="nd-loop">
+    <div className="nd-section-head"><div><span className="nd-index">03 / THE OPERATING LOOP</span><h2>From signal<br/><em>to measurable outcome.</em></h2></div><p>NODUS should not stop at a recommendation. It should carry a bounded objective through evidence, planning, authorised action and verification.</p></div>
+    <div className="nd-loop-grid">{loop.map(([step,title,desc],i)=><article key={step}><div className="nd-loop-top"><span>0{i+1}</span><i>{i===5?"↻":"→"}</i></div><small>{step}</small><h3>{title}</h3><p>{desc}</p></article>)}</div>
+    <div className="nd-loop-note"><span className="nd-loop-pulse"></span> CONTINUOUS MONITORING · HUMAN AUTHORITY PRESERVED · OUTCOMES RECORDED</div>
+   </section>
 
-      <section className="merchant-outputs section-light" id="merchant-outputs" data-reveal>
-        <div className="section-heading"><div><span className="section-index">03 / WHAT YOUR TEAM GETS</span><h2>Useful work products.<br/><em>Not another dashboard.</em></h2></div><p>Every output is built from the store data and carrier evidence the merchant has actually connected. Unknowns remain visible.</p></div>
-        <div className="outputs-grid">
-          <article><span>01 / OPERATIONS</span><h3>Exception work queue</h3><p>Keep unmatched charges, incomplete coverage and reconciliation findings in a persistent register. Assign a review status and retain investigation notes.</p><Link to="/product#evidence">HOW EVIDENCE REVIEW WORKS ↗</Link></article>
-          <article><span>02 / FINANCE</span><h3>Shipping economics decision pack</h3><p>Export order-level records, evidence coverage, calculations, exceptions, policy replays and stated limitations as merchant-scoped CSV and JSON assets.</p><Link to="/demo">INSPECT A SYNTHETIC SAMPLE ↗</Link></article>
-          <article><span>03 / STRATEGY</span><h3>Historical policy scenarios</h3><p>Compare supported flat-rate and free-shipping threshold alternatives against historical orders. See assumptions and exclusions before changing store policy.</p><Link to="/guides/free-shipping-threshold-analysis">READ THE POLICY GUIDE ↗</Link></article>
-          <article><span>04 / ACCOUNTABILITY</span><h3>Economic outcome ledger</h3><p>Record identified opportunities, merchant-validated outcomes, posted credits and measured operating time separately. Merchant attestations are not independent verification.</p><Link to="/product#economics">UNDERSTAND THE VALUE MODEL ↗</Link></article>
-          <article><span>05 / CONTROL</span><h3>Review history and audit trail</h3><p>Retain case decisions and relevant audit events so the team can explain what was reviewed, changed and recorded.</p><Link to="/security">REVIEW DATA BOUNDARIES ↗</Link></article>
-          <article><span>06 / CONTINUITY</span><h3>Store data refresh</h3><p>Refresh Shopify order data on a schedule and resume incomplete history syncs. Carrier billing still requires supported merchant-provided CSV imports.</p><Link to="/product">SEE CURRENT CAPABILITIES ↗</Link></article>
-        </div>
-      </section>
+   <section className="nd-console">
+    <div className="nd-console-copy"><span className="nd-index">04 / THE COMMAND CENTRE</span><h2>See the whole business.<br/><em>Know what happens next.</em></h2><p>The intended workspace is an operating command centre: current business state, important changes, diagnosed issues, ranked opportunities, work in progress and decisions that need the owner's authority.</p><ul><li>What changed, and why?</li><li>Where is value leaking or opportunity being missed?</li><li>What is NODUS investigating or preparing?</li><li>What needs approval, and what was verified?</li></ul><Link to="/demo" className="nd-text-link">INSPECT THE CURRENT EVIDENCE WALKTHROUGH ↗</Link></div>
+    <div className="nd-console-art">
+     <div className="nd-window-bar"><span>NODUS / BUSINESS COMMAND</span><span className="nd-live-label">CONCEPT VIEW</span></div>
+     <div className="nd-window-title"><div><small>BUSINESS OVERVIEW / ALL SYSTEMS</small><h3>Operating picture</h3></div><span>01 — 06</span></div>
+     <div className="nd-window-metrics"><article><small>BUSINESS HEALTH</small><b>—</b><span>Connect data to establish</span></article><article><small>PRIORITY FINDINGS</small><b>—</b><span>Evidence required</span></article><article><small>ACTIVE OBJECTIVES</small><b>—</b><span>Awaiting business context</span></article></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Business state</b><small>Connect authorised data sources</small></div><em>NOT CONNECTED</em></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Diagnosis engine</b><small>Findings require source evidence</small></div><em>STANDBY</em></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Execution control</b><small>Approval-bound actions only</small></div><em>GUARDED</em></div>
+     <div className="nd-window-foot">ILLUSTRATIVE PRODUCT DIRECTION · NOT A LIVE MERCHANT ACCOUNT</div>
+    </div>
+   </section>
 
-      <section className="evidence-thread" id="evidence" data-reveal>
-        <div className="section-heading"><div><span className="section-index">04 / FOLLOW THE EVIDENCE</span><h2>One shipment.<br/><em>Every relevant connection.</em></h2></div><p>Follow the records from Shopify order to carrier charge and reviewed finding. This is an illustrative workflow, not a live merchant record.</p></div>
-        <div className="thread-layout">
-          <div className="thread-steps" role="tablist" aria-label="Evidence workflow stages">{thread.map((item,i)=><button type="button" role="tab" aria-selected={active===i} className={"thread-step"+(active===i?" is-active":"")} key={item.number} onClick={()=>setActive(i)}><span>{item.number}</span><b>{item.label}</b><i>{active===i?"SELECTED":"VIEW STEP"}</i></button>)}</div>
-          <article className="thread-detail" role="tabpanel">
-            <div className="detail-top"><span>ILLUSTRATIVE RECORD / NOT LIVE DATA</span><span>{current.state}</span></div>
-            <span className="detail-number">{current.number}</span><h3>{current.title}</h3><p>{current.detail}</p>
-            <div className="detail-source"><span>PROVENANCE</span><b>{current.record}</b></div>
-            <div className="detail-path">{thread.map((item,i)=><span className={i<=active?"path-done":""} key={item.number}></span>)}</div>
-            <div className="detail-foot"><span>TRACEABLE BY DESIGN</span><span>{String(active+1).padStart(2,"0")} / 05</span></div>
-          </article>
-        </div>
-      </section>
+   <section className="nd-live">
+    <div className="nd-section-head"><div><span className="nd-index">05 / WHAT EXISTS TODAY</span><h2>Ambition is not<br/><em>a release note.</em></h2></div><p>We will not pretend every division is already autonomous. The first working product wedge is Shopify shipping economics. The wider operating system is the architecture being built around it.</p></div>
+    <div className="nd-release-grid">
+     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>Working repository capabilities include Shopify order ingestion, carrier-cost CSV imports, evidence review, deterministic reconciliation, diagnostics, historical shipping-policy replay, exports and an economic value ledger.</p><ul><li>Shopify order data sync</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Historical policy scenarios</li></ul><Link to="/shipping-cost-reconciliation">EXPLORE THE LIVE PRODUCT WEDGE ↗</Link></article>
+     <article className="nd-release-next"><span className="nd-release-status">SYSTEM EXPANSION</span><h3>The wider NODUS operating system</h3><p>Finance, marketing, customers, inventory, strategy, workflow execution and cross-business diagnosis require additional integrations, engines, permissions and verification. They are not represented here as completed features.</p><ul><li>Unified business state and knowledge graph</li><li>Specialist analysis and diagnosis engines</li><li>Objective planning and durable execution</li><li>Permissioned actions and outcome learning</li></ul><Link to="/product">READ THE ARCHITECTURE & BOUNDARIES ↗</Link></article>
+    </div>
+   </section>
 
-      <section className="trust-section" data-reveal>
-        <div className="trust-heading"><span className="section-index">05 / TRUST IS A PRODUCT FEATURE</span><h2>We show what is known.<br/><em>And what is not.</em></h2><p>Trust should not depend on a badge or a testimonial. It should be visible in the way the product handles evidence, access, uncertainty and control.</p></div>
-        <div className="trust-grid">
-          <article><span className="trust-symbol">01</span><h3>Evidence coverage</h3><p>Every analysis must disclose its source window, matched records, unmatched records and missing inputs.</p></article>
-          <article><span className="trust-symbol">02</span><h3>Inspectable methods</h3><p>Published methodology explains matching, calculations, assumptions and the limits of historical replay.</p></article>
-          <article><span className="trust-symbol">03</span><h3>Merchant authority</h3><p>Store access is authenticated. Policy changes remain read-only until an explicitly supported, approved and verified workflow exists.</p></article>
-          <article><span className="trust-symbol">04</span><h3>Honest capability status</h3><p>Live functionality is separated from planned integrations. No invented customer outcomes, certifications or savings claims.</p></article>
-        </div>
-        <div className="trust-links"><Link to="/methodology">READ THE METHODOLOGY <span>↗</span></Link><Link to="/security">REVIEW SECURITY & DATA BOUNDARIES <span>↗</span></Link></div>
-      </section>
+   <section className="nd-trust">
+    <div className="nd-trust-intro"><span className="nd-index">06 / THE TRUST CONTRACT</span><h2>Control is not<br/><em>an afterthought.</em></h2><p>Business software earns authority by being inspectable, predictable and honest about its limits.</p></div>
+    <div className="nd-trust-grid"><article><b>01</b><h3>Evidence provenance</h3><p>Source, freshness, calculation and uncertainty remain visible.</p></article><article><b>02</b><h3>Tenant boundaries</h3><p>Merchant records and permissions must remain isolated.</p></article><article><b>03</b><h3>Approval by impact</h3><p>Consequential external changes require explicit authority.</p></article><article><b>04</b><h3>Verified execution</h3><p>A request is not success. External state must be checked.</p></article></div>
+    <div className="nd-trust-links"><Link to="/security">SECURITY & DATA HANDLING ↗</Link><Link to="/privacy">PRIVACY NOTICE ↗</Link><Link to="/methodology">METHOD & LIMITATIONS ↗</Link></div>
+   </section>
 
-      <section className="capability-ledger section-light" data-reveal>
-        <div className="section-heading"><div><span className="section-index">06 / RELEASE TRANSPARENCY</span><h2>Know exactly what<br/><em>you are evaluating.</em></h2></div><p>We will not sell a roadmap as a working integration. The current release boundary is explicit. Scheduled Shopify order refresh is available; carrier billing is not automatically polled.</p></div>
-        <div className="ledger">
-          <div className="ledger-column"><div className="ledger-heading"><span className="ledger-dot live"></span><b>AVAILABLE IN THE CURRENT REPOSITORY BUILD</b></div><ul><li>Shopify order ingestion</li><li>Carrier-cost CSV imports</li><li>Evidence matching and review</li><li>Deterministic reconciliation and diagnostics</li><li>Historical flat-rate and threshold replay</li><li>CSV evidence exports</li><li>Scheduled Shopify order refresh (order data only)</li><li>Merchant-attested economic value ledger</li></ul></div>
-          <div className="ledger-column planned"><div className="ledger-heading"><span className="ledger-dot planned-dot"></span><b>NOT YET VERIFIED AS LIVE</b></div><ul><li>UPS, FedEx and USPS direct API integrations</li><li>PDF invoice extraction</li><li>Recurring subscription billing</li><li>Automated carrier invoice feeds and carrier alerts</li><li>Automated Shopify policy writes</li><li>Public App Store approval</li></ul></div>
-        </div>
-        <p className="ledger-note">This status describes the repository's documented implementation, not a verified production deployment. Live availability must be confirmed in the deployed service before purchase.</p>
-      </section>
+   <section className="nd-commercial">
+    <div className="nd-commercial-copy"><span className="nd-index">07 / THE FOUNDING MERCHANT PROGRAMME</span><h2>Prove the value.<br/><em>Then decide to pay.</em></h2><p>Start with a scoped assessment of one Shopify store and the supported data it can provide. Receive a traceable evidence review, exception register and decision pack. An ongoing paid engagement is discussed only if the work reveals a credible recurring need.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">REQUEST AN ASSESSMENT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">CHECK MERCHANT FIT ↗</Link></div></div>
+    <div className="nd-commercial-aside"><span>NO FABRICATED RESULTS</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
+   </section>
 
-      <section className="closing-section" data-reveal>
-        <span className="section-index">07 / BEGIN WITH THE EVIDENCE</span><h2>Make the next shipping decision<br/><em>one you can explain.</em></h2><p>If you reconcile Shopify orders against carrier or 3PL bills, start with the sample pack and check whether your export is supported.</p>
-        <div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT A SHOPIFY STORE <span>↗</span></Link><Link to="/shipping-cost-reconciliation" className="cta-secondary">EXPLORE THE RECONCILIATION WORKFLOW <span>↗</span></Link><Link to="/buyer-evaluation" className="cta-secondary">CHECK MERCHANT FIT <span>↗</span></Link></div>
-      </section>
-    </main>
-  </MarketingShell>;
+   <section className="nd-final">
+    <div className="nd-final-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M50 10 86 34 73 78 50 90 14 66 14 34 50 10Z"/><path d="m14 34 36 21 36-21M50 55v35M27 73l23-18 23 18M27 26l23 29 23-29"/></g><g fill="currentColor"><circle cx="50" cy="10" r="4"/><circle cx="86" cy="34" r="4"/><circle cx="73" cy="78" r="4"/><circle cx="50" cy="90" r="4"/><circle cx="14" cy="66" r="4"/><circle cx="14" cy="34" r="4"/></g></svg></div>
+    <span className="nd-index">NODUS / THE NEXT OPERATING LAYER</span><h2>Understand everything.<br/><em>Operate intelligently.</em></h2><p>Begin with the business data you have. Build from evidence. Expand only where the product can deliver and verify real work.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">BEGIN A FOUNDING ASSESSMENT ↗</Link><Link to="/install" className="nd-button nd-button-quiet">INSTALL THE NODUS APP ↗</Link></div>
+   </section>
+  </main>
+ </MarketingShell>;
 }
