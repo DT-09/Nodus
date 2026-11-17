@@ -55,7 +55,9 @@ Match cost records to orders using supported references. Keep matched, candidate
 For complete, reviewed, single-currency coverage only, calculate shipping collected less evidenced carrier/3PL cost. Clearly disclose taxes, refunds, exclusions and coverage. Do not call this total order profit.
 
 ### Step 5 — Test policies
-Replay flat-rate and free-shipping threshold alternatives against the historical order sample. Report the sample window, affected orders, shipping revenue, evidenced fulfillment cost, contribution change and assumptions. A historical replay is not a conversion forecast.
+**Current release:** replay flat-rate and free-shipping threshold alternatives against historical orders for shipping-revenue impact. The existing simulation record does not yet model cost-adjusted contribution under each proposed policy.
+
+**Required product upgrade before selling full margin optimization:** extend the replay engine to carry matched carrier/3PL costs into each scenario, calculate the resulting shipping contribution, disclose the cost-coverage denominator, and test mixed currencies, partial shipments, refunds and missing evidence. A historical replay is not a conversion forecast.
 
 ### Step 6 — Deliver the decision pack
 Produce an exception queue and reproducible CSV/JSON pack with source references, calculations, coverage, assumptions, limitations and next actions.
@@ -68,7 +70,7 @@ The intended distinction is a narrow, evidence-first workflow:
 - imported billed-cost evidence rather than only estimated shipping rules;
 - explicit coverage and uncertainty states;
 - order-level traceability from Shopify order to carrier-cost row;
-- shipping-policy replay evaluated against the same evidenced historical sample;
+- historical shipping-revenue policy replay, with cost-adjusted scenario contribution identified as the next engine upgrade;
 - an exportable decision pack suitable for operations and finance review.
 
 This distinction remains a hypothesis until merchants confirm that it is materially more useful than their current workflow.
@@ -83,7 +85,7 @@ Included:
 - recurring merchant-provided carrier/3PL CSV imports;
 - order-level shipping reconciliation and evidence coverage;
 - exception review;
-- saved flat-rate and free-shipping threshold scenarios;
+- saved flat-rate and free-shipping threshold revenue scenarios (cost-adjusted policy replay is not yet live);
 - CSV and JSON decision-pack exports.
 
 No claim of direct UPS/FedEx/USPS API integration, automatic carrier invoice polling, automatic shipping-policy changes, guaranteed savings or App Store approval.
@@ -140,6 +142,7 @@ Traffic and free signups are not revenue validation. The strongest signal is rep
 ## 9. Release gates
 
 ### Engineering
+- Extend policy replay from shipping-revenue-only scenarios to cost-adjusted shipping-contribution scenarios before marketing the product as a complete shipping-margin optimizer.
 - Production database configured, migrated, backed up and restore-tested.
 - Shopify OAuth, scopes, webhooks, uninstall and tenant isolation tested against a real development store.
 - Carrier CSV import, reconciliation, policy replay and exports tested with edge cases.
