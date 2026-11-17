@@ -10,13 +10,13 @@ Shopify shipping charges and carrier-cost records often live in separate systems
 
 NODUS connects those records and keeps the evidence and assumptions visible.
 
-## Founding assessment terms
+## Offer and pricing hypothesis
 
-The first assessment is no-fee and no-obligation. Scope it to one authorized Shopify store, one reporting currency, the accessible order-history window, and one supported carrier-cost CSV export. Do not collect payment details or auto-enrol the merchant in a subscription.
+The proposed founding plan is **$29/month per Shopify store**. This is a pricing hypothesis, not a validated market price or an active checkout. Paid onboarding must remain closed until production billing, entitlement enforcement, support contact, privacy disclosures and merchant-data controls are verified.
 
-The deliverable is a dated assessment pack containing: (1) sample window and Shopify permission boundary, (2) evidence-coverage statement, (3) matched/unmatched/incomplete exception register with source references, (4) reproducible calculations and any supported historical policy replay, (5) an economic value ledger separating identified, merchant-validated and merchant-attested realized outcomes, and (6) limitations and follow-up actions. The merchant reviews and confirms its own records. A discrepancy is not a recovered credit.
+The paid workflow covers Shopify order synchronization within granted permissions, merchant-provided carrier/3PL CSV imports, order-level reconciliation, evidence review, historical flat-rate/free-shipping replay and reproducible CSV/JSON exports. The merchant must import new carrier-cost evidence for each review period; scheduled Shopify order refresh alone is not carrier-cost monitoring.
 
-A subscription is considered only after delivery and only where the merchant agrees there is a recurring job worth paying for. No positive review or public case study is required to participate.
+The deliverable is a dated decision pack containing the sample window and Shopify permission boundary, evidence coverage, matched/unmatched/incomplete exception register, reproducible calculations, supported historical policy replay, and limitations. A discrepancy is not a recovered credit.
 
 ## Evaluation workflow
 
@@ -71,4 +71,4 @@ The evaluation is useful only if the merchant can:
 
 ## Commercial status
 
-The repository does not yet have a live subscription checkout, verified production deployment or App Store listing. Prices shown in planning material are hypotheses, not offers. Do not accept payment or represent the service as generally available until an authorized business operator has completed the legal, billing, deployment and Shopify release requirements.
+The repository does not yet have a verified production environment, active subscription checkout or App Store listing. The $29/month price is a hypothesis, not an active offer. Do not accept payment or represent the service as generally available until the authorized business operator has completed the legal, billing, deployment and Shopify release requirements.
