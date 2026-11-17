@@ -6,7 +6,7 @@ export const meta:MetaFunction=()=>[
   {title:"Merchant evaluation guide — NODUS"},
   {name:"description",content:"See whether your Shopify order data and carrier-cost exports are suitable for an evidence-led shipping economics assessment."},
   {property:"og:title",content:"Merchant evaluation guide — NODUS"},
-  {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS founding merchant evaluation."},
+  {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS shipping-margin evaluation."},
 ];
 
 const requirements=[
@@ -27,10 +27,10 @@ export default function BuyerEvaluation(){
     <header>
       <p className="page-eyebrow">MERCHANTS / EVALUATION GUIDE</p>
       <h1>Bring the records.<br/><em>Leave with a clearer decision.</em></h1>
-      <p className="page-lede">The NODUS founding evaluation tests one narrow question: can your Shopify shipping revenue and your carrier or 3PL cost evidence be connected well enough to support a useful, reviewable shipping-economics decision?</p>
+      <p className="page-lede">NODUS is built for merchants who need to reconcile Shopify shipping charges with actual carrier or 3PL costs, identify underfunded shipping policies and review evidence-backed alternatives.</p>
       <div className="hero-ctas">
         <Link to="/demo" className="cta-primary">INSPECT THE SAMPLE <span>↗</span></Link>
-        <Link to="/pricing" className="cta-secondary">REVIEW THE PROGRAMME <span>↗</span></Link>
+        <Link to="/pricing" className="cta-secondary">REVIEW PRICING <span>↗</span></Link>
       </div>
     </header>
 
@@ -44,7 +44,7 @@ export default function BuyerEvaluation(){
     <section className="content-note">
       <span className="page-eyebrow">02 / THE SCOPE</span>
       <h2>Small enough to verify. Useful enough to judge.</h2>
-      <p>The initial programme is no-fee and no-obligation. Each assessment is limited to one authorized Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost CSV export.</p>
+      <p>The initial release is scoped to one authorized Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost CSV export. Paid onboarding remains closed until production billing and data-handling controls are verified.</p>
       <p>The current <code>read_orders</code> permission normally covers the most recent 60 days. Older order access requires additional Shopify approval; NODUS does not promise unrestricted historical access.</p>
     </section>
 
