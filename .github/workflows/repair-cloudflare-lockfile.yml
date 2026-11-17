@@ -25,6 +25,8 @@ jobs:
           cache: npm
       - name: Regenerate lockfile from package.json
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Verify clean installation
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Commit lockfile when changed
         run: |
           if git diff --quiet -- package-lock.json; then
