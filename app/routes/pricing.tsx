@@ -25,7 +25,7 @@ export default function Pricing(){
     <article><span>01 / CONNECT</span><h2>Shopify order context</h2><p>Read authorized order, shipping-line and fulfillment records within the permissions Shopify grants.</p></article>
     <article><span>02 / IMPORT</span><h2>Actual cost evidence</h2><p>Import supported carrier or 3PL CSV exports. Keep source identifiers, currency and duplicate checks.</p></article>
     <article><span>03 / RECONCILE</span><h2>Shipping exceptions</h2><p>Review matched, unmatched, duplicate and incomplete evidence. Missing cost is never silently treated as zero.</p></article>
-    <article><span>04 / DECIDE</span><h2>Policy scenarios</h2><p>Replay flat-rate and free-shipping threshold alternatives against the stored historical order sample.</p></article>
+    <article><span>04 / DECIDE</span><h2>Policy scenarios</h2><p>Replay shipping-revenue effects of flat-rate and free-shipping threshold alternatives against historical orders. Cost-adjusted policy contribution replay is planned, not yet included.</p></article>
     <article><span>05 / EXPORT</span><h2>Decision pack</h2><p>Export the evidence register and reproducible JSON pack for finance and operations review.</p></article>
     <article><span>06 / REPEAT</span><h2>Monthly review</h2><p>Import the next carrier-cost export, revisit unresolved exceptions and compare the next reporting period.</p></article>
    </div>
