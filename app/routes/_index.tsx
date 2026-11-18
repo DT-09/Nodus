@@ -71,7 +71,7 @@ export default function Home(){
    </section>
 
    <section className="nd-console">
-    <div className="nd-console-copy"><span className="nd-index">04 / THE MERCHANT WORKSPACE</span><h2>See the evidence.<br/><em>Know what needs review.</em></h2><p>The current public workflow reviews order and carrier-cost CSV files in the browser. It gives merchants a structured view of matches, unmatched charges, evidence gaps and downloadable review records.</p><ul><li>Which charges matched an order?</li><li>Which charges remain unmatched?</li><li>Where is cost coverage incomplete?</li><li>What should the operations team verify next?</li></ul><Link to="/demo" className="nd-text-link">OPEN THE SHIPPING COST WORKSPACE ↗</Link></div>
+    <div className="nd-console-copy"><span className="nd-index">04 / THE MERCHANT WORKSPACE</span><h2>See the evidence.<br/><em>Know what needs review.</em></h2><p>The current public workflow reviews order and carrier-cost CSV files in the browser. It gives merchants a structured view of matches, unmatched charges, evidence gaps and downloadable review records.</p><ul><li>Which charges matched an order?</li><li>Which charges remain unmatched?</li><li>Where is cost coverage incomplete?</li><li>What should the operations team verify next?</li></ul><Link to="/manual-data" className="nd-text-link">OPEN THE SHIPPING COST WORKSPACE ↗</Link></div>
     <div className="nd-console-art">
      <div className="nd-window-bar"><span>NODUS / BUSINESS COMMAND</span><span className="nd-live-label">CONCEPT VIEW</span></div>
      <div className="nd-window-title"><div><small>BUSINESS OVERVIEW / ALL SYSTEMS</small><h3>Operating picture</h3></div><span>01 — 06</span></div>
