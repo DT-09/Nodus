@@ -19,6 +19,6 @@ assert.match(leads,/request\.headers\.get\("Origin"\)/);
 assert.match(leads,/body\.consent!==true/);
 assert.match(leads,/crypto\.subtle\.digest/);
 assert.match(health,/NODUS_DB/);
-assert.match(manifest.display,"standalone");
+assert.equal(manifest.display,"standalone");
 assert.ok(manifest.icons?.length,"PWA icons must be configured");
 console.log("NODUS Cloudflare release configuration checks passed.");
