@@ -20,9 +20,6 @@ export default function Pricing(){
  const minutesSaved=valid?baseMinutes-assistedMinutes:0;
  const cycleValue=valid?(minutesSaved/60)*rate:0;
  const formattedValue=valid?new Intl.NumberFormat("en",{style:"currency",currency,maximumFractionDigits:3}).format(cycleValue):"";
- const email=process.env.PUBLIC_CONTACT_EMAIL?.trim() || "dhairytopia@gmail.com";
- const subject=encodeURIComponent("NODUS Founding Merchant Value Programme");
- const body=encodeURIComponent("Hello NODUS,\n\nI would like to be considered for the Founding Merchant Value Programme.\n\nShopify store URL:\nApproximate monthly order volume:\nMonthly carrier spend and currency:\nCarrier / 3PL invoice export available (yes/no):\nPrimary shipping economics question:\n\n");
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
@@ -82,7 +79,7 @@ export default function Pricing(){
     <article><b>03</b><h3>Revisit decisions</h3><p>Compare shipping-policy assumptions against actual historical orders. No live policy changes without a separately implemented and approved workflow.</p></article>
     <article><b>04</b><h3>Report what changed</h3><p>Show new evidence, changed coverage, resolved exceptions and merchant-attested outcomes with an audit trail.</p></article>
    </div>
-   <p className="calculator-caveat">The current product supports scheduled Shopify order refresh, but not automated carrier billing feeds or automated policy writes. Carrier evidence is imported by the merchant. The programme will not describe those unsupported functions as live.</p>
+   <p className="calculator-caveat">The current public release supports browser-local CSV analysis and an evidence-led founding assessment request. Shopify OAuth, saved merchant workspaces, scheduled order refresh, carrier billing feeds and policy writes are not live. The programme will not describe those unsupported functions as available.</p>
   </section>
 
   <section className="pricing-contact" data-reveal>
@@ -93,12 +90,12 @@ export default function Pricing(){
    </div>
    <div className="evaluation-steps">
     <p><b>01</b> Confirm store fit and evaluation scope.</p>
-    <p><b>02</b> Connect Shopify through the authorized installation flow.</p>
-    <p><b>03</b> Import a supported carrier-cost export.</p>
+    <p><b>02</b> Confirm which order and carrier-cost records are available. Shopify OAuth is not open yet.</p>
+    <p><b>03</b> Review a supported sample locally; do not send files with the enquiry.</p>
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
     <p><b>05</b> Decide whether ongoing monthly service is worth it.</p>
    </div>
-   {email?<a className="primary-cta" href={"mailto:"+email+"?subject="+subject+"&body="+body}>Request a private NODUS review ↗</a>:<p className="import-error">Business-owned enquiry intake is not configured. Public applications must remain closed until a monitored business contact channel is set.</p>}
+   <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A MANUAL DATA REVIEW ↗</Link><Link to="/connect" className="cta-secondary">CONNECT SHOPIFY ↗</Link></div>
    <p className="pricing-disclaimer">No automatic billing. Any service fee is agreed in writing before work begins. Any later seven-day software pilot will have a stated data limit, end date and opt-in subscription decision. Feedback is voluntary; testimonials require separate permission. We do not publish invented reviews, customer logos or financial outcomes.</p>
   </section>
