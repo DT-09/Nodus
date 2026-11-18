@@ -577,3 +577,21 @@
 .nd-form-status.is-error{border-color:#ad6a5d;color:#f0b3a6}
 .nd-form-footnote{font:9px/1.7 Inter,system-ui,sans-serif;color:#a8a096;margin-top:16px}
 @media(max-width:640px){.nd-form-grid{grid-template-columns:1fr}.nd-form-wide{grid-column:auto}.nd-assessment-form{padding:20px}}
+
+/* NODUS identity and contrast corrections — approved six-node gold mark. */
+.marketing-site .nodus-logo{width:39px;height:39px;flex:0 0 auto;color:#c7a96b;filter:drop-shadow(0 2px 8px rgba(199,169,107,.16))}
+.marketing-site .site-brand-word{color:#f0eadf}
+.marketing-site .site-brand-caption{color:#aaa397}
+.marketing-site .site-header{background:rgba(25,22,31,.92);border-color:rgba(199,169,107,.25);box-shadow:0 12px 36px rgba(0,0,0,.22)}
+.marketing-site .site-header .header-context{color:#aaa397}
+.marketing-site .site-header .menu-trigger{border-color:rgba(199,169,107,.28)}
+.marketing-site .site-header .menu-trigger span{background:#f0eadf}
+.marketing-site .site-footer .nodus-logo{color:#c7a96b}
+.marketing-site .section-light{background:#eee9df;color:#17232c}
+.marketing-site .section-light .section-heading h2,.marketing-site .section-light .system-cell h3,.marketing-site .section-light .ledger-heading{color:#17232c}
+.marketing-site .section-light .section-heading>p,.marketing-site .section-light .system-cell p{color:#505b61}
+.marketing-site .section-light .cell-rule,.marketing-site .section-light .ledger li,.marketing-site .section-light .ledger-note{color:#59656a}
+.marketing-site .section-light .system-grid,.marketing-site .section-light .system-cell,.marketing-site .section-light .ledger{border-color:rgba(23,35,44,.24)}
+.marketing-site .nd-home .nd-core-mark,.marketing-site .nd-home .nd-final-mark{color:#c7a96b}
+.marketing-site .nd-home .nd-core-mark svg,.marketing-site .nd-home .nd-final-mark svg{color:#c7a96b}
+.marketing-site :is(a,button,input,select,textarea):focus-visible{outline:2px solid #d8bd83;outline-offset:3px}
