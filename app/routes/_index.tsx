@@ -11,15 +11,12 @@ export const meta:MetaFunction=()=>[
 ];
 
 const domains=[
- ["01","Finance","Margin, cash signals, expenses and financial exposure","FINANCIAL INTELLIGENCE"],
- ["02","Sales & revenue","Demand, pricing, conversion and repeat purchase","REVENUE INTELLIGENCE"],
- ["03","Marketing & growth","Acquisition, retention, campaigns and performance","GROWTH INTELLIGENCE"],
- ["04","Customers","Segments, behaviour, loyalty and customer value","CUSTOMER INTELLIGENCE"],
- ["05","Products & inventory","SKU performance, stock risk and demand planning","PRODUCT INTELLIGENCE"],
- ["06","Supply chain","Suppliers, fulfilment, shipping and returns","OPERATIONS INTELLIGENCE"],
- ["07","Business operations","Workflows, exceptions, tasks and recurring work","OPERATIONAL INTELLIGENCE"],
- ["08","Strategy","Priorities, opportunities and scenario planning","STRATEGIC INTELLIGENCE"],
- ["09","Risk & control","Anomalies, exposure, permissions and audit","RISK INTELLIGENCE"],
+ ["01","Shipping revenue","Order-level shipping charges, discounts, refunds and currency treatment","ORDER ECONOMICS"],
+ ["02","Carrier costs","Carrier, label and 3PL charges tied to source records","COST EVIDENCE"],
+ ["03","Order matching","Reference and tracking-based reconciliation with explicit match rules","DETERMINISTIC MATCHING"],
+ ["04","Exceptions","Unmatched charges, incomplete records and ambiguous references","REVIEW QUEUE"],
+ ["05","Policy scenarios","Historical replay of proposed shipping rates and thresholds","SCENARIO ANALYSIS"],
+ ["06","Decision records","Exportable evidence registers, assumptions and calculation traces","AUDITABLE OUTPUTS"],
 ];
 
 const loop=[
@@ -45,13 +42,13 @@ export default function Home(){
      </div>
      <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
     </div>
-    <div className="nd-orbit-stage" aria-label="Abstract NODUS business intelligence network illustration">
-     <div className="nd-orbit nd-orbit-a"></div><div className="nd-orbit nd-orbit-b"></div><div className="nd-orbit nd-orbit-c"></div>
-     <div className="nd-orbit-core"><div className="nd-core-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round"><path d="M50 8 84 29 84 71 50 92 16 71 16 29 50 8Z"/><path d="M50 8 50 50 84 71M50 50 16 71M16 29 50 50 84 29M50 50 50 92"/></g><g fill="currentColor"><circle cx="50" cy="8" r="4.2"/><circle cx="84" cy="29" r="4.2"/><circle cx="84" cy="71" r="4.2"/><circle cx="50" cy="92" r="4.2"/><circle cx="16" cy="71" r="4.2"/><circle cx="16" cy="29" r="4.2"/></g></svg></div><span>NODUS</span><small>BUSINESS INTELLIGENCE</small></div>
-     <div className="nd-orbit-label nd-label-one"><b>01</b><span>FINANCE</span></div><div className="nd-orbit-label nd-label-two"><b>02</b><span>OPERATIONS</span></div><div className="nd-orbit-label nd-label-three"><b>03</b><span>GROWTH</span></div><div className="nd-orbit-label nd-label-four"><b>04</b><span>STRATEGY</span></div>
-     <div className="nd-orbit-caption">ONE CONNECTED BUSINESS MODEL <span>·</span> MANY SPECIALIST ENGINES</div>
-    </div>
-   </section>
+    <div className="nd-ledger-stage" aria-label="Illustrative NODUS shipping economics review">
+     <div className="nd-ledger-top"><span>RECONCILIATION / WORKFLOW 01</span><span className="nd-ledger-status"><i></i> SAMPLE DATA</span></div>
+     <div className="nd-ledger-sources"><article><small>01 / ORDER RECORDS</small><strong>Shopify orders</strong><span>Shipping collected</span><b>$8,420.00</b><em>128 order rows</em></article><div className="nd-ledger-join"><span></span><b>+</b><span></span></div><article><small>02 / COST EVIDENCE</small><strong>Carrier & 3PL</strong><span>Imported charges</span><b>$6,985.40</b><em>143 cost rows</em></article></div>
+     <div className="nd-ledger-engine"><div className="nd-engine-mark">N</div><div><b>Evidence matching engine</b><small>Reference · tracking · currency · coverage</small></div><span>RECONCILE <i>↗</i></span></div>
+     <div className="nd-ledger-results"><article><small>MATCHED</small><b>117</b><span>Order-linked costs</span></article><article><small>UNMATCHED</small><b>11</b><span>Charges to investigate</span></article><article><small>INCOMPLETE</small><b>4</b><span>Coverage needs review</span></article></div>
+     <p className="nd-ledger-caption">ILLUSTRATIVE VALUES ONLY · NOT CUSTOMER RESULTS</p>
+    </div></section>
 
    <section className="nd-manifesto">
     <div><span className="nd-index">01 / THE IDEA</span><h2>Shipping costs are easy to overlook.<br/><em>Unclear evidence makes them harder to control.</em></h2></div>
@@ -73,13 +70,13 @@ export default function Home(){
    <section className="nd-console">
     <div className="nd-console-copy"><span className="nd-index">04 / THE MERCHANT WORKSPACE</span><h2>See the evidence.<br/><em>Know what needs review.</em></h2><p>The current public workflow reviews order and carrier-cost CSV files in the browser. It gives merchants a structured view of matches, unmatched charges, evidence gaps and downloadable review records.</p><ul><li>Which charges matched an order?</li><li>Which charges remain unmatched?</li><li>Where is cost coverage incomplete?</li><li>What should the operations team verify next?</li></ul><Link to="/manual-data" className="nd-text-link">OPEN THE SHIPPING COST WORKSPACE ↗</Link></div>
     <div className="nd-console-art">
-     <div className="nd-window-bar"><span>NODUS / BUSINESS COMMAND</span><span className="nd-live-label">CONCEPT VIEW</span></div>
-     <div className="nd-window-title"><div><small>BUSINESS OVERVIEW / ALL SYSTEMS</small><h3>Operating picture</h3></div><span>01 — 06</span></div>
-     <div className="nd-window-metrics"><article><small>BUSINESS HEALTH</small><b>—</b><span>Connect data to establish</span></article><article><small>PRIORITY FINDINGS</small><b>—</b><span>Evidence required</span></article><article><small>ACTIVE OBJECTIVES</small><b>—</b><span>Awaiting business context</span></article></div>
-     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Business state</b><small>Connect authorised data sources</small></div><em>NOT CONNECTED</em></div>
-     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Diagnosis engine</b><small>Findings require source evidence</small></div><em>STANDBY</em></div>
-     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Execution control</b><small>Approval-bound actions only</small></div><em>GUARDED</em></div>
-     <div className="nd-window-foot">ILLUSTRATIVE PRODUCT DIRECTION · NOT A LIVE MERCHANT ACCOUNT</div>
+     <div className="nd-window-bar"><span>NODUS / BUSINESS COMMAND</span><span className="nd-live-label">SAMPLE WORKSPACE</span></div>
+     <div className="nd-window-title"><div><small>SHIPPING ECONOMICS / SAMPLE STORE</small><h3>Evidence review</h3></div><span>01 — 06</span></div>
+     <div className="nd-window-metrics"><article><small>ORDERS REVIEWED</small><b>128</b><span>Illustrative sample</span></article><article><small>UNMATCHED COSTS</small><b>11</b><span>Require investigation</span></article><article><small>REVIEW STATUS</small><b>4</b><span>Incomplete coverage</span></article></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Order records</b><small>Shipping revenue and order references</small></div><em>IMPORTED</em></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Carrier-cost evidence</b><small>Carrier and fulfilment charge rows</small></div><em>IMPORTED</em></div>
+     <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Decision pack</b><small>Traceable CSV register and JSON export</small></div><em>AVAILABLE</em></div>
+     <div className="nd-window-foot">SYNTHETIC SAMPLE · NOT A LIVE MERCHANT ACCOUNT</div>
     </div>
    </section>
 
