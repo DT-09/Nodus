@@ -1,21 +1,55 @@
 {
   "id": "/",
-  "name": "NODUS — Business Operating Intelligence",
+  "name": "NODUS — Shopify Shipping Economics",
   "short_name": "NODUS",
-  "description": "Business operating intelligence for connected decisions and controlled execution.",
+  "description": "Read-only Shopify shipping revenue review with evidence-led carrier cost reconciliation.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#17151d",
   "theme_color": "#211e29",
   "orientation": "any",
   "icons": [
-    {"src": "/nodus-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {
+      "src": "/nodus-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ],
-  "categories": ["business", "finance", "productivity"],
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
   "shortcuts": [
-    {"name": "Product architecture", "short_name": "Product", "url": "/product", "icons": [{"src": "/nodus-icon.svg", "sizes": "any", "type": "image/svg+xml"}]},
-    {"name": "Founding assessment", "short_name": "Assessment", "url": "/pricing", "icons": [{"src": "/nodus-icon.svg", "sizes": "any", "type": "image/svg+xml"}]}
+    {
+      "name": "Merchant workspace",
+      "short_name": "Workspace",
+      "url": "/workspace",
+      "icons": [
+        {
+          "src": "/nodus-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Shipping cost review",
+      "short_name": "Review",
+      "url": "/manual-data",
+      "icons": [
+        {
+          "src": "/nodus-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
   ]
 }
