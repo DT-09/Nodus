@@ -10,6 +10,7 @@ export async function onRequestPost({request,env}:PagesContext){
   await env.NODUS_DB.batch([
    env.NODUS_DB.prepare("DELETE FROM shopify_sessions WHERE shop=?").bind(shop),
    env.NODUS_DB.prepare("DELETE FROM shopify_orders WHERE shop=?").bind(shop),
+   env.NODUS_DB.prepare("DELETE FROM shopify_costs WHERE shop=?").bind(shop),
    env.NODUS_DB.prepare("DELETE FROM shopify_sync_state WHERE shop=?").bind(shop),
    env.NODUS_DB.prepare("DELETE FROM shopify_installs WHERE shop=?").bind(shop)
   ]);
