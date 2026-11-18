@@ -1,103 +1,47 @@
-# NODUS Launch-Day Release Gate
+# NODUS Public Release Acceptance
 
-This checklist separates deployable repository work from external account setup and real-world verification. A successful build does not prove that Shopify installation, merchant data, carrier integrations, billing or App Store approval work.
+## What can be launched now
 
-## 1. Deployment architecture
+- Cloudflare Pages public website and PWA.
+- Product architecture, methodology, privacy, security, pricing and synthetic demo pages.
+- Browser-local order/carrier CSV analysis.
+- Cloudflare D1-backed founding assessment enquiry intake.
+- No-fee, no-obligation founding assessment request.
 
-- [ ] Deploy the React Router application to Vercel using the preset configured in `react-router.config.ts`.
-- [ ] Use a Vercel commercial plan for the commercial NODUS service. Vercel Hobby is restricted to personal, non-commercial use ([plan terms](https://vercel.com/legal/terms)). The five-minute sync runner is configured in GitHub Actions, not Vercel Cron; verify its repository secrets and successful authenticated execution.
-- [ ] Ensure an authorized adult/business operator owns the hosting account, billing and production access.
-- [ ] Use managed PostgreSQL with durable backups and a documented restore procedure.
-- [ ] Configure a separate database for Vercel Preview deployments. The Vercel build command does not apply migrations; apply production migrations through the protected manual GitHub Actions workflow.
-- [ ] Use Node.js 22 and the repository root as the Vercel project root.
-- [ ] Set the Vercel build command to `npm run vercel-build`; it generates Prisma Client and builds the app without mutating the production database.
-- [ ] Configure Production and Preview environment variables independently: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL`, `SCOPES`, `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_CONTACT_EMAIL`, `CRON_SECRET`, and `NODE_ENV=production`.
-- [ ] Keep credentials server-side. Never expose secrets through client-side environment variables.
-- [ ] Confirm Production and Preview use separate databases. Use the provider's pooled URL for `DATABASE_URL` and direct/non-pooled URL for `DIRECT_URL`; both must target the same environment database.
-- [ ] Generate distinct high-entropy `CRON_SECRET` values for Production and Preview. Keep them server-side and out of source control.
+## What must not be claimed
 
-## 2. Shopify application configuration
+- Shopify OAuth installation or App Store availability.
+- Persistent merchant workspace or automatic order synchronization.
+- Direct carrier APIs, invoice polling or PDF/OCR ingestion.
+- General-purpose cross-business intelligence or autonomous execution.
+- Paid subscription checkout or verified recurring merchant value.
 
-- [ ] Create the production app in the authorized Shopify Partner organization.
-- [ ] Set the exact production HTTPS origin in `SHOPIFY_APP_URL`.
-- [ ] Replace the placeholder `client_id`, `application_url` and redirect URLs in `shopify.app.toml`.
-- [ ] Make Shopify Partner Dashboard URLs and TOML URLs match exactly.
-- [ ] Confirm requested scopes and current Shopify review requirements.
-- [ ] Configure Shopify Admin API network restrictions. Shopify supports IP/CIDR allowlists and provider ASNs for dynamic serverless egress. Identify the actual Vercel egress network and deployment countries, configure the corresponding Dev Dashboard allowlist, and test it against recent API traffic. Do not guess network identifiers. The public-app deadline is November 20, 2026; without an allowlist, new installs are blocked and the app is delisted from the App Store.
-- [ ] Install on a controlled development store and test OAuth, session persistence, order sync and configured webhooks.
-- [ ] Test `app/uninstalled`, `app/scopes_update`, `customers/data_request`, `customers/redact` and `shop/redact`.
-- [ ] Verify the 60-day order-access boundary; seek `read_all_orders` approval if older orders are required.
-- [ ] Complete App Store listing, disclosures, review submission and approval before claiming public App Store availability.
+## Production checks
 
-## 3. Production infrastructure
+- [ ] Latest Pages deployment completed successfully.
+- [ ] Pages Functions compile and deploy.
+- [ ] `NODUS_DB` is bound in Production and Preview.
+- [ ] D1 tables `merchant_leads` and `lead_rate_limits` exist.
+- [ ] `/api/health` confirms D1 connectivity.
+- [ ] Valid assessment submission creates one D1 record.
+- [ ] Invalid and repeated submissions are rejected.
+- [ ] Assessment consent links to the current privacy notice.
+- [ ] The operator can review and delete lead records in D1.
+- [ ] Manual CSV files remain browser-local and downloadable outputs work.
+- [ ] PWA installation instructions are accurate across supported browsers.
 
-- [ ] Confirm `/healthz` returns HTTP 200 after migrations and database connectivity are available.
-- [ ] Confirm the deployed responses include HSTS, `X-Content-Type-Options: nosniff`, the documented `Referrer-Policy` and restrictive `Permissions-Policy`; keep Shopify Admin embedding functional.
-- [ ] Confirm Prisma migrations are applied to the intended database.
-- [ ] Enable encrypted automated backups and complete a restore test.
-- [ ] Configure uptime, error and resource alerts.
-- [ ] Ensure logs redact credentials, session tokens and merchant-sensitive payloads.
-- [ ] Verify the hosting provider's outbound IPs are stable, documented and the same IPs configured in Shopify's Admin API access restrictions.
-- [ ] Assign an operational owner and incident response procedure.
-- [ ] Verify database connection limits under concurrent serverless requests.
+## Human operating requirements
 
-## 4. Product acceptance
+- [ ] Authorized adult/business operator owns the commercial activity and accounts.
+- [ ] A monitored support inbox and response process are active.
+- [ ] The operator checks D1 for new enquiries until automated notifications exist.
+- [ ] A secure data-transfer process is agreed before requesting merchant source records.
+- [ ] No paid work begins without written scope, price, acceptance criteria and authorized operator approval.
 
-- [ ] Complete a real development-store install-to-first-result test.
-- [ ] Verify initial backfill, pagination continuation and incremental refresh.
-- [ ] Confirm tax-inclusive orders and mixed currencies remain correctly qualified.
-- [ ] Import permissioned carrier CSV samples; test duplicates, malformed rows, invalid currencies and ambiguous matches.
-- [ ] Verify new evidence invalidates prior complete-coverage attestations.
-- [ ] Verify two separate stores cannot access each other's records.
-- [ ] Confirm exports contain only the authenticated merchant's records.
-- [ ] Confirm no live shipping-policy write is exposed.
-- [ ] Confirm unsupported features are not described as implemented.
+## Shopify release gates
 
-## 5. Commercial readiness — blocking
+Shopify installation remains disabled until OAuth, session persistence, tenant isolation, data synchronization, privacy webhooks, API access requirements and controlled-store tests pass on a Cloudflare-compatible runtime.
 
-- [ ] Run the scoped Founding Merchant Value Programme before proposing any subscription. Do not publish fixed prices until ongoing value, scope and willingness to pay are established.
-- [ ] Before any paid conversion, configure Shopify App Pricing plans and verify the existing Partner API subscription lookup and fail-closed access gate against real test subscriptions. Complete approval, activation, plan-change, cancellation, delinquency, refund and uninstall lifecycle tests.
-- [ ] Test approval, activation, plan changes, cancellation, delinquency and uninstall.
-- [ ] Do not accept payment until advertised paid capabilities are implemented and verified.
-- [ ] Publish accurate Terms, Privacy Policy, data retention/deletion policy and business-owned support contact.
-- [ ] Have an appropriately authorized adult/business operator own legal, financial, Shopify Partner and payout arrangements.
-- [ ] Complete trademark and domain clearance before broad brand launch.
+## Definition of a successful public release
 
-## 6. Integration truth table
-
-| Capability | Repository status |
-|---|---|
-| Shopify order ingestion | Implemented; live-store verification required |
-| Carrier cost CSV import | Implemented |
-| UPS direct API | Not implemented / not verified |
-| FedEx direct API | Not implemented / not verified |
-| USPS direct API | Not implemented / not verified |
-| Reconciliation and diagnostics | Implemented; validation required |
-| Historical policy simulation | Implemented |
-| Shopify policy writes | Disabled |
-| Scheduled Shopify order refresh | Implemented in repository; production Cron, credentials and execution not verified |
-| Shopify App Pricing subscription lookup | Implemented behind a feature flag; Partner configuration and live lifecycle tests required |\n| Server-side subscription access gate | Implemented behind a feature flag; fail-closed behavior requires live verification |\n| Plan setup and billing lifecycle | Not verified; Partner plan configuration and lifecycle acceptance remain release gates |
-| App Store approval | External; not verified |
-
-## 7. Release verification record
-
-- Release commit SHA:
-- Vercel Production deployment URL:
-- Shopify app ID:
-- Production database migration status:
-- `/healthz` result and timestamp:
-- Development-store install result:
-- Order backfill and incremental sync result:
-- Webhook verification result:
-- Tenant-isolation test result:
-- Backup restore result:
-- Billing status:
-- App Store status:
-- Release owner:
-
-## Current release decision
-
-The repository can be deployed to Vercel after real credentials, database and Shopify URLs are configured. That does **not** make NODUS enterprise-production complete or commercially launch-ready. Direct carrier invoice APIs remain unimplemented. Shopify App Pricing configuration, full billing-lifecycle verification and scheduled-sync production verification remain external release gates. The public offer should be the no-fee Founding Merchant Value Programme until recurring value is established. Do not charge merchants for unimplemented functionality.
-
-
-The current product offer remains the no-fee Founding Merchant Value Programme. Subscription discussions must follow delivery of the evidence pack and merchant agreement that recurring value exists. The current app access gate and Shopify App Pricing lookup are code-level implementations only; live Partner configuration and complete lifecycle tests are still required.
+A successful public release means a merchant can understand the offer, inspect the synthetic example, request an assessment, receive a response and use the supported local analysis workflow. It does not mean NODUS is already the complete autonomous business operating system described in its long-term architecture.
