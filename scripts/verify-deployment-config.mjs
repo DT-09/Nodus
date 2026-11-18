@@ -25,7 +25,7 @@ assert.match(leads,/request\.headers\.get\("Origin"\)/);
 assert.match(leads,/body\.consent!==true/);
 assert.match(leads,/crypto\.subtle\.digest/);
 assert.match(health,/NODUS_DB/);
-assert.match(shopifyInstall,/admin\\/oauth\\/authorize/);
+assert.ok(shopifyInstall.includes("admin/oauth/authorize"));
 assert.match(shopifyCallback,/verifyOAuthHmac/);
 assert.match(shopifyCallback,/encryptToken/);
 assert.match(shopifySync,/currentShippingPriceSet/);
