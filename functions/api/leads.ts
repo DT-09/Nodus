@@ -15,7 +15,7 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  const length=Number(request.headers.get("Content-Length")||0);
  if(length>12000)return json({error:"Request too large."},413);
  let body:Record<string,unknown>;
- try{body=await request.json() as Record<string,unknown>;}catch{return json({error:"Invalid request."},400);}
+ try{const raw=await request.text();if(raw.length>10000)return json({error:"Request too large."},413);body=JSON.parse(raw) as Record<string,unknown>;}catch{return json({error:"Invalid request."},400);}
  if(clean(body.website,200))return json({ok:true},200);
  const name=clean(body.name,100),email=clean(body.email,254).toLowerCase(),store=clean(body.store,300),orders=clean(body.orders,60),shipping=clean(body.shipping,100),objective=clean(body.objective,1500);
  if(name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!store||!orders||!shipping||objective.length<20||body.consent!==true)
@@ -26,6 +26,7 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  const key=await digest(ip+"|nodus-lead-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
  const limit=await env.DB.prepare("INSERT INTO lead_rate_limits(key,window_started_at,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN lead_rate_limits.window_started_at < ? THEN 1 ELSE lead_rate_limits.count+1 END, window_started_at=CASE WHEN lead_rate_limits.window_started_at < ? THEN excluded.window_started_at ELSE lead_rate_limits.window_started_at END RETURNING count").bind(key,now,windowStart,windowStart).first<{count:number}>();
  if(!limit||limit.count>3)return json({error:"Too many requests. Please try again later."},429);
+ await env.DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const id=crypto.randomUUID();
  await env.DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash) VALUES(?,?,?,?,?,?,?,?,1,?)").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key).run();
  return json({ok:true,reference:id.slice(0,8).toUpperCase(),message:"Your assessment request has been received. NODUS will review the information and respond using the email address you supplied."},201);
