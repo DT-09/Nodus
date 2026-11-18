@@ -10,6 +10,7 @@ The production website runs on **Cloudflare Pages**. Public dynamic intake runs 
 
 - Brand and commercial website with product architecture, methodology, security, privacy, pricing and synthetic demonstration pages.
 - Installable PWA for compatible desktop and mobile browsers.
+- Cloudflare Pages Functions OAuth endpoints for Shopify read-only order access, encrypted access-token storage, D1-backed merchant sessions, order sync and privacy/uninstall webhooks. The OAuth flow remains inactive until Shopify Partner credentials are configured.
 - Browser-local manual data workflow for order and carrier-cost CSV files.
 - Deterministic matching using order references and unique tracking references.
 - Currency-separated calculations and unmatched-charge review.
@@ -22,8 +23,8 @@ The production website runs on **Cloudflare Pages**. Public dynamic intake runs 
 
 The following are **not live** in the current public release:
 
-- Shopify OAuth installation or a saved, persistent merchant workspace.
-- Automatic Shopify order ingestion, scheduled sync or Shopify webhooks.
+- Shopify App Store distribution and review approval.
+- Automated scheduled Shopify sync and event-driven order webhooks. The initial connected workspace uses an operator-triggered, resumable order sync.
 - Direct carrier APIs, carrier invoice polling or PDF/OCR extraction.
 - Cross-business financial, marketing, CRM, inventory or supplier integrations.
 - Multi-agent diagnosis, general-purpose business intelligence or autonomous execution.
