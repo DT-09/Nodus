@@ -558,3 +558,22 @@
 .nd-architecture-current h3{font:22px Georgia,serif;color:#eee9df;margin:14px 0}
 .nd-architecture-current ul{padding-left:17px}
 @media(max-width:700px){.nd-engine-grid,.nd-architecture-domain-grid{grid-template-columns:1fr}.nd-architecture-control,.nd-architecture-current{grid-template-columns:1fr}.nd-architecture-principle{padding:22px}.nd-architecture-principle h2{font-size:19px}.nd-architecture-current{padding:24px}}
+
+/* Founding merchant assessment */
+.nd-assessment-form{margin-top:36px;padding:clamp(22px,4vw,38px);background:#24212b;border:1px solid rgba(195,166,110,.28);color:#eee9df}
+.nd-form-intro h2{font:34px/1.1 Georgia,serif;color:#eee9df;margin:15px 0}
+.nd-form-intro>p{font:11px/1.8 Inter,system-ui,sans-serif;color:#b9b3a9;max-width:620px}
+.nd-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
+.nd-form-grid label{display:flex;flex-direction:column;gap:8px;font:9px ui-monospace,monospace;letter-spacing:.08em;color:#d2c5a7}
+.nd-form-grid input,.nd-form-grid select,.nd-form-grid textarea{width:100%;min-width:0;padding:13px 14px;background:#302c37;border:1px solid #514957;border-radius:2px;color:#eee9df;font:12px Inter,system-ui,sans-serif;letter-spacing:normal}
+.nd-form-grid input:focus,.nd-form-grid select:focus,.nd-form-grid textarea:focus{outline:2px solid #b99b62;outline-offset:2px}
+.nd-form-grid input::placeholder,.nd-form-grid textarea::placeholder{color:#a39b90}
+.nd-form-wide{grid-column:1/-1}
+.nd-form-consent{display:flex;align-items:flex-start;gap:11px;margin:20px 0;font:10px/1.7 Inter,system-ui,sans-serif;color:#c4bdb2}
+.nd-form-consent input{margin-top:3px;accent-color:#b99b62}
+.nd-form-honeypot{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.nd-assessment-form button:disabled{opacity:.55;cursor:wait}
+.nd-form-status{padding:13px 15px;border:1px solid rgba(185,155,98,.5);font:11px/1.7 Inter,system-ui,sans-serif;color:#e4d4ad}
+.nd-form-status.is-error{border-color:#ad6a5d;color:#f0b3a6}
+.nd-form-footnote{font:9px/1.7 Inter,system-ui,sans-serif;color:#a8a096;margin-top:16px}
+@media(max-width:640px){.nd-form-grid{grid-template-columns:1fr}.nd-form-wide{grid-column:auto}.nd-assessment-form{padding:20px}}
