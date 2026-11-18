@@ -625,3 +625,23 @@
 .nd-ledger-caption{margin:16px 0 0;text-align:right;font:7px ui-monospace,monospace;letter-spacing:.11em;color:#898477}
 @media(max-width:950px){.nd-ledger-stage{max-width:600px}}
 @media(max-width:520px){.nd-ledger-stage{padding:15px}.nd-ledger-sources{grid-template-columns:1fr;gap:8px}.nd-ledger-sources article{min-height:0}.nd-ledger-join{flex-direction:row;justify-content:center}.nd-ledger-join span{width:25px;height:1px}.nd-ledger-engine{flex-wrap:wrap}.nd-ledger-engine>span{width:100%;padding-left:45px}.nd-ledger-results{gap:5px}.nd-ledger-results article{padding:10px 8px}.nd-ledger-results b{font-size:25px}.nd-ledger-results span{font-size:7px}}
+
+/* Merchant connection and evidence workspace */
+.nd-connect-form{display:grid;gap:12px;max-width:560px;margin:24px 0}
+.nd-connect-form label{font:9px ui-monospace,monospace;letter-spacing:.12em;color:#c7a96b}
+.nd-connect-form input{width:100%;min-height:48px;padding:12px 14px;border:1px solid rgba(199,169,107,.36);background:#211e29;color:#f0eadf;font:14px Inter,system-ui,sans-serif}
+.nd-connect-form input::placeholder{color:#aaa397}
+.nd-connect-form input:focus-visible{outline:2px solid #d8bd83;outline-offset:3px}
+.nd-workspace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.nd-workspace-head h2{margin:10px 0 4px}
+.nd-workspace .metric-grid{margin:24px 0}
+.nd-workspace .metric-card{min-width:0}
+.nd-workspace .content-note>h2{margin-top:0}
+.nd-workspace .surface-card{margin:18px 0;padding:20px;border:1px solid rgba(199,169,107,.2);background:rgba(255,255,255,.025)}
+.nd-workspace .surface-card h3{color:#d8bd83;font:10px ui-monospace,monospace;letter-spacing:.12em}
+.nd-workspace .manual-file{display:inline-flex;align-items:center;max-width:100%;padding:13px 16px;border:1px solid rgba(199,169,107,.45);color:#f0eadf;background:rgba(199,169,107,.07);font:9px ui-monospace,monospace;letter-spacing:.1em;cursor:pointer}
+.nd-workspace .manual-file input{display:block;max-width:100%;margin-left:10px;color:#c9c1b5;font:10px Inter,system-ui,sans-serif}
+.nd-workspace .manual-table-wrap{max-width:100%;overflow:auto}
+.nd-workspace .manual-table-wrap table{min-width:640px}
+.nd-workspace .footnote{color:#aaa397}
+@media(max-width:600px){.nd-workspace-head{display:block}.nd-workspace .manual-file{display:flex;flex-wrap:wrap}.nd-workspace .manual-file input{width:100%;margin:10px 0 0}}
