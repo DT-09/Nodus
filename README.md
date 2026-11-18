@@ -1,105 +1,88 @@
 # NODUS
 
-**Shipping economics intelligence for Shopify.**
+**Your business. Understood. Advanced.**
 
-NODUS connects Shopify order-level shipping revenue with carrier-cost evidence, merchant-reviewed coverage, deterministic reconciliation, historical shipping-policy replay and auditable exports.
+NODUS is being developed as a connected business operating system. The first commercial wedge is Shopify shipping economics: connect order shipping revenue with carrier/3PL cost evidence, identify what can and cannot be reconciled, and produce a reviewable decision pack.
 
-## Deployment target
+## Current public release
 
-NODUS is configured for **Vercel** through the React Router Vercel preset in `react-router.config.ts`. Use Vercel for the application runtime and managed PostgreSQL for durable storage. Do not deploy this as a Cloudflare Pages static site: it requires a Node-compatible server runtime, Shopify session storage and PostgreSQL. Vercel Hobby is restricted to personal, non-commercial use; it is not an eligible plan for operating NODUS as a commercial product. Use an eligible commercial hosting plan before accepting merchants or revenue. The five-minute sync runner is GitHub Actions, not Vercel Cron. See [Vercel plan terms](https://vercel.com/legal/terms).
+The production website runs on **Cloudflare Pages**. Public dynamic intake runs through **Cloudflare Pages Functions** and **D1**.
 
-## Implemented capabilities
+- Brand and commercial website with product architecture, methodology, security, privacy, pricing and synthetic demonstration pages.
+- Installable PWA for compatible desktop and mobile browsers.
+- Browser-local manual data workflow for order and carrier-cost CSV files.
+- Deterministic matching using order references and unique tracking references.
+- Currency-separated calculations and unmatched-charge review.
+- Downloadable CSV register and JSON decision pack.
+- Founding assessment request form stored in Cloudflare D1.
+- Request validation, honeypot, per-IP-hash rate limiting and privacy notice.
+- D1-backed health endpoint at `/api/health`.
 
-- Shopify embedded-app authentication and PostgreSQL session persistence.
-- Merchant-scoped order ingestion with resumable pagination and incremental refresh.
-- Carrier-cost CSV import with duplicate protection and currency validation.
-- Evidence register and merchant-reviewed order matching.
-- Deterministic reconciliation and diagnostics that keep missing evidence unknown.
-- Historical flat-rate and free-shipping-threshold replay.
-- Read-only Shopify Markets shipping configuration.
-- Merchant-scoped CSV evidence export and audit events.
-- Full-scope JSON Shipping Economics Decision Pack with order-level reconciliation, evidence provenance, coverage summary, exception findings, saved policy replays, economic-value attestations, explicit limitations and a SHA-256 integrity digest.
-- Economic value ledger with stage progression, posted-credit references and measured operating-time value, kept separate from realized cash.
-- Shopify privacy/uninstall webhook handlers.
-- Prisma migrations, health endpoint and CI quality checks.
+## Explicit release boundaries
 
-## Not represented as live capabilities
+The following are **not live** in the current public release:
 
-The repository does **not** currently contain verified live UPS, FedEx or USPS API integrations. Carrier cost intake is CSV-based. Shopify App Pricing subscription lookup and a fail-closed server-side access gate are implemented behind a feature flag; the Partner Dashboard plans, credentials, live subscription lifecycle and production entitlement behaviour are not configured or verified. Shopify hosts plan selection and billing for new public apps; NODUS must not claim paid self-service readiness until the configured plans and full lifecycle tests pass. Carrier invoice polling, policy-drift detection and merchant alerting are not implemented. Scheduled Shopify order refresh is invoked by a GitHub Actions five-minute runner; it requires the repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET` to be configured. The Vercel Hobby cron is intentionally disabled because that plan rejects schedules more frequent than daily. Shopify shipping-policy writes remain disabled. There is no live checkout on the pricing page.
+- Shopify OAuth installation or a saved, persistent merchant workspace.
+- Automatic Shopify order ingestion, scheduled sync or Shopify webhooks.
+- Direct carrier APIs, carrier invoice polling or PDF/OCR extraction.
+- Cross-business financial, marketing, CRM, inventory or supplier integrations.
+- Multi-agent diagnosis, general-purpose business intelligence or autonomous execution.
+- Shopify App Store distribution, paid subscription billing or self-serve checkout.
+- Native iOS/Android store binaries. The PWA is the current cross-device delivery method.
 
-Do not advertise these as available, accept payment for them, or imply App Store approval. A production deployment is not the same as a commercially complete product.
+The manual CSV workflow runs in the browser. Uploaded files are not sent to NODUS. The assessment form stores only business contact and qualification details; it does not collect source files or Shopify credentials.
 
-## Vercel deployment
+## Cloudflare architecture
 
-1. Create the production Shopify app in the authorized Shopify Partner account.
-2. Create a managed PostgreSQL database.
-3. Import `DT-09/Nodus` into Vercel. Keep the repository root as the project root.
-4. Use Node.js 22 and the build command `npm run vercel-build`. This generates Prisma Client and builds the React Router application. Apply production migrations separately through the protected, manual GitHub Actions workflow after configuring its production database secrets; deployment builds do not mutate the database.
-5. Add these Vercel environment variables:
-   - `SHOPIFY_API_KEY`
-   - `SHOPIFY_API_SECRET`
-   - `SHOPIFY_APP_URL` — exact public HTTPS origin
-   - `SCOPES` — must match `shopify.app.toml`
-   - `DATABASE_URL` — pooled PostgreSQL connection string for serverless runtime
-   - `DIRECT_URL` — direct PostgreSQL connection string for Prisma migrations and administrative operations
-   - `PUBLIC_CONTACT_EMAIL` — authorized business support inbox
-   - `CRON_SECRET` — high-entropy secret used only by the protected scheduled-sync endpoint
-   - `NODE_ENV=production`
-6. Use a separate Preview database and distinct `CRON_SECRET` values for Preview and Production. Never point Preview deployments at Production. Apply production migrations only through the protected manual migration workflow.
-7. Deploy once, copy the stable production URL, then update `application_url` and every redirect URL in `shopify.app.toml` and the Shopify Partner configuration. Redeploy after the URLs match exactly.
-8. Verify OAuth install, order sync, privacy webhooks, uninstall, database persistence and `/healthz` against a real development store before inviting merchants.
+- **Cloudflare Pages:** static React Router SPA and PWA assets.
+- **Pages Functions:** `/api/leads` assessment intake and `/api/health`.
+- **Cloudflare D1:** `nodus-leads`, with the `NODUS_DB` binding in Preview and Production.
+- **GitHub:** source control and CI only; no GitHub runtime dependency.
 
-Never put secrets in source control or expose them to client-side variables.
+No Vercel deployment is used for the public release. Keep the Cloudflare project on the connected `nodus-hq` Pages project. Avoid adding paid services or external providers without an explicit decision.
 
 ## Local development
 
-Requires Node.js 22, PostgreSQL and a configured Shopify Partner app. Copy `.env.example` to `.env`, set credentials and the database URL, then run:
+Requirements: Node.js 22 and npm.
 
 ```bash
-npm install
-npm run setup
+npm ci
 npm run dev
+npm run typecheck
+npm test
+npm run build
 ```
 
-## Release and public launch
+The current Pages deployment builds to `build/client` using `npm run build`. Pages Functions live under `functions/`. D1 schema is managed in the Cloudflare database `nodus-leads`; the live tables are `merchant_leads` and `lead_rate_limits`.
 
-- [First-Principles Audit](docs/FIRST_PRINCIPLES_AUDIT.md) — evidence ledger, Bayesian hypotheses, technical risks and decision gates.
-- [Launch-Day Release Gate](docs/LAUNCH_DAY.md) — technical, product, security and commercial acceptance checklist.
-- [Go-Live Runbook](docs/GO_LIVE_RUNBOOK.md) — ordered sequence for public website, controlled pilot, paid pilot and public paid-app release.
-- [Buyer Evaluation](docs/BUYER_EVALUATION.md) — scope and acceptance criteria for a merchant evaluation.
-- [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) — evidence definitions, financial calculations and pricing gates.
-- [Commercial Offer and Buyer Definition](docs/COMMERCIAL_OFFER.md) — target buyer, concrete decision-pack deliverable, competitive positioning and demand-validation gates.
+## Merchant launch workflow
 
-The public site includes a clearly labelled [synthetic reconciliation walkthrough](/demo) and a factual [privacy and data-handling notice](/privacy). The demo is illustrative data, not a customer result. The privacy notice still requires the responsible operator to complete its legal identity, jurisdiction, processor, retention and regional disclosures before public merchant onboarding. A read-only production HTTP smoke test is available with `NODUS_BASE_URL=https://YOUR-PRODUCTION-ORIGIN npm run smoke:launch`; it does not replace real-store, tenant-isolation, webhook, backup-restore, billing, security or legal verification.
+1. Merchant reads the scope, methodology and privacy notice.
+2. Merchant submits the founding assessment request at `/buyer-evaluation`.
+3. The request is stored in D1. The operator reviews submissions in the Cloudflare dashboard under Workers & Pages → D1 → `nodus-leads`.
+4. The operator responds through the configured support inbox and confirms scope before any data is exchanged.
+5. The merchant may use `/manual-data` to run the current browser-local CSV workflow.
+6. The operator reviews evidence and limitations before proposing any separately scoped service.
 
-NODUS makes no unverified savings, recovery, customer, revenue or integration claims.
+There is no automated email notification for new submissions yet. The operator must check the D1 database for new enquiries and monitor the support inbox.
 
-## Economic proof and commercial value
+## Commercial controls
 
-The merchant workspace includes an economic value ledger that keeps identified opportunities, merchant-validated opportunities and realized credits separate. The Reports workspace now exports both the full evidence CSV and a reproducible JSON Decision Pack. The JSON pack includes all stored orders and cost records, deterministic reconciliation, matched/unmatched states, diagnostics, per-currency complete-coverage summaries, saved policy simulations, merchant-attested value records, scope, sync provenance, methodology limitations and a SHA-256 digest of its canonical payload. Verify a downloaded pack offline with `npm run verify:decision-pack -- ./nodus-decision-pack-YYYY-MM-DD.json`. Realized records require a posted credit/refund/accounting reference. These statuses are merchant-attested; NODUS does not independently audit carrier or accounting postings.
+- The founding assessment is no-fee and no-obligation.
+- No automatic subscription or payment details are collected.
+- Do not claim recovered credits, guaranteed savings, App Store approval, or unsupported integrations.
+- Any paid service requires an authorized adult/business operator to approve the scope, contract, invoicing, tax and payment arrangements.
+- Publish no testimonials, customer logos or financial results without evidence and permission.
 
-The public commercial page offers a no-fee, no-obligation Founding Merchant Value Programme. It scopes one store, one reporting currency, available permitted order history and one supported carrier-cost export. The merchant receives an evidence coverage statement, exception register, supported historical policy replay, value ledger and review. A monthly subscription is proposed only if a credible ongoing use case and conservative recurring value are established. The internal value-fit threshold is at least 3× the proposed monthly fee; this is a pricing discipline, not a promised return. No fixed price list or live checkout is presented.
+## Next engineering milestones
 
-See [Economic Value Framework](docs/ECONOMIC_VALUE_FRAMEWORK.md) for value definitions, evidence requirements, the founding programme and subscription decision rules.
+1. Automated lead notification and protected lead-management workflow.
+2. Secure merchant identity and tenant model.
+3. Shopify Partner app credentials, OAuth, privacy webhooks and installation acceptance.
+4. Durable merchant database and order synchronization.
+5. Reconciliation persistence, scheduled carrier evidence imports and repeatable reports.
+6. Permissioned execution runtime with approval gates and outcome verification.
+7. Billing lifecycle, support operations and production security review.
+8. Broader business intelligence domains and specialist agents.
 
-## Carrier cost evidence
-
-Carrier invoice CSV imports accept the canonical template and common header aliases. If a file contains a carrier/provider column, its value is retained as the evidence source label. This is invoice-evidence intake, not a direct carrier API connection. Rate quotes and tracking APIs are not substitutes for the final billed invoice.
-
-## Shopify App Pricing integration
-
-The repository contains Partner API subscription verification and a fail-closed app-level access gate. It remains disabled until the authorized operator configures plans in Shopify Partner Dashboard and supplies the app handle, Partner organization ID, Partner API token, app GID and exact plan handles. Set `SHOPIFY_APP_PRICING_ENABLED=true` only after those settings are verified in a test app/store. The gate redirects merchants without an active recognized plan to Shopify's hosted plan selection page and denies access if verification fails. Shopify hosts plan selection and billing for new public apps; the application does not implement a separate card checkout. Approval, activation, plan changes, cancellation, delinquency, refund and uninstall lifecycle tests remain release gates.
-
-For new public apps, Shopify App Pricing is the default and recommended billing method. See [Shopify's billing guidance](https://shopify.dev/docs/apps/launch/billing).
-
-## Shopify API network security
-
-Shopify's current security guidance requires public apps to restrict Admin API access through an IP/CIDR allowlist, an approved hosting-provider ASN, or both. NODUS currently has no configured production allowlist. Before external installs, identify the actual Vercel egress network and deployment countries, configure the matching IP/ASN restrictions in Shopify's Dev Dashboard, and test them against recent API traffic. Do not guess an ASN or assume a static IP. See [Shopify security requirements](https://shopify.dev/docs/apps/build/security) and [Shopify IP allowlist guidance](https://shopify.dev/docs/apps/build/dev-dashboard/ip-allowlist).
-
-## Scheduled Shopify refresh
-
-The Vercel deployment includes a protected cron endpoint at `/api/cron/sync`, scheduled every five minutes. It processes a bounded batch of installed shops, resumes incomplete Shopify order pagination, uses a short lease to avoid duplicate workers, and applies exponential backoff after failures. The merchant Monitoring page exposes the last run, next run and failure state.
-
-Set a strong random `CRON_SECRET` in Vercel Production and in local development if testing the endpoint manually. Vercel sends the secret as an Authorization bearer token. Do not expose it to browser code or commit it.
-
-This scheduler refreshes Shopify order data only. It does not poll carrier billing accounts, detect shipping-policy drift, send merchant alerts, adjudicate disputed charges or independently verify recovered value. Production operation requires a configured `CRON_SECRET`, a verified production database, and the GitHub repository secrets `NODUS_BASE_URL` and `NODUS_CRON_SECRET`. Vercel Hobby remains restricted to personal, non-commercial use and cannot host NODUS as a commercial service. An appropriately authorized adult/business operator must own the commercial hosting, Shopify Partner, legal and payout arrangements.
+A deployed website is not proof of a running autonomous business. The public release must remain explicit about what is live.
