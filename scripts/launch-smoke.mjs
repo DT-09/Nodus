@@ -45,9 +45,8 @@ const checks = [
   { path: "/security", label: "Security disclosure page", html: true },
   { path: "/privacy", label: "Privacy and data-handling notice", html: true },
   { path: "/support", label: "Support page", html: true },
-  { path: "/healthz", label: "Application and database health", jsonStatus: "ok" },
-  { path: "/api/cron/sync", label: "Cron endpoint rejects unauthenticated requests", status: 401 },
-  { path: "/app", label: "Merchant workspace requires Shopify authentication", redirect: true },
+  { path: "/api/health", label: "Public intake and database health", jsonStatus: "ok", jsonService: "nodus-public-intake", jsonDatabase: "connected" },
+  { path: "/api/leads", label: "Assessment intake endpoint is present", method: "GET", status: 405 },
 ];
 
 let failed = 0;
@@ -55,7 +54,7 @@ let failed = 0;
 for (const check of checks) {
   try {
     const response = await fetch(new URL(check.path, base), {
-      method: "GET",
+      method: check.method ?? "GET",
       redirect: "manual",
       signal: AbortSignal.timeout(15_000),
       headers: { "User-Agent": "NODUS-launch-smoke/1.0" },
@@ -100,8 +99,8 @@ for (const check of checks) {
 
     if (check.jsonStatus) {
       const body = await response.json().catch(() => null);
-      valid &&= body?.status === check.jsonStatus && body?.service === "nodus";
-      detail += `; status ${body?.status ?? "invalid JSON"}`;
+      valid &&= body?.status === check.jsonStatus && body?.service === check.jsonService && body?.database === check.jsonDatabase;
+      detail += `; status ${body?.status ?? "invalid JSON"}, database ${body?.database ?? "unknown"}`;
       valid &&= response.headers.get("cache-control")?.includes("no-store") ?? false;
     }
 
