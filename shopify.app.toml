@@ -1,16 +1,19 @@
-client_id = "SET_WITH_SHOPIFY_CLI"
+# PLACEHOLDER ONLY.
+# The Cloudflare public release does not yet implement Shopify OAuth callbacks or sessions.
+# Do not register or distribute this app until the Cloudflare OAuth runtime and webhook tests pass.
+client_id = "SET_WITH_SHOPIFY_PARTNER"
 name = "NODUS"
-application_url = "https://nodus-dt09.vercel.app"
+application_url = "https://nodus-hq.pages.dev"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 
 [access_scopes]
 scopes = "read_orders,read_products,read_fulfillments,read_shipping,read_markets"
 
 [auth]
-redirect_urls = ["https://nodus-dt09.vercel.app/auth/callback", "https://nodus-dt09.vercel.app/auth/shopify/callback", "https://nodus-dt09.vercel.app/api/auth/callback"]
+redirect_urls = ["https://nodus-hq.pages.dev/auth/callback"]
 
 [webhooks]
 api_version = "2026-07"
