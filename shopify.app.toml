@@ -10,17 +10,17 @@ embedded = true
 automatically_update_urls_on_dev = false
 
 [access_scopes]
-scopes = "read_orders,read_products,read_fulfillments,read_shipping,read_markets"
+scopes = "read_orders"
 
 [auth]
-redirect_urls = ["https://nodus-hq.pages.dev/auth/callback"]
+redirect_urls = ["https://nodus-hq.pages.dev/api/shopify/callback"]
 
 [webhooks]
 api_version = "2026-07"
 
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
-uri = "/webhooks"
+uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
