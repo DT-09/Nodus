@@ -30,7 +30,7 @@ export async function onRequestPost({request,env}:PagesContext){
  const seen=new Set<string>();
  for(let n=1;n<rows.length;n++){
   const row=rows[n]!;const id=get(row,"charge_id"),invoice=get(row,"invoice_id"),amount=get(row,"amount"),currency=get(row,"currency").toUpperCase();
-  if(!id||!invoice||!/^[-+]?\d+(?:\.\d{1,4})?$/.test(amount)||!^[A-Z]{3}$/.test(currency))return json({error:`Invalid required value on CSV row ${n+1}. Check invoice_id, charge_id, amount and ISO currency.`},400);
+  if(!id||!invoice||!/^[-+]?\d+(?:\.\d{1,4})?$/.test(amount)||!/^[A-Z]{3}$/.test(currency))return json({error:`Invalid required value on CSV row ${n+1}. Check invoice_id, charge_id, amount and ISO currency.`},400);
   if(seen.has(id))return json({error:`Duplicate charge_id "${id}" in the uploaded file (row ${n+1}).`},400);seen.add(id);
   const date=get(row,"occurred_at");if(date&&Number.isNaN(Date.parse(date)))return json({error:`Invalid occurred_at date on CSV row ${n+1}.`},400);
   prepared.push({id,invoice,amount,currency,order:get(row,"order_reference"),tracking:get(row,"tracking_number"),kind:get(row,"cost_type")||"carrier",date:date||null});
