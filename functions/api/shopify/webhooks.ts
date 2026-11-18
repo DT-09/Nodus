@@ -13,9 +13,21 @@ export async function onRequestPost({request,env}:PagesContext){
    env.NODUS_DB.prepare("DELETE FROM shopify_sync_state WHERE shop=?").bind(shop),
    env.NODUS_DB.prepare("DELETE FROM shopify_installs WHERE shop=?").bind(shop)
   ]);
- }else if(topic==="customers/redact"||topic==="customers/data_request"){
-  // NODUS stores no customer names, addresses, emails or customer IDs in this integration.
-  // Order-level financial and operational data remains merchant-scoped and is not customer-profile data.
+ }else if(topic==="customers/redact"){
+  let payload:{orders_to_redact?:unknown}={};try{payload=JSON.parse(raw) as {orders_to_redact?:unknown};}catch{}
+  const ids=Array.isArray(payload.orders_to_redact)?payload.orders_to_redact.filter((id):id is number=>typeof id==="number"&&Number.isSafeInteger(id)&&id>0):[];
+  if(ids.length){
+   const gids=ids.map(id=>`gid://shopify/Order/${id}`);
+   const found=await env.NODUS_DB.prepare(`SELECT order_name FROM shopify_orders WHERE shop=? AND order_gid IN (${gids.map(()=>"?").join(",")})`).bind(shop,...gids).all<{order_name:string}>();
+   const refs=[...new Set([...gids,...found.results.map(x=>x.order_name)])];
+   await env.NODUS_DB.batch([
+    env.NODUS_DB.prepare(`DELETE FROM shopify_costs WHERE shop=? AND order_reference IN (${refs.map(()=>"?").join(",")})`).bind(shop,...refs),
+    env.NODUS_DB.prepare(`DELETE FROM shopify_orders WHERE shop=? AND order_gid IN (${gids.map(()=>"?").join(",")})`).bind(shop,...gids)
+   ]);
+  }
+ }else if(topic==="customers/data_request"){
+  // The integration stores no customer names, addresses, emails or customer IDs.
+  // The order-level data retained is limited to the merchant's operational evidence.
  }
  return new Response(null,{status:200,headers:{"Cache-Control":"no-store"}});
 }
