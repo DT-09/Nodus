@@ -5,7 +5,7 @@ import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
  {title:"Founding Merchant Value Programme — NODUS"},
- {name:"description",content:"Start with a scoped, no-fee shipping economics assessment. NODUS must demonstrate evidence and value before a subscription is proposed."}
+ {name:"description",content:"NODUS currently offers a no-fee founding enquiry and browser-local shipping economics CSV analysis. No paid plan or subscription checkout is live."}
 ];
 
 export default function Pricing(){
@@ -24,14 +24,14 @@ export default function Pricing(){
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
    <h1>Start with a review.<br/>Continue only if it pays.</h1>
-   <p className="page-lede">NODUS does not ask a merchant to trust a pricing page. We begin with a defined shipping-economics assessment, show the source records and calculations, and only discuss an ongoing subscription if the evidence supports it.</p>
+   <p className="page-lede">There is no paid plan to buy today. The public release is an installable web app with browser-local shipping economics CSV analysis and a no-fee founding enquiry form. No recurring monitoring, subscription billing or paid checkout is live.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Get the work done<br/><em>before the sales pitch.</em></h2>
-    <p>Start with a no-obligation diagnostic. If the data shows a useful opportunity, NODUS can scope a paid, human-reviewed shipping economics engagement. Any ongoing software trial begins only when the live merchant workspace is operational; there is no automatic conversion.</p>
+    <p>The current programme is an enquiry route, not a paid diagnostic service. The form lets a merchant describe their store and operating question. It does not connect to Shopify, accept source files, promise an assessment or create a service agreement.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -59,8 +59,8 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>A subscription must<br/><em>leave the merchant better off.</em></h2>
-    <p>We will propose a monthly subscription only after the assessment establishes a credible ongoing use case. If the evidence does not support the fee, we do not recommend subscribing.</p>
+    <h2>There is no subscription<br/><em>in the current release.</em></h2>
+    <p>Recurring monitoring, paid billing and self-serve checkout are not implemented. Any future commercial offer would require separate product verification and an authorized adult business operator to approve the terms.</p>
    </div>
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
@@ -79,7 +79,7 @@ export default function Pricing(){
     <article><b>03</b><h3>Revisit decisions</h3><p>Compare shipping-policy assumptions against actual historical orders. No live policy changes without a separately implemented and approved workflow.</p></article>
     <article><b>04</b><h3>Report what changed</h3><p>Show new evidence, changed coverage, resolved exceptions and merchant-attested outcomes with an audit trail.</p></article>
    </div>
-   <p className="calculator-caveat">The current public release supports browser-local CSV analysis and an evidence-led founding assessment request. Shopify OAuth, saved merchant workspaces, scheduled order refresh, carrier billing feeds and policy writes are not live. The programme will not describe those unsupported functions as available.</p>
+   <p className="calculator-caveat">The calculator is a manual estimate based only on values entered by the visitor. It does not measure NODUS performance. The current release does not include Shopify connection, saved merchant workspaces, scheduled monitoring, carrier API feeds, paid billing or automatic business actions.</p>
   </section>
 
   <section className="pricing-contact" data-reveal>
@@ -97,7 +97,7 @@ export default function Pricing(){
    </div>
    <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A MANUAL DATA REVIEW ↗</Link><Link to="/connect" className="cta-secondary">CONNECT SHOPIFY ↗</Link></div>
-   <p className="pricing-disclaimer">No automatic billing. Any service fee is agreed in writing before work begins. Any later seven-day software pilot will have a stated data limit, end date and opt-in subscription decision. Feedback is voluntary; testimonials require separate permission. We do not publish invented reviews, customer logos or financial outcomes.</p>
+   <p className="pricing-disclaimer">No payments are accepted and no subscription is available in this release. The founding form is an enquiry only. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
