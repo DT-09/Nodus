@@ -2,8 +2,13 @@ name: NODUS Desktop Release
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
       - "desktop-v*"
+concurrency:
+  group: nodus-desktop-release
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -26,7 +31,9 @@ jobs:
       - name: Publish downloadable release
         uses: softprops/action-gh-release@v2
         with:
-          name: NODUS Desktop ${{ github.ref_name }}
+          name: NODUS Desktop — Latest
+          tag_name: desktop-latest
+          target_commitish: main
           generate_release_notes: true
           files: |
             artifacts/NODUS-Desktop-Windows-x64.exe
