@@ -102,7 +102,7 @@ export default function Home(){
 
    <section className="nd-final">
     <div className="nd-final-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round"><path d="M50 8 84 29 84 71 50 92 16 71 16 29 50 8Z"/><path d="M50 8 50 50 84 71M50 50 16 71M16 29 50 50 84 29M50 50 50 92"/></g><g fill="currentColor"><circle cx="50" cy="8" r="4.2"/><circle cx="84" cy="29" r="4.2"/><circle cx="84" cy="71" r="4.2"/><circle cx="50" cy="92" r="4.2"/><circle cx="16" cy="71" r="4.2"/><circle cx="16" cy="29" r="4.2"/></g></svg></div>
-    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/connect" className="nd-button nd-button-primary">CONNECT SHOPIFY ↗</Link><Link to="/workspace" className="nd-button nd-button-quiet">OPEN MERCHANT WORKSPACE ↗</Link></div>
+    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/connect" className="nd-button nd-button-primary">CONNECT SHOPIFY ↗</Link><Link to="/downloads" className="nd-button nd-button-quiet">DOWNLOAD DESKTOP APP ↗</Link></div>
    </section>
   </main>
  </MarketingShell>;
