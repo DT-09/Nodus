@@ -24,7 +24,7 @@ uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
-uri = "/webhooks"
+uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["customers/data_request"]
