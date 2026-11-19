@@ -7,7 +7,7 @@ const modules=[
 ["02","Cost evidence","Import supported carrier-cost CSV records with invoice-line identity, currency validation and duplicate protection.","evidence"],
 ["03","Reconciliation","Match by exact order reference or unambiguous tracking number. Unmatched and currency-mismatched records remain outside totals.","reconciliation"],
 ["04","Diagnostics","Surface missing evidence and supported cost exceptions with deterministic rule IDs and source references.","economics"],
-["05","Historical simulation","Compare a proposed flat rate and free-shipping threshold against persisted order baskets. The replay does not predict conversion or profit.","policy"],
+["05","Historical simulation","Compare a proposed flat rate and free-shipping threshold against historical orders with merchant-reviewed complete carrier-cost coverage. Report observed and replayed shipping contribution, eligible coverage and exclusions. This does not predict conversion or total profit.","policy"],
 ["06","Policy governance","Keep configuration read-only until a supported mutation, merchant approval, baseline check and read-back verification are implemented and tested.","policy"],
 ["07","Scheduled order refresh","Refresh Shopify order data on a protected schedule, with bounded work, retry state and merchant-visible sync status. This does not poll carrier billing systems.","monitoring"],
 ["08","Economic value ledger","Track identified opportunities, merchant-validated findings and merchant-attested realized credits. Measure operating time from baseline versus NODUS-assisted minutes using a merchant-approved loaded hourly rate. Keep operating value separate from recovered cash.","value"],
