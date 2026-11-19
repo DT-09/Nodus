@@ -1,0 +1,32 @@
+name: NODUS Desktop Release
+on:
+  push:
+    tags:
+      - "desktop-v*"
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Publish Windows desktop application
+        run: dotnet publish desktop/windows/Nodus.Desktop.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false --output artifacts/windows
+      - name: Prepare release assets
+        shell: pwsh
+        run: |
+          Copy-Item artifacts/windows/NODUS.exe artifacts/NODUS-Desktop-Windows-x64.exe
+          Get-FileHash artifacts/NODUS-Desktop-Windows-x64.exe -Algorithm SHA256 | Format-List | Out-File artifacts/NODUS-Desktop-Windows-x64.sha256.txt
+      - name: Publish downloadable release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: NODUS Desktop ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            artifacts/NODUS-Desktop-Windows-x64.exe
+            artifacts/NODUS-Desktop-Windows-x64.sha256.txt
