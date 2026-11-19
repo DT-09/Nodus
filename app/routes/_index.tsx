@@ -38,6 +38,7 @@ export default function Home(){
      <p className="nd-lede">Compare the shipping revenue recorded in your orders with carrier and fulfilment costs. Find unmatched charges, incomplete evidence and orders that need review—without mistaking missing data for savings.</p>
      <div className="nd-actions">
       <Link to="/manual-data" className="nd-button nd-button-primary">RUN A SHIPPING COST REVIEW <span>↗</span></Link>
+      <Link to="/install" className="nd-button nd-button-quiet">INSTALL THE NODUS APP <span>↗</span></Link>
       <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST A MERCHANT ASSESSMENT <span>↗</span></Link>
      </div>
      <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
@@ -101,7 +102,7 @@ export default function Home(){
 
    <section className="nd-final">
     <div className="nd-final-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round"><path d="M50 8 84 29 84 71 50 92 16 71 16 29 50 8Z"/><path d="M50 8 50 50 84 71M50 50 16 71M16 29 50 50 84 29M50 50 50 92"/></g><g fill="currentColor"><circle cx="50" cy="8" r="4.2"/><circle cx="84" cy="29" r="4.2"/><circle cx="84" cy="71" r="4.2"/><circle cx="50" cy="92" r="4.2"/><circle cx="16" cy="71" r="4.2"/><circle cx="16" cy="29" r="4.2"/></g></svg></div>
-    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST A MERCHANT ASSESSMENT ↗</Link><Link to="/manual-data" className="nd-button nd-button-quiet">OPEN THE NODUS WORKSPACE ↗</Link></div>
+    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST A MERCHANT ASSESSMENT ↗</Link><Link to="/manual-data" className="nd-button nd-button-quiet">OPEN THE CSV REVIEW TOOL ↗</Link></div>
    </section>
   </main>
  </MarketingShell>;
