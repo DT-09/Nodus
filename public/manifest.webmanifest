@@ -1,47 +1,28 @@
 {
   "id": "/",
-  "name": "NODUS — Shopify Shipping Economics",
+  "name": "NODUS — Shipping Economics Review",
   "short_name": "NODUS",
-  "description": "Read-only Shopify shipping revenue review with evidence-led carrier cost reconciliation.",
+  "description": "Installable web app for browser-local shipping economics CSV analysis.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "background_color": "#17151d",
-  "theme_color": "#211e29",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#17131c",
+  "theme_color": "#211a27",
   "orientation": "any",
   "icons": [
     {
       "src": "/nodus-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
-  "categories": [
-    "business",
-    "finance",
-    "productivity"
-  ],
+  "categories": ["business", "finance", "productivity"],
   "shortcuts": [
     {
-      "name": "Merchant workspace",
-      "short_name": "Workspace",
-      "url": "/workspace",
-      "icons": [
-        {
-          "src": "/nodus-icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
-    },
-    {
       "name": "Shipping cost review",
-      "short_name": "Review",
+      "short_name": "CSV review",
       "url": "/manual-data",
       "icons": [
         {
