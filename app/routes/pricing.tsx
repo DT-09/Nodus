@@ -4,8 +4,8 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"Founding Merchant Value Programme — NODUS"},
- {name:"description",content:"NODUS currently offers a no-fee founding enquiry and browser-local shipping economics CSV analysis. No paid plan or subscription checkout is live."}
+ {title:"NODUS pricing — seven-day free trial"},
+ {name:"description",content:"NODUS is designed around a seven-day free trial followed by a monthly subscription. Shopify-managed pricing and checkout still require Partner Dashboard activation."}
 ];
 
 export default function Pricing(){
@@ -23,15 +23,15 @@ export default function Pricing(){
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>Start with a review.<br/>Continue only if it pays.</h1>
-   <p className="page-lede">There is no paid plan to buy today. The public release is an installable web app with browser-local shipping economics CSV analysis and a no-fee founding enquiry form. No recurring monitoring, subscription billing or paid checkout is live.</p>
+   <h1>Try NODUS for seven days.<br/><em>Continue monthly.</em></h1>
+   <p className="page-lede">The intended offer is seven days to evaluate NODUS, followed by a monthly subscription only after the merchant approves the plan in Shopify. The NODUS website will not collect card details. Shopify will show the exact recurring price and ask for approval. The subscription flow is not active until the Partner app pricing configuration and production installation are completed.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Get the work done<br/><em>before the sales pitch.</em></h2>
-    <p>The current programme is an enquiry route, not a paid diagnostic service. The form lets a merchant describe their store and operating question. It does not connect to Shopify, accept source files, promise an assessment or create a service agreement.</p>
+    <p>During the trial, merchants should be able to connect their store, inspect their operating picture, use available guidance and decide whether the product is worth keeping. The initial release remains shipping-economics focused; wider business modules will be released only when their integrations and workflows are verified.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
