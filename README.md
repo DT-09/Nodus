@@ -1,14 +1,14 @@
 # NODUS
 
-**Merchant operations intelligence. Shipping economics first.**
+**A connected operating platform for Shopify merchants. Shipping economics first.**
 
-NODUS is a Shopify merchant operations product. The current implementation is a focused first commercial module: read-only Shopify order ingestion, persistent carrier-cost evidence, exact-reference reconciliation, and an auditable merchant workspace. The broader operations platform remains a roadmap, not a current capability claim.
+NODUS is designed to help merchants run their store with a clearer operating picture, evidence-backed diagnosis, prioritized roadmaps, practical guidance and controlled execution across finance, sales, marketing, customers, products, inventory, supply chain and operations. The current working product is the first commercial module: shipping-economics review. The wider business domains are an explicit roadmap, not a claim that every connector or workflow is already live.
 
 ## Current product implementation
 
 Production site: https://nodus-hq.pages.dev
 
-- Marketing site and installable PWA shell.
+- Marketing site, installable PWA shell and a Windows desktop WebView2 application source project.
 - Shopify OAuth authorization flow implemented as Cloudflare Pages Functions.
 - Per-store offline access token encryption using AES-GCM and a Cloudflare secret.
 - Hashed, expiring merchant sessions; browser session cookies are HttpOnly and Secure.
@@ -21,7 +21,7 @@ Production site: https://nodus-hq.pages.dev
 - Browser-local CSV review tool and downloadable CSV / JSON decision packs.
 - Founding assessment enquiry form and D1 health endpoint.
 
-Shopify connection and sync are implemented in source but are not production-ready until the Cloudflare environment variables, D1 migration, Shopify Partner app configuration, webhook registration, and end-to-end installation tests are completed. Do not describe a Shopify installation as live until those checks pass.
+Shopify connection and sync are implemented in source but are not production-ready until Shopify Partner API credentials, Shopify app configuration, webhook registration, and end-to-end installation tests are completed. The production D1 schema is present and the Cloudflare token-encryption secret has been configured; Shopify API key and secret remain unavailable. Do not describe a Shopify installation as live until those checks pass.
 
 ## Explicit product boundaries
 
@@ -82,6 +82,6 @@ npm run verify:deployment
 
 ## Commercial and governance boundaries
 
-No live subscription or checkout is currently offered. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
+The intended commercial model is a seven-day free trial followed by a monthly Shopify-managed subscription. The website does not collect card details; Shopify must show the exact monthly price and obtain the merchant's approval before billing. Shopify App Pricing is not active until the Partner Dashboard app, public plan, trial duration, price and distribution settings are configured. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
 
 A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
