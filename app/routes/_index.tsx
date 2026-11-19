@@ -15,8 +15,8 @@ const domains=[
  ["02","Carrier costs","Carrier, label and 3PL charges tied to source records","COST EVIDENCE"],
  ["03","Order matching","Reference and tracking-based reconciliation with explicit match rules","DETERMINISTIC MATCHING"],
  ["04","Exceptions","Unmatched charges, incomplete records and ambiguous references","REVIEW QUEUE"],
- ["05","Policy scenarios","Historical replay of proposed shipping rates and thresholds","SCENARIO ANALYSIS"],
- ["06","Decision records","Exportable evidence registers, assumptions and calculation traces","AUDITABLE OUTPUTS"],
+ ["05","Currency controls","Keep amounts separated by their source currency during reconciliation","CURRENCY HANDLING"],
+ ["06","Review exports","Download the CSV register and JSON decision pack","DOWNLOADABLE OUTPUTS"],
 ];
 
 const loop=[
@@ -58,7 +58,7 @@ export default function Home(){
    <section className="nd-command" id="platform">
     <div className="nd-section-head"><div><span className="nd-index">02 / THE NODUS METHOD</span><h2>One review.<br/><em>Every charge has a status.</em></h2></div><p>Start with order records and carrier-cost evidence. NODUS matches what it can, isolates what it cannot, and keeps currency and evidence coverage visible throughout the review.</p></div>
     <div className="nd-domain-grid">{domains.map(([n,title,desc,tag])=><article key={n}><span className="nd-domain-no">{n}</span><div className="nd-domain-glyph"><i></i><i></i><i></i></div><h3>{title}</h3><p>{desc}</p><small>{tag}</small></article>)}</div>
-    <div className="nd-domain-foot"><span>THE FIRST RELEASE: SHIPPING ECONOMICS</span><Link to="/product">VIEW PRODUCT ARCHITECTURE ↗</Link></div>
+    <div className="nd-domain-foot"><span>CURRENT RELEASE: BROWSER-LOCAL CSV ANALYSIS</span><Link to="/product">VIEW PRODUCT ARCHITECTURE ↗</Link></div>
    </section>
 
    <section className="nd-loop">
@@ -68,10 +68,10 @@ export default function Home(){
    </section>
 
    <section className="nd-console">
-    <div className="nd-console-copy"><span className="nd-index">04 / THE MERCHANT WORKSPACE</span><h2>See the evidence.<br/><em>Know what needs review.</em></h2><p>The current public workflow reviews order and carrier-cost CSV files in the browser. It gives merchants a structured view of matches, unmatched charges, evidence gaps and downloadable review records.</p><ul><li>Which charges matched an order?</li><li>Which charges remain unmatched?</li><li>Where is cost coverage incomplete?</li><li>What should the operations team verify next?</li></ul><Link to="/manual-data" className="nd-text-link">OPEN THE SHIPPING COST WORKSPACE ↗</Link></div>
+    <div className="nd-console-copy"><span className="nd-index">04 / THE CSV REVIEW TOOL</span><h2>See the evidence.<br/><em>Know what needs review.</em></h2><p>The current tool reads order and carrier-cost CSV files in your browser. It separates matched costs from unmatched charges and exports a review register and decision pack.</p><ul><li>Which charges matched an order?</li><li>Which charges remain unmatched?</li><li>Where is cost coverage incomplete?</li><li>What should the operations team verify next?</li></ul><Link to="/manual-data" className="nd-text-link">OPEN THE SHIPPING COST WORKSPACE ↗</Link></div>
     <div className="nd-console-art">
-     <div className="nd-window-bar"><span>NODUS / BUSINESS COMMAND</span><span className="nd-live-label">SAMPLE WORKSPACE</span></div>
-     <div className="nd-window-title"><div><small>SHIPPING ECONOMICS / SAMPLE STORE</small><h3>Evidence review</h3></div><span>01 — 06</span></div>
+     <div className="nd-window-bar"><span>NODUS / CSV REVIEW</span><span className="nd-live-label">SYNTHETIC SAMPLE</span></div>
+     <div className="nd-window-title"><div><small>SHIPPING ECONOMICS / SAMPLE DATASET</small><h3>Evidence review</h3></div><span>01 — 06</span></div>
      <div className="nd-window-metrics"><article><small>ORDERS REVIEWED</small><b>128</b><span>Illustrative sample</span></article><article><small>UNMATCHED COSTS</small><b>11</b><span>Require investigation</span></article><article><small>REVIEW STATUS</small><b>4</b><span>Incomplete coverage</span></article></div>
      <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Order records</b><small>Shipping revenue and order references</small></div><em>IMPORTED</em></div>
      <div className="nd-work-row"><span className="nd-work-dot"></span><div><b>Carrier-cost evidence</b><small>Carrier and fulfilment charge rows</small></div><em>IMPORTED</em></div>
@@ -95,7 +95,7 @@ export default function Home(){
    </section>
 
    <section className="nd-commercial">
-    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>Request a no-fee review of whether your store data fits the current workflow. The assessment defines the records, limits and deliverables before any work begins. No savings claim is made without supporting evidence.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">REQUEST AN ASSESSMENT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">CHECK MERCHANT FIT ↗</Link></div></div>
+    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>Submit a no-fee founding enquiry. The form records business contact and qualification details only; it does not connect to a store, collect CSV files or commit either party to paid work.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">REQUEST AN ASSESSMENT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">CHECK MERCHANT FIT ↗</Link></div></div>
     <div className="nd-commercial-aside"><span>EVIDENCE OVER PROMISES</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
    </section>
 
