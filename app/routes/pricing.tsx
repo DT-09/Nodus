@@ -59,15 +59,15 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>There is no subscription<br/><em>in the current release.</em></h2>
-    <p>Recurring monitoring, paid billing and self-serve checkout are not implemented. Any future commercial offer would require separate product verification and an authorized adult business operator to approve the terms.</p>
+    <h2>Seven days free.<br/><em>Then monthly.</em></h2>
+    <p>This is the intended customer offer. The free-trial and monthly subscription flow must be activated through Shopify App Pricing. Shopify will display the exact monthly price and collect the merchant’s approval; NODUS will not ask for card details on its own website. The live checkout remains gated on Partner Dashboard configuration and production installation tests.</p>
    </div>
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
     <article><span>VALUE / 02</span><h2>Operating value</h2><p>Time spent reconciling invoices, tracing exceptions and preparing finance reviews. Baseline and follow-up effort are recorded rather than guessed.</p></article>
     <article><span>VALUE / 03</span><h2>Decision value</h2><p>Clearer visibility into matched costs, unmatched charges, currency totals and the limits of the supplied evidence.</p></article>
    </div>
-   <p className="calculator-verdict">No NODUS price, recurring plan or return on investment is published in this release. Any value estimate must be measured by the merchant against comparable work; the calculator does not establish NODUS performance.</p>
+   <p className="calculator-verdict">The monthly price will be displayed by Shopify before the merchant approves a paid subscription. The plan is not yet active, and this page does not claim that billing is already available. Any value estimate must be measured by the merchant against comparable work; the calculator does not establish NODUS performance.</p>
   </section>
 
   <section className="proof-method" data-reveal>
@@ -79,7 +79,7 @@ export default function Pricing(){
     <article><b>03</b><h3>Revisit decisions</h3><p>Compare shipping-policy assumptions against actual historical orders. No live policy changes without a separately implemented and approved workflow.</p></article>
     <article><b>04</b><h3>Report what changed</h3><p>Show new evidence, changed coverage, resolved exceptions and merchant-attested outcomes with an audit trail.</p></article>
    </div>
-   <p className="calculator-caveat">The calculator is a manual estimate based only on values entered by the visitor. It does not measure NODUS performance. The current release does not include Shopify connection, saved merchant workspaces, scheduled monitoring, carrier API feeds, paid billing or automatic business actions.</p>
+   <p className="calculator-caveat">The calculator is a manual estimate based only on values entered by the visitor. It does not measure NODUS performance. The public production release does not yet have an enabled Shopify Partner connection, scheduled monitoring, carrier API feeds, paid billing or automatic business actions. These require separate integration and acceptance gates.</p>
   </section>
 
   <section className="pricing-contact" data-reveal>
@@ -97,7 +97,7 @@ export default function Pricing(){
    </div>
    <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
-   <p className="pricing-disclaimer">No payments are accepted and no subscription is available in this release. The founding form is an enquiry only. No customer results, testimonials or financial outcomes are claimed.</p>
+   <p className="pricing-disclaimer">The seven-day trial and monthly subscription are the intended commercial model, not an active checkout yet. The current enquiry form is not a subscription agreement. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
