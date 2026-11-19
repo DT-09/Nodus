@@ -3,10 +3,10 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — Shipping economics for Shopify merchants"},
-  {name:"description",content:"Understand shipping revenue, carrier costs and the evidence between them. NODUS helps Shopify merchants review shipping economics with traceable calculations and clear exceptions."},
-  {property:"og:title",content:"NODUS — Shipping economics, made inspectable"},
-  {property:"og:description",content:"A practical shipping-cost review workflow for Shopify merchants."},
+  {title:"NODUS — The Shopify merchant operating platform"},
+  {name:"description",content:"A connected operating platform for Shopify merchants. Start with shipping economics, then build toward clearer decisions across finance, growth, customers, products and operations."},
+  {property:"og:title",content:"NODUS — Run your store with clarity"},
+  {property:"og:description",content:"Merchant operations intelligence, evidence-backed guidance and a growing Shopify operating platform."},
   {name:"theme-color",content:"#17151d"},
 ];
 
@@ -33,13 +33,13 @@ export default function Home(){
   <main className="nd-home">
    <section className="nd-hero">
     <div className="nd-hero-copy">
-     <p className="nd-eyebrow"><span></span> SHIPPING ECONOMICS / FOR SHOPIFY MERCHANTS</p>
-     <h1>Know what<br/>shipping really<br/><em>costs.</em></h1>
-     <p className="nd-lede">Compare the shipping revenue recorded in your orders with carrier and fulfilment costs. Find unmatched charges, incomplete evidence and orders that need review—without mistaking missing data for savings.</p>
+     <p className="nd-eyebrow"><span></span> MERCHANT OPERATIONS / FOR SHOPIFY</p>
+     <h1>Run your store<br/>with greater<br/><em>clarity.</em></h1>
+     <p className="nd-lede">NODUS is being built as a connected operating platform for Shopify merchants: understand performance, find operational problems, build a prioritized roadmap and get practical guidance across the business. The first working module focuses on evidence-backed shipping economics.</p>
      <div className="nd-actions">
-      <Link to="/connect" className="nd-button nd-button-primary">CONNECT YOUR SHOPIFY STORE <span>↗</span></Link>
-      <Link to="/workspace" className="nd-button nd-button-quiet">OPEN MERCHANT WORKSPACE <span>↗</span></Link>
-      <Link to="/manual-data" className="nd-button nd-button-quiet">RUN A CSV REVIEW <span>↗</span></Link>
+      <Link to="/product" className="nd-button nd-button-primary">EXPLORE THE PLATFORM <span>↗</span></Link>
+      <Link to="/demo" className="nd-button nd-button-quiet">RUN A SAMPLE REVIEW <span>↗</span></Link>
+      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">GET EARLY ACCESS <span>↗</span></Link>
      </div>
      <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
     </div>
