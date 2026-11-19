@@ -7,7 +7,7 @@ export const meta:MetaFunction=()=>[
   {name:"description",content:"Reconcile Shopify shipping revenue with carrier and 3PL cost exports. Review matched, unmatched and incomplete evidence before making shipping decisions."},
   {name:"keywords",content:"Shopify shipping cost reconciliation, Shopify carrier cost analysis, 3PL invoice reconciliation, shipping revenue vs cost"},
   {property:"og:title",content:"Shopify Shipping Cost Reconciliation — NODUS"},
-  {property:"og:description",content:"Connect Shopify orders to carrier-cost evidence. Inspect coverage, exceptions and historical shipping-policy scenarios."},
+  {property:"og:description",content:"Compare merchant-provided order and carrier-cost CSV files in the browser. Inspect matches, unmatched charges and currency-separated totals."},
 ];
 
 const stages=[
