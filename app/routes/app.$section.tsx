@@ -6,7 +6,7 @@ import { importCarrierCostCsv } from "../services/cost-import.server";
 import { reconcileShipping } from "../domain/reconcile";
 import { diagnoseReconciliation } from "../domain/diagnostics";
 import { parseMoney } from "../domain/money";
-import { simulateHistoricalShippingRevenue } from "../domain/simulation";
+import { simulateHistoricalShippingContribution } from "../domain/simulation";
 import { getMarketShippingSnapshot } from "../services/shipping-policy.server";
 import { createHash } from "node:crypto";
 
@@ -14,7 +14,7 @@ const pages: Record<string, { title: string; subtitle: string; heading: string; 
   orders: { title: "Order evidence", subtitle: "Order-level shipping revenue and fulfillment evidence.", heading: "Persisted Shopify orders", body: "Orders are stored through a resumable Shopify backfill. Imported costs are matched by exact order reference or an unambiguous tracking number. Cost coverage must be reviewed before contribution is calculated." },
   evidence: { title: "Source evidence", subtitle: "Carrier invoices, labels and 3PL records.", heading: "Import carrier cost evidence", body: "Upload a carrier CSV with invoice_id, charge_id, amount and currency. Optional columns: order_reference, tracking_number, occurred_at and cost_type. Ambiguous records are not auto-allocated." },
   diagnostics: { title: "Diagnostics", subtitle: "Evidence-backed causes, not unexplained alerts.", heading: "Evidence coverage and findings", body: "Findings are generated from stored orders and imported cost records. Missing evidence is a coverage gap, never zero cost or a confirmed loss." },
-  simulations: { title: "Policy simulations", subtitle: "Compare proposed policies against historical order scenarios.", heading: "Historical shipping-policy replay", body: "Replay a proposed flat rate and optional free-shipping threshold against stored order history. This compares shipping revenue only; it does not predict demand, conversion, abandonment or profit." },
+  simulations: { title: "Policy simulations", subtitle: "Compare proposed policies against historical order scenarios.", heading: "Historical shipping-policy replay", body: "Replay a proposed flat rate and optional free-shipping threshold against stored order history. This uses only tax-exclusive orders with merchant-reviewed complete carrier-cost coverage. It compares shipping contribution before unobserved costs; it does not predict demand, conversion, abandonment or total profit." },
   policies: { title: "Policy control", subtitle: "Proposed changes, merchant approvals and verification.", heading: "Live policy writes are disabled", body: "NODUS remains read-only until supported Shopify mutations, permissions, baseline checks and read-back verification have passed development-store tests." },
   monitoring: { title: "Shopify sync monitoring", subtitle: "Scheduled order refresh, resumable backfill and failure recovery.", heading: "Scheduled Shopify refresh", body: "NODUS runs a protected, bounded Shopify order refresh through Vercel Cron when CRON_SECRET is configured. This does not monitor carrier billing, adjudicate disputes or verify recovered value." },
   reports: { title: "Reports", subtitle: "Traceable results, coverage and decision history.", heading: "Export your evidence register", body: "Download the stored Shopify orders and imported carrier-cost evidence for independent review. Exports are merchant-scoped and recorded in the audit log." }
@@ -43,7 +43,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const empty = {
     page, totalOrders: 0, totalEvidence: 0, totalSimulations: 0, totalValueRecords: 0, valueTotals: [] as Array<{currency:string;category:string;status:string;amountMinor:string;count:number}>, analyzedOrders: 0, analyzedEvidence: 0, analysisTruncated: false, rows: [] as OrderRow[],
     markets: [] as Array<{ id: string; name: string; handle: string; status: string; inheritsShipping: boolean; shippingEnabled: boolean | null; options: Array<{ id: string; name: string; type: string; active: boolean; currency: string; freeThreshold: string | null; flatRates: Array<{ amount: string; currency: string }> }> }>, policyError: null as string | null,
-    evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
+    evidenceRows: [] as EvidenceRow[], orderOptions: [] as Array<{ id: string; name: string }>, findings: [] as FindingRow[], auditEvents: [] as AuditRow[], simulationRows: [] as Array<{ id: string; currency: string; flatRateMinor: string; freeShippingThresholdMinor: string | null; sampleSize: number; observed: string; replayed: string; delta: string; observedCost: string | null; observedContribution: string | null; replayedContribution: string | null; contributionDelta: string | null; excludedOrderCount: number; coverageRate: number | null; createdAt: string; sampleWindowStart: string | null; sampleWindowEnd: string | null; warning: string }>,
   };
   const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
   if (!merchant) return empty;
@@ -82,16 +82,30 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     });
     return {
       ...empty,
-      simulationRows: simulations.map((simulation) => ({
-        id: simulation.id, currency: simulation.currency,
-        flatRateMinor: simulation.flatRateMinor.toString(),
-        freeShippingThresholdMinor: simulation.freeShippingThresholdMinor?.toString() ?? null,
-        sampleSize: simulation.sampleSize,
-        observed: simulation.observedShippingRevenueMinor.toString(),
-        replayed: simulation.replayedShippingRevenueMinor.toString(),
-        delta: simulation.revenueDeltaMinor.toString(),
-        createdAt: simulation.createdAt.toISOString(), sampleWindowStart: simulation.sampleWindowStart?.toISOString() ?? null, sampleWindowEnd: simulation.sampleWindowEnd?.toISOString() ?? null, warning: simulation.warning,
-      })),
+      simulationRows: simulations.map((simulation) => {
+        const saved = simulation.assumptions as Record<string, unknown>;
+        const metrics = saved && typeof saved === "object" && !Array.isArray(saved) && saved.metrics && typeof saved.metrics === "object"
+          ? saved.metrics as Record<string, unknown>
+          : {};
+        const numberValue = (value: unknown) => typeof value === "number" ? value : null;
+        const stringValue = (value: unknown) => typeof value === "string" ? value : null;
+        return {
+          id: simulation.id, currency: simulation.currency,
+          flatRateMinor: simulation.flatRateMinor.toString(),
+          freeShippingThresholdMinor: simulation.freeShippingThresholdMinor?.toString() ?? null,
+          sampleSize: simulation.sampleSize,
+          observed: simulation.observedShippingRevenueMinor.toString(),
+          replayed: simulation.replayedShippingRevenueMinor.toString(),
+          delta: simulation.revenueDeltaMinor.toString(),
+          observedCost: stringValue(metrics.evidencedShippingCostMinor),
+          observedContribution: stringValue(metrics.observedShippingContributionMinor),
+          replayedContribution: stringValue(metrics.replayedShippingContributionMinor),
+          contributionDelta: stringValue(metrics.contributionDeltaMinor),
+          excludedOrderCount: numberValue(metrics.excludedOrderCount) ?? 0,
+          coverageRate: numberValue(metrics.coverageRate),
+          createdAt: simulation.createdAt.toISOString(), sampleWindowStart: simulation.sampleWindowStart?.toISOString() ?? null, sampleWindowEnd: simulation.sampleWindowEnd?.toISOString() ?? null, warning: simulation.warning,
+        };
+      }),
     };
   }
 
@@ -491,17 +505,51 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (threshold && threshold.minor < 0n) throw new Error("Free-shipping threshold cannot be negative.");
       const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
       if (!merchant) return { kind: "simulation" as const, ok: false, message: "No Shopify order history is stored yet." };
-      const orders = await prisma.shippingOrder.findMany({
-        where: { merchantId: merchant.id, subtotalMinor: { not: null }, currency, taxesIncluded: false },
-        orderBy: { orderedAt: "desc" }, take: 250,
-      });
-      if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No non-tax-inclusive orders in this currency with a verified subtotal are available." };
-      const result = simulateHistoricalShippingRevenue(orders.map((order) => ({
+      const [orders, costs, totalCosts] = await Promise.all([
+        prisma.shippingOrder.findMany({
+          where: { merchantId: merchant.id, currency },
+          orderBy: { orderedAt: "desc" }, take: 250,
+        }),
+        prisma.shippingCost.findMany({
+          where: { merchantId: merchant.id },
+          orderBy: { occurredAt: "desc" }, take: 10000,
+        }),
+        prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
+      ]);
+      if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No Shopify orders are available in this currency." };
+      if (totalCosts > costs.length) throw new Error("This store has more than 10,000 cost records. Narrow the evidence set before running a policy replay; incomplete evidence must not be treated as complete.");
+      const orderInputs = orders.map((order) => ({
         orderId: order.sourceOrderId,
-        subtotal: { minor: order.subtotalMinor!, currency: order.currency },
-        shippingCollected: { minor: order.shippingRevenueMinor, currency: order.currency },
-      })), { flatRate, freeShippingThreshold: threshold });
+        orderName: order.orderName,
+        shippingRevenue: { minor: order.shippingRevenueMinor, currency: order.currency },
+        trackingNumbers: Array.isArray(order.trackingNumbers)
+          ? order.trackingNumbers.filter((value): value is string => typeof value === "string")
+          : [],
+        costCoverage: order.costCoverageStatus === "complete" ? "complete" as const
+          : order.costCoverageStatus === "partial" ? "partial" as const : "unknown" as const,
+        taxesIncluded: order.taxesIncluded,
+      }));
+      const costInputs = costs.map((cost) => ({
+        evidenceId: `${cost.sourceSystem}:${cost.sourceRecordId}`,
+        amount: { minor: cost.amountMinor, currency: cost.currency },
+        orderReference: cost.orderReference,
+        trackingNumber: cost.trackingNumber,
+      }));
+      const reconciled = reconcileShipping(orderInputs, costInputs);
+      const rowsByOrder = new Map(reconciled.map((row) => [row.orderId, row]));
+      const result = simulateHistoricalShippingContribution(orders.map((order) => {
+        const row = rowsByOrder.get(order.sourceOrderId)!;
+        return {
+          orderId: order.sourceOrderId,
+          subtotal: order.subtotalMinor === null ? null : { minor: order.subtotalMinor, currency: order.currency },
+          shippingCollected: { minor: order.shippingRevenueMinor, currency: order.currency },
+          evidencedCost: row.evidencedCost,
+          coverage: row.coverage,
+          taxesIncluded: order.taxesIncluded,
+        };
+      }), { flatRate, freeShippingThreshold: threshold });
       const merchantOrderDates = orders.map((order) => order.orderedAt.getTime()).sort((a, b) => a - b);
+      const sampleTruncated = await prisma.shippingOrder.count({ where: { merchantId: merchant.id, currency } }) > orders.length;
       const saved = await prisma.policySimulation.create({
         data: {
           merchantId: merchant.id, currency,
@@ -513,15 +561,31 @@ export async function action({ request, params }: ActionFunctionArgs) {
           observedShippingRevenueMinor: BigInt(result.observedShippingRevenueMinor),
           replayedShippingRevenueMinor: BigInt(result.replayedShippingRevenueMinor),
           revenueDeltaMinor: BigInt(result.revenueDeltaMinor),
-          assumptions: result.assumptions,
-          warning: result.warning,
+          assumptions: {
+            assumptions: result.assumptions,
+            metrics: {
+              evidencedShippingCostMinor: result.evidencedShippingCostMinor,
+              observedShippingContributionMinor: result.observedShippingContributionMinor,
+              replayedShippingContributionMinor: result.replayedShippingContributionMinor,
+              contributionDeltaMinor: result.contributionDeltaMinor,
+              eligibleOrderCount: result.eligibleOrderCount,
+              excludedOrderCount: result.excludedOrderCount,
+              excludedCoverageCount: result.excludedCoverageCount,
+              excludedTaxInclusiveCount: result.excludedTaxInclusiveCount,
+              excludedMissingSubtotalCount: result.excludedMissingSubtotalCount,
+              coverageRate: result.coverageRate,
+            },
+          },
+          warning: sampleTruncated
+            ? result.warning + " The order sample was capped at 250 most recent orders."
+            : result.warning,
         },
       });
       await prisma.auditEvent.create({
         data: {
           merchantId: merchant.id, actor: session.id, action: "policy_simulation_created",
           subjectType: "policy_simulation", subjectId: saved.id,
-          detail: { currency, sampleSize: result.sampleSize, engineVersion: "v1" },
+          detail: { currency, sampleSize: result.sampleSize, excludedOrderCount: result.excludedOrderCount, coverageRate: result.coverageRate, engineVersion: "v2-cost-adjusted" },
         },
       });
       return { kind: "simulation" as const, ok: true, result: {
@@ -529,7 +593,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
         observed: result.observedShippingRevenueMinor.toString(),
         replayed: result.replayedShippingRevenueMinor.toString(),
         delta: result.revenueDeltaMinor.toString(),
-        warning: result.warning, assumptions: result.assumptions,
+        observedCost: result.evidencedShippingCostMinor,
+        observedContribution: result.observedShippingContributionMinor,
+        replayedContribution: result.replayedShippingContributionMinor,
+        contributionDelta: result.contributionDeltaMinor,
+        eligibleOrderCount: result.eligibleOrderCount,
+        excludedOrderCount: result.excludedOrderCount,
+        excludedCoverageCount: result.excludedCoverageCount,
+        excludedTaxInclusiveCount: result.excludedTaxInclusiveCount,
+        excludedMissingSubtotalCount: result.excludedMissingSubtotalCount,
+        coverageRate: result.coverageRate,
+        warning: sampleTruncated ? result.warning + " The order sample was capped at 250 most recent orders." : result.warning,
+        assumptions: result.assumptions,
       } };
     } catch (error) {
       return { kind: "simulation" as const, ok: false, message: error instanceof Error ? error.message : "Simulation failed." };
@@ -613,10 +688,10 @@ export default function Section() {
         {result?.kind === "simulation" && !result.ok ? <p role="status" className="import-error">{result.message}</p> : null}
         {simulationResult ? <div className="simulation-result">
           <p className="eyebrow">HISTORICAL REPLAY · {simulationResult.sampleSize} ORDERS</p>
-          <div className="simulation-metrics"><div><small>Observed shipping revenue</small><strong>{formatMinor(simulationResult.observed,simulationResult.currency)}</strong></div><div><small>Replayed shipping revenue</small><strong>{formatMinor(simulationResult.replayed,simulationResult.currency)}</strong></div><div><small>Revenue difference</small><strong>{formatMinor(simulationResult.delta,simulationResult.currency)}</strong></div></div>
+          <div className="simulation-metrics"><div><small>Observed shipping revenue</small><strong>{formatMinor(simulationResult.observed,simulationResult.currency)}</strong></div><div><small>Replayed shipping revenue</small><strong>{formatMinor(simulationResult.replayed,simulationResult.currency)}</strong></div><div><small>Revenue difference</small><strong>{formatMinor(simulationResult.delta,simulationResult.currency)}</strong></div><div><small>Observed shipping contribution</small><strong>{formatMinor(simulationResult.observedContribution,simulationResult.currency)}</strong></div><div><small>Replayed shipping contribution</small><strong>{formatMinor(simulationResult.replayedContribution,simulationResult.currency)}</strong></div><div><small>Contribution difference</small><strong>{formatMinor(simulationResult.contributionDelta,simulationResult.currency)}</strong></div><div><small>Matched carrier/3PL cost</small><strong>{formatMinor(simulationResult.observedCost,simulationResult.currency)}</strong></div></div><p className="table-caption">{simulationResult.eligibleOrderCount} eligible orders · {simulationResult.excludedOrderCount} excluded · {Math.round(simulationResult.coverageRate*100)}% eligible coverage</p><p className="footnote">Excluded: {simulationResult.excludedCoverageCount} with incomplete cost coverage, {simulationResult.excludedTaxInclusiveCount} tax-inclusive, {simulationResult.excludedMissingSubtotalCount} without a subtotal. Exclusion counts may overlap.</p>
           <p className="body-copy">{simulationResult.warning}</p><ul>{simulationResult.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul>
         </div> : null}
-        <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed {formatMinor(run.observed,run.currency)} · Replayed {formatMinor(run.replayed,run.currency)} · Difference {formatMinor(run.delta,run.currency)}</p><small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""}{run.sampleWindowStart && run.sampleWindowEnd ? " · Orders "+new Date(run.sampleWindowStart).toLocaleDateString()+"–"+new Date(run.sampleWindowEnd).toLocaleDateString() : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
+        <div className="simulation-history"><h4>Saved simulation history</h4><p className="table-caption">{data.simulationRows.length} saved runs · latest 25</p>{data.simulationRows.map((run) => <article className="finding-row" key={run.id}><span className="tag">{run.sampleSize} orders</span><div><strong>{new Date(run.createdAt).toLocaleString()} · {run.currency}</strong><p>Observed revenue {formatMinor(run.observed,run.currency)} · Replayed revenue {formatMinor(run.replayed,run.currency)} · Revenue delta {formatMinor(run.delta,run.currency)}</p>{run.observedContribution!==null&&run.replayedContribution!==null&&run.contributionDelta!==null?<p>Observed contribution {formatMinor(run.observedContribution,run.currency)} · Replayed contribution {formatMinor(run.replayedContribution,run.currency)} · Contribution delta {formatMinor(run.contributionDelta,run.currency)}</p>:null}<small>Flat rate {formatMinor(run.flatRateMinor,run.currency)}{run.freeShippingThresholdMinor ? " · Free threshold "+formatMinor(run.freeShippingThresholdMinor,run.currency) : ""}{run.sampleWindowStart && run.sampleWindowEnd ? " · Orders "+new Date(run.sampleWindowStart).toLocaleDateString()+"–"+new Date(run.sampleWindowEnd).toLocaleDateString() : ""} · Historical replay, not a forecast</small></div></article>)}{!data.simulationRows.length ? <p className="body-copy">No saved simulations yet.</p> : null}</div>
       </Form> : null}
       {data.page.title === "Reports" ? <div className="report-panel">
         <p className="table-caption">{data.totalOrders} orders · {data.totalEvidence} cost records · {data.totalSimulations} saved simulations · {data.totalValueRecords} value records</p>
