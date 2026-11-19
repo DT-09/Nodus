@@ -1,5 +1,6 @@
 name: NODUS Desktop Release
 on:
+  workflow_dispatch:
   push:
     tags:
       - "desktop-v*"
