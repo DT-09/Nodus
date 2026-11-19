@@ -1,4 +1,4 @@
-const VERSION = "nodus-shell-v2";
+const VERSION = "nodus-shell-v3";
 const OFFLINE = "/offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(VERSION).then((cache) => cache.add(OFFLINE)).then(() => self.skipWaiting()));
