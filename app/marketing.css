@@ -645,3 +645,33 @@
 .nd-workspace .manual-table-wrap table{min-width:640px}
 .nd-workspace .footnote{color:#aaa397}
 @media(max-width:600px){.nd-workspace-head{display:block}.nd-workspace .manual-file{display:flex;flex-wrap:wrap}.nd-workspace .manual-file input{width:100%;margin:10px 0 0}}
+
+
+/* Release polish: high-contrast NODUS palette and consistent focus states */
+.marketing-site{--ink:#17131c;--ink-2:#211a27;--ink-3:#2b2232;--paper:#f4eee3;--paper-2:#e8dfd0;--stone:#d5cbbb;--muted:#d4ccbf;--muted-2:#b9ad9b;--line:rgba(240,212,154,.25);--accent:#d5b36f;--accent-2:#f0d49a;--surface:#211a27;--surface-2:#2b2232;--text:#f4eee3;background:#17131c;color:#f4eee3}
+.marketing-site .site-header{background:rgba(33,26,39,.96);border-color:rgba(240,212,154,.3);box-shadow:0 12px 38px rgba(0,0,0,.28)}
+.marketing-site .site-brand-word{color:#fff8ec}
+.marketing-site .site-brand-caption,.marketing-site .header-context{color:#d4ccbf}
+.marketing-site .nodus-logo{color:#d5b36f;filter:drop-shadow(0 2px 8px rgba(213,179,111,.2))}
+.marketing-site .nd-lede,.marketing-site .nd-manifesto>p,.marketing-site .nd-section-head>p,.marketing-site .nd-loop-grid article p,.marketing-site .nd-release-grid article p,.marketing-site .nd-trust-intro>p,.marketing-site .nd-trust-grid article p,.marketing-site .nd-commercial-copy>p,.marketing-site .nd-final>p{color:#d4ccbf}
+.marketing-site .nd-domain-grid article p,.marketing-site .nd-trust-grid article p,.marketing-site .nd-commercial-aside p{color:#d4ccbf}
+.marketing-site .nd-loop-grid article small,.marketing-site .nd-release-status,.marketing-site .nd-trust-grid article b{color:#f0d49a}
+.marketing-site .nd-index,.marketing-site .nd-eyebrow,.marketing-site .page-eyebrow{color:#f0d49a}
+.marketing-site .site-menu{background:#211a27;border-color:rgba(240,212,154,.3)}
+.marketing-site .menu-group a{color:#f4eee3}
+.marketing-site .menu-group a span,.marketing-site .menu-topline,.marketing-site .menu-bottom>div{color:#d4ccbf}
+.marketing-site .content-page .page-lede,.marketing-site .content-note p,.marketing-site .content-note li{color:#d4ccbf}
+.marketing-site .content-note{border-color:rgba(240,212,154,.22)}
+.marketing-site .content-note h2,.marketing-site .content-page h1{color:#fff8ec}
+.marketing-site .nd-assessment-form label{color:#f0d49a}
+.marketing-site .nd-assessment-form input,.marketing-site .nd-assessment-form select,.marketing-site .nd-assessment-form textarea{background:#211a27;color:#fff8ec;border-color:rgba(240,212,154,.42)}
+.marketing-site .nd-assessment-form input::placeholder,.marketing-site .nd-assessment-form textarea::placeholder{color:#b9ad9b;opacity:1}
+.marketing-site .nd-form-consent,.marketing-site .nd-form-footnote,.marketing-site .install-help,.marketing-site .footnote{color:#d4ccbf}
+.marketing-site a:focus-visible,.marketing-site button:focus-visible,.marketing-site input:focus-visible,.marketing-site select:focus-visible,.marketing-site textarea:focus-visible{outline:2px solid #f0d49a;outline-offset:3px}
+.marketing-site .cta-primary,.marketing-site .nd-button-primary{background:#d5b36f;color:#211a27!important;border:1px solid #f0d49a}
+.marketing-site .cta-primary:hover,.marketing-site .nd-button-primary:hover{background:#f0d49a}
+.marketing-site .cta-secondary,.marketing-site .nd-button-quiet{color:#fff8ec!important}
+.marketing-site .site-footer{background:#100d14;color:#f4eee3}
+.marketing-site .footer-column a,.marketing-site .footer-bottom a{color:#d4ccbf}
+.install-status{color:#f0d49a;font-weight:600}
+@media(prefers-reduced-motion:reduce){.marketing-site *, .marketing-site *::before,.marketing-site *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
