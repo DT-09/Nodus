@@ -15,7 +15,7 @@ const stages=[
   ["02","Import billed-cost evidence","Upload a supported carrier or 3PL CSV export. Each charge retains the identifiers available in the source."],
   ["03","Review the match","Exact order references and unambiguous tracking references can be matched. Ambiguous, duplicate and unmatched records remain visible."],
   ["04","Inspect the economics","Review only calculations supported by complete evidence and the declared currency and tax treatment."],
-  ["05","Make a defensible decision","Export the exception register and decision pack. Use historical policy replay only as a historical comparison, not a forecast."],
+  ["05","Export a review record","Download the CSV register and JSON decision pack, including scope and limitations."],
 ];
 
 export default function ShippingCostReconciliation(){
@@ -71,7 +71,7 @@ export default function ShippingCostReconciliation(){
     <section className="content-note">
       <span className="page-eyebrow">CURRENT RELEASE BOUNDARY</span>
       <h2>CSV evidence in. No invented integrations.</h2>
-      <p>The current documented workflow uses Shopify order ingestion and merchant-provided carrier-cost CSV files. Direct UPS, FedEx and USPS invoice APIs, PDF extraction, automated carrier invoice polling, policy writes and live subscription billing are not represented as available capabilities. Shopify order refresh is distinct from carrier invoice monitoring.</p>
+      <p>The current public workflow uses merchant-provided order CSV and carrier-cost CSV files. Both files are processed in the browser. Direct Shopify connection, carrier APIs, PDF extraction, automated invoice polling, scheduled monitoring and paid billing are not available in this release.</p>
       <p>See the <Link to="/product">current product scope</Link>, <Link to="/security">security boundaries</Link> and <Link to="/buyer-evaluation">merchant evaluation guide</Link> before sharing data.</p>
     </section>
   </main></MarketingShell>;
