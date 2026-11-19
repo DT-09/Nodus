@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#211e29"/><g fill="none" stroke="#c3a66e" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M256 58 438 178 372 397 256 454 74 330 74 178 256 58Z"/><path d="m74 178 182 106 182-106M256 284v170M140 366l116-82 116 82M140 134l116 150 116-150"/></g><g fill="#e1c994"><circle cx="256" cy="58" r="18"/><circle cx="438" cy="178" r="18"/><circle cx="372" cy="397" r="18"/><circle cx="256" cy="454" r="18"/><circle cx="74" cy="330" r="18"/><circle cx="74" cy="178" r="18"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">NODUS</title>
+  <desc id="desc">Six gold circular nodes connected by fine lines into a symmetrical faceted diamond network.</desc>
+  <rect width="512" height="512" rx="112" fill="#211a27"/>
+  <g fill="none" stroke="#d5b36f" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 58 438 164 438 348 256 454 74 348 74 164 256 58Z"/>
+    <path d="M256 58 256 454M74 164 438 348M438 164 74 348"/>
+  </g>
+  <g fill="#f0d49a">
+    <circle cx="256" cy="58" r="17"/>
+    <circle cx="438" cy="164" r="17"/>
+    <circle cx="438" cy="348" r="17"/>
+    <circle cx="256" cy="454" r="17"/>
+    <circle cx="74" cy="348" r="17"/>
+    <circle cx="74" cy="164" r="17"/>
+  </g>
+</svg>
