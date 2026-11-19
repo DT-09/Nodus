@@ -20,7 +20,7 @@ export default function Workspace(){
  }
  function csvCell(value:unknown){
   const text=String(value??"");
-  return '"'+(/^[\\s]*[=+@-]/.test(text)?"'"+text:text).replaceAll('"','""')+'"';
+  return '"'+(/^[\s]*[=+@-]/.test(text)?"'"+text:text).replaceAll('"','""')+'"';
  }
  function exportReviewCsv(){
   if(!recon)return;
@@ -29,7 +29,7 @@ export default function Workspace(){
    ...recon.orders.map(o=>["ORDER",o.currency,o.order,o.date,o.shippingRevenue,o.matchedCost??"",o.evidenceRows,"","","",""]),
    ...recon.unmatched.map(c=>["UNMATCHED_CHARGE",c.currency,c.reference??"","","","","",c.invoice,c.charge,c.amount,c.reason])
   ];
-  downloadFile("nodus-shipping-review.csv","text/csv;charset=utf-8",rows.map(row=>row.map(csvCell).join(",")).join("\\r\\n"));
+  downloadFile("nodus-shipping-review.csv","text/csv;charset=utf-8",rows.map(row=>row.map(csvCell).join(",")).join("\r\n"));
  }
  function exportDecisionPack(){
   if(!recon)return;
