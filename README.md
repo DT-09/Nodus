@@ -15,7 +15,7 @@ NODUS is configured for **Vercel** through the React Router Vercel preset in `re
 - Carrier-cost CSV import with duplicate protection and currency validation.
 - Evidence register and merchant-reviewed order matching.
 - Deterministic reconciliation and diagnostics that keep missing evidence unknown.
-- Historical flat-rate and free-shipping-threshold replay.
+- Cost-adjusted historical flat-rate and free-shipping-threshold replay using merchant-reviewed complete carrier-cost evidence, with eligible-order denominators and exclusion counts.
 - Read-only Shopify Markets shipping configuration.
 - Merchant-scoped CSV evidence export and audit events.
 - Full-scope JSON Shipping Economics Decision Pack with order-level reconciliation, evidence provenance, coverage summary, exception findings, saved policy replays, economic-value attestations, explicit limitations and a SHA-256 integrity digest.
