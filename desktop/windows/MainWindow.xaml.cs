@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Windows;
 namespace Nodus.Desktop;
 public partial class MainWindow : System.Windows.Window
 {
