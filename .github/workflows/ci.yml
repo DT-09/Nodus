@@ -1,7 +1,7 @@
 name: NODUS CI
 on:
   push:
-    branches: [main]
+    branches: [main, commercial-product-launch]
   pull_request:
     branches: [main]
 permissions:
