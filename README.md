@@ -1,46 +1,46 @@
 # NODUS
 
-**Your business. Understood. Advanced.**
+**Shipping economics. Made inspectable.**
 
-NODUS is being developed as a connected business operating system. The first commercial wedge is Shopify shipping economics: connect order shipping revenue with carrier/3PL cost evidence, identify what can and cannot be reconciled, and produce a reviewable decision pack.
+NODUS is being developed as a broader business operating system. The current public product is deliberately narrower: an installable web app with browser-local shipping-economics CSV analysis and a Cloudflare-backed founding-enquiry form.
 
 ## Current public release
 
-The production website runs on **Cloudflare Pages**. Public dynamic intake runs through **Cloudflare Pages Functions** and **D1**.
+Production site: https://nodus-hq.pages.dev
 
-- Brand and commercial website with product architecture, methodology, security, privacy, pricing and synthetic demonstration pages.
-- Installable PWA for compatible desktop and mobile browsers.
-- Cloudflare Pages Functions OAuth endpoints for Shopify read-only order access, encrypted access-token storage, D1-backed merchant sessions, order sync and privacy/uninstall webhooks. The OAuth flow remains inactive until Shopify Partner credentials are configured.
-- Browser-local manual data workflow for order and carrier-cost CSV files.
-- Deterministic matching using order references and unique tracking references.
-- Currency-separated calculations and unmatched-charge review.
-- Downloadable CSV register and JSON decision pack.
-- Founding assessment request form stored in Cloudflare D1.
-- Request validation, honeypot, per-IP-hash rate limiting and privacy notice.
-- D1-backed health endpoint at `/api/health`.
+- Marketing and product-information website.
+- Installable progressive web app (PWA) for compatible browsers. It is installed through the browser; there is no native desktop or mobile installer package.
+- Browser-local CSV analysis for order exports and carrier / 3PL cost exports.
+- Deterministic matching using supported order references and unique tracking references in the uploaded CSVs.
+- Currency-separated calculations and unmatched-charge reporting.
+- Downloadable CSV review register and JSON decision pack.
+- Founding assessment enquiry form backed by Cloudflare Pages Functions and D1.
+- D1 health endpoint at `/api/health`.
+
+The CSV files selected by a visitor are processed in the browser. The analysis workflow does not upload those files to NODUS. The founding enquiry form stores only the contact and qualification fields submitted by the visitor; it does not collect CSV files, customer records, passwords or API tokens.
 
 ## Explicit release boundaries
 
-The following are **not live** in the current public release:
+The following are **not part of the current public release**:
 
-- Shopify App Store distribution and review approval.
-- Automated scheduled Shopify sync and event-driven order webhooks. The initial connected workspace uses an operator-triggered, resumable order sync.
-- Direct carrier APIs, carrier invoice polling or PDF/OCR extraction.
-- Cross-business financial, marketing, CRM, inventory or supplier integrations.
-- Multi-agent diagnosis, general-purpose business intelligence or autonomous execution.
-- Shopify App Store distribution, paid subscription billing or self-serve checkout.
-- Native iOS/Android store binaries. The PWA is the current cross-device delivery method.
+- Shopify app installation, OAuth, or a connected Shopify merchant workspace.
+- Native Windows, macOS, iOS or Android binaries; App Store or Google Play distribution.
+- Scheduled or recurring monitoring, background order refresh, carrier API connections or invoice polling.
+- Paid subscription billing, self-serve checkout or recurring plans.
+- Automatic changes to Shopify settings, shipping rates, orders, refunds or other external business systems.
+- General-purpose business intelligence, cross-business integrations, multi-agent diagnosis or autonomous business execution.
 
-The manual CSV workflow runs in the browser. Uploaded files are not sent to NODUS. The assessment form stores only business contact and qualification details; it does not collect source files or Shopify credentials.
+The founding form is an enquiry, not a purchase, service contract, data-access grant or guarantee that an assessment will be accepted. No customer count, testimonial, savings result or revenue claim is made without evidence.
 
 ## Cloudflare architecture
 
-- **Cloudflare Pages:** static React Router SPA and PWA assets.
+- **Cloudflare Pages:** React Router public site and PWA assets.
 - **Pages Functions:** `/api/leads` assessment intake and `/api/health`.
 - **Cloudflare D1:** `nodus-leads`, with the `NODUS_DB` binding in Preview and Production.
-- **GitHub:** source control and CI only; no GitHub runtime dependency.
+- **GitHub:** source control and CI.
+- **Deployment:** Cloudflare Pages Git integration, production branch `main`.
 
-No Vercel deployment is used for the public release. Keep the Cloudflare project on the connected `nodus-hq` Pages project. Avoid adding paid services or external providers without an explicit decision.
+No Vercel deployment is used for the public release. Do not add paid services or external providers without an explicit decision.
 
 ## Local development
 
@@ -52,38 +52,27 @@ npm run dev
 npm run typecheck
 npm test
 npm run build
+npm run verify:deployment
 ```
 
-The current Pages deployment builds to `build/client` using `npm run build`. Pages Functions live under `functions/`. D1 schema is managed in the Cloudflare database `nodus-leads`; the live tables are `merchant_leads` and `lead_rate_limits`.
+The Pages build command is `npm run build`; the output directory is `build/client`. Pages Functions live under `functions/`. The live D1 database contains the aggregate assessment-intake and rate-limit tables.
 
-## Merchant launch workflow
+## Enquiry handling
 
-1. Merchant reads the scope, methodology and privacy notice.
-2. Merchant submits the founding assessment request at `/buyer-evaluation`.
-3. The request is stored in D1. The operator reviews submissions in the Cloudflare dashboard under Workers & Pages → D1 → `nodus-leads`.
-4. The operator responds through the configured support inbox and confirms scope before any data is exchanged.
-5. The merchant may use `/manual-data` to run the current browser-local CSV workflow.
-6. The operator reviews evidence and limitations before proposing any separately scoped service.
+1. A merchant reads the current product scope and privacy notice.
+2. The merchant may submit the founding enquiry at `/buyer-evaluation`.
+3. The request is stored in D1. Only an authorized operator should review and respond to enquiries.
+4. The merchant can use `/manual-data` to run the browser-local CSV workflow.
+5. No source files or store credentials are requested by the public form.
 
-There is no automated email notification for new submissions yet. The operator must check the D1 database for new enquiries and monitor the support inbox.
+There is no automated notification or protected lead-management interface in the current release. An authorized adult business operator must manage enquiries, customer communications and any commercial relationship.
 
-## Commercial controls
+## Commercial and governance boundaries
 
-- The founding assessment is no-fee and no-obligation.
-- No automatic subscription or payment details are collected.
-- Do not claim recovered credits, guaranteed savings, App Store approval, or unsupported integrations.
-- Any paid service requires an authorized adult/business operator to approve the scope, contract, invoicing, tax and payment arrangements.
+- The founding enquiry is no-fee and no-obligation.
+- No payment details are collected and no payments are accepted.
+- No subscription or recurring service is currently offered.
+- Any future contract, pricing, invoicing, tax, payment, data-processing or customer-support arrangement requires an authorized adult business operator.
 - Publish no testimonials, customer logos or financial results without evidence and permission.
 
-## Next engineering milestones
-
-1. Automated lead notification and protected lead-management workflow.
-2. Secure merchant identity and tenant model.
-3. Shopify Partner app credentials, OAuth, privacy webhooks and installation acceptance.
-4. Durable merchant database and order synchronization.
-5. Reconciliation persistence, scheduled carrier evidence imports and repeatable reports.
-6. Permissioned execution runtime with approval gates and outcome verification.
-7. Billing lifecycle, support operations and production security review.
-8. Broader business intelligence domains and specialist agents.
-
-A deployed website is not proof of a running autonomous business. The public release must remain explicit about what is live.
+A deployed website is not proof of a revenue-generating business. The public release must remain explicit about what is live.
