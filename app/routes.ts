@@ -4,6 +4,8 @@ export default [
   index("./routes/_index.tsx"),
   route("demo", "./routes/demo.tsx"),
   route("install", "./routes/install.tsx"),
+  route("connect", "./routes/connect.tsx"),
+  route("workspace", "./routes/workspace.tsx"),
   route("manual-data", "./routes/manual-data.tsx"),
   route("about", "./routes/about.tsx"),
   route("methodology", "./routes/methodology.tsx"),
