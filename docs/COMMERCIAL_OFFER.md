@@ -1,10 +1,15 @@
 # NODUS Commercial Offer and Buyer Definition
 
-**Status:** Commercial hypothesis and launch-scope decision  
+**Status:** Commercial offer and launch-scope decision  
 **Date:** 2026-11-15  
 **Product:** NODUS — Shopify Shipping Economics Control
 
 ## 1. Commercial decision
+
+### Subscription model
+
+The customer-facing offer is a seven-day free trial followed by a monthly subscription. The NODUS website does not collect card details. For a public Shopify app, use Shopify App Pricing: configure a monthly public plan with a seven-day trial in the Shopify Partner Dashboard. Shopify hosts plan approval and billing; merchants must see the exact price and approve the subscription. Do not describe billing as active until the Partner plan is published and an end-to-end test confirms the trial, conversion, cancellation and entitlement states. The exact monthly price remains a launch decision for the authorized business operator.
+
 
 NODUS will not compete as a generic shipping dashboard or claim to be a universal carrier-audit platform.
 
