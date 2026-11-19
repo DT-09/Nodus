@@ -36,7 +36,7 @@ export default function Pricing(){
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
     <article><b>02</b><h3>Reconcile the evidence</h3><p>Connect order shipping revenue to imported carrier-cost records. Surface matched, unmatched, duplicate and incomplete evidence.</p></article>
-    <article><b>03</b><h3>Deliver the findings</h3><p>Provide an exception register, transparent calculations, evidence coverage, limitations and a historical policy replay where the data supports it.</p></article>
+    <article><b>03</b><h3>Deliver the findings</h3><p>Review the matches, unmatched charges, currency-separated totals, source references and limitations produced by the CSV tool.</p></article>
     <article><b>04</b><h3>Review together</h3><p>Walk through what is actionable, what needs carrier or finance confirmation and what cannot yet be concluded.</p></article>
    </div>
    <p className="calculator-caveat">Identified discrepancies are not recovered savings. A value is treated as realized only when the merchant can point to a posted credit, refund or accounting adjustment. NODUS does not independently audit that posting.</p>
@@ -65,9 +65,9 @@ export default function Pricing(){
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
     <article><span>VALUE / 02</span><h2>Operating value</h2><p>Time spent reconciling invoices, tracing exceptions and preparing finance reviews. Baseline and follow-up effort are recorded rather than guessed.</p></article>
-    <article><span>VALUE / 03</span><h2>Decision value</h2><p>Better visibility into cost coverage, shipping contribution and historical policy trade-offs, with assumptions and exclusions attached.</p></article>
+    <article><span>VALUE / 03</span><h2>Decision value</h2><p>Clearer visibility into matched costs, unmatched charges, currency totals and the limits of the supplied evidence.</p></article>
    </div>
-   <p className="calculator-verdict">Our proposed pricing rule: the conservative, merchant-accepted monthly value should be at least 3× the proposed monthly fee. This is a decision threshold, not a promised return. If recurring value cannot be demonstrated, there is no subscription recommendation.</p>
+   <p className="calculator-verdict">No NODUS price, recurring plan or return on investment is published in this release. Any value estimate must be measured by the merchant against comparable work; the calculator does not establish NODUS performance.</p>
   </section>
 
   <section className="proof-method" data-reveal>
@@ -90,13 +90,13 @@ export default function Pricing(){
    </div>
    <div className="evaluation-steps">
     <p><b>01</b> Confirm store fit and evaluation scope.</p>
-    <p><b>02</b> Confirm which order and carrier-cost records are available. Shopify OAuth is not open yet.</p>
+    <p><b>02</b> Use merchant-provided order and carrier-cost CSV exports. No store connection is available.</p>
     <p><b>03</b> Review a supported sample locally; do not send files with the enquiry.</p>
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
     <p><b>05</b> Decide whether ongoing monthly service is worth it.</p>
    </div>
    <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
-   <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A MANUAL DATA REVIEW ↗</Link><Link to="/connect" className="cta-secondary">CONNECT SHOPIFY ↗</Link></div>
+   <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
    <p className="pricing-disclaimer">No payments are accepted and no subscription is available in this release. The founding form is an enquiry only. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
