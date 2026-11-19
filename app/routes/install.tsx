@@ -26,24 +26,24 @@ function InstallAction(){
   setPromptEvent(null);
  }
  return <div className="install-action">
-  {installed?<p className="connect-status" role="status">NODUS is installed on this device.</p>:promptEvent?<button type="button" className="cta-primary" onClick={()=>void install()}>INSTALL NODUS ON THIS DEVICE ↗</button>:<p className="footnote">If your browser supports direct installation, its install option will appear in the address bar or browser menu.</p>}
-  {message?<p className="footnote" role="status">{message}</p>:null}
+  {installed?<p className="install-status" role="status">NODUS is installed on this device.</p>:promptEvent?<button type="button" className="cta-primary" onClick={()=>void install()}>INSTALL NODUS ↗</button>:<p className="install-help">Your browser may offer installation from its address bar or menu. Follow the device instructions below.</p>}
+  {message?<p className="install-help" role="status">{message}</p>:null}
  </div>;
 }
 
 export const meta:MetaFunction=()=>[
- {title:"Install NODUS — Desktop, iPhone, iPad and Android"},
- {name:"description",content:"Install the NODUS web app on supported desktop and mobile devices. One app, no separate download."},
+ {title:"Install NODUS — The shipping economics web app"},
+ {name:"description",content:"Install NODUS as a progressive web app on a supported browser. Use the browser-local shipping economics CSV review."},
 ];
 
 export default function Install(){
  return <MarketingShell active="install"><main className="content-page install-page">
-  <header><p className="page-eyebrow">NODUS / CROSS-DEVICE APP</p><h1>One workspace.<br/><em>Your device.</em></h1><p className="page-lede">NODUS is an installable cross-device app. The current public workflow analyses CSV evidence in the browser; the connected Shopify workspace becomes available once the merchant app credentials are configured.</p><InstallAction/></header>
-  <section className="content-note"><h2>Install on desktop</h2><p>Open NODUS in Chrome or Edge. Use the install icon in the address bar, or open the browser menu and choose <strong>Install NODUS</strong> / <strong>Apps → Install this site as an app</strong>. The app opens in its own window.</p></section>
-  <section className="content-note"><h2>Install on iPhone or iPad</h2><p>Open NODUS in Safari. Tap <strong>Share</strong>, choose <strong>Add to Home Screen</strong>, then confirm. Launch NODUS from the new home-screen icon.</p></section>
-  <section className="content-note"><h2>Install on Android</h2><p>Open NODUS in Chrome. Tap <strong>Install app</strong> if prompted, or open the browser menu and choose <strong>Install app</strong> / <strong>Add to Home screen</strong>.</p></section>
-  <section className="content-note"><h2>What works offline?</h2><p>The install shell and a connection-status page are available offline. Shopify authentication, merchant records, reconciliation and reports require an internet connection. Sensitive merchant data is not cached for offline viewing.</p></section>
-  <section className="content-note"><h2>Start using NODUS</h2><p>The installable app shell and browser-local CSV workflow are live. Shopify OAuth and persistent merchant workspaces are implemented in the Cloudflare backend but remain inactive until the NODUS Shopify Partner credentials are configured and verified.</p><div className="hero-ctas"><Link to="/connect" className="cta-primary">CONNECT SHOPIFY ↗</Link><Link to="/workspace" className="cta-secondary">OPEN MERCHANT WORKSPACE ↗</Link></div></section>
-  <p className="footnote">This is a progressive web app, not a native binary distributed through the Apple App Store or Google Play. Browser and operating-system support can vary by version.</p>
+  <header><p className="page-eyebrow">NODUS / INSTALLABLE WEB APP</p><h1>Install NODUS.<br/><em>Open it like an app.</em></h1><p className="page-lede">NODUS is delivered as a progressive web app (PWA). Install it from a supported browser to open the product in its own window. The current working tool analyses order and carrier-cost CSV files locally in your browser.</p><InstallAction/></header>
+  <section className="content-note"><h2>Windows, macOS and Linux</h2><p>Open NODUS in Chrome or Edge. Select the install icon in the address bar, or open the browser menu and choose <strong>Install NODUS</strong>. The app then appears in your app launcher or applications list.</p></section>
+  <section className="content-note"><h2>iPhone and iPad</h2><p>Open NODUS in Safari. Tap <strong>Share</strong>, choose <strong>Add to Home Screen</strong>, then confirm. Open NODUS from the new home-screen icon.</p></section>
+  <section className="content-note"><h2>Android</h2><p>Open NODUS in Chrome. Choose <strong>Install app</strong> when prompted, or open the browser menu and select <strong>Install app</strong> or <strong>Add to Home screen</strong>.</p></section>
+  <section className="content-note"><h2>What the installed app does</h2><ul><li>Opens the NODUS product website in a standalone app window.</li><li>Runs the shipping-economics CSV review in your browser.</li><li>Exports a CSV review register and a JSON decision pack from the browser.</li><li>Does not upload the selected CSV files as part of the analysis.</li></ul></section>
+  <section className="content-note"><h2>Offline behaviour</h2><p>The service worker can show the NODUS offline status page when a network request fails. The CSV tool itself needs the app to load; no merchant records or analysis results are stored for offline use.</p></section>
+  <section className="content-note"><h2>What this is—and is not</h2><p>This is an installable web app, not a native Windows .exe, macOS .dmg, Android .apk or App Store / Google Play package. There is no separate installer download. Installation is handled by the browser and depends on browser and operating-system support.</p><div className="hero-ctas"><Link to="/manual-data" className="cta-primary">OPEN THE CSV REVIEW TOOL ↗</Link><Link to="/buyer-evaluation" className="cta-secondary">REQUEST A FOUNDING ASSESSMENT ↗</Link></div></section>
  </main></MarketingShell>;
 }
