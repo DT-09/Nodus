@@ -2,9 +2,9 @@
 
 ## Current release state
 
-The public release is a Cloudflare Pages SPA with Pages Functions and D1. It supports the marketing site, PWA install shell, browser-local CSV analysis, synthetic demo and a persistent founding-assessment enquiry form.
+The public release is a Cloudflare Pages application with Pages Functions and D1. It supports the marketing site, PWA install shell, browser-local CSV analysis, synthetic demo and a persistent founding-assessment enquiry form. A Windows desktop WebView2 client and GitHub release workflow have been added; the first downloadable binary still requires a tagged release build.
 
-It is **not** a live Shopify app or autonomous business operating system. Shopify OAuth, persistent merchant workspaces, recurring sync, billing, App Store distribution and general business execution remain closed.
+It is **not** yet a fully live Shopify merchant operating system. Production Shopify installation, Shopify-managed subscriptions, recurring sync, App Store distribution and general business execution remain gated by credentials, Partner Dashboard configuration and acceptance tests.
 
 ## Cloudflare resources
 
@@ -39,11 +39,24 @@ There is no automatic email notification for new leads yet. Do not claim otherwi
 - [ ] PWA installation works on supported desktop and mobile browsers.
 - [ ] Manual CSV workflow works with the supplied templates and exports.
 
+## Desktop application release
+
+- Source project: `desktop/windows/` (WPF + Microsoft Edge WebView2).
+- Release workflow: `.github/workflows/desktop-release.yml`.
+- Trigger: push a tag matching `desktop-v*`.
+- Output: `NODUS-Desktop-Windows-x64.exe` and a SHA-256 checksum, attached to the GitHub Release.
+- Public download route: `/downloads`.
+- The desktop client is an online application shell, not an offline copy of Shopify or an independent local engine. WebView2 Runtime and internet access are required.
+- The website download route points at the latest GitHub release; until the first tagged build completes, the binary is not available.
+
 ## Shopify launch gates — not yet passed
 
 - [ ] Authorized adult/business operator owns the Shopify Partner organization, Cloudflare billing, domain, contracts, tax and payment accounts.
 - [ ] Create the production Shopify app and configure API key, secret, exact callback URLs and scopes.
 - [ ] Implement a Cloudflare-compatible OAuth and session runtime; the existing Node/Prisma Shopify backend is not part of the Pages public release.
+- [x] Configure the production D1 database binding and apply the current merchant schema.
+- [x] Configure a random Cloudflare token-encryption secret in Preview and Production.
+- [ ] Add Shopify API key and secret from the authorized Partner organization.
 - [ ] Configure durable tenant-isolated merchant storage and migrations.
 - [ ] Test install, session persistence, order pagination, incremental sync, webhooks, uninstall and data redaction.
 - [ ] Verify Shopify Admin API access restrictions and current Shopify distribution requirements.
