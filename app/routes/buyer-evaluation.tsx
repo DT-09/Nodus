@@ -18,7 +18,7 @@ const requirements=[
 const deliverables=[
  ["Evidence coverage statement","The authorized order window, imported source, reporting currency, matched records, exclusions and unresolved gaps."],
  ["Exception register","Matched, unmatched, duplicate, ambiguous and incomplete records with the source references available to the system."],
- ["Reconciliation and replay","Deterministic order-level calculations and a historical flat-rate or free-shipping replay where the stored data supports it."],
+ ["Order-level comparison","Compare recorded shipping revenue with matched carrier-cost rows while keeping currencies separate."],
  ["Decision pack","A merchant-scoped CSV register and a JSON export with scope, methods, limitations and an integrity digest."],
 ];
 function AssessmentForm(){
