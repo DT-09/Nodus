@@ -2,7 +2,7 @@ import type {MetaFunction} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 export const meta:MetaFunction=()=>[{title:"Security & trust — NODUS"},{name:"description",content:"NODUS security principles, Shopify permissions, merchant data boundaries and current assurance status."}];
 const controls=[
-["01","Authentication","Shopify OAuth and authenticated embedded-app requests establish the application identity boundary. Never share merchant credentials with NODUS."],
+["01","Public release boundary","The current public product does not connect to Shopify or authenticate to a merchant store. The CSV tool runs in the visitor's browser; never submit passwords or access tokens."],
 ["02","Data isolation","Merchant records are associated with the authenticated Shopify shop. Server-side authorization and cross-tenant tests are required before production release."],
 ["03","Read-only by default","Policy writes remain disabled until each supported operation has permission checks, explicit approval, baseline validation and read-back verification."],
 ["04","Evidence provenance","Imported records retain source identity and review state. Unmatched or incomplete records are not silently converted into zero-cost assumptions."],
