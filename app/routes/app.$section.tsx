@@ -138,7 +138,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
   ]);
 
-  const orderInputs = orders.map((order) => ({
+  const orderInputs = allOrders.map((order) => ({
     orderId: order.sourceOrderId,
     orderName: order.orderName,
     shippingRevenue: { minor: order.shippingRevenueMinor, currency: order.currency },
@@ -505,10 +505,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (threshold && threshold.minor < 0n) throw new Error("Free-shipping threshold cannot be negative.");
       const merchant = await prisma.merchant.findUnique({ where: { shop: session.shop }, select: { id: true } });
       if (!merchant) return { kind: "simulation" as const, ok: false, message: "No Shopify order history is stored yet." };
-      const [orders, costs, totalCosts] = await Promise.all([
+      const [allOrders, costs, totalCosts] = await Promise.all([
         prisma.shippingOrder.findMany({
-          where: { merchantId: merchant.id, currency },
-          orderBy: { orderedAt: "desc" }, take: 250,
+          where: { merchantId: merchant.id },
+          orderBy: { orderedAt: "desc" },
         }),
         prisma.shippingCost.findMany({
           where: { merchantId: merchant.id },
@@ -516,6 +516,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
         }),
         prisma.shippingCost.count({ where: { merchantId: merchant.id } }),
       ]);
+      const currencyOrders = allOrders.filter((order) => order.currency === currency);
+      const orders = currencyOrders.slice(0, 250);
       if (!orders.length) return { kind: "simulation" as const, ok: false, message: "No Shopify orders are available in this currency." };
       if (totalCosts > costs.length) throw new Error("This store has more than 10,000 cost records. Narrow the evidence set before running a policy replay; incomplete evidence must not be treated as complete.");
       const orderInputs = orders.map((order) => ({
@@ -549,7 +551,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         };
       }), { flatRate, freeShippingThreshold: threshold });
       const merchantOrderDates = orders.map((order) => order.orderedAt.getTime()).sort((a, b) => a - b);
-      const sampleTruncated = await prisma.shippingOrder.count({ where: { merchantId: merchant.id, currency } }) > orders.length;
+      const sampleTruncated = currencyOrders.length > orders.length;
       const saved = await prisma.policySimulation.create({
         data: {
           merchantId: merchant.id, currency,
