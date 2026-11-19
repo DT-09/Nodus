@@ -6,7 +6,7 @@ export const meta:MetaFunction=()=>[
   {title:"Shopify Free Shipping Threshold Analysis | NODUS"},
   {name:"description",content:"Learn how to replay Shopify flat-rate and free-shipping threshold policies against historical orders, with clear assumptions and limits."},
   {property:"og:title",content:"Shopify Free Shipping Threshold Analysis"},
-  {property:"og:description",content:"Test shipping policy scenarios against historical Shopify orders without confusing replay with a forecast."},
+  {property:"og:description",content:"An educational guide to the limits of historical shipping-policy analysis. Policy replay is not part of the current NODUS product."},
 ];
 
 const sequence=[
@@ -19,7 +19,8 @@ const sequence=[
 
 export default function FreeShippingThresholdGuide(){
   return <MarketingShell><main className="content-page">
-    <header>
+    <section className="content-note" role="note"><strong>PRODUCT SCOPE</strong><p>This is an educational methodology guide. Historical shipping-policy replay is not implemented in the current public NODUS release. The live tool supports browser-local order and carrier-cost CSV analysis only.</p></section>
+  <header>
       <p className="page-eyebrow">FIELD GUIDE / SHIPPING POLICY</p>
       <h1>Test a free-shipping threshold against real order history.</h1>
       <p className="page-lede">A free-shipping threshold changes who pays for delivery and which baskets qualify. Before changing the rule, replay the proposed policy against the same historical orders and make every assumption visible.</p>
