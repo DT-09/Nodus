@@ -1,52 +1,77 @@
 # NODUS
 
-**Shipping economics. Made inspectable.**
+**Merchant operations intelligence. Shipping economics first.**
 
-NODUS is being developed as a broader business operating system. The current public product is deliberately narrower: an installable web app with browser-local shipping-economics CSV analysis and a Cloudflare-backed founding-enquiry form.
+NODUS is a Shopify merchant operations product. The current implementation is a focused first commercial module: read-only Shopify order ingestion, persistent carrier-cost evidence, exact-reference reconciliation, and an auditable merchant workspace. The broader operations platform remains a roadmap, not a current capability claim.
 
-## Current public release
+## Current product implementation
 
 Production site: https://nodus-hq.pages.dev
 
-- Marketing and product-information website.
-- Installable progressive web app (PWA) for compatible browsers. It is installed through the browser; there is no native desktop or mobile installer package.
-- Browser-local CSV analysis for order exports and carrier / 3PL cost exports.
-- Deterministic matching using supported order references and unique tracking references in the uploaded CSVs.
-- Currency-separated calculations and unmatched-charge reporting.
-- Downloadable CSV review register and JSON decision pack.
-- Founding assessment enquiry form backed by Cloudflare Pages Functions and D1.
-- D1 health endpoint at `/api/health`.
+- Marketing site and installable PWA shell.
+- Shopify OAuth authorization flow implemented as Cloudflare Pages Functions.
+- Per-store offline access token encryption using AES-GCM and a Cloudflare secret.
+- Hashed, expiring merchant sessions; browser session cookies are HttpOnly and Secure.
+- Read-only order synchronization through Shopify Admin GraphQL API version 2026-07.
+- Persistent carrier / 3PL CSV imports scoped by Shopify store.
+- Exact Shopify order-name or order-ID matching, with identical currency required.
+- Unmatched and currency-mismatched charge review.
+- Merchant workspace with order totals, imported cost evidence, and reconciliation summaries.
+- Signed Shopify webhook receiver for uninstall and privacy topics.
+- Browser-local CSV review tool and downloadable CSV / JSON decision packs.
+- Founding assessment enquiry form and D1 health endpoint.
 
-The CSV files selected by a visitor are processed in the browser. The analysis workflow does not upload those files to NODUS. The founding enquiry form stores only the contact and qualification fields submitted by the visitor; it does not collect CSV files, customer records, passwords or API tokens.
+Shopify connection and sync are implemented in source but are not production-ready until the Cloudflare environment variables, D1 migration, Shopify Partner app configuration, webhook registration, and end-to-end installation tests are completed. Do not describe a Shopify installation as live until those checks pass.
 
-## Explicit release boundaries
+## Explicit product boundaries
 
-The following are **not part of the current public release**:
+Not currently implemented:
+- Scheduled background sync and automatic carrier API / invoice polling.
+- Shopify fulfillment or tracking ingestion.
+- Billing, subscriptions, paid checkout, or Shopify Billing API.
+- Automatic edits to orders, shipping rates, refunds, inventory, or customer records.
+- General-purpose finance, marketing, CRM, inventory, or multi-platform operations.
+- Autonomous business execution.
 
-- Shopify app installation, OAuth, or a connected Shopify merchant workspace.
-- Native Windows, macOS, iOS or Android binaries; App Store or Google Play distribution.
-- Scheduled or recurring monitoring, background order refresh, carrier API connections or invoice polling.
-- Paid subscription billing, self-serve checkout or recurring plans.
-- Automatic changes to Shopify settings, shipping rates, orders, refunds or other external business systems.
-- General-purpose business intelligence, cross-business integrations, multi-agent diagnosis or autonomous business execution.
+The first Shopify integration requests read_orders only. The reconciliation engine does not access customer names, email addresses, shipping addresses, or payment details. Shopify's granted order-access window and API limits apply. A matched charge is evidence, not proof of complete cost coverage, profit, savings, or carrier recovery.
 
-The founding form is an enquiry, not a purchase, service contract, data-access grant or guarantee that an assessment will be accepted. No customer count, testimonial, savings result or revenue claim is made without evidence.
+## Cloudflare production configuration
 
-## Cloudflare architecture
+Cloudflare Pages project: nodus-hq  
+Production URL: https://nodus-hq.pages.dev  
+Production branch: main  
+Build command: npm run build  
+Build output: build/client
 
-- **Cloudflare Pages:** React Router public site and PWA assets.
-- **Pages Functions:** `/api/leads` assessment intake and `/api/health`.
-- **Cloudflare D1:** `nodus-leads`, with the `NODUS_DB` binding in Preview and Production.
-- **GitHub:** source control and CI.
-- **Deployment:** Cloudflare Pages Git integration, production branch `main`.
+Required Pages bindings:
+- NODUS_DB: the existing Cloudflare D1 database nodus-leads.
 
-No Vercel deployment is used for the public release. Do not add paid services or external providers without an explicit decision.
+Required production environment variables / secrets:
+- SHOPIFY_API_KEY: Shopify Partner app client ID.
+- SHOPIFY_API_SECRET: Shopify Partner app client secret (secret).
+- SHOPIFY_APP_URL: canonical HTTPS application origin, https://nodus-hq.pages.dev.
+- TOKEN_ENCRYPTION_KEY: high-entropy random secret of at least 32 characters (secret).
 
-## Local development
+Apply the schema once to the production D1 database:
+
+```sh
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0001_shopify.sql
+```
+
+Shopify Partner app configuration:
+- App URL: https://nodus-hq.pages.dev/workspace
+- Redirect URL: https://nodus-hq.pages.dev/api/shopify/callback
+- Scopes: read_orders
+- Webhook endpoint: https://nodus-hq.pages.dev/api/shopify/webhooks
+- API version: 2026-07
+
+The Shopify app TOML is a template. Replace client_id with the actual Partner Dashboard value. The client secret and token encryption key must never be committed to Git.
+
+## Local development and quality checks
 
 Requirements: Node.js 22 and npm.
 
-```bash
+```sh
 npm ci
 npm run dev
 npm run typecheck
@@ -55,24 +80,8 @@ npm run build
 npm run verify:deployment
 ```
 
-The Pages build command is `npm run build`; the output directory is `build/client`. Pages Functions live under `functions/`. The live D1 database contains the aggregate assessment-intake and rate-limit tables.
-
-## Enquiry handling
-
-1. A merchant reads the current product scope and privacy notice.
-2. The merchant may submit the founding enquiry at `/buyer-evaluation`.
-3. The request is stored in D1. Only an authorized operator should review and respond to enquiries.
-4. The merchant can use `/manual-data` to run the browser-local CSV workflow.
-5. No source files or store credentials are requested by the public form.
-
-There is no automated notification or protected lead-management interface in the current release. An authorized adult business operator must manage enquiries, customer communications and any commercial relationship.
-
 ## Commercial and governance boundaries
 
-- The founding enquiry is no-fee and no-obligation.
-- No payment details are collected and no payments are accepted.
-- No subscription or recurring service is currently offered.
-- Any future contract, pricing, invoicing, tax, payment, data-processing or customer-support arrangement requires an authorized adult business operator.
-- Publish no testimonials, customer logos or financial results without evidence and permission.
+No live subscription or checkout is currently offered. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
 
-A deployed website is not proof of a revenue-generating business. The public release must remain explicit about what is live.
+A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.

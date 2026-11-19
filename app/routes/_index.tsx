@@ -37,9 +37,9 @@ export default function Home(){
      <h1>Know what<br/>shipping really<br/><em>costs.</em></h1>
      <p className="nd-lede">Compare the shipping revenue recorded in your orders with carrier and fulfilment costs. Find unmatched charges, incomplete evidence and orders that need review—without mistaking missing data for savings.</p>
      <div className="nd-actions">
-      <Link to="/manual-data" className="nd-button nd-button-primary">RUN A SHIPPING COST REVIEW <span>↗</span></Link>
-      <Link to="/install" className="nd-button nd-button-quiet">INSTALL THE NODUS APP <span>↗</span></Link>
-      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST A MERCHANT ASSESSMENT <span>↗</span></Link>
+      <Link to="/connect" className="nd-button nd-button-primary">CONNECT YOUR SHOPIFY STORE <span>↗</span></Link>
+      <Link to="/workspace" className="nd-button nd-button-quiet">OPEN MERCHANT WORKSPACE <span>↗</span></Link>
+      <Link to="/manual-data" className="nd-button nd-button-quiet">RUN A CSV REVIEW <span>↗</span></Link>
      </div>
      <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
     </div>
@@ -82,9 +82,9 @@ export default function Home(){
    </section>
 
    <section className="nd-live">
-    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>We will not pretend every division is already autonomous. The public release is a browser-based shipping-cost review workflow. Direct Shopify installation and automatic data sync are not yet available.</p></div>
+    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>We will not pretend every division is already autonomous. The Shopify connection and merchant workspace are implemented in the application code but require Partner credentials and production configuration before merchant installation can be enabled. The browser-local CSV review remains available without a Shopify connection.</p></div>
     <div className="nd-release-grid">
-     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, flags unmatched records and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">OPEN THE SHIPPING COST WORKSPACE ↗</Link></article>
+     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, flags unmatched records and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/connect">CONNECT SHOPIFY ↗</Link></article>
      <article className="nd-release-next"><span className="nd-release-status">SYSTEM EXPANSION</span><h3>The wider NODUS platform</h3><p>Finance, marketing, inventory, customer intelligence and permissioned execution remain planned platform capabilities. They are not part of the current public release.</p><ul><li>Unified business state and knowledge graph</li><li>Specialist analysis and diagnosis engines</li><li>Objective planning and durable execution</li><li>Permissioned actions and outcome learning</li></ul><Link to="/product">READ THE ARCHITECTURE & BOUNDARIES ↗</Link></article>
     </div>
    </section>
@@ -102,7 +102,7 @@ export default function Home(){
 
    <section className="nd-final">
     <div className="nd-final-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round"><path d="M50 8 84 29 84 71 50 92 16 71 16 29 50 8Z"/><path d="M50 8 50 50 84 71M50 50 16 71M16 29 50 50 84 29M50 50 50 92"/></g><g fill="currentColor"><circle cx="50" cy="8" r="4.2"/><circle cx="84" cy="29" r="4.2"/><circle cx="84" cy="71" r="4.2"/><circle cx="50" cy="92" r="4.2"/><circle cx="16" cy="71" r="4.2"/><circle cx="16" cy="29" r="4.2"/></g></svg></div>
-    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST A MERCHANT ASSESSMENT ↗</Link><Link to="/manual-data" className="nd-button nd-button-quiet">OPEN THE CSV REVIEW TOOL ↗</Link></div>
+    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/connect" className="nd-button nd-button-primary">CONNECT SHOPIFY ↗</Link><Link to="/workspace" className="nd-button nd-button-quiet">OPEN MERCHANT WORKSPACE ↗</Link></div>
    </section>
   </main>
  </MarketingShell>;
