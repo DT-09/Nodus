@@ -563,6 +563,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
           observedShippingRevenueMinor: BigInt(result.observedShippingRevenueMinor),
           replayedShippingRevenueMinor: BigInt(result.replayedShippingRevenueMinor),
           revenueDeltaMinor: BigInt(result.revenueDeltaMinor),
+          engineVersion: "v2-cost-adjusted",
           assumptions: {
             assumptions: result.assumptions,
             metrics: {
@@ -686,7 +687,7 @@ export default function Section() {
         <label htmlFor="flat-rate">Proposed flat shipping rate</label><input id="flat-rate" name="flatRate" type="number" min="0" step="0.001" placeholder="e.g. 6.50" required />
         <label htmlFor="currency">Currency (ISO 4217)</label><input id="currency" name="currency" type="text" minLength={3} maxLength={3} defaultValue="USD" required />
         <label htmlFor="free-threshold">Optional free-shipping threshold</label><input id="free-threshold" name="freeShippingThreshold" type="number" min="0" step="0.001" placeholder="Leave blank to disable" />
-        <button type="submit">Run historical replay</button>
+        <button type="submit">Run cost-adjusted historical replay</button>
         {result?.kind === "simulation" && !result.ok ? <p role="status" className="import-error">{result.message}</p> : null}
         {simulationResult ? <div className="simulation-result">
           <p className="eyebrow">HISTORICAL REPLAY · {simulationResult.sampleSize} ORDERS</p>
