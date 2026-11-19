@@ -96,7 +96,7 @@ export default function Home(){
    </section>
 
    <section className="nd-commercial">
-    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>Submit a no-fee founding enquiry. The form records business contact and qualification details only; it does not connect to a store, collect CSV files or commit either party to paid work.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">REQUEST AN ASSESSMENT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">CHECK MERCHANT FIT ↗</Link></div></div>
+    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>The intended offer is simple: seven days to evaluate NODUS, then a monthly subscription only if the merchant chooses to continue. Shopify will show the exact price and request approval. Trial checkout is being activated; early-access enquiries are open meanwhile.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">SEE THE 7-DAY TRIAL ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">GET EARLY ACCESS ↗</Link></div></div>
     <div className="nd-commercial-aside"><span>EVIDENCE OVER PROMISES</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
    </section>
 
