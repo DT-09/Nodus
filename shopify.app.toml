@@ -1,8 +1,8 @@
-# Shopify Partner Dashboard values must be supplied before registration.
-# OAuth and webhook handlers run as Cloudflare Pages Functions.
+# Replace client_id with the Shopify Partner Dashboard client ID before registration.
+# Configure the matching client secret and encryption key as Cloudflare Pages secrets.
 client_id = "SET_WITH_SHOPIFY_PARTNER"
 name = "NODUS"
-application_url = "https://nodus-hq.pages.dev"
+application_url = "https://nodus-hq.pages.dev/workspace"
 embedded = true
 
 [build]
@@ -31,8 +31,8 @@ uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["customers/redact"]
-uri = "/webhooks"
+uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["shop/redact"]
-uri = "/webhooks"
+uri = "/api/shopify/webhooks"
