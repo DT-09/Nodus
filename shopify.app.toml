@@ -1,6 +1,5 @@
-# PLACEHOLDER ONLY.
-# The Cloudflare public release does not yet implement Shopify OAuth callbacks or sessions.
-# Do not register or distribute this app until the Cloudflare OAuth runtime and webhook tests pass.
+# Shopify Partner Dashboard values must be supplied before registration.
+# OAuth and webhook handlers run as Cloudflare Pages Functions.
 client_id = "SET_WITH_SHOPIFY_PARTNER"
 name = "NODUS"
 application_url = "https://nodus-hq.pages.dev"
@@ -28,7 +27,7 @@ uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["customers/data_request"]
-uri = "/webhooks"
+uri = "/api/shopify/webhooks"
 
 [[webhooks.subscriptions]]
 topics = ["customers/redact"]
