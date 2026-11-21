@@ -39,10 +39,10 @@ Disqualify digital-only stores, merchants without usable cost exports, exports w
 
 ### Founding paid pilot
 
-- **Price:** USD 149 one-time, subject to scope confirmation and cleared payment.
+- **Price:** USD 99/month for the fixed-scope monthly review service; price is a hypothesis until paid demand is demonstrated.
 - **Scope:** one store, one reporting period up to 60 days, up to 2,000 orders and one supported carrier/3PL cost CSV.
 - **Deliverables:** evidence coverage statement, matched/unmatched and exception register, eligible evidenced shortfall register, currency-separated comparison, export review and written limitations.
-- **Payment:** the public form records a purchase request. It does not charge by itself. An authorized adult-operated business account must confirm scope, issue the payment route and verify cleared funds before work begins.
+- **Payment:** contact-first by email. The public form records interest but does not charge or notify the operator automatically. An authorized adult business operator must confirm scope, issue an invoice through an approved business account and verify cleared funds before work begins.
 - **Boundary:** no automatic subscription, carrier claim filing, guaranteed recovery or unsupported financial outcome.
 
 ### Deliverables
@@ -62,7 +62,7 @@ Not included: filing carrier claims, contacting carriers for the merchant, accou
 
 Do not publish a fabricated market price. First establish the recurring job and conservative merchant-accepted value.
 
-After at least two useful reporting cycles, test a monthly fee:
+NODUS Pro is positioned as a USD 99/month fixed-scope review service, not automated monitoring. Validate the price through real merchant use and paid commitments:
 - Separate realized credits, operating-time value and decision value.
 - Count credits only when the merchant confirms a posted credit, refund or accounting adjustment.
 - Measure time saved from comparable timed tasks and a merchant-approved loaded hourly rate.
@@ -82,7 +82,7 @@ The acquisition motion is search-led and proof-led. No bulk cold email and no fa
 2. /shipping-cost-reconciliation: search-intent landing page for Shopify shipping cost reconciliation.
 3. /demo: synthetic example Decision Pack, labelled synthetic.
 4. /buyer-evaluation: qualification, required data and deliverables.
-5. /pricing: USD 149 fixed-scope pilot, value measurement and no-auto-conversion terms.
+5. /pricing: free diagnostic and USD 99/month fixed-scope monthly review service, with invoice-based payment and explicit cancellation/refund terms.
 6. /methodology: exact matching and calculation boundaries.
 7. /security and /privacy: data handling, permissions and retention details.
 8. CSV template and field-level import documentation.
@@ -171,4 +171,4 @@ An authorized adult/business operator must own commercial accounts, contracts, p
 
 No testimonial, merchant logo, savings claim, App Store approval, security certification or customer count may be published without evidence and permission.
 
-**Commercial success:** a qualified merchant completes the assessment, trusts and uses the evidence to make a decision, repeats the workflow in a later period, and makes an authorized payment for the recurring outcome.
+**Commercial success:** a qualified merchant completes the free diagnostic, chooses the monthly review service, receives a useful decision brief, returns for a later period and makes an authorized payment for the recurring deliverable.
