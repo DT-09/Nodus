@@ -67,7 +67,7 @@ export default function Pricing(){
     <article><span>VALUE / 02</span><h2>Operating value</h2><p>Time spent reconciling invoices, tracing exceptions and preparing finance reviews. Baseline and follow-up effort are recorded rather than guessed.</p></article>
     <article><span>VALUE / 03</span><h2>Decision value</h2><p>Clearer visibility into matched costs, unmatched charges, currency totals and the limits of the supplied evidence.</p></article>
    </div>
-   <p className="calculator-verdict">The monthly price will be displayed by Shopify before the merchant approves a paid subscription. The plan is not yet active, and this page does not claim that billing is already available. Any value estimate must be measured by the merchant against comparable work; the calculator does not establish NODUS performance.</p>
+   <p className="calculator-verdict">No monthly price or paid plan is published today. If NODUS later offers a subscription, the complete price and terms will be shown before the merchant approves payment. The calculator reports only the time value implied by the inputs; it does not establish NODUS performance.</p>
   </section>
 
   <section className="proof-method" data-reveal>
@@ -97,7 +97,7 @@ export default function Pricing(){
    </div>
    <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
-   <p className="pricing-disclaimer">The seven-day trial and monthly subscription are the intended commercial model, not an active checkout yet. The current enquiry form is not a subscription agreement. No customer results, testimonials or financial outcomes are claimed.</p>
+   <p className="pricing-disclaimer">The evaluation request is not a subscription agreement. No paid checkout is active. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
