@@ -4,8 +4,8 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS pricing — seven-day free trial"},
- {name:"description",content:"NODUS is designed around a seven-day free trial followed by a monthly subscription. Shopify-managed pricing and checkout still require Partner Dashboard activation."}
+ {title:"NODUS merchant evaluation — pricing after proof"},
+ {name:"description",content:"No paid plan or checkout is active. Merchants can evaluate the current shipping-economics CSV workflow before NODUS introduces recurring pricing."}
 ];
 
 export default function Pricing(){
@@ -23,15 +23,15 @@ export default function Pricing(){
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>Try NODUS for seven days.<br/><em>Continue monthly.</em></h1>
-   <p className="page-lede">The intended offer is seven days to evaluate NODUS, followed by a monthly subscription only after the merchant approves the plan in Shopify. The NODUS website will not collect card details. Shopify will show the exact recurring price and ask for approval. The subscription flow is not active until the Partner app pricing configuration and production installation are completed.</p>
+   <h1>Start with evidence.<br/><em>Pay for proven value.</em></h1>
+   <p className="page-lede">There is no paid subscription or checkout today. Start with a no-fee, no-obligation evaluation of the current CSV workflow: inspect the sample, process supported order and carrier exports locally, and decide whether the findings are useful. NODUS will publish a price only when recurring product value, billing and support are ready. Any charge must be disclosed before approval.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Get the work done<br/><em>before the sales pitch.</em></h2>
-    <p>During the trial, merchants should be able to connect their store, inspect their operating picture, use available guidance and decide whether the product is worth keeping. The initial release remains shipping-economics focused; wider business modules will be released only when their integrations and workflows are verified.</p>
+    <p>During the evaluation, merchants can inspect the sample and use supported CSV exports locally. No store connection is required for this workflow. The initial release remains shipping-economics focused; wider business modules will be released only when their integrations and workflows are verified.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -59,8 +59,8 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>Seven days free.<br/><em>Then monthly.</em></h2>
-    <p>This is the intended customer offer. The free-trial and monthly subscription flow must be activated through Shopify App Pricing. Shopify will display the exact monthly price and collect the merchant’s approval; NODUS will not ask for card details on its own website. The live checkout remains gated on Partner Dashboard configuration and production installation tests.</p>
+    <h2>Evaluate first.<br/><em>Price follows proof.</em></h2>
+    <p>This is the intended customer offer. There is no active paid plan. The current evaluation is free and limited to the supported CSV workflow. A recurring plan requires a product that delivers repeatable value, a verified billing path, published support terms and a clear price before a merchant can approve it.</p>
    </div>
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
