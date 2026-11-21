@@ -33,7 +33,7 @@ const sampleCosts = [
 ];
 
 function downloadCsv(filename: string, rows: string[][]) {
-  const csv = rows.map(row => row.map(value => '"' + value.replaceAll('"','""') + '"').join(",")).join("\\r\\n");
+  const csv = rows.map(row => row.map(value => '"' + value.replaceAll('"','""') + '"').join(",")).join("\r\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
