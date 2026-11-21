@@ -16,6 +16,7 @@ export default [
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
   route("buyer-evaluation", "./routes/buyer-evaluation.tsx"),
+  route("ops", "./routes/ops.tsx"),
   route("guides/shopify-shipping-cost-reconciliation", "./routes/guides.shopify-shipping-cost-reconciliation.tsx"),
   route("guides/free-shipping-threshold-analysis", "./routes/guides.free-shipping-threshold-analysis.tsx"),
   route("shipping-cost-reconciliation", "./routes/shipping-cost-reconciliation.tsx"),
