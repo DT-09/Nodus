@@ -6,7 +6,7 @@
 
 ## 1. Commercial decision
 
-### Subscription model
+### Current commercial model
 
 The current customer-facing offer is a USD 149 one-time, fixed-scope founding pilot request. There is no active subscription, free trial, automated checkout or recurring billing. The public form records purchase intent and can redirect to an HTTPS checkout URL only when an authorized adult-operated business account configures `NODUS_PILOT_CHECKOUT_URL`. Otherwise, the authorized operator confirms scope and sends payment instructions. Work begins only after cleared payment is confirmed. Treat USD 149 as a pricing hypothesis until a qualified merchant pays; do not claim validated willingness to pay.
 
