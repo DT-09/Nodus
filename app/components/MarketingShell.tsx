@@ -1,11 +1,12 @@
 import {useEffect, useState, type ReactNode} from "react";
 import {Link} from "react-router";
+import {NODUS_MARK} from "./nodus-mark";
 const groups = [
  {label:"PRODUCT",links:[["Merchant workspace","/workspace"],["Connect Shopify","/connect"],["Shipping cost review","/manual-data"],["Product scope","/shipping-cost-reconciliation"]]},
  {label:"EXPLORE",links:[["How NODUS works","/methodology"],["Sample analysis","/demo"],["Pricing","/pricing"],["Install the web app","/install"],["Request an assessment","/buyer-evaluation"]]},
  {label:"TRUST",links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["Support","/support"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
-function NodusLogo(){return <svg className="nodus-logo" viewBox="0 0 100 100" role="img" aria-label="NODUS six-node gold network mark"><g fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round"><path d="M50 7 88 29 88 71 50 93 12 71 12 29 50 7Z"/><path d="M50 7 50 93M12 29 88 71M88 29 12 71"/></g><g fill="currentColor"><circle cx="50" cy="7" r="4.1"/><circle cx="88" cy="29" r="4.1"/><circle cx="88" cy="71" r="4.1"/><circle cx="50" cy="93" r="4.1"/><circle cx="12" cy="71" r="4.1"/><circle cx="12" cy="29" r="4.1"/></g></svg>}
+function NodusLogo(){return <img className="nodus-logo" src={NODUS_MARK} alt="NODUS six-node gold network mark"/>;}
 export function MarketingShell({children,active="home"}:{children:ReactNode;active?:string}){
  const [menuOpen,setMenuOpen]=useState(false);
  useEffect(()=>{const root=document.querySelector(".marketing-site");const targets=Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));if(!root||targets.length===0||!("IntersectionObserver" in window))return;root.setAttribute("data-motion-ready","true");const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){entry.target.setAttribute("data-visible","true");observer.unobserve(entry.target)}}},{threshold:0.12,rootMargin:"0px 0px -7% 0px"});targets.forEach(target=>observer.observe(target));return()=>observer.disconnect();},[]);
