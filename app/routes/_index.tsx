@@ -3,10 +3,10 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — Shopify shipping cost reconciliation"},
-  {name:"description",content:"Reconcile Shopify shipping revenue with carrier and 3PL cost records. Inspect matched charges, unresolved exceptions and evidence coverage."},
-  {property:"og:title",content:"NODUS — Make shipping costs inspectable"},
-  {property:"og:description",content:"Shipping cost reconciliation for Shopify merchants. Test locally or request a fixed-scope founding pilot."},
+  {title:"NODUS — Shopify shipping margin control"},
+  {name:"description",content:"Find orders where matched carrier costs exceed shipping collected. Reconcile Shopify orders with carrier and 3PL evidence, flag shortfalls only after complete cost coverage is attested."},
+  {property:"og:title",content:"NODUS — Find evidenced shipping shortfalls"},
+  {property:"og:description",content:"Shipping margin control for Shopify merchants. Test locally or request a fixed-scope founding pilot."},
   {name:"theme-color",content:"#17151d"},
 ];
 
@@ -34,14 +34,14 @@ export default function Home(){
    <section className="nd-hero">
     <div className="nd-hero-copy">
      <p className="nd-eyebrow"><span></span> MERCHANT OPERATIONS / FOR SHOPIFY</p>
-     <h1>Know what shipping<br/>costs. Find what needs<br/><em>your attention.</em></h1>
-     <p className="nd-lede">NODUS compares shipping revenue recorded in Shopify order exports with carrier or 3PL charges supplied by the merchant. It shows what matched, what did not, where evidence is incomplete and which records deserve investigation. No invented savings. No silent assumptions.</p>
+     <h1>Find where shipping<br/>costs outrun what you<br/><em>collect.</em></h1>
+     <p className="nd-lede">NODUS connects Shopify order shipping charges to carrier and 3PL cost records. It identifies unmatched charges and, only after you attest complete cost coverage, flags orders where matched carrier costs exceed shipping collected. The result is a reviewable shortfall register—not a claim of carrier overbilling or guaranteed recovery.</p>
      <div className="nd-actions">
-      <Link to="/manual-data" className="nd-button nd-button-primary">RUN A SHIPPING REVIEW <span>↗</span></Link>
+      <Link to="/manual-data" className="nd-button nd-button-primary">RUN SHIPPING MARGIN REVIEW <span>↗</span></Link>
       <Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE <span>↗</span></Link>
       <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST THE USD 49 PILOT <span>↗</span></Link>
      </div>
-     <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>USD 49 FIXED-SCOPE PILOT</span></div>
+     <div className="nd-proofline"><span>ORDER-LEVEL COST CONTROL</span><i></i><span>EVIDENCE-BACKED SHORTFALLS</span><i></i><span>USD 49 FIXED-SCOPE PILOT</span></div>
     </div>
     <div className="nd-ledger-stage" aria-label="Illustrative NODUS shipping economics review">
      <div className="nd-ledger-top"><span>RECONCILIATION / WORKFLOW 01</span><span className="nd-ledger-status"><i></i> SAMPLE DATA</span></div>
@@ -52,8 +52,8 @@ export default function Home(){
     </div></section>
 
    <section className="nd-manifesto">
-    <div><span className="nd-index">01 / THE IDEA</span><h2>Shipping costs are easy to overlook.<br/><em>Unclear evidence makes them harder to control.</em></h2></div>
-    <p>NODUS brings order-level shipping revenue and carrier-cost records into one review. Each match, exception and calculation remains traceable to its source. The result is a clearer basis for operational decisions—not a promise of automatic savings.</p>
+    <div><span className="nd-index">01 / THE IDEA</span><h2>Shipping costs can outrun shipping collected.<br/><em>Unmatched invoices make the gap harder to see.</em></h2></div>
+    <p>NODUS matches order-level shipping revenue to carrier and 3PL charges, isolates unassigned records, and flags negative shipping balances only when cost coverage is explicitly attested. Operators get a defensible review list—not invented savings.</p>
    </section>
 
    <section className="nd-command" id="platform">
@@ -84,7 +84,7 @@ export default function Home(){
    <section className="nd-live">
     <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>The current public workflow is the browser-local CSV review. A separate read-only Shopify connection exists in source code but is not yet verified for merchant use. We will not describe it as live until installation, synchronization, privacy handling and end-to-end tests pass.</p></div>
     <div className="nd-release-grid">
-     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, flags unmatched records and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">RUN THE CSV REVIEW ↗</Link></article>
+     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping margin control</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, withholds contribution when cost coverage is incomplete, flags evidenced shipping shortfalls and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">RUN THE CSV REVIEW ↗</Link></article>
      <article className="nd-release-next"><span className="nd-release-status">SYSTEM EXPANSION</span><h3>The wider NODUS platform</h3><p>Finance, marketing, inventory, customer intelligence and permissioned execution remain planned platform capabilities. They are not part of the current public release.</p><ul><li>Unified business state and knowledge graph</li><li>Specialist analysis and diagnosis engines</li><li>Objective planning and durable execution</li><li>Permissioned actions and outcome learning</li></ul><Link to="/product">READ THE ARCHITECTURE & BOUNDARIES ↗</Link></article>
     </div>
    </section>
