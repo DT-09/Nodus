@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
 permissions:
-  contents: write
+  contents: read
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -43,16 +43,6 @@ jobs:
       # This pins transitive security fixes without forcing a Prisma downgrade.
       - name: Resolve locked dependency overrides
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-      - name: Persist the audited lockfile for Cloudflare builds
-        if: github.event_name == 'pull_request'
-        run: |
-          if ! git diff --quiet -- package-lock.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "chore: sync lockfile with patched dependencies"
-            git push origin "HEAD:${GITHUB_HEAD_REF}"
-          fi
       - name: Capture dependency audit
         run: |
           npm audit --json > npm-audit.json || true
