@@ -4,7 +4,7 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS merchant evaluation — pricing after proof"},
+ {title:"NODUS shipping margin control — founding pilot"},
  {name:"description",content:"A no-fee data-fit review or a USD 49 one-time founding pilot for Shopify shipping-cost reconciliation."}
 ];
 
@@ -23,21 +23,21 @@ export default function Pricing(){
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>One store. One review.<br/><em>A decision you can inspect.</em></h1>
-   <p className="page-lede">NODUS offers a no-fee data-fit review and a fixed-scope founding pilot at USD 49 once. The pilot request is not an automatic charge: an authorized operator confirms fit and terms, then provides payment instructions. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL CSV.</p>
+   <h1>One store. One reporting period.<br/><em>One evidence-backed shortfall review.</em></h1>
+   <p className="page-lede">NODUS offers a fixed-scope founding pilot at USD 49 once. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL cost export. The review identifies unmatched charges and, only when complete cost coverage is attested, orders where matched carrier cost exceeds shipping collected. The request is not an automatic charge; an authorized operator must confirm scope and provide the configured payment route.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Inspect the method.<br/><em>Then choose the pilot.</em></h2>
-    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 49 pilot adds an assisted review of one supported reporting period and a written findings summary. Source files are not uploaded through the public website.</p>
+    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 49 pilot adds an assisted review of one supported reporting period, an attested shipping-shortfall register where eligible, and a written findings summary. Source files are not uploaded through the public website.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
-    <article><b>02</b><h3>Reconcile the evidence</h3><p>Connect order shipping revenue to imported carrier-cost records. Surface matched, unmatched, duplicate and incomplete evidence.</p></article>
-    <article><b>03</b><h3>Deliver the findings</h3><p>Review the matches, unmatched charges, currency-separated totals, source references and limitations produced by the CSV tool.</p></article>
-    <article><b>04</b><h3>Review together</h3><p>Walk through what is actionable, what needs carrier or finance confirmation and what cannot yet be concluded.</p></article>
+    <article><b>02</b><h3>Match the evidence</h3><p>Connect order shipping revenue to imported carrier-cost records. Surface matched and unmatched charges, currency mismatches and incomplete coverage.</p></article>
+    <article><b>03</b><h3>Flag shortfalls</h3><p>When complete coverage is attested, identify orders where matched carrier costs exceed shipping collected. Keep tax-inclusive orders and incomplete evidence out of the balance.</p></article>
+    <article><b>04</b><h3>Review the decision</h3><p>Walk through the source rows, flagged shortfalls, unresolved charges and what still needs carrier or finance confirmation.</p></article>
    </div>
    <p className="calculator-caveat">Identified discrepancies are not recovered savings. A value is treated as realized only when the merchant can point to a posted credit, refund or accounting adjustment. NODUS does not independently audit that posting.</p>
   </section>
