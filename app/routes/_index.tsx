@@ -3,10 +3,10 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS — The Shopify merchant operating platform"},
-  {name:"description",content:"A connected operating platform for Shopify merchants. Start with shipping economics, then build toward clearer decisions across finance, growth, customers, products and operations."},
-  {property:"og:title",content:"NODUS — Run your store with clarity"},
-  {property:"og:description",content:"Merchant operations intelligence, evidence-backed guidance and a growing Shopify operating platform."},
+  {title:"NODUS — Shopify shipping cost reconciliation"},
+  {name:"description",content:"Reconcile Shopify shipping revenue with carrier and 3PL cost records. Inspect matched charges, unresolved exceptions and evidence coverage."},
+  {property:"og:title",content:"NODUS — Make shipping costs inspectable"},
+  {property:"og:description",content:"Evidence-led shipping cost reconciliation for Shopify merchants."},
   {name:"theme-color",content:"#17151d"},
 ];
 
@@ -34,12 +34,12 @@ export default function Home(){
    <section className="nd-hero">
     <div className="nd-hero-copy">
      <p className="nd-eyebrow"><span></span> MERCHANT OPERATIONS / FOR SHOPIFY</p>
-     <h1>Run your store<br/>with greater<br/><em>clarity.</em></h1>
-     <p className="nd-lede">NODUS is being built as a connected operating platform for Shopify merchants: understand performance, find operational problems, build a prioritized roadmap and get practical guidance across the business. The first working module focuses on evidence-backed shipping economics.</p>
+     <h1>Know what shipping<br/>costs. Find what needs<br/><em>your attention.</em></h1>
+     <p className="nd-lede">NODUS compares shipping revenue recorded in Shopify order exports with carrier or 3PL charges supplied by the merchant. It shows what matched, what did not, where evidence is incomplete and which records deserve investigation. No invented savings. No silent assumptions.</p>
      <div className="nd-actions">
-      <Link to="/product" className="nd-button nd-button-primary">EXPLORE THE PLATFORM <span>↗</span></Link>
-      <Link to="/demo" className="nd-button nd-button-quiet">RUN A SAMPLE REVIEW <span>↗</span></Link>
-      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">GET EARLY ACCESS <span>↗</span></Link>
+      <Link to="/manual-data" className="nd-button nd-button-primary">RUN A SHIPPING REVIEW <span>↗</span></Link>
+      <Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE <span>↗</span></Link>
+      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION <span>↗</span></Link>
      </div>
      <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
     </div>
@@ -82,9 +82,9 @@ export default function Home(){
    </section>
 
    <section className="nd-live">
-    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>We will not pretend every division is already autonomous. The Shopify connection and merchant workspace are implemented in the application code but require Partner credentials and production configuration before merchant installation can be enabled. The browser-local CSV review remains available without a Shopify connection.</p></div>
+    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>The current public workflow is the browser-local CSV review. A separate read-only Shopify connection exists in source code but is not yet verified for merchant use. We will not describe it as live until installation, synchronization, privacy handling and end-to-end tests pass.</p></div>
     <div className="nd-release-grid">
-     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, flags unmatched records and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/connect">CONNECT SHOPIFY ↗</Link></article>
+     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping economics intelligence</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, flags unmatched records and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">RUN THE CSV REVIEW ↗</Link></article>
      <article className="nd-release-next"><span className="nd-release-status">SYSTEM EXPANSION</span><h3>The wider NODUS platform</h3><p>Finance, marketing, inventory, customer intelligence and permissioned execution remain planned platform capabilities. They are not part of the current public release.</p><ul><li>Unified business state and knowledge graph</li><li>Specialist analysis and diagnosis engines</li><li>Objective planning and durable execution</li><li>Permissioned actions and outcome learning</li></ul><Link to="/product">READ THE ARCHITECTURE & BOUNDARIES ↗</Link></article>
     </div>
    </section>
@@ -96,13 +96,13 @@ export default function Home(){
    </section>
 
    <section className="nd-commercial">
-    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>The intended offer is simple: seven days to evaluate NODUS, then a monthly subscription only if the merchant chooses to continue. Shopify will show the exact price and request approval. Trial checkout is being activated; early-access enquiries are open meanwhile.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">SEE THE 7-DAY TRIAL ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">GET EARLY ACCESS ↗</Link></div></div>
+    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>There is no active paid subscription or checkout today. Start with the sample workflow, then request a no-fee evaluation of the supported CSV workflow. A recurring plan will be offered only after NODUS proves repeatable value and its billing and support operations are ready.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">SEE THE EVALUATION OFFER ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">GET EARLY ACCESS ↗</Link></div></div>
     <div className="nd-commercial-aside"><span>EVIDENCE OVER PROMISES</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
    </section>
 
    <section className="nd-final">
     <div className="nd-final-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round"><path d="M50 8 84 29 84 71 50 92 16 71 16 29 50 8Z"/><path d="M50 8 50 50 84 71M50 50 16 71M16 29 50 50 84 29M50 50 50 92"/></g><g fill="currentColor"><circle cx="50" cy="8" r="4.2"/><circle cx="84" cy="29" r="4.2"/><circle cx="84" cy="71" r="4.2"/><circle cx="50" cy="92" r="4.2"/><circle cx="16" cy="71" r="4.2"/><circle cx="16" cy="29" r="4.2"/></g></svg></div>
-    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/connect" className="nd-button nd-button-primary">CONNECT SHOPIFY ↗</Link><Link to="/downloads" className="nd-button nd-button-quiet">DOWNLOAD DESKTOP APP ↗</Link></div>
+    <span className="nd-index">NODUS / SHIPPING ECONOMICS</span><h2>Shipping economics.<br/><em>Made inspectable.</em></h2><p>Review order and carrier-cost records in a structured workflow. Keep the source evidence, understand the exceptions and decide what deserves attention.</p><div className="nd-actions"><Link to="/manual-data" className="nd-button nd-button-primary">OPEN THE CSV REVIEW ↗</Link><Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE ↗</Link></div>
    </section>
   </main>
  </MarketingShell>;
