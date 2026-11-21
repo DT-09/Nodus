@@ -826,3 +826,5 @@
 .nd-pricing-contact .hero-ctas{justify-content:center}
 @media(max-width:850px){.nd-product-page,.nd-pricing-page{width:calc(100% - 40px);padding-top:125px}.nd-product-grid{grid-template-columns:repeat(2,1fr)}.nd-product-principle,.nd-product-deliverable,.nd-pricing-process,.nd-pricing-value{grid-template-columns:1fr;gap:25px;padding:42px 25px}.nd-pricing-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.nd-product-page,.nd-pricing-page{width:calc(100% - 32px)}.nd-product-grid{grid-template-columns:1fr}.nd-product-grid article{min-height:0}.nd-plan{padding:23px}.nd-pricing-contact{padding:55px 18px}.nd-pricing-contact h2{font-size:33px}.nd-product-principle,.nd-product-deliverable,.nd-pricing-process,.nd-pricing-value{padding:34px 20px}}
+
+.nh-engine-mark img{width:27px;height:27px;display:block;object-fit:contain}
