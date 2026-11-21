@@ -8,7 +8,7 @@
 
 ### Subscription model
 
-The customer-facing offer is a seven-day free trial followed by a monthly subscription. The NODUS website does not collect card details. For a public Shopify app, use Shopify App Pricing: configure a monthly public plan with a seven-day trial in the Shopify Partner Dashboard. Shopify hosts plan approval and billing; merchants must see the exact price and approve the subscription. Do not describe billing as active until the Partner plan is published and an end-to-end test confirms the trial, conversion, cancellation and entitlement states. The exact monthly price remains a launch decision for the authorized business operator.
+The current customer-facing offer is a USD 149 one-time, fixed-scope founding pilot request. There is no active subscription, free trial, automated checkout or recurring billing. The public form records purchase intent and can redirect to an HTTPS checkout URL only when an authorized adult-operated business account configures `NODUS_PILOT_CHECKOUT_URL`. Otherwise, the authorized operator confirms scope and sends payment instructions. Work begins only after cleared payment is confirmed. Treat USD 149 as a pricing hypothesis until a qualified merchant pays; do not claim validated willingness to pay.
 
 
 NODUS will not compete as a generic shipping dashboard or claim to be a universal carrier-audit platform.
@@ -140,7 +140,7 @@ The workspace exports (1) a full merchant-scoped CSV register and (2) a JSON Shi
 
 A tightly scoped assessment for one authorized Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost CSV export.
 
-The current repository's documented Founding Merchant Value Programme is no-fee and no-obligation. Keep that offer until the first assessments establish whether the deliverable is useful and whether a recurring job exists.
+The current founding offer is a USD 149 one-time paid pilot request for one store, one reporting period up to 60 days, up to 2,000 orders and one supported carrier/3PL CSV. It includes an evidence coverage statement, matched/unmatched and exception registers, an eligible evidenced shortfall register, currency-separated comparison, decision-pack review and written limitations. It is not a subscription and does not promise recovered credits, savings, profit improvement or an audit opinion. The public form records a request; payment and work start only after scope confirmation and cleared funds.
 
 Do not promise savings, recovered carrier credits, profit improvement, or conversion lift.
 
