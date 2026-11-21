@@ -51,6 +51,8 @@ Required production environment variables / secrets:
 - SHOPIFY_API_SECRET: Shopify Partner app client secret (secret).
 - SHOPIFY_APP_URL: canonical HTTPS application origin, https://nodus-hq.pages.dev.
 - TOKEN_ENCRYPTION_KEY: high-entropy random secret of at least 32 characters (secret).
+- NODUS_ADMIN_TOKEN: operator token of at least 32 characters (secret).
+- NODUS_PILOT_CHECKOUT_URL: optional HTTPS checkout link for the USD 49 pilot; configure only through an authorized adult-operated business account.
 
 Apply the schema once to the production D1 database:
 
@@ -82,6 +84,6 @@ npm run verify:deployment
 
 ## Commercial and governance boundaries
 
-There is no active paid subscription or checkout today. The current public offer is a no-fee evaluation of the browser-local CSV workflow. A recurring plan must not be sold until NODUS demonstrates repeatable value, the connected workflow is production-tested, billing and support operations are ready, and the full price and terms are disclosed before approval. Public Shopify app monetization requires an eligible public app listing and compliant billing configuration. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
+Commercial offer: a no-fee data-fit review or a USD 49 one-time founding pilot request. The pilot covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier/3PL CSV. Deliverables: evidence coverage statement, matched/unmatched register, currency-separated comparison, decision-pack review and written limitations. The form records purchase intent; it does not charge by itself. If NODUS_PILOT_CHECKOUT_URL is configured, the request redirects to that HTTPS payment link; otherwise an authorized operator sends payment instructions after confirming scope. Payment status is operator-recorded and must only be marked paid after cleared funds are confirmed. NODUS_ADMIN_TOKEN protects the private /ops console. There is no subscription billing. Public Shopify app monetization requires an eligible public App Store listing and compliant billing configuration. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
 
 A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
