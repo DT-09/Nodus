@@ -39,9 +39,9 @@ export default function Home(){
      <div className="nd-actions">
       <Link to="/manual-data" className="nd-button nd-button-primary">RUN SHIPPING MARGIN REVIEW <span>↗</span></Link>
       <Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE <span>↗</span></Link>
-      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST THE USD 149 PILOT <span>↗</span></Link>
+      <Link to="/pricing" className="nd-button nd-button-quiet">VIEW FREE PLAN & PRO <span>↗</span></Link>
      </div>
-     <div className="nd-proofline"><span>ORDER-LEVEL COST CONTROL</span><i></i><span>EVIDENCE-BACKED SHORTFALLS</span><i></i><span>USD 149 FIXED-SCOPE PILOT</span></div>
+     <div className="nd-proofline"><span>ORDER-LEVEL COST CONTROL</span><i></i><span>EVIDENCE-BACKED SHORTFALLS</span><i></i><span>FREE DIAGNOSTIC · PRO $99 / MONTH</span></div>
     </div>
     <div className="nd-ledger-stage" aria-label="Illustrative NODUS shipping economics review">
      <div className="nd-ledger-top"><span>RECONCILIATION / WORKFLOW 01</span><span className="nd-ledger-status"><i></i> SAMPLE DATA</span></div>
@@ -59,7 +59,7 @@ export default function Home(){
    <section className="nd-command" id="platform">
     <div className="nd-section-head"><div><span className="nd-index">02 / THE NODUS METHOD</span><h2>One review.<br/><em>Every charge has a status.</em></h2></div><p>Start with order records and carrier-cost evidence. NODUS matches what it can, isolates what it cannot, and keeps currency and evidence coverage visible throughout the review.</p></div>
     <div className="nd-domain-grid">{domains.map(([n,title,desc,tag])=><article key={n}><span className="nd-domain-no">{n}</span><div className="nd-domain-glyph"><i></i><i></i><i></i></div><h3>{title}</h3><p>{desc}</p><small>{tag}</small></article>)}</div>
-    <div className="nd-domain-foot"><span>CURRENT RELEASE: BROWSER-LOCAL CSV ANALYSIS</span><Link to="/product">VIEW PRODUCT ARCHITECTURE ↗</Link></div>
+    <div className="nd-domain-foot"><span>FREE RELEASE: BROWSER-LOCAL CSV ANALYSIS</span><Link to="/product">VIEW PRODUCT ARCHITECTURE ↗</Link></div>
    </section>
 
    <section className="nd-loop">
@@ -82,9 +82,9 @@ export default function Home(){
    </section>
 
    <section className="nd-live">
-    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>A useful first release.<br/><em>A larger system ahead.</em></h2></div><p>The current public workflow is the browser-local CSV review. A separate read-only Shopify connection exists in source code but is not yet verified for merchant use. We will not describe it as live until installation, synchronization, privacy handling and end-to-end tests pass.</p></div>
+    <div className="nd-section-head"><div><span className="nd-index">05 / AVAILABLE NOW</span><h2>Free shipping review.<br/><em>Pro monitoring in development.</em></h2></div><p>The current public workflow is the browser-local CSV review. Recurring Shopify monitoring and automated carrier-cost ingestion are not yet available. We will not describe it as live until installation, synchronization, privacy handling and end-to-end tests pass.</p></div>
     <div className="nd-release-grid">
-     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping margin control</h3><p>The live public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, withholds contribution when cost coverage is incomplete, flags evidenced shipping shortfalls and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">RUN THE CSV REVIEW ↗</Link></article>
+     <article className="nd-release-live"><span className="nd-release-status">CURRENT IMPLEMENTATION</span><h3>Shipping margin control</h3><p>The current free public workflow accepts order and carrier-cost CSV files, matches supported references, separates currencies, withholds contribution when cost coverage is incomplete, flags evidenced shipping shortfalls and exports a review register and decision pack.</p><ul><li>Browser-local order CSV analysis</li><li>Carrier-cost CSV evidence intake</li><li>Reviewable reconciliation and decision packs</li><li>Downloadable CSV and JSON review packs</li></ul><Link to="/manual-data">RUN THE CSV REVIEW ↗</Link></article>
      <article className="nd-release-next"><span className="nd-release-status">SYSTEM EXPANSION</span><h3>The wider NODUS platform</h3><p>Finance, marketing, inventory, customer intelligence and permissioned execution remain planned platform capabilities. They are not part of the current public release.</p><ul><li>Unified business state and knowledge graph</li><li>Specialist analysis and diagnosis engines</li><li>Objective planning and durable execution</li><li>Permissioned actions and outcome learning</li></ul><Link to="/product">READ THE ARCHITECTURE & BOUNDARIES ↗</Link></article>
     </div>
    </section>
@@ -96,7 +96,7 @@ export default function Home(){
    </section>
 
    <section className="nd-commercial">
-    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>There is no active paid subscription or checkout today. Start with the sample workflow, then request a no-fee evaluation of the supported CSV workflow. A recurring plan will be offered only after NODUS proves repeatable value and its billing and support operations are ready.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST THE USD 149 PILOT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION ↗</Link></div></div>
+    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>Start free with the browser-based shipping review. NODUS Pro is planned at $99/month for recurring analysis, monitoring and decision history. Pro billing will open only after those recurring capabilities, customer support and payment processing are verified.</p><div className="nd-actions"><Link to="/pricing" className="nd-button nd-button-primary">VIEW FREE & PRO PLANS ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION ↗</Link></div></div>
     <div className="nd-commercial-aside"><span>EVIDENCE OVER PROMISES</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
    </section>
 
