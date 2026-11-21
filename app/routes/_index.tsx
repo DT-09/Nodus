@@ -6,7 +6,7 @@ export const meta:MetaFunction=()=>[
   {title:"NODUS — Shopify shipping margin control"},
   {name:"description",content:"Find orders where matched carrier costs exceed shipping collected. Reconcile Shopify orders with carrier and 3PL evidence, flag shortfalls only after complete cost coverage is attested."},
   {property:"og:title",content:"NODUS — Find evidenced shipping shortfalls"},
-  {property:"og:description",content:"Shipping margin control for Shopify merchants. Test locally or request a fixed-scope founding pilot."},
+  {property:"og:description",content:"Shipping economics intelligence for Shopify merchants. Start with the free browser-based CSV review."},
   {name:"theme-color",content:"#17151d"},
 ];
 
