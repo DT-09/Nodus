@@ -62,11 +62,15 @@ Required production environment variables / secrets:
 - NODUS_ADMIN_TOKEN: operator token of at least 32 characters (secret).
 - NODUS_PILOT_CHECKOUT_URL: optional HTTPS checkout link for the USD 149 pilot; configure only through an authorized adult-operated business account.
 
-Apply the schema once to the production D1 database:
+Apply migrations to a fresh D1 database in lexical order:
 
 ```sh
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0000_commercial_base.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0001_shopify.sql
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0002_commercial_intake.sql
 ```
+
+For an existing database, inspect `sqlite_master` and `PRAGMA table_info` before applying migrations. Migration `0002_commercial_intake.sql` uses `ALTER TABLE` and is not safe to rerun after its columns exist. Do not infer schema state from the Pages project database table-count metadata alone; verify it with SQL.
 
 Shopify Partner app configuration:
 - App URL: https://nodus-hq.pages.dev/workspace
