@@ -37,7 +37,7 @@ assert.match(leads,/founding_pilot/);
 assert.match(leads,/NODUS_PILOT_CHECKOUT_URL/);
 assert.match(adminLeads,/NODUS_ADMIN_TOKEN/);
 assert.match(adminLeads,/payment_status/);
-assert.match(ops,/api\\/admin\\/leads/);
+assert.ok(ops.includes("/api/admin/leads"));
 assert.match(commercialMigration,/ADD COLUMN offer_type/);
 assert.match(commercialMigration,/ADD COLUMN payment_status/);
 assert.match(manualData,/nodus\.review\.history\.v1/);
