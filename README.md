@@ -20,7 +20,7 @@ Production site: https://nodus-hq.pages.dev
 - Signed Shopify webhook receiver for uninstall and privacy topics.
 - Browser-local CSV review tool with exact decimal arithmetic, exception register and downloadable CSV / JSON decision packs.
 - Device-local aggregate reporting history for up to 24 periods; raw source files are not persisted.
-- No-fee evaluation and USD 49 fixed-scope founding pilot intake.
+- No-fee evaluation and USD 149 fixed-scope founding pilot intake.
 - D1-backed lead capture, payment-state tracking and a token-protected private operator console.
 - Optional HTTPS checkout-link redirect; payment confirmation remains an authorized operator's responsibility.
 - D1 health endpoint.
@@ -49,6 +49,8 @@ Production branch: main
 Build command: npm run build  
 Build output: build/client
 
+Cloudflare Pages is the canonical NODUS web deployment. The `functions/` directory contains Pages Functions. This repository has no separate Workers entrypoint; do not run `wrangler deploy` against the root React Router application. The separate Workers Build trigger is restricted to `workers/*`, `wrangler.jsonc` and `wrangler.toml` changes, and its preview builds are disabled; Cloudflare Pages handles application previews and production deployments.
+
 Required Pages bindings:
 - NODUS_DB: the existing Cloudflare D1 database nodus-leads.
 
@@ -58,7 +60,7 @@ Required production environment variables / secrets:
 - SHOPIFY_APP_URL: canonical HTTPS application origin, https://nodus-hq.pages.dev.
 - TOKEN_ENCRYPTION_KEY: high-entropy random secret of at least 32 characters (secret).
 - NODUS_ADMIN_TOKEN: operator token of at least 32 characters (secret).
-- NODUS_PILOT_CHECKOUT_URL: optional HTTPS checkout link for the USD 49 pilot; configure only through an authorized adult-operated business account.
+- NODUS_PILOT_CHECKOUT_URL: optional HTTPS checkout link for the USD 149 pilot; configure only through an authorized adult-operated business account.
 
 Apply the schema once to the production D1 database:
 
@@ -90,6 +92,6 @@ npm run verify:deployment
 
 ## Commercial and governance boundaries
 
-Commercial offer: a no-fee data-fit review or a USD 49 one-time founding pilot request. The pilot covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier/3PL CSV. Deliverables: evidence coverage statement, matched/unmatched register, currency-separated comparison, decision-pack review and written limitations. The form records purchase intent; it does not charge by itself. If NODUS_PILOT_CHECKOUT_URL is configured, the request redirects to that HTTPS payment link; otherwise an authorized operator sends payment instructions after confirming scope. Payment status is operator-recorded and must only be marked paid after cleared funds are confirmed. NODUS_ADMIN_TOKEN protects the private /ops console. There is no subscription billing. Public Shopify app monetization requires an eligible public App Store listing and compliant billing configuration. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
+Commercial offer: a no-fee data-fit review or a USD 149 one-time founding pilot request. The pilot covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier/3PL CSV. Deliverables: evidence coverage statement, matched/unmatched register, currency-separated comparison, decision-pack review and written limitations. The form records purchase intent; it does not charge by itself. If NODUS_PILOT_CHECKOUT_URL is configured, the request redirects to that HTTPS payment link; otherwise an authorized operator sends payment instructions after confirming scope. Payment status is operator-recorded and must only be marked paid after cleared funds are confirmed. NODUS_ADMIN_TOKEN protects the private /ops console. There is no subscription billing. Public Shopify app monetization requires an eligible public App Store listing and compliant billing configuration. Pricing, contracts, invoices, tax handling, data-processing terms, customer support, and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts, or savings results without evidence and permission.
 
 A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
