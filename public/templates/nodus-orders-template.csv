@@ -1,2 +1,2 @@
-order_id,order_name,ordered_at,currency,shipping_revenue,taxes_included,tracking_numbers
-order_1001,#1001,2026-10-01T10:30:00Z,USD,8.95,false,1Z999AA10123456784
+order_id,order_name,ordered_at,currency,order_subtotal,shipping_revenue,taxes_included,tracking_numbers
+order_1001,#1001,2026-10-01T10:30:00Z,USD,84.00,8.95,false,1Z999AA10123456784
