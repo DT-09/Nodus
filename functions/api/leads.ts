@@ -18,8 +18,8 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  try{const raw=await request.text();if(raw.length>10000)return json({error:"Request too large."},413);body=JSON.parse(raw) as Record<string,unknown>;}catch{return json({error:"Invalid request."},400);}
  if(clean(body.website,200))return json({ok:true},200);
  const name=clean(body.name,100),email=clean(body.email,254).toLowerCase(),store=clean(body.store,300),orders=clean(body.orders,60),shipping=clean(body.shipping,100),objective=clean(body.objective,1500);
- const offer=body.offer_type==="founding_pilot"?"founding_pilot":"evaluation";
- const priceQuote=offer==="founding_pilot"?"USD 149 one-time":null;
+ const offer=body.offer_type==="pro_subscription"?"pro_subscription":"evaluation";
+ const priceQuote=offer==="pro_subscription"?"USD 99/month — requested, not charged":null;
  if(name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!store||!orders||!shipping||objective.length<20||body.consent!==true)
   return json({error:"Complete each required field and confirm permission to contact you."},400);
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid store URL."},400);}
@@ -31,6 +31,6 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  await env.NODUS_DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const id=crypto.randomUUID();
  await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested')").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote).run();
- let checkoutUrl:string|undefined;if(offer==="founding_pilot"&&env.NODUS_PILOT_CHECKOUT_URL){try{const checkout=new URL(env.NODUS_PILOT_CHECKOUT_URL);if(checkout.protocol==="https:")checkoutUrl=checkout.toString();}catch{/* Invalid payment links are never exposed to customers. */}}
- return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,checkoutUrl,message:offer==="founding_pilot"?(checkoutUrl?"Your founding pilot request is recorded. Continue to the secure payment page; work begins after the authorized operator confirms cleared payment.":"Your founding pilot request has been received. It is not a charge or confirmed order. An authorized NODUS operator will confirm scope and send payment instructions before work begins."):"Your no-fee evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
+ let checkoutUrl:string|undefined;if(false&&offer==="pro_subscription"&&env.NODUS_PILOT_CHECKOUT_URL){try{const checkout=new URL(env.NODUS_PILOT_CHECKOUT_URL);if(checkout.protocol==="https:")checkoutUrl=checkout.toString();}catch{/* Invalid payment links are never exposed to customers. */}}
+ return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,checkoutUrl,message:offer==="pro_subscription"?(checkoutUrl?"Your Pro access request is recorded. It is not a charge or subscription. NODUS will contact you when recurring features and billing are ready."):"Your no-fee evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
 }
