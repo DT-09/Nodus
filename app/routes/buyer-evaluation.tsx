@@ -6,9 +6,9 @@ import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
   {title:"Merchant evaluation guide — NODUS"},
-  {name:"description",content:"Submit a no-fee founding enquiry for the NODUS browser-local shipping economics CSV tool. The form does not connect to a store or collect source files."},
+  {name:"description",content:"Request a no-fee data-fit review or a fixed-scope USD 49 NODUS founding pilot. No source files are collected by the public form."},
   {property:"og:title",content:"Merchant evaluation guide — NODUS"},
-  {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS founding merchant evaluation."},
+  {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS shipping-economics pilot."},
 ];
 const requirements=[
  ["Order export","A merchant-provided order CSV with order references, shipping revenue and currency."],
@@ -19,7 +19,7 @@ const deliverables=[
  ["Evidence coverage statement","The authorized order window, imported source, reporting currency, matched records, exclusions and unresolved gaps."],
  ["Exception register","Matched, unmatched, duplicate, ambiguous and incomplete records with the source references available to the system."],
  ["Order-level comparison","Compare recorded shipping revenue with matched carrier-cost rows while keeping currencies separate."],
- ["Decision pack","A merchant-scoped CSV register and a JSON export with scope, methods, limitations and an integrity digest."],
+ ["Decision pack","A CSV register and JSON export with scope, methods and limitations."],
 ];
 function AssessmentForm(){
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState(false);
