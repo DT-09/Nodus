@@ -37,11 +37,13 @@ Disqualify digital-only stores, merchants without usable cost exports, exports w
 
 ## 3. The offer
 
-### Founding Merchant Assessment
+### Founding paid pilot
 
-- **Price:** no fee for a limited founding cohort.
-- **Commitment:** no payment details, no automatic conversion, no obligation to subscribe.
-- **Scope:** one authorized Shopify store, one reporting currency, the order window available under granted permissions, one supported carrier/3PL CSV export.
+- **Price:** USD 149 one-time, subject to scope confirmation and cleared payment.
+- **Scope:** one store, one reporting period up to 60 days, up to 2,000 orders and one supported carrier/3PL cost CSV.
+- **Deliverables:** evidence coverage statement, matched/unmatched and exception register, eligible evidenced shortfall register, currency-separated comparison, export review and written limitations.
+- **Payment:** the public form records a purchase request. It does not charge by itself. An authorized adult-operated business account must confirm scope, issue the payment route and verify cleared funds before work begins.
+- **Boundary:** no automatic subscription, carrier claim filing, guaranteed recovery or unsupported financial outcome.
 
 ### Deliverables
 1. Scope statement: source period, order count, currency, permissions, freshness and exclusions.
@@ -80,7 +82,7 @@ The acquisition motion is search-led and proof-led. No bulk cold email and no fa
 2. /shipping-cost-reconciliation: search-intent landing page for Shopify shipping cost reconciliation.
 3. /demo: synthetic example Decision Pack, labelled synthetic.
 4. /buyer-evaluation: qualification, required data and deliverables.
-5. /pricing: founding assessment, value measurement and no-auto-conversion terms.
+5. /pricing: USD 149 fixed-scope pilot, value measurement and no-auto-conversion terms.
 6. /methodology: exact matching and calculation boundaries.
 7. /security and /privacy: data handling, permissions and retention details.
 8. CSV template and field-level import documentation.
@@ -105,7 +107,7 @@ Publish useful worked examples with synthetic data. Each should answer a real op
 ### Funnel
 Qualified discovery → product page → sample pack → fit check → evaluation request → authorized store/data approval → completed assessment → merchant decision → second-period repeat → paid commitment.
 
-A page view is not a lead; a lead is not a qualified evaluation; a free evaluation is not willingness to pay.
+A page view is not a lead; a lead is not a qualified buyer; a purchase request is not a cleared payment.
 
 ## 6. Sales qualification
 

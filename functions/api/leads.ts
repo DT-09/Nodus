@@ -19,7 +19,7 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  if(clean(body.website,200))return json({ok:true},200);
  const name=clean(body.name,100),email=clean(body.email,254).toLowerCase(),store=clean(body.store,300),orders=clean(body.orders,60),shipping=clean(body.shipping,100),objective=clean(body.objective,1500);
  const offer=body.offer_type==="founding_pilot"?"founding_pilot":"evaluation";
- const priceQuote=offer==="founding_pilot"?"USD 49 one-time":null;
+ const priceQuote=offer==="founding_pilot"?"USD 149 one-time":null;
  if(name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!store||!orders||!shipping||objective.length<20||body.consent!==true)
   return json({error:"Complete each required field and confirm permission to contact you."},400);
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid store URL."},400);}

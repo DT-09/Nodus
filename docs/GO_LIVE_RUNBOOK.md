@@ -65,10 +65,19 @@ There is no automatic email notification for new leads yet. Do not claim otherwi
 
 ## Commercial gates — not yet passed
 
-- [ ] A responsible business operator is named and owns support.
-- [ ] Enquiry notification and protected lead-management workflow are configured.
-- [ ] The founding assessment is delivered using a secure, agreed data-transfer method.
-- [ ] Paid scope, pricing, invoicing, tax, cancellation and refund terms are approved by the authorized operator.
-- [ ] No public paid subscription until billing and entitlement lifecycle are tested.
+Production configuration was inspected on 2026-11-21. The Pages project currently has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` or `NODUS_PILOT_CHECKOUT_URL` configured in either Production or Preview. Therefore:
+- The protected `/ops` console cannot authenticate an operator.
+- The public pilot form cannot redirect a buyer to checkout.
+- The form can store enquiries in D1, but there is no automatic new-lead notification. An operator must check D1 manually until a notification channel is implemented.
 
-Never equate a successful Pages deployment with a complete product launch.
+Required before accepting paid pilot requests:
+- [ ] A responsible adult business operator is named and owns support, contracts, payment collection, tax and customer-data obligations.
+- [ ] Configure a high-entropy `NODUS_ADMIN_TOKEN` as a Cloudflare secret in Production and Preview. Do not commit it or expose it in browser code.
+- [ ] Configure `NODUS_PILOT_CHECKOUT_URL` with an HTTPS checkout route owned by the authorized business operator. Do not use a personal or unverified payment account.
+- [ ] Configure lead notification or assign a documented daily D1 review owner; test that a new enquiry is noticed and acknowledged.
+- [ ] Test the full path: valid pilot request → D1 record → operator review → scope acceptance → payment route → cleared-funds confirmation → paid status.
+- [ ] Confirm that the checkout amount, currency, scope, refund/cancellation terms and legal seller identity match the published USD 149 offer.
+- [ ] The paid pilot is delivered using a secure, agreed data-transfer method.
+- [ ] No recurring subscription until billing, entitlement lifecycle, cancellation and support are tested.
+
+Never equate a successful Pages deployment with a complete product launch or a purchase request with cleared revenue.

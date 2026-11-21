@@ -39,9 +39,9 @@ export default function Home(){
      <div className="nd-actions">
       <Link to="/manual-data" className="nd-button nd-button-primary">RUN SHIPPING MARGIN REVIEW <span>↗</span></Link>
       <Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE <span>↗</span></Link>
-      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST THE USD 49 PILOT <span>↗</span></Link>
+      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST THE USD 149 PILOT <span>↗</span></Link>
      </div>
-     <div className="nd-proofline"><span>ORDER-LEVEL COST CONTROL</span><i></i><span>EVIDENCE-BACKED SHORTFALLS</span><i></i><span>USD 49 FIXED-SCOPE PILOT</span></div>
+     <div className="nd-proofline"><span>ORDER-LEVEL COST CONTROL</span><i></i><span>EVIDENCE-BACKED SHORTFALLS</span><i></i><span>USD 149 FIXED-SCOPE PILOT</span></div>
     </div>
     <div className="nd-ledger-stage" aria-label="Illustrative NODUS shipping economics review">
      <div className="nd-ledger-top"><span>RECONCILIATION / WORKFLOW 01</span><span className="nd-ledger-status"><i></i> SAMPLE DATA</span></div>
@@ -96,7 +96,7 @@ export default function Home(){
    </section>
 
    <section className="nd-commercial">
-    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>There is no active paid subscription or checkout today. Start with the sample workflow, then request a no-fee evaluation of the supported CSV workflow. A recurring plan will be offered only after NODUS proves repeatable value and its billing and support operations are ready.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST THE USD 49 PILOT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION ↗</Link></div></div>
+    <div className="nd-commercial-copy"><span className="nd-index">07 / MERCHANT ASSESSMENT</span><h2>A clear scope.<br/><em>Evidence before commitment.</em></h2><p>There is no active paid subscription or checkout today. Start with the sample workflow, then request a no-fee evaluation of the supported CSV workflow. A recurring plan will be offered only after NODUS proves repeatable value and its billing and support operations are ready.</p><div className="nd-actions"><Link to="/buyer-evaluation" className="nd-button nd-button-primary">REQUEST THE USD 149 PILOT ↗</Link><Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION ↗</Link></div></div>
     <div className="nd-commercial-aside"><span>EVIDENCE OVER PROMISES</span><b>01</b><p>One defined store and data scope.</p><b>02</b><p>Findings tied to actual source records.</p><b>03</b><p>Clear limits and human review.</p><b>04</b><p>Recurring pricing only after value is established.</p></div>
    </section>
 
