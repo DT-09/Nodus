@@ -32,5 +32,5 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  const id=crypto.randomUUID();
  await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested')").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote).run();
 
- return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,checkoutUrl,message:offer==="pro_subscription"?(checkoutUrl?"Your Pro access request is recorded. It is not a charge or subscription. NODUS will contact you when recurring features and billing are ready."):"Your no-fee evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
+ return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:offer==="pro_subscription"?"Your Pro access request has been received. It is not a charge or subscription. NODUS will contact you when recurring features and billing are ready.":"Your free evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
 }
