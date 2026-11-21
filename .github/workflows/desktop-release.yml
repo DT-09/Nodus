@@ -1,11 +1,6 @@
 name: NODUS Desktop Release
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    tags:
-      - "desktop-v*"
 concurrency:
   group: nodus-desktop-release
   cancel-in-progress: true
