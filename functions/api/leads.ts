@@ -2,7 +2,7 @@ interface D1Result<T=unknown>{results:T[];success:boolean;meta?:{changes?:number
 interface D1Statement{bind(...values:unknown[]):D1Statement;first<T=unknown>():Promise<T|null>;run<T=unknown>():Promise<D1Result<T>>}
 interface D1Database{prepare(sql:string):D1Statement}
 interface PagesContext<E>{request:Request;env:E;waitUntil(promise:Promise<unknown>):void;passThroughOnException():void}
-interface Env{NODUS_DB:D1Database}
+interface Env{NODUS_DB:D1Database;NODUS_PILOT_CHECKOUT_URL?:string}
 const json=(body:unknown,status=200)=>Response.json(body,{status,headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
 const clean=(value:unknown,max:number)=>typeof value==="string"?value.trim().slice(0,max):"";
 async function digest(value:string){const bytes=new TextEncoder().encode(value);const hash=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");}
@@ -31,5 +31,6 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  await env.NODUS_DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const id=crypto.randomUUID();
  await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested')").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote).run();
- return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:offer==="founding_pilot"?"Your founding pilot request has been received. It is not a charge or confirmed order. An authorized NODUS operator will confirm scope, payment instructions and terms before work begins.":"Your no-fee evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
+ let checkoutUrl:string|undefined;if(offer==="founding_pilot"&&env.NODUS_PILOT_CHECKOUT_URL){try{const checkout=new URL(env.NODUS_PILOT_CHECKOUT_URL);if(checkout.protocol==="https:")checkoutUrl=checkout.toString();}catch{/* Invalid payment links are never exposed to customers. */}}
+ return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,checkoutUrl,message:offer==="founding_pilot"?(checkoutUrl?"Your founding pilot request is recorded. Continue to the secure payment page; work begins after the authorized operator confirms cleared payment.":"Your founding pilot request has been received. It is not a charge or confirmed order. An authorized NODUS operator will confirm scope and send payment instructions before work begins."):"Your no-fee evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
 }
