@@ -4,8 +4,8 @@ import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS shipping margin control — founding pilot"},
- {name:"description",content:"A no-fee data-fit review or a USD 149 one-time founding pilot for Shopify shipping-cost reconciliation."}
+ {title:"NODUS pricing — free shipping review and Pro"},
+ {name:"description",content:"Start with a free browser-based shipping review. NODUS Pro is planned at USD 99 per month; paid access is not yet open."}
 ];
 
 export default function Pricing(){
@@ -23,15 +23,15 @@ export default function Pricing(){
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>One store. One reporting period.<br/><em>One evidence-backed shortfall review.</em></h1>
-   <p className="page-lede">NODUS offers a fixed-scope founding pilot at USD 149 once. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL cost export. The review identifies unmatched charges and, only when complete cost coverage is attested, orders where matched carrier cost exceeds shipping collected. The request is not an automatic charge; an authorized operator must confirm scope and provide the configured payment route.</p>
+   <h1>Understand shipping costs.<br/><em>Keep the evidence in view.</em></h1>
+   <p className="page-lede">NODUS offers a fixed-scope Pro subscription at USD 99/month once. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL cost export. The review identifies unmatched charges and, only when complete cost coverage is attested, orders where matched carrier cost exceeds shipping collected. The request is not an automatic charge; an authorized operator must confirm scope and provide the configured payment route.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
     <h2>Inspect the method.<br/><em>Then choose the pilot.</em></h2>
-    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 149 pilot adds an assisted review of one supported reporting period, an attested shipping-shortfall register where eligible, and a written findings summary. Source files are not uploaded through the public website.</p>
+    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 99/month pilot adds an assisted review of one supported reporting period, an attested shipping-shortfall register where eligible, and a written findings summary. Source files are not uploaded through the public website.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -59,7 +59,7 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>Founding pilot.<br/><em>USD 149 / once.</em></h2>
+    <h2>Pro subscription.<br/><em>USD 99/month / once.</em></h2>
     <p>One fixed-scope review: one Shopify store, one reporting period up to 60 days, up to 2,000 orders, one carrier/3PL cost export. Deliverables: evidence coverage statement, matched and unmatched charge register, currency-separated order comparison, decision-pack review and written limitations. Additional stores, longer periods, more than 2,000 orders, custom integrations and recurring monitoring are excluded.</p>
    </div>
    <div className="content-grid">
@@ -67,7 +67,7 @@ export default function Pricing(){
     <article><span>VALUE / 02</span><h2>Operating value</h2><p>Time spent reconciling invoices, tracing exceptions and preparing finance reviews. Baseline and follow-up effort are recorded rather than guessed.</p></article>
     <article><span>VALUE / 03</span><h2>Decision value</h2><p>Clearer visibility into matched costs, unmatched charges, currency totals and the limits of the supplied evidence.</p></article>
    </div>
-   <p className="calculator-verdict">USD 149 is an introductory pilot price hypothesis, not a proven market-clearing price. It buys the defined review above, not guaranteed savings, carrier recovery, profit improvement or a financial audit. No work begins until the operator confirms the scope and the authorized account holder confirms cleared payment.</p>
+   <p className="calculator-verdict">USD 99/month is a proposed subscription price, not a validated market price. Pro is not yet available for purchase. We will activate billing only after recurring monitoring, secure entitlements, support and delivery are working. NODUS does not guarantee savings, carrier recovery or profit improvement.</p>
   </section>
 
   <section className="proof-method" data-reveal>
@@ -79,25 +79,25 @@ export default function Pricing(){
     <article><b>03</b><h3>Explain the evidence</h3><p>Show matched records, unassigned charges, source references, currency totals and limits of the supplied data.</p></article>
     <article><b>04</b><h3>Deliver the review pack</h3><p>Provide the CSV review register, JSON decision pack and a written findings summary for the defined reporting period.</p></article>
    </div>
-   <p className="calculator-caveat">The current paid pilot is a human-reviewed, CSV-based service. It does not include live Shopify sync, automatic carrier feeds, ongoing monitoring, edits to store settings or guaranteed savings. The public CSV tool processes files locally; any additional review data sharing must be agreed explicitly and limited to what is necessary.</p>
+   <p className="calculator-caveat">The current free CSV tool runs in the browser. It does not provide automated carrier feeds, recurring monitoring, or live subscription service. The proposed Pro plan will not be sold until its recurring capabilities are live.</p>
   </section>
 
   <section className="pricing-contact" data-reveal>
    <div>
-    <span>04 / REQUEST A REVIEW</span>
+    <span>04 / START FREE · REQUEST PRO UPDATES</span>
     <h2>Start with the right-sized review.</h2>
-    <p>Suitable merchants have recurring parcel or 3PL charges, an authorized Shopify store and access to a carrier invoice or cost export. The free data-fit review confirms whether the two export formats are suitable. The USD 149 founding pilot delivers the defined review for one period.</p>
+    <p>Suitable merchants have recurring parcel or 3PL charges, an authorized Shopify store and access to a carrier invoice or cost export. The free tool lets merchants test their own supported exports locally. Visitors can request updates when the $99/month Pro subscription is ready.</p>
    </div>
    <div className="evaluation-steps">
     <p><b>01</b> Confirm store fit and evaluation scope.</p>
     <p><b>02</b> Use merchant-provided order and carrier-cost CSV exports. No store connection is available.</p>
     <p><b>03</b> Review a supported sample locally; do not send files with the enquiry.</p>
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
-    <p><b>05</b> Choose the no-fee review or request the USD 149 pilot.</p>
+    <p><b>05</b> Choose the no-fee review or request the USD 99/month pilot.</p>
    </div>
-   <Link to="/buyer-evaluation" className="primary-cta">REQUEST THE USD 149 PILOT ↗</Link>
+   <Link to="/buyer-evaluation" className="primary-cta">REQUEST PRO ACCESS ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
-   <p className="pricing-disclaimer">The pilot form is a purchase request, not an instant charge. Payment is arranged only after scope confirmation by an authorized operator. No customer results, testimonials or financial outcomes are claimed.</p>
+   <p className="pricing-disclaimer">The form records interest only. It does not take payment or create a subscription. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
