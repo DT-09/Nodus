@@ -49,7 +49,7 @@ Production branch: main
 Build command: npm run build  
 Build output: build/client
 
-Cloudflare Pages is the canonical NODUS web deployment. The `functions/` directory contains Pages Functions. This repository has no separate Workers entrypoint; do not run `wrangler deploy` against the root React Router application. The separate Workers Build trigger is restricted to `workers/*`, `wrangler.jsonc` and `wrangler.toml` changes so it does not attempt to deploy the Pages application as a second Worker.
+Cloudflare Pages is the canonical NODUS web deployment. The `functions/` directory contains Pages Functions. This repository has no separate Workers entrypoint; do not run `wrangler deploy` against the root React Router application. The separate Workers Build trigger is restricted to `workers/*`, `wrangler.jsonc` and `wrangler.toml` changes, and its preview builds are disabled; Cloudflare Pages handles application previews and production deployments.
 
 Required Pages bindings:
 - NODUS_DB: the existing Cloudflare D1 database nodus-leads.
