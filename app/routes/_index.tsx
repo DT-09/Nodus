@@ -47,7 +47,7 @@ export default function Home(){
       <div className="nh-connector"><span></span><b>+</b><span></span></div>
       <article><span>02 / SOURCE</span><b>Carrier invoices</b><small>Invoice lines · billed cost · order references</small><strong>COST EVIDENCE</strong></article>
      </div>
-     <div className="nh-engine"><span className="nh-engine-mark">N</span><div><b>Deterministic matching engine</b><small>Reference · tracking · currency · coverage</small></div><span className="nh-engine-arrow">↗</span></div>
+     <div className="nh-engine"><span className="nh-engine-mark"><img src={NODUS_MARK} alt=""/></span><div><b>Deterministic matching engine</b><small>Reference · tracking · currency · coverage</small></div><span className="nh-engine-arrow">↗</span></div>
      <div className="nh-output">
       <div><span>MATCHED</span><b>Source-linked</b></div>
       <div><span>UNMATCHED</span><b>Needs review</b></div>
