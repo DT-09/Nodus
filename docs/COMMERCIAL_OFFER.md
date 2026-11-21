@@ -8,7 +8,7 @@
 
 ### Current commercial model
 
-The current customer-facing offer is a USD 149 one-time, fixed-scope founding pilot request. There is no active subscription, free trial, automated checkout or recurring billing. The public form records purchase intent and can redirect to an HTTPS checkout URL only when an authorized adult-operated business account configures `NODUS_PILOT_CHECKOUT_URL`. Otherwise, the authorized operator confirms scope and sends payment instructions. Work begins only after cleared payment is confirmed. Treat USD 149 as a pricing hypothesis until a qualified merchant pays; do not claim validated willingness to pay.
+The current customer-facing offer is a free browser-local diagnostic plus a USD 99/month fixed-scope NODUS Pro monthly review service. Pro covers one Shopify store, up to 2,000 orders and one carrier/3PL cost export per month. Deliverables are reconciliation, carrier spend breakdown, an evidence-backed exception register, historical shipping-policy replay and a monthly executive brief. This is a productized monthly service, not automated SaaS monitoring or a self-serve subscription. The public form records interest; buyers contact NODUS by email to confirm fit and scope. An authorized adult business operator issues the invoice, receives funds through an approved business account and confirms cleared payment before service begins. Treat USD 99/month as a price to validate, not proven willingness to pay.
 
 
 NODUS will not compete as a generic shipping dashboard or claim to be a universal carrier-audit platform.
@@ -140,13 +140,13 @@ The workspace exports (1) a full merchant-scoped CSV register and (2) a JSON Shi
 
 A tightly scoped assessment for one authorized Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost CSV export.
 
-The current founding offer is a USD 149 one-time paid pilot request for one store, one reporting period up to 60 days, up to 2,000 orders and one supported carrier/3PL CSV. It includes an evidence coverage statement, matched/unmatched and exception registers, an eligible evidenced shortfall register, currency-separated comparison, decision-pack review and written limitations. It is not a subscription and does not promise recovered credits, savings, profit improvement or an audit opinion. The public form records a request; payment and work start only after scope confirmation and cleared funds.
+The current paid offer is NODUS Pro at USD 99/month for one store, up to 2,000 orders and one supported carrier/3PL CSV per monthly period. It includes an evidence coverage statement, matched/unmatched and exception registers, carrier spend breakdown, eligible evidenced shortfall register, currency-separated comparison, historical shipping-policy replay, monthly decision brief and written limitations. It does not promise recovered credits, savings, profit improvement or an audit opinion. The buyer runs the free diagnostic first, contacts NODUS by email, and receives scope and invoice details before service begins. No work begins until cleared funds are confirmed by the authorized business operator.
 
 Do not promise savings, recovered carrier credits, profit improvement, or conversion lift.
 
 ### Recurring product
 
-A subscription becomes credible only when NODUS can repeatedly perform a job the merchant values, such as:
+The monthly review service is a recurring, fixed-scope deliverable. It is not automated monitoring. Do not describe it as continuous or scheduled carrier monitoring. A future software subscription becomes credible only when NODUS can repeatedly perform a job the merchant values, such as:
 
 - refresh eligible Shopify order data;
 - ingest recurring cost evidence with low review burden;
@@ -157,7 +157,7 @@ A subscription becomes credible only when NODUS can repeatedly perform a job the
 
 A scheduled Shopify order refresh alone is not recurring shipping-cost monitoring. Carrier billing ingestion, drift detection, and merchant alerting must be implemented and verified before they are sold as such.
 
-Do not publish fixed prices or activate paid plans until real buyer evidence, recurring value, billing, and entitlements are verified.
+The $99/month service price is a testable offer, not validated demand. Do not claim automatic checkout, automatic renewals, continuous monitoring or recurring software entitlements. Payment is invoice-based and handled by an authorized adult business operator.
 
 ## 6. Positioning against alternatives
 
