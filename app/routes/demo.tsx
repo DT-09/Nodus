@@ -13,7 +13,35 @@ const rows = [
   { order: "#1044", shipping: "$0.00", cost: "—", variance: "Excluded", state: "Incomplete", note: "No carrier-cost evidence imported" },
   { order: "#1045", shipping: "$12.00", cost: "$10.30", variance: "+$1.70", state: "Matched", note: "Two supported charge records" },
   { order: "Invoice #C-77", shipping: "—", cost: "$14.60", variance: "Excluded", state: "Unmatched", note: "No unique order reference" },
+
 ];
+
+const sampleOrders = [
+  ["order_id","order_name","currency","shipping_revenue","taxes_included","tracking_numbers"],
+  ["1042","#1042","USD","8.00","false","1Z999AA10123456784"],
+  ["1043","#1043","USD","6.00","false","1Z999AA10123456785"],
+  ["1044","#1044","USD","0.00","false",""],
+  ["1045","#1045","USD","12.00","false","1Z999AA10123456786"],
+];
+const sampleCosts = [
+  ["invoice_id","charge_id","amount","currency","order_reference","tracking_number"],
+  ["C-77","C-001","7.20","USD","#1042",""],
+  ["C-77","C-002","9.40","USD","","1Z999AA10123456785"],
+  ["C-77","C-003","4.80","USD","#1045",""],
+  ["C-77","C-004","5.50","USD","#1045",""],
+  ["C-77","C-005","14.60","USD","#9999",""],
+];
+
+function downloadCsv(filename: string, rows: string[][]) {
+  const csv = rows.map(row => row.map(value => '"' + value.replaceAll('"','""') + '"').join(",")).join("\\r\\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function Demo() {
   return (
@@ -74,9 +102,19 @@ export default function Demo() {
         </section>
 
         <section className="content-note">
+          <h2>Run this exact example yourself</h2>
+          <p>Download the two synthetic CSV files below, open the shipping review tool, and import them. The files reproduce the example above: three orders with supported cost evidence, one order without cost evidence, and one unmatched carrier charge. They contain no merchant data.</p>
+          <div className="hero-ctas">
+            <button type="button" className="cta-primary" onClick={() => downloadCsv("nodus-sample-orders.csv", sampleOrders)}>DOWNLOAD SAMPLE ORDERS ↧</button>
+            <button type="button" className="cta-secondary" onClick={() => downloadCsv("nodus-sample-carrier-costs.csv", sampleCosts)}>DOWNLOAD SAMPLE CARRIER COSTS ↧</button>
+            <Link to="/manual-data" className="cta-secondary">OPEN THE CSV REVIEW ↗</Link>
+          </div>
+          <p className="pricing-footnote">Synthetic training data only. The sample demonstrates matching and exception handling; it is not a customer result or evidence of savings.</p>
+        </section>
+        <section className="content-note">
           <h2>Evaluate your own evidence</h2>
-          <p>Use an authorized Shopify store and a representative carrier invoice export. The first evaluation establishes whether your data can be reconciled, where coverage is incomplete and which results deserve review.</p>
-          <Link to="/pricing">REQUEST A MERCHANT EVALUATION ↗</Link>
+          <p>When the sample behaves as expected, try an authorized store export and a representative carrier invoice export. Both files are processed locally in your browser. The first evaluation establishes whether your data can be reconciled, where coverage is incomplete and which results deserve review.</p>
+          <Link to="/buyer-evaluation">REQUEST A NO-FEE EVALUATION ↗</Link>
         </section>
       </main>
     </MarketingShell>
