@@ -6,7 +6,7 @@ export const meta:MetaFunction=()=>[
   {title:"NODUS — Shopify shipping cost reconciliation"},
   {name:"description",content:"Reconcile Shopify shipping revenue with carrier and 3PL cost records. Inspect matched charges, unresolved exceptions and evidence coverage."},
   {property:"og:title",content:"NODUS — Make shipping costs inspectable"},
-  {property:"og:description",content:"Evidence-led shipping cost reconciliation for Shopify merchants."},
+  {property:"og:description",content:"Shipping cost reconciliation for Shopify merchants. Test locally or request a fixed-scope founding pilot."},
   {name:"theme-color",content:"#17151d"},
 ];
 
@@ -39,9 +39,9 @@ export default function Home(){
      <div className="nd-actions">
       <Link to="/manual-data" className="nd-button nd-button-primary">RUN A SHIPPING REVIEW <span>↗</span></Link>
       <Link to="/demo" className="nd-button nd-button-quiet">INSPECT THE SAMPLE <span>↗</span></Link>
-      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST AN EVALUATION <span>↗</span></Link>
+      <Link to="/buyer-evaluation" className="nd-button nd-button-quiet">REQUEST THE USD 49 PILOT <span>↗</span></Link>
      </div>
-     <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>NO ASSUMED SAVINGS</span></div>
+     <div className="nd-proofline"><span>ORDER-LEVEL REVIEW</span><i></i><span>TRACEABLE EVIDENCE</span><i></i><span>USD 49 FIXED-SCOPE PILOT</span></div>
     </div>
     <div className="nd-ledger-stage" aria-label="Illustrative NODUS shipping economics review">
      <div className="nd-ledger-top"><span>RECONCILIATION / WORKFLOW 01</span><span className="nd-ledger-status"><i></i> SAMPLE DATA</span></div>
