@@ -2,9 +2,9 @@
 
 ## Current release state
 
-The public release is a Cloudflare Pages application with Pages Functions and D1. It supports the marketing site, PWA install shell, browser-local CSV analysis, synthetic demo and a persistent founding-assessment enquiry form. A Windows desktop WebView2 client and GitHub release workflow have been added; the first downloadable binary still requires a tagged release build.
+The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial product is the free shipping-economics workbench plus a fixed-scope USD 99/month monthly review service.
 
-It is **not** yet a fully live Shopify merchant operating system. Production Shopify installation, Shopify-managed subscriptions, recurring sync, App Store distribution and general business execution remain gated by credentials, Partner Dashboard configuration and acceptance tests.
+The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated subscription billing, carrier polling, App Store distribution and continuous monitoring are not part of the current paid service.
 
 ## Cloudflare resources
 
@@ -15,7 +15,7 @@ It is **not** yet a fully live Shopify merchant operating system. Production Sho
 - Tables: `merchant_leads`, `lead_rate_limits`
 - Functions: `/api/leads`, `/api/health`
 
-## Public assessment workflow
+## Public enquiry workflow
 
 1. Merchant reviews the founding assessment scope, privacy notice and methodology.
 2. Merchant submits the form at `/buyer-evaluation`.
@@ -24,7 +24,7 @@ It is **not** yet a fully live Shopify merchant operating system. Production Sho
 5. The operator responds through the business-owned support inbox and agrees the scope before any source files are exchanged.
 6. The merchant can run the browser-local CSV workflow at `/manual-data`. Files remain in the browser and are not uploaded.
 
-There is no automatic email notification for new leads yet. Do not claim otherwise.
+The D1 enquiry form does not send an automatic email notification. Direct mailto contact links are available; the operator must also check D1 enquiries regularly.
 
 ## Required operational checks
 
@@ -63,7 +63,7 @@ There is no automatic email notification for new leads yet. Do not claim otherwi
 - [ ] Complete privacy, security, backup, incident-response and data-retention review.
 - [ ] Complete a controlled merchant acceptance test before opening installs.
 
-## Commercial gates — not yet passed
+## Commercial operating requirements
 
 Production configuration was inspected on 2026-11-21. The Pages project currently has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` or `NODUS_PILOT_CHECKOUT_URL` configured in either Production or Preview. Therefore:
 - The protected `/ops` console cannot authenticate an operator.
