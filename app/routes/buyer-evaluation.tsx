@@ -5,10 +5,10 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS shipping margin control pilot"},
+  {title:"NODUS merchant evaluation"},
   {name:"description",content:"Request a no-fee data-fit review or a planned USD 99/month NODUS Pro subscription. No source files are collected by the public form."},
   {property:"og:title",content:"Merchant evaluation guide — NODUS"},
-  {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS shipping-economics pilot."},
+  {property:"og:description",content:"A practical guide to the free NODUS shipping-economics review and planned Pro subscription."},
 ];
 const requirements=[
  ["Order export","A merchant-provided order CSV with order references, shipping revenue and currency."],
@@ -33,21 +33,21 @@ function AssessmentForm(){
   finally{setBusy(false);}
  }
  return <form className="nd-assessment-form" onSubmit={submit}>
-  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT INTAKE</span><h2>Choose how to begin.</h2><p>Start with a no-fee fit review, or request the fixed-scope Pro subscription. A Pro access request is not a charge or subscription. We will contact you when recurring features and billing are ready.</p></div>
+  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT INTAKE</span><h2>Choose how to begin.</h2><p>Start with the free evaluation, or request updates about the planned Pro subscription. A Pro access request is not a charge or subscription. We will contact you when recurring features and billing are ready.</p></div>
   <div className="nd-form-grid">
    <label>Your name<input name="name" autoComplete="name" required minLength={2} maxLength={100} placeholder="Name"/></label>
    <label>Work email<input name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@company.com"/></label>
    <label>Store domain (for context)<input name="store" type="text" required maxLength={300} placeholder="store.myshopify.com"/></label>
    <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option>Under 500</option><option>500–2,000</option><option>2,000–10,000</option><option>10,000–50,000</option><option>50,000+</option><option>Prefer to discuss</option></select></label>
    <label className="nd-form-wide">Shipping setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option>Direct carrier account</option><option>Third-party logistics (3PL)</option><option>Multiple carriers / 3PLs</option><option>Shopify Shipping</option><option>Other / unsure</option></select></label>
-   <label className="nd-form-wide">Request type<select name="offer_type" defaultValue="founding_pilot"><option value="pro_subscription">NODUS Pro — USD 99/month (request access; not yet available)</option><option value="evaluation">Free evaluation — no payment</option></select></label>
+   <label className="nd-form-wide">Request type<select name="offer_type" defaultValue="pro_subscription"><option value="pro_subscription">NODUS Pro — USD 99/month (request access; not yet available)</option><option value="evaluation">Free evaluation — no payment</option></select></label>
    <label className="nd-form-wide">What problem should the assessment investigate?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we cannot reliably compare shipping revenue with carrier charges across orders..."/></label>
   </div>
   <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorized to submit this business enquiry and agree that NODUS may use these details to review and respond to this request. No store data is requested by this form. <Link to="/privacy">Read the privacy notice.</Link></span></label>
   <div className="nd-form-honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
   <button className="cta-primary" type="submit" disabled={busy}>{busy?"SUBMITTING…":"SUBMIT REQUEST ↗"}</button>
   {message?<p className={error?"nd-form-status is-error":"nd-form-status"} role="status">{message}</p>:null}
-  <p className="nd-form-footnote">No card details are collected. The USD 99/month pilot is a request, not a charge; payment instructions are provided only after scope confirmation by the authorized operator. Do not include passwords, access tokens, customer records or invoice attachments.</p>
+  <p className="nd-form-footnote">No card details are collected. A Pro request records interest only. It does not collect payment or activate a subscription. Do not include passwords, access tokens, customer records or invoice attachments.</p>
  </form>;
 }
 export default function BuyerEvaluation(){
