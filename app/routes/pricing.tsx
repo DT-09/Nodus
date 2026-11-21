@@ -5,7 +5,7 @@ import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
  {title:"NODUS merchant evaluation — pricing after proof"},
- {name:"description",content:"No paid plan or checkout is active. Merchants can evaluate the current shipping-economics CSV workflow before NODUS introduces recurring pricing."}
+ {name:"description",content:"A no-fee data-fit review or a USD 49 one-time founding pilot for Shopify shipping-cost reconciliation."}
 ];
 
 export default function Pricing(){
