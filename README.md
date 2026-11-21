@@ -18,20 +18,26 @@ Production site: https://nodus-hq.pages.dev
 - Unmatched and currency-mismatched charge review.
 - Merchant workspace with order totals, imported cost evidence, and reconciliation summaries.
 - Signed Shopify webhook receiver for uninstall and privacy topics.
-- Browser-local CSV review tool and downloadable CSV / JSON decision packs.
-- Founding assessment enquiry form and D1 health endpoint.
+- Browser-local CSV review tool with exact decimal arithmetic, exception register and downloadable CSV / JSON decision packs.
+- Device-local aggregate reporting history for up to 24 periods; raw source files are not persisted.
+- No-fee evaluation and USD 49 fixed-scope founding pilot intake.
+- D1-backed lead capture, payment-state tracking and a token-protected private operator console.
+- Optional HTTPS checkout-link redirect; payment confirmation remains an authorized operator's responsibility.
+- D1 health endpoint.
 
-Shopify connection and sync are implemented in source but are not production-ready until Shopify Partner API credentials, Shopify app configuration, webhook registration, and end-to-end installation tests are completed. The production D1 schema is present and the Cloudflare token-encryption secret has been configured; Shopify API key and secret remain unavailable. Do not describe a Shopify installation as live until those checks pass.
+Shopify connection and sync are implemented in source but are not production-ready until Shopify Partner API credentials, Shopify app configuration, webhook registration, and end-to-end installation tests are completed. The production D1 schema is present. The Cloudflare token-encryption secret may be configured, but Shopify Partner API credentials and end-to-end installation tests have not been verified. Do not describe a Shopify installation as live until those checks pass.
 
 ## Explicit product boundaries
 
-Not currently implemented:
-- Scheduled background sync and automatic carrier API / invoice polling.
-- Shopify fulfillment or tracking ingestion.
-- Billing, subscriptions, paid checkout, or Shopify Billing API.
-- Automatic edits to orders, shipping rates, refunds, inventory, or customer records.
-- General-purpose finance, marketing, CRM, inventory, or multi-platform operations.
-- Autonomous business execution.
+Current release boundaries:
+- The public workflow is CSV-based. The Shopify OAuth and read-only sync code is not a verified live merchant integration.
+- No scheduled background sync or carrier API / invoice polling.
+- No Shopify fulfillment or tracking ingestion in the current public workflow.
+- No recurring subscription billing or Shopify Billing API. The fixed-scope pilot uses an optional adult-operated HTTPS payment link or manually confirmed invoice instructions.
+- No automatic edits to orders, shipping rates, refunds, inventory, or customer records.
+- No general-purpose finance, marketing, CRM, inventory, or multi-platform operations.
+- No autonomous business execution.
+- Local period history is device-specific and stores aggregate metrics only; it is not a cloud workspace or automatic monitor.
 
 The first Shopify integration requests read_orders only. The reconciliation engine does not access customer names, email addresses, shipping addresses, or payment details. Shopify's granted order-access window and API limits apply. A matched charge is evidence, not proof of complete cost coverage, profit, savings, or carrier recovery.
 
