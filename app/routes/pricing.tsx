@@ -5,7 +5,7 @@ import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
  {title:"NODUS shipping margin control — founding pilot"},
- {name:"description",content:"A no-fee data-fit review or a USD 49 one-time founding pilot for Shopify shipping-cost reconciliation."}
+ {name:"description",content:"A no-fee data-fit review or a USD 149 one-time founding pilot for Shopify shipping-cost reconciliation."}
 ];
 
 export default function Pricing(){
