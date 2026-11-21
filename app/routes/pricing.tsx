@@ -23,15 +23,15 @@ export default function Pricing(){
  return <MarketingShell><main className="content-page pricing-page">
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
-   <h1>Start with evidence.<br/><em>Pay for proven value.</em></h1>
-   <p className="page-lede">There is no paid subscription or checkout today. Start with a no-fee, no-obligation evaluation of the current CSV workflow: inspect the sample, process supported order and carrier exports locally, and decide whether the findings are useful. NODUS will publish a price only when recurring product value, billing and support are ready. Any charge must be disclosed before approval.</p>
+   <h1>One store. One review.<br/><em>A decision you can inspect.</em></h1>
+   <p className="page-lede">NODUS offers a no-fee data-fit review and a fixed-scope founding pilot at USD 49 once. The pilot request is not an automatic charge: an authorized operator confirms fit and terms, then provides payment instructions. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL CSV.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
     <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
-    <h2>Get the work done<br/><em>before the sales pitch.</em></h2>
-    <p>During the evaluation, merchants can inspect the sample and use supported CSV exports locally. No store connection is required for this workflow. The initial release remains shipping-economics focused; wider business modules will be released only when their integrations and workflows are verified.</p>
+    <h2>Inspect the method.<br/><em>Then choose the pilot.</em></h2>
+    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 49 pilot adds an assisted review of one supported reporting period and a written findings summary. Source files are not uploaded through the public website.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -59,45 +59,45 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>Evaluate first.<br/><em>Price follows proof.</em></h2>
-    <p>This is the intended customer offer. There is no active paid plan. The current evaluation is free and limited to the supported CSV workflow. A recurring plan requires a product that delivers repeatable value, a verified billing path, published support terms and a clear price before a merchant can approve it.</p>
+    <h2>Founding pilot.<br/><em>USD 49 / once.</em></h2>
+    <p>One fixed-scope review: one Shopify store, one reporting period up to 60 days, up to 2,000 orders, one carrier/3PL cost export. Deliverables: evidence coverage statement, matched and unmatched charge register, currency-separated order comparison, decision-pack review and written limitations. Additional stores, longer periods, more than 2,000 orders, custom integrations and recurring monitoring are excluded.</p>
    </div>
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
     <article><span>VALUE / 02</span><h2>Operating value</h2><p>Time spent reconciling invoices, tracing exceptions and preparing finance reviews. Baseline and follow-up effort are recorded rather than guessed.</p></article>
     <article><span>VALUE / 03</span><h2>Decision value</h2><p>Clearer visibility into matched costs, unmatched charges, currency totals and the limits of the supplied evidence.</p></article>
    </div>
-   <p className="calculator-verdict">No monthly price or paid plan is published today. If NODUS later offers a subscription, the complete price and terms will be shown before the merchant approves payment. The calculator reports only the time value implied by the inputs; it does not establish NODUS performance.</p>
+   <p className="calculator-verdict">USD 49 is an introductory pilot price hypothesis, not a proven market-clearing price. It buys the defined review above, not guaranteed savings, carrier recovery, profit improvement or a financial audit. No work begins until the operator confirms the scope and the authorized account holder confirms cleared payment.</p>
   </section>
 
   <section className="proof-method" data-reveal>
    <span>03 / WHAT CONTINUING SERVICE MEANS</span>
-   <h2>Not a one-time report.<br/><em>A continuing control system.</em></h2>
+   <h2>A defined review.<br/><em>No invented outcomes.</em></h2>
    <div className="proof-grid">
-    <article><b>01</b><h3>Keep the record current</h3><p>Refresh Shopify order data and preserve the merchant's evidence history. Carrier invoice intake remains based on supported merchant-provided exports.</p></article>
-    <article><b>02</b><h3>Keep exceptions visible</h3><p>Track unresolved, newly imported and reviewed records without silently treating missing evidence as zero cost.</p></article>
-    <article><b>03</b><h3>Revisit decisions</h3><p>Compare shipping-policy assumptions against actual historical orders. No live policy changes without a separately implemented and approved workflow.</p></article>
-    <article><b>04</b><h3>Report what changed</h3><p>Show new evidence, changed coverage, resolved exceptions and merchant-attested outcomes with an audit trail.</p></article>
+    <article><b>01</b><h3>Review the supplied period</h3><p>Compare the supported Shopify order export with one carrier or 3PL cost export. Matching requires exact order reference or unique tracking reference and identical currency.</p></article>
+    <article><b>02</b><h3>Separate every exception</h3><p>Keep unmatched, ambiguous and currency-mismatched charges visible; missing cost evidence is never reported as zero.</p></article>
+    <article><b>03</b><h3>Explain the evidence</h3><p>Show matched records, unassigned charges, source references, currency totals and limits of the supplied data.</p></article>
+    <article><b>04</b><h3>Deliver the review pack</h3><p>Provide the CSV review register, JSON decision pack and a written findings summary for the defined reporting period.</p></article>
    </div>
-   <p className="calculator-caveat">The calculator is a manual estimate based only on values entered by the visitor. It does not measure NODUS performance. The public production release does not yet have an enabled Shopify Partner connection, scheduled monitoring, carrier API feeds, paid billing or automatic business actions. These require separate integration and acceptance gates.</p>
+   <p className="calculator-caveat">The current paid pilot is a human-reviewed, CSV-based service. It does not include live Shopify sync, automatic carrier feeds, ongoing monitoring, edits to store settings or guaranteed savings. The public CSV tool processes files locally; any additional review data sharing must be agreed explicitly and limited to what is necessary.</p>
   </section>
 
   <section className="pricing-contact" data-reveal>
    <div>
     <span>04 / REQUEST A REVIEW</span>
-    <h2>Let the evidence make the case.</h2>
-    <p>Suitable merchants have recurring parcel or 3PL charges, an authorized Shopify store and access to a carrier invoice or cost export. The initial assessment is deliberately narrow so that the result is useful, inspectable and repeatable.</p>
+    <h2>Start with the right-sized review.</h2>
+    <p>Suitable merchants have recurring parcel or 3PL charges, an authorized Shopify store and access to a carrier invoice or cost export. The free data-fit review confirms whether the two export formats are suitable. The USD 49 founding pilot delivers the defined review for one period.</p>
    </div>
    <div className="evaluation-steps">
     <p><b>01</b> Confirm store fit and evaluation scope.</p>
     <p><b>02</b> Use merchant-provided order and carrier-cost CSV exports. No store connection is available.</p>
     <p><b>03</b> Review a supported sample locally; do not send files with the enquiry.</p>
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
-    <p><b>05</b> Decide whether ongoing monthly service is worth it.</p>
+    <p><b>05</b> Choose the no-fee review or request the USD 49 pilot.</p>
    </div>
-   <Link to="/buyer-evaluation" className="primary-cta">REQUEST A FOUNDING ASSESSMENT ↗</Link>
+   <Link to="/buyer-evaluation" className="primary-cta">REQUEST THE USD 49 PILOT ↗</Link>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
-   <p className="pricing-disclaimer">The evaluation request is not a subscription agreement. No paid checkout is active. No customer results, testimonials or financial outcomes are claimed.</p>
+   <p className="pricing-disclaimer">The pilot form is a purchase request, not an instant charge. Payment is arranged only after scope confirmation by an authorized operator. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
