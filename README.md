@@ -20,7 +20,7 @@ Production site: https://nodus-hq.pages.dev
 - Signed Shopify webhook receiver for uninstall and privacy topics.
 - Browser-local CSV review tool with exact decimal arithmetic, exception register and downloadable CSV / JSON decision packs.
 - Device-local aggregate reporting history for up to 24 periods; raw source files are not persisted.
-- No-fee evaluation and USD 49 fixed-scope founding pilot intake.
+- No-fee evaluation and USD 149 fixed-scope founding pilot intake.
 - D1-backed lead capture, payment-state tracking and a token-protected private operator console.
 - Optional HTTPS checkout-link redirect; payment confirmation remains an authorized operator's responsibility.
 - D1 health endpoint.
