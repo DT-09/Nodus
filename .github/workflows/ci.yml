@@ -39,6 +39,10 @@ jobs:
         run: |
           npm install --global npm@11.6.0
           npm --version
+      # Regenerate the lockfile from the manifest overrides before auditing.
+      # This pins transitive security fixes without forcing a Prisma downgrade.
+      - name: Resolve locked dependency overrides
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Capture dependency audit
         run: |
           npm audit --json > npm-audit.json || true
