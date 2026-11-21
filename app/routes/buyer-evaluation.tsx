@@ -6,7 +6,7 @@ import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
   {title:"NODUS shipping margin control pilot"},
-  {name:"description",content:"Request a no-fee data-fit review or a fixed-scope USD 49 NODUS founding pilot. No source files are collected by the public form."},
+  {name:"description",content:"Request a no-fee data-fit review or a fixed-scope USD 149 NODUS founding pilot. No source files are collected by the public form."},
   {property:"og:title",content:"Merchant evaluation guide — NODUS"},
   {property:"og:description",content:"A practical guide to the data, scope and deliverables in a NODUS shipping-economics pilot."},
 ];
