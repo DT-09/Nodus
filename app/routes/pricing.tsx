@@ -24,14 +24,14 @@ export default function Pricing(){
   <header>
    <p className="page-eyebrow">COMMERCIAL / PROOF BEFORE PRICE</p>
    <h1>Understand shipping costs.<br/><em>Keep the evidence in view.</em></h1>
-   <p className="page-lede">NODUS offers a fixed-scope Pro subscription at USD 99/month once. It covers one store, one reporting period up to 60 days, up to 2,000 orders and one carrier or 3PL cost export. The review identifies unmatched charges and, only when complete cost coverage is attested, orders where matched carrier cost exceeds shipping collected. The request is not an automatic charge; an authorized operator must confirm scope and provide the configured payment route.</p>
+   <p className="page-lede">Start with the free browser-based shipping review. NODUS Pro is planned at USD 99/month for recurring shipping-cost analysis, exception monitoring, historical comparisons and evidence-backed weekly reviews. Pro is not accepting payments yet. We will open billing only after those recurring capabilities, account access, support and payment verification are working.</p>
   </header>
 
   <section className="value-calculator">
    <div className="calculator-heading">
-    <span>01 / FOUNDING MERCHANT VALUE PROGRAMME</span>
-    <h2>Inspect the method.<br/><em>Then choose the pilot.</em></h2>
-    <p>The free path lets a merchant run the sample and test supported CSV exports locally. The USD 99/month pilot adds an assisted review of one supported reporting period, an attested shipping-shortfall register where eligible, and a written findings summary. Source files are not uploaded through the public website.</p>
+    <span>01 / FREE PRODUCT / PRO SUBSCRIPTION</span>
+    <h2>Start free.<br/><em>Upgrade when Pro is ready.</em></h2>
+    <p>The free product currently runs supported order and carrier-cost CSV analysis locally in the browser. Pro is planned to add recurring analysis, monitoring, historical comparisons and full decision packs. Those Pro capabilities are not yet available.</p>
    </div>
    <div className="proof-grid">
     <article><b>01</b><h3>Scope one store</h3><p>One Shopify store, one reporting currency, a defined historical order sample and one supported carrier-cost export.</p></article>
@@ -59,8 +59,8 @@ export default function Pricing(){
   <section className="pricing-targets" data-reveal>
    <div className="pricing-target-heading">
     <span>02 / THE VALUE TEST</span>
-    <h2>Pro subscription.<br/><em>USD 99/month / once.</em></h2>
-    <p>One fixed-scope review: one Shopify store, one reporting period up to 60 days, up to 2,000 orders, one carrier/3PL cost export. Deliverables: evidence coverage statement, matched and unmatched charge register, currency-separated order comparison, decision-pack review and written limitations. Additional stores, longer periods, more than 2,000 orders, custom integrations and recurring monitoring are excluded.</p>
+    <h2>NODUS Pro.<br/><em>USD 99 / month.</em></h2>
+    <p>Planned recurring service: ongoing shipping-cost reviews, new exception detection, historical comparisons, weekly decision briefs and a persistent evidence history. The precise plan limits will be published before billing opens.</p>
    </div>
    <div className="content-grid">
     <article><span>VALUE / 01</span><h2>Economic value</h2><p>Merchant-confirmed credits and corrections, separated from identified exposure and disputed amounts. No speculative savings forecasts.</p></article>
@@ -93,11 +93,11 @@ export default function Pricing(){
     <p><b>02</b> Use merchant-provided order and carrier-cost CSV exports. No store connection is available.</p>
     <p><b>03</b> Review a supported sample locally; do not send files with the enquiry.</p>
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
-    <p><b>05</b> Choose the no-fee review or request the USD 99/month pilot.</p>
+    <p><b>05</b> Choose the no-fee review or request Pro launch updates.</p>
    </div>
-   <Link to="/buyer-evaluation" className="primary-cta">REQUEST PRO ACCESS ↗</Link>
+   <Link to="/buyer-evaluation" className="primary-cta">REQUEST PRO ACCESS ↗</Link><a className="cta-secondary" href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20enquiry">EMAIL NODUS ↗</a>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
-   <p className="pricing-disclaimer">The form records interest only. It does not take payment or create a subscription. No customer results, testimonials or financial outcomes are claimed.</p>
+   <p className="pricing-disclaimer">The form records interest only. It does not take payment or create a subscription. For a direct enquiry, email NODUS using the contact link below. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
   <p className="pricing-footnote"><Link to="/methodology">Read calculation methodology</Link> · <Link to="/security">Review data boundaries</Link> · <Link to="/product">Explore current capabilities</Link></p>
  </main></MarketingShell>;
