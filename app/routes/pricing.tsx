@@ -95,7 +95,7 @@ export default function Pricing(){
     <p><b>04</b> Receive the evidence-backed assessment and review.</p>
     <p><b>05</b> Choose the no-fee review or request Pro launch updates.</p>
    </div>
-   <Link to="/buyer-evaluation" className="primary-cta">REQUEST PRO ACCESS ↗</Link><a className="cta-secondary" href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20enquiry">EMAIL NODUS ↗</a>
+   <Link to="/buyer-evaluation" className="primary-cta">REQUEST PRO ACCESS ↗</Link><a className="cta-secondary" href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20enquiry">EMAIL NODUS ↗</a><a className="cta-secondary" href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20enquiry">EMAIL NODUS ↗</a>
    <div className="hero-ctas"><Link to="/manual-data" className="cta-primary">RUN A CSV REVIEW ↗</Link><Link to="/install" className="cta-secondary">INSTALL NODUS ↗</Link></div>
    <p className="pricing-disclaimer">The form records interest only. It does not take payment or create a subscription. For a direct enquiry, email NODUS using the contact link below. No customer results, testimonials or financial outcomes are claimed.</p>
   </section>
