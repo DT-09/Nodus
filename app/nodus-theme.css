@@ -70,3 +70,171 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .nh-secondary,.nh-proof-copy>a{color:var(--nd-ivory)}
 /* Respect reduced motion and keep the palette consistent on small screens */
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+/* NODUS DARK-ONLY EDITORIAL SYSTEM — deep natural surfaces, light readable type.
+   Every section stays dark; ivory/linen/stone carry all primary and secondary copy. */
+:root{
+  --nd-night:#151612;
+  --nd-charcoal:#1b1c18;
+  --nd-graphite:#22231e;
+  --nd-peat:#292820;
+  --nd-bark:#302b23;
+  --nd-moss:#34372d;
+  --nd-slate:#3b3d35;
+  --nd-ivory:#f0ebdf;
+  --nd-cream:#e8e0d2;
+  --nd-linen:#d9cfbf;
+  --nd-stone:#bdb19e;
+  --nd-taupe:#a79a86;
+  --nd-muted:#c0b9ac;
+  --nd-dim:#8e8a7e;
+  --nd-gold:#b99b6b;
+  --nd-champagne:#d8c39d;
+  --nd-olive:#929681;
+  --nd-line:rgba(216,195,157,.19);
+  --nd-line-strong:rgba(216,195,157,.32);
+  --nd-glass:rgba(27,28,24,.78);
+  --nd-panel:rgba(34,35,30,.88);
+  --nd-shadow:0 28px 80px rgba(0,0,0,.32);
+}
+html,body,#root{background:var(--nd-night);color:var(--nd-ivory)}
+body{background:linear-gradient(180deg,#151612 0%,#191a16 42%,#151612 100%);color:var(--nd-ivory)}
+/* Public site: no light-mode inversion and no pale content bands. */
+.marketing-site,.marketing-site[data-theme="light"]{
+ color-scheme:dark;
+ --ink:var(--nd-night);--ink-2:var(--nd-charcoal);--ink-3:var(--nd-graphite);
+ --espresso:var(--nd-bark);--paper:var(--nd-ivory);--paper-2:var(--nd-cream);
+ --stone:var(--nd-stone);--muted:var(--nd-muted);--muted-2:var(--nd-dim);
+ --line:var(--nd-line);--accent:var(--nd-gold);--accent-2:var(--nd-champagne);
+ --blue:var(--nd-olive);--surface:var(--nd-charcoal);--surface-2:var(--nd-graphite);
+ --text:var(--nd-ivory);--shadow:var(--nd-shadow);
+ background:var(--nd-night);color:var(--nd-ivory)
+}
+.marketing-site .home-page,.marketing-site main,.marketing-site #main-content,
+.marketing-site .trust-section,.marketing-site .live-system,
+.marketing-site .capability-ledger,.marketing-site .section-light,
+.marketing-site .nh-home,.marketing-site .nh-homepage,
+.marketing-site .nd-product-page,.marketing-site .nd-pricing-page{
+ background-color:var(--nd-night);color:var(--nd-ivory)
+}
+.marketing-site .manifesto-band,.marketing-site .evidence-thread,
+.marketing-site .nh-statement,.marketing-site .nh-proof,
+.marketing-site .nd-product-principle,.marketing-site .nd-pricing-process,
+.marketing-site .nd-pricing-value,.marketing-site .nd-product-boundary,
+.marketing-site .nd-plan,.marketing-site .nd-plan-pro,
+.marketing-site .nd-plan-monthly,.marketing-site .nd-pricing-contact{
+ background:linear-gradient(145deg,var(--nd-peat),var(--nd-charcoal) 68%,var(--nd-night));
+ color:var(--nd-ivory);border-color:var(--nd-line)
+}
+.marketing-site .system-grid,.marketing-site .system-cell,
+.marketing-site .nh-service-grid,.marketing-site .nh-service-grid article,
+.marketing-site .nh-steps,.marketing-site .nh-steps article,
+.marketing-site .nh-proof-list,.marketing-site .nh-proof-list>div,
+.marketing-site .nd-product-grid,.marketing-site .nd-product-grid article,
+.marketing-site .nd-product-deliverable ul,.marketing-site .nd-pricing-steps,
+.marketing-site .nd-pricing-faq>div{
+ border-color:var(--nd-line)
+}
+.marketing-site .system-cell,.marketing-site .nh-service-grid article,
+.marketing-site .nh-steps article,.marketing-site .nd-product-grid article{
+ background:linear-gradient(155deg,rgba(49,47,39,.56),rgba(27,28,24,.86))
+}
+.marketing-site .system-cell:hover,.marketing-site .nh-service-grid article:hover,
+.marketing-site .nd-product-grid article:hover{background:rgba(185,155,107,.075)}
+/* Light text hierarchy: bright ivory for headings, linen for body, stone for metadata. */
+.marketing-site h1,.marketing-site h2,.marketing-site h3,.marketing-site h4,
+.marketing-site .hero-copy-column h1,.marketing-site .manifesto-band h2,
+.marketing-site .section-heading h2,.marketing-site .trust-heading h2,
+.marketing-site .closing-section h2,.marketing-site .system-cell h3,
+.marketing-site .thread-detail h3,.marketing-site .trust-grid h3,
+.marketing-site .nh-statement h2,.marketing-site .nh-section-heading h2,
+.marketing-site .nh-proof-copy h2,.marketing-site .nh-close h2,
+.marketing-site .nh-service-grid h3,.marketing-site .nh-steps h3,
+.marketing-site .nd-product-page h1,.marketing-site .nd-pricing-page h1,
+.marketing-site .nd-product-principle h2,.marketing-site .nd-product-heading h2,
+.marketing-site .nd-product-deliverable h2,.marketing-site .nd-pricing-process h2,
+.marketing-site .nd-pricing-value h2,.marketing-site .nd-product-grid h3,
+.marketing-site .nd-plan h2,.marketing-site .nd-pricing-faq h2,
+.marketing-site .nd-pricing-faq h3,.marketing-site .nd-pricing-contact h2{
+ color:var(--nd-ivory)
+}
+.marketing-site p,.marketing-site li,.marketing-site label,
+.marketing-site .hero-intro,.marketing-site .manifesto-band>p,
+.marketing-site .section-heading>p,.marketing-site .system-cell p,
+.marketing-site .thread-detail>p,.marketing-site .trust-grid p,
+.marketing-site .nh-statement>p,.marketing-site .nh-proof-copy>p,
+.marketing-site .nh-service-grid p,.marketing-site .nh-steps p,
+.marketing-site .nd-product-principle>p,.marketing-site .nd-product-deliverable>div>p,
+.marketing-site .nd-product-grid p,.marketing-site .nd-product-boundary p,
+.marketing-site .nd-plan-desc,.marketing-site .nd-plan li,
+.marketing-site .nd-pricing-steps p,.marketing-site .nd-pricing-deliverables p,
+.marketing-site .nd-pricing-faq p,.marketing-site .nd-pricing-contact p{
+ color:var(--nd-linen)
+}
+.marketing-site small,.marketing-site .muted,.marketing-site .cell-rule,
+.marketing-site .hero-proofline,.marketing-site .network-label,
+.marketing-site .network-caption,.marketing-site .detail-top,
+.marketing-site .detail-foot,.marketing-site .footer-identity>p,
+.marketing-site .footer-column a,.marketing-site .footer-bottom,
+.marketing-site .site-brand-caption,.marketing-site .header-context{
+ color:var(--nd-stone)
+}
+.marketing-site .eyebrow,.marketing-site .section-index,
+.marketing-site .cell-number,.marketing-site .detail-top span:last-child,
+.marketing-site .thread-step.is-active>span,.marketing-site .thread-step.is-active>i,
+.marketing-site .trust-symbol,.marketing-site .nh-eyebrow,
+.marketing-site .nh-product-top,.marketing-site .nh-product-state,
+.marketing-site .nh-service-number,.marketing-site .nh-steps article>span,
+.marketing-site .nd-product-lockup span,.marketing-site .nd-plan-kicker{
+ color:var(--nd-champagne)
+}
+.marketing-site .hero-copy-column h1 em,.marketing-site .section-heading h2 em,
+.marketing-site .manifesto-band h2 em,.marketing-site .trust-heading h2 em,
+.marketing-site .closing-section h2 em,.marketing-site .nd-product-page h1 em,
+.marketing-site .nd-pricing-page h1 em{color:var(--nd-champagne)}
+/* Navigation, cards, tables, inputs and dialogs all use the same dark material range. */
+.marketing-site .site-header{background:var(--nd-glass);border-color:var(--nd-line)}
+.marketing-site .site-menu,.marketing-site .thread-detail,
+.marketing-site .market-card,.marketing-site .simulation-result,
+.marketing-site .nd-plan,.marketing-site .nd-product-boundary{
+ background-color:var(--nd-charcoal);border-color:var(--nd-line)
+}
+.marketing-site .site-footer{background:#11120f;color:var(--nd-ivory);border-color:var(--nd-line)}
+.marketing-site input,.marketing-site select,.marketing-site textarea,
+.marketing-site .import-form,.marketing-site .value-record-form input,
+.marketing-site .value-record-form select,.marketing-site .value-record-form textarea,
+.marketing-site .coverage-review-form select,.marketing-site .value-advance-form select,
+.marketing-site .value-advance-form input{
+ color:var(--nd-ivory);background:var(--nd-graphite);border-color:var(--nd-line)
+}
+.marketing-site input::placeholder,.marketing-site textarea::placeholder{color:var(--nd-dim)}
+.marketing-site .data-table th{color:var(--nd-champagne);border-color:var(--nd-line)}
+.marketing-site .data-table td{color:var(--nd-linen);border-color:var(--nd-line)}
+.marketing-site .thread-step{color:var(--nd-stone);border-color:var(--nd-line)}
+.marketing-site .thread-step:hover,.marketing-site .thread-step.is-active{color:var(--nd-ivory);background:rgba(185,155,107,.09)}
+/* The homepage product mock-up also follows dark-surface/light-type rules. */
+.marketing-site .nh-product,.marketing-site .nh-sources article,
+.marketing-site .nh-engine,.marketing-site .nh-output>div{
+ background:linear-gradient(145deg,var(--nd-graphite),var(--nd-charcoal));
+ border-color:var(--nd-line)
+}
+.marketing-site .nh-product-title h2,.marketing-site .nh-sources article>b,
+.marketing-site .nh-engine>div>b,.marketing-site .nh-output b,
+.marketing-site .nh-proof-list span,.marketing-site .nh-product-brand,
+.marketing-site .nh-product h3{color:var(--nd-ivory)}
+.marketing-site .nh-sources article>small,.marketing-site .nh-engine>div>small,
+.marketing-site .nh-product p,.marketing-site .nh-product small{color:var(--nd-stone)}
+.marketing-site .nd-product-page h1,.marketing-site .nd-pricing-page h1{color:var(--nd-ivory)}
+.marketing-site .nd-product-grid article>span,.marketing-site .nd-product-deliverable li:before,
+.marketing-site .nd-plan li:before,.marketing-site .nd-pricing-deliverables b{color:var(--nd-champagne)}
+/* Primary actions may use the quiet metal accent, with dark legible action text. */
+.marketing-site .cta-primary,.marketing-site .nh-primary,
+.marketing-site .primary-cta,.marketing-site .cta-primary:visited{
+ background:var(--nd-gold);border-color:var(--nd-gold);color:#171812!important
+}
+.marketing-site .cta-primary:hover,.marketing-site .nh-primary:hover,
+.marketing-site .primary-cta:hover{background:var(--nd-champagne);color:#171812!important}
+.marketing-site a:hover{transition:color .2s ease}
+.marketing-site :focus-visible{outline:2px solid var(--nd-champagne);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.marketing-site *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
