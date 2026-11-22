@@ -302,8 +302,6 @@ body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 
 
 
 /* Final NODUS art direction: tailored typography, mineral palette, translucent navigation. */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap');
-
 .marketing-site{
   font-family:"Manrope", "Avenir Next", Avenir, sans-serif;
   background:var(--nd-obsidian);
