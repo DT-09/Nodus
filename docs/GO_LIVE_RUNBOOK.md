@@ -65,18 +65,18 @@ The D1 enquiry form does not send an automatic email notification. Direct mailto
 
 ## Commercial operating requirements
 
-Production configuration was inspected on 2026-11-21. The Pages project currently has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` or `NODUS_PILOT_CHECKOUT_URL` configured in either Production or Preview. Therefore:
+Production configuration was inspected on 2026-11-21. The Pages project has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` configured in either Production or Preview. Therefore:
 - The protected `/ops` console cannot authenticate an operator.
-- The public pilot form cannot redirect a buyer to checkout.
-- The form can store enquiries in D1, but there is no automatic new-lead notification. An operator must check D1 manually until a notification channel is implemented.
+- The public paid-audit form is an enquiry endpoint only; it does not take payment or redirect to checkout.
+- The form can store enquiries in D1, but there is no automatic new-lead notification. An authorized operator must check D1 manually until a notification channel is implemented.
 
 Required before accepting paid pilot requests:
 - [ ] A responsible adult business operator is named and owns support, contracts, payment collection, tax and customer-data obligations.
 - [ ] Configure a high-entropy `NODUS_ADMIN_TOKEN` as a Cloudflare secret in Production and Preview. Do not commit it or expose it in browser code.
-- [ ] Configure `NODUS_PILOT_CHECKOUT_URL` with an HTTPS checkout route owned by the authorized business operator. Do not use a personal or unverified payment account.
+- [ ] The authorized adult seller establishes an approved invoice and payment route outside the public form. Do not use a personal or unverified payment account.
 - [ ] Configure lead notification or assign a documented daily D1 review owner; test that a new enquiry is noticed and acknowledged.
-- [ ] Test the full path: valid pilot request → D1 record → operator review → scope acceptance → payment route → cleared-funds confirmation → paid status.
-- [ ] Confirm that the checkout amount, currency, scope, refund/cancellation terms and legal seller identity match the published USD 149 offer.
+- [ ] Test the full path: valid audit request → D1 record → operator review → written scope and terms → invoice → cleared-funds confirmation → engagement record.
+- [ ] Confirm that the invoice amount, currency, scope, refund terms and legal seller identity match the agreed USD 149 pilot offer.
 - [ ] The paid pilot is delivered using a secure, agreed data-transfer method.
 - [ ] No recurring subscription until billing, entitlement lifecycle, cancellation and support are tested.
 
