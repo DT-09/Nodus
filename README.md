@@ -20,7 +20,8 @@ Production site: https://nodus-hq.pages.dev
 - Signed Shopify webhook receiver for uninstall and privacy topics.
 - Browser-local CSV review tool with exact decimal arithmetic, exception register and downloadable CSV / JSON decision packs.
 - Device-local aggregate reporting history for up to 24 periods; raw source files are not persisted.
-- Free browser-local diagnostic and a proposed USD 149 one-time Shipping Cost Audit pilot request.
+- Free browser-local diagnostic, USD 149 one-time baseline audit request, and USD 99/month recurring Monthly Shipping Review request.
+- Print-ready monthly report export alongside the CSV register and JSON decision pack.
 - D1-backed lead capture, payment-state tracking and a token-protected private operator console.
 - Contact-first paid-audit request; the form records interest only. An authorized adult-operated seller must confirm scope, issue terms and invoice, and verify cleared payment before delivery.
 - D1 health endpoint.
@@ -33,7 +34,8 @@ Current release boundaries:
 - The public workflow is CSV-based. The Shopify OAuth and read-only sync code is not a verified live merchant integration.
 - No scheduled background sync or carrier API / invoice polling.
 - No Shopify fulfillment or tracking ingestion in the current public workflow.
-- No automated checkout, recurring subscription billing or Shopify Billing API. The Shipping Cost Audit is a fixed-scope one-time service, not a self-serve SaaS subscription; invoices and payment confirmation are handled by an authorized business operator.
+- The Monthly Shipping Review is a human-delivered recurring service based on merchant-supplied exports each period; it is not continuous carrier monitoring or automated carrier polling.
+- No automated subscription checkout, Shopify Billing API, real-time carrier polling or background carrier invoice ingestion.
 - No automatic edits to orders, shipping rates, refunds, inventory, or customer records.
 - No general-purpose finance, marketing, CRM, inventory, or multi-platform operations.
 - No autonomous business execution.
@@ -96,6 +98,6 @@ npm run verify:deployment
 
 ## Commercial and governance boundaries
 
-Commercial offer: a free browser-local diagnostic and a proposed USD 149 one-time Shipping Cost Audit pilot for one store, one reporting window up to 30 days, up to 2,000 orders and one carrier/3PL cost export. Deliverables include coverage assessment, order-to-invoice reconciliation, an evidence-backed exception register, historical shipping-policy replay where supported, and a written decision brief with CSV/JSON exports. The public form records an enquiry; it does not charge, reserve capacity or create a paid order. The USD 149 price is a pilot hypothesis, not proven willingness to pay. An authorized adult business operator must confirm fit, issue terms and invoice, receive funds through an approved business account and confirm cleared payment before service begins. No automatic monthly renewal or subscription is offered. NODUS_ADMIN_TOKEN protects the private /ops console. There is no automated recurring subscription billing. Public Shopify app monetization requires an eligible public App Store listing and compliant billing configuration. Pricing, contracts, invoices, tax handling, data-processing terms, customer support and binding commercial commitments require an appropriately authorized adult business operator. Do not publish customer logos, testimonials, customer counts or savings results without evidence and permission.
+Commercial offer: free browser-local diagnostic; USD 149 one-time baseline Shipping Cost Audit; and USD 99/month recurring Monthly Shipping Review. The monthly service covers one store, up to 2,000 orders and one carrier/3PL cost export per period. Each period receives a human-reviewed reconciliation, coverage assessment, exception register, carrier spend review, prior-period comparison where comparable evidence exists, and a written decision brief. The monthly service is analyst-delivered from new exports supplied each period; it is not automated carrier monitoring, real-time alerting or automatic carrier polling. Prices are pilot hypotheses, not proven willingness to pay. The public form records service requests only. Do not publish customer logos, testimonials, customer counts or savings results without evidence and permission.
 
 A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
