@@ -53,7 +53,8 @@ export default function Home(){
       <div><span>UNMATCHED</span><b>Needs review</b></div>
       <div><span>COVERAGE</span><b>Explicit status</b></div>
      </div>
-     <p className="nh-product-note">PRODUCT WORKFLOW · NO CUSTOMER METRICS SHOWN</p>
+     <div className="nh-ledger-preview" aria-label="Illustrative order and carrier evidence preview"><div className="nh-ledger-head"><span>ILLUSTRATIVE RECORD VIEW</span><span>ORDER / COST / LINK</span></div><div className="nh-ledger-row"><span>Order reference</span><b>Carrier charge</b><em>Linked</em></div><div className="nh-ledger-row"><span>Tracking reference</span><b>Invoice line</b><em>Review</em></div><div className="nh-ledger-row"><span>Currency check</span><b>Source record</b><em>Verified</em></div></div>
+     <p className="nh-product-note">ILLUSTRATIVE INTERFACE · NOT MERCHANT DATA</p>
     </div>
    </section>
 
