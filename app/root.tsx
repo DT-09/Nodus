@@ -3,9 +3,11 @@ import {useEffect} from "react";
 import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from "react-router";
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
+import nodusThemeCss from "./nodus-theme.css?url";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
+  {rel:"stylesheet",href:nodusThemeCss},
   {rel:"icon",href:"/nodus-icon.svg",type:"image/svg+xml"},
   {rel:"apple-touch-icon",href:"/nodus-icon.svg"},
   {rel:"manifest",href:"/manifest.webmanifest"},
