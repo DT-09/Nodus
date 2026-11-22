@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-labelledby="title desc"><title id="title">NODUS</title><desc id="desc">Six gold nodes connected in a symmetrical faceted diamond network.</desc><g stroke="#C3A879" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" opacity=".88"><path d="M256 54 126 132 72 270 256 454 440 270 386 132 256 54"/><path d="M126 132 386 132M126 132 256 454M386 132 256 454M72 270 386 132M440 270 126 132"/></g><g fill="#D8C39D" stroke="#A98B5C" stroke-width="3"><circle cx="256" cy="54" r="13"/><circle cx="126" cy="132" r="12"/><circle cx="386" cy="132" r="12"/><circle cx="72" cy="270" r="12"/><circle cx="440" cy="270" r="12"/><circle cx="256" cy="454" r="13"/></g><g fill="#F0E6D2" opacity=".72"><circle cx="256" cy="54" r="4"/><circle cx="126" cy="132" r="3.5"/><circle cx="386" cy="132" r="3.5"/><circle cx="72" cy="270" r="3.5"/><circle cx="440" cy="270" r="3.5"/><circle cx="256" cy="454" r="4"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" aria-labelledby="title desc"><title id="title">NODUS</title><desc id="desc">Six champagne nodes connected as a symmetrical faceted diamond network.</desc>
+<g stroke="#BDA77F" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" opacity=".9">
+  <path d="M256 54 112 145 72 286 256 458 440 286 400 145 256 54"/>
+  <path d="M112 145 400 145"/>
+  <path d="M112 145 256 458 400 145"/>
+  <path d="M72 286 400 145M440 286 112 145"/>
+</g>
+<g fill="#D8C29A" stroke="#A98B61" stroke-width="2.6">
+  <circle cx="256" cy="54" r="13"/><circle cx="112" cy="145" r="12"/>
+  <circle cx="400" cy="145" r="12"/><circle cx="72" cy="286" r="12"/>
+  <circle cx="440" cy="286" r="12"/><circle cx="256" cy="458" r="13"/>
+</g>
+<g fill="#F2EDE2" opacity=".76">
+  <circle cx="256" cy="54" r="4"/><circle cx="112" cy="145" r="3.5"/>
+  <circle cx="400" cy="145" r="3.5"/><circle cx="72" cy="286" r="3.5"/>
+  <circle cx="440" cy="286" r="3.5"/><circle cx="256" cy="458" r="4"/>
+</g></svg>
