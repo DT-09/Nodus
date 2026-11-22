@@ -40,14 +40,14 @@ export default function Home(){
      <div className="nh-meta"><span>ORDER-LEVEL RECONCILIATION</span><i></i><span>CARRIER COST INTELLIGENCE</span><i></i><span>LOCAL FILE PROCESSING</span></div>
     </div>
     <div className="nh-product">
-     <div className="nh-product-top"><div className="nh-product-brand"><img src={NODUS_MARK} alt="NODUS crown-diamond network mark"/><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
+     <div className="nh-product-top"><div className="nh-product-brand"><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
      <div className="nh-product-title"><span>01 / EVIDENCE WORKSPACE</span><h2>One view of<br/><em>shipping economics.</em></h2></div>
      <div className="nh-sources">
       <article><span>01 / SOURCE</span><b>Shopify orders</b><small>Order value · shipping collected · tax treatment</small><strong>ORDER RECORDS</strong></article>
       <div className="nh-connector"><span></span><b>+</b><span></span></div>
       <article><span>02 / SOURCE</span><b>Carrier invoices</b><small>Invoice lines · billed cost · order references</small><strong>COST EVIDENCE</strong></article>
      </div>
-     <div className="nh-engine"><span className="nh-engine-mark"><img src={NODUS_MARK} alt="" style={{width:27,height:27,objectFit:"contain"}}/></span><div><b>Deterministic matching engine</b><small>Reference · tracking · currency · coverage</small></div><span className="nh-engine-arrow">↗</span></div>
+     <div className="nh-engine"><span className="nh-engine-mark" aria-hidden="true">N</span><div><b>Deterministic matching engine</b><small>Reference · tracking · currency · coverage</small></div><span className="nh-engine-arrow">↗</span></div>
      <div className="nh-output">
       <div><span>MATCHED</span><b>Source-linked</b></div>
       <div><span>UNMATCHED</span><b>Needs review</b></div>
@@ -85,7 +85,6 @@ export default function Home(){
    </section>
 
    <section className="nh-close">
-    <img src={NODUS_MARK} alt="NODUS crown-diamond network mark"/>
     <span>NODUS / SHIPPING ECONOMICS</span>
     <h2>See the evidence.<br/><em>Then decide.</em></h2>
     <p>Start with a free review using your own supported CSV exports. Files are processed in your browser and are not uploaded to NODUS.</p>
