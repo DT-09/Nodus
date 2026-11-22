@@ -1,4 +1,7 @@
-# NODUS — Definitive Product, Engineering & Commercial Specification
+# NODUS — Legacy Shipping Economics Product Specification
+
+> **Superseded for strategic direction by [NODUS Master Business & Product Blueprint](NODUS_MASTER_BLUEPRINT.md).** This document records the earlier shipping-economics product scope. Do not use it to override the current 3PL Billing & Performance Control direction. Existing technical details may still describe implemented components; verify them against the code before reuse.
+
 
 **Status:** Strategic baseline locked; implementation specification  
 **Date:** 2026-11-13  
