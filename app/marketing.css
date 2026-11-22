@@ -836,3 +836,59 @@
 .nh-product-brand>img{width:24px;height:24px;object-fit:contain}
 .nh-engine-mark img{width:18px;height:18px;object-fit:contain}
 .nh-close>img{width:38px;height:38px;object-fit:contain}
+
+
+/* NODUS refinement — stronger hierarchy, clearer reading, tactile product visuals. */
+.marketing-site .site-brand .nodus-logo{width:22px;height:22px}
+.marketing-site .footer-wordmark .nodus-logo{width:24px;height:24px}
+.marketing-site .site-brand-word{font-weight:800;letter-spacing:.2em}
+.marketing-site .footer-wordmark{font-weight:800}
+.nh-product-brand>img{width:21px;height:21px}
+.nh-engine-mark img{width:17px;height:17px}
+.nh-close>img{width:33px;height:33px}
+
+.nh-eyebrow,.nh-section-heading>span,.nh-statement>div>span,.nh-proof-copy>span,.nh-close>span{font-size:10px;letter-spacing:.14em}
+.nh-lede{font-size:15px;line-height:1.85;color:#d4ccbf}
+.nh-meta{font-size:9px;line-height:1.7}
+.nh-primary,.nh-secondary{font-size:10px}
+.nh-statement>p{font-size:14px;line-height:1.9;color:#d0c7b9}
+.nh-product-state,.nh-product-brand small{font-size:8px}
+.nh-product-title>span{font-size:9px}
+.nh-product-title h2{font-size:36px}
+.nh-sources article>span,.nh-sources article>strong{font-size:9px}
+.nh-sources article>b{font-size:15px}
+.nh-sources article>small{font-size:11px;line-height:1.6}
+.nh-engine>div>b{font-size:12px}
+.nh-engine>div>small{font-size:10px}
+.nh-output>div>span{font-size:8px}
+.nh-output>div>b{font-size:12px}
+.nh-ledger-head,.nh-ledger-row{font-size:9px}
+.nh-product-note{font-size:8px}
+.nh-statement h2,.nh-section-heading h2,.nh-proof-copy h2,.nh-close h2{line-height:1.13}
+.nh-service-grid article>small{font-size:8px}
+.nh-service-grid h3,.nh-steps h3{font-size:24px}
+.nh-service-grid p,.nh-steps p{font-size:12px;line-height:1.85}
+.nh-service-number{font-size:13px}
+.nh-steps article>span{font-size:9px}
+.nh-proof-copy>p,.nh-close>p{font-size:13px;line-height:1.9}
+.nh-proof-copy>a{font-size:9px}
+.nh-proof-list b{font-size:13px}
+.nh-proof-list span{font-size:12px;line-height:1.65}
+
+@media (prefers-reduced-motion:no-preference){
+ .nh-product,.nh-sources article,.nh-engine,.nh-ledger-preview,.nh-service-grid article,.nh-steps article,.nh-proof-list>div,.nh-close>img{
+  transition:transform .28s cubic-bezier(.2,.7,.2,1),border-color .28s ease,box-shadow .28s ease,background-color .28s ease;
+ }
+ .nh-product:hover{transform:translateY(-5px);box-shadow:0 42px 110px rgba(0,0,0,.42),0 0 0 1px rgba(213,179,111,.13),inset 0 1px rgba(255,255,255,.05)}
+ .nh-sources article:hover,.nh-engine:hover,.nh-ledger-preview:hover{transform:translateY(-3px);border-color:rgba(240,212,154,.55);box-shadow:0 14px 34px rgba(0,0,0,.2)}
+ .nh-service-grid article:hover,.nh-steps article:hover{transform:translateY(-4px);background:rgba(213,179,111,.055);box-shadow:0 16px 36px rgba(0,0,0,.16)}
+ .nh-proof-list>div:hover{transform:translateX(5px);background:rgba(213,179,111,.045)}
+ .nh-close>img:hover{transform:scale(1.08)}
+}
+@media(max-width:720px){
+ .nh-lede{font-size:14px}
+ .nh-statement>p{font-size:13px}
+ .nh-service-grid p,.nh-steps p{font-size:12px}
+ .nh-product-title h2{font-size:32px}
+ .nh-sources article>small{font-size:11px}
+}
