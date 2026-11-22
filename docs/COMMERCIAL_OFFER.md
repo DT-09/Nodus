@@ -1,262 +1,100 @@
 # NODUS Commercial Offer and Buyer Definition
 
-**Status:** Commercial offer and launch-scope decision  
-**Date:** 2026-11-15  
-**Product:** NODUS — Shopify Shipping Economics Control
+**Status:** Pilot offer; demand not yet validated  
+**Date:** 2026-11-22  
+**Product:** NODUS — Shopify Shipping Cost Audit
 
 ## 1. Commercial decision
 
-### Current commercial model
+NODUS is offered in two stages:
 
-The current customer-facing offer is a free browser-local diagnostic plus a USD 99/month fixed-scope NODUS Pro monthly review service. Pro covers one Shopify store, up to 2,000 orders and one carrier/3PL cost export per month. Deliverables are reconciliation, carrier spend breakdown, an evidence-backed exception register, historical shipping-policy replay and a monthly executive brief. This is a productized monthly service, not automated SaaS monitoring or a self-serve subscription. The public form records interest; buyers contact NODUS by email to confirm fit and scope. An authorized adult business operator issues the invoice, receives funds through an approved business account and confirms cleared payment before service begins. Treat USD 99/month as a price to validate, not proven willingness to pay.
+1. **Free self-serve diagnostic:** browser-local CSV reconciliation and policy replay.
+2. **Shipping Cost Audit pilot:** USD 149 one-time, fixed scope, human-reviewed decision pack.
 
+The USD 149 is a test price, not demonstrated willingness to pay. The public form records a request only. It does not charge a card, create an order, reserve capacity or activate service. An authorized seller must confirm fit, scope, terms, invoice and cleared funds before work begins.
 
-NODUS will not compete as a generic shipping dashboard or claim to be a universal carrier-audit platform.
-
-Its initial wedge is:
-
-> **Show Shopify merchants where the shipping amount collected at checkout diverges from evidenced fulfillment cost, explain which records support the difference, and let the merchant test better shipping policies against its own historical orders before changing anything.**
-
-The product connects three views that are often handled separately:
-
-1. Checkout economics — what the customer paid for shipping.
-2. Fulfillment evidence — what carrier or 3PL records show the merchant paid.
-3. Policy decisions — what flat rates or free-shipping thresholds would have produced on the historical order sample.
-
-This is a positioning hypothesis, not a proven competitive moat. It must be tested with merchants.
+NODUS is not currently sold as a monthly subscription. There is no verified continuous carrier monitoring or automated recurring ingestion that would justify automatic monthly billing.
 
 ## 2. Initial buyer
 
-### Primary ideal customer profile
+Target Shopify merchants selling physical goods that:
+- use external carriers or a 3PL;
+- have recurring order and carrier-cost exports;
+- have enough shipment complexity to make manual spreadsheet reconciliation burdensome;
+- have an operations, ecommerce or finance owner accountable for shipping economics.
 
-A Shopify merchant selling physical goods that:
+Disqualify stores without usable cost evidence, digital-only stores, very low shipping volume, or buyers who cannot authorize the data handoff.
 
-- charges customers for shipping, offers free shipping, or uses flat-rate thresholds;
-- has recurring carrier or 3PL cost records available as an export;
-- has enough order and fulfillment complexity that spreadsheet review is burdensome;
-- wants to understand shipping contribution by order, destination, method, or policy;
-- has an owner, ecommerce operator, or finance/operations lead who can review the findings.
+This customer profile remains a hypothesis until paid engagements validate it.
 
-### Economic buyer
+## 3. The job being purchased
 
-Founder/owner, ecommerce director, operations lead, or finance/controller.
+The buyer is not paying for another dashboard. The buyer is paying for a bounded review that answers:
 
-### Daily user
+- What share of the submitted order and carrier-cost records can be matched?
+- Which charges remain unmatched, ambiguous, duplicated or incomplete?
+- For orders with adequate evidence, how does recorded shipping revenue compare with matched fulfillment cost?
+- Which patterns deserve operator investigation?
+- What would alternative flat rates or free-shipping thresholds have produced on the historical sample, where the required fields exist?
 
-Ecommerce operations, fulfillment, or finance analyst.
+A negative shipping balance is not proof of carrier overbilling, a recoverable credit, profit loss or a guaranteed saving.
 
-### Disqualifiers
+## 4. Fixed pilot scope
 
-Do not target stores that lack usable cost evidence, have only occasional shipments, sell digital products, or cannot authorize access to the relevant Shopify and carrier records.
+- One Shopify store.
+- One agreed reporting window of up to 30 days.
+- Up to 2,000 orders.
+- One carrier or 3PL cost export.
+- One reporting currency per comparison; mixed currencies remain separated.
+- One written decision pack.
+- No direct carrier contact, claims filing, accounting opinion, tax advice or changes to live shipping settings.
 
-Do not invent a shipment-volume cutoff. Establish qualification from actual buyer interviews and pilot data.
+The operator must reject or separately quote data outside this scope before accepting payment.
 
-## 3. The expensive job
+## 5. Customer deliverables
 
-The buyer is not purchasing charts. The buyer is trying to make and defend decisions such as:
+1. **Coverage statement:** reporting period, source files, row counts, match coverage, exclusions and unresolved gaps.
+2. **Order-level reconciliation:** shipping revenue compared with matched carrier/3PL cost evidence, with source references and matching method.
+3. **Exception register:** unmatched, ambiguous, duplicate, currency-mismatched and incomplete records.
+4. **Policy replay:** historical flat-rate and free-shipping threshold comparison only where the input fields support it.
+5. **Decision brief:** prioritized investigation questions, calculation notes, limitations and next actions.
+6. **Machine-readable exports:** CSV register and JSON decision pack.
 
-- Are shipping charges collected at checkout covering the fulfillment costs evidenced for those orders?
-- Which orders, destinations, shipping methods, or fulfillment patterns account for the largest supported differences?
-- Which amounts are matched, unmatched, incomplete, or still require human review?
-- Are repeated cost patterns pointing to a policy, packaging, product-data, or operational issue?
-- What would a different flat rate or free-shipping threshold have produced on the historical order sample?
-- What should be investigated or changed first, and what evidence supports that decision?
+No claim of savings, carrier recovery, profit improvement or overbilling may be made without merchant-verified evidence.
 
-The core pain is fragmented evidence and weak decision confidence—not a lack of another dashboard.
+## 6. Repeat purchase logic
 
-## 4. The concrete deliverable: Shipping Economics Decision Pack
+There is no automatic renewal. A merchant may request another audit when a new reporting period or carrier invoice set exists. A repeat purchase is justified only when:
+- new source data is available;
+- the previous audit identified a material unresolved question or recurring cost pattern;
+- the next review can measure whether the issue changed.
 
-Every completed assessment must produce a dated, exportable decision pack with the following sections.
+If merchants do not request a second review, NODUS must not pretend recurring demand exists. Monthly subscription pricing can be reconsidered only after repeated paid audits establish recurring value and the operating workflow supports reliable delivery.
 
-### A. Scope and data-quality statement
+## 7. Customer journey and operating controls
 
-- Shopify store and authorized data window.
-- Reporting currency and any mixed-currency exclusions.
-- Number of orders and records included.
-- Sync freshness and pagination status.
-- Shopify permission boundary.
-- Carrier-cost source, import date, and supported format.
-- Missing, incomplete, unmatched, and excluded records.
+1. Merchant runs the free diagnostic locally.
+2. Merchant requests a paid audit through the enquiry form.
+3. Operator checks the lead in the D1 database and responds through the business-owned inbox.
+4. Operator confirms the data format and scope without collecting unnecessary customer data.
+5. Authorized seller issues written service terms and an invoice.
+6. Work begins only after cleared payment is confirmed.
+7. Operator delivers the decision pack and records completion, limitations and customer feedback.
 
-### B. Order-level shipping economics
+The form is not checkout. The D1 enquiry store does not send automatic email notifications; the operator must monitor it until a tested notification channel is implemented.
 
-For each supported order:
+## 8. Legal and operational ownership
 
-- Shipping revenue recorded by Shopify.
-- Carrier/3PL cost evidence imported for that order.
-- Match method and review state.
-- Supported difference, if calculable.
-- Source references and calculation explanation.
-- Explicit unknown state where cost coverage is incomplete.
+A responsible adult business operator must own the legal seller identity, customer contract, invoice, payment account, tax and privacy obligations, refunds, and customer support. Do not bypass age or identity checks. Never place passwords, access tokens or payment secrets in the repository or chat.
 
-Never treat missing cost as zero. Never label a revenue-cost difference as profit without accounting for other relevant costs and taxes.
+## 9. Validation gates
 
-### C. Exception register
+Do not call this a validated business until all of the following are evidenced:
+- a real merchant requests the paid audit;
+- the seller issues terms and an invoice;
+- cleared payment is received;
+- the audit is delivered to the agreed scope;
+- the merchant confirms whether the output was useful;
+- a repeat purchase or referral provides evidence of continuing value.
 
-A prioritized worklist of records requiring attention:
-
-- unmatched cost records;
-- incomplete cost coverage;
-- duplicate or conflicting source records;
-- material order-level differences;
-- records requiring merchant review.
-
-Every exception must link to its source record and show whether it is a fact, a candidate match, or a hypothesis.
-
-### D. Historical policy replay
-
-Where the data supports it, compare the current flat-rate or free-shipping policy with proposed alternatives using the stored historical order sample.
-
-Show:
-
-- sample window and order count;
-- current versus proposed policy;
-- formula and assumptions;
-- affected order segments;
-- estimated shipping revenue under each scenario;
-- cost coverage and exclusions;
-- limitations, including the absence of demand/conversion elasticity evidence.
-
-A historical replay is not a forecast and does not prove conversion lift.
-
-### E. Decision brief
-
-A concise merchant-facing brief containing:
-
-- the three most material supported findings;
-- what is known and what remains uncertain;
-- the next action for each finding;
-- the evidence required to validate it;
-- the policy scenario worth reviewing, if any;
-- a clear statement of what NODUS cannot conclude from the available data.
-
-### F. Reproducible evidence export
-
-The workspace exports (1) a full merchant-scoped CSV register and (2) a JSON Shipping Economics Decision Pack. The JSON pack contains the complete stored order and cost-evidence scope, deterministic order-level reconciliation, matched/unmatched evidence states, exception findings, per-currency complete-coverage summaries, saved policy replays, economic-value attestations, methodology limitations and a SHA-256 digest of the canonical payload. It is designed for independent inspection and repeatable comparison. It does not independently verify merchant coverage attestations or accounting outcomes.
-
-## 5. What NODUS sells first
-
-### Founding assessment
-
-A tightly scoped assessment for one authorized Shopify store, one reporting currency, the order history available under granted permissions, and one supported carrier-cost CSV export.
-
-The current paid offer is NODUS Pro at USD 99/month for one store, up to 2,000 orders and one supported carrier/3PL CSV per monthly period. It includes an evidence coverage statement, matched/unmatched and exception registers, carrier spend breakdown, eligible evidenced shortfall register, currency-separated comparison, historical shipping-policy replay, monthly decision brief and written limitations. It does not promise recovered credits, savings, profit improvement or an audit opinion. The buyer runs the free diagnostic first, contacts NODUS by email, and receives scope and invoice details before service begins. No work begins until cleared funds are confirmed by the authorized business operator.
-
-Do not promise savings, recovered carrier credits, profit improvement, or conversion lift.
-
-### Recurring product
-
-The monthly review service is a recurring, fixed-scope deliverable. It is not automated monitoring. Do not describe it as continuous or scheduled carrier monitoring. A future software subscription becomes credible only when NODUS can repeatedly perform a job the merchant values, such as:
-
-- refresh eligible Shopify order data;
-- ingest recurring cost evidence with low review burden;
-- rerun reconciliation;
-- surface new material exceptions;
-- compare observed outcomes after merchant policy changes;
-- preserve a review and decision history.
-
-A scheduled Shopify order refresh alone is not recurring shipping-cost monitoring. Carrier billing ingestion, drift detection, and merchant alerting must be implemented and verified before they are sold as such.
-
-The $99/month service price is a testable offer, not validated demand. Do not claim automatic checkout, automatic renewals, continuous monitoring or recurring software entitlements. Payment is invoice-based and handled by an authorized adult business operator.
-
-## 6. Positioning against alternatives
-
-The category already has competitors. Publicly described alternatives include:
-
-- OCT Shipping Analytics PRO: compares Shopify shipping revenue with merchant-entered actual shipping costs and presents shipping margin views.
-- Shopvibe: describes order-level comparisons across checkout shipping charges, labels, carrier invoices, and 3PL bills.
-- Oh Ship!: describes historical audits of carrier adjustment charges and shipping-margin recommendations.
-- Parcel-audit providers such as Reveel, Sifted, ShipSigma, and others focus on carrier invoice auditing and recovery workflows.
-
-Therefore, NODUS must not claim that shipping-cost visibility or invoice auditing is unique.
-
-Its intended distinction is the evidence-linked workflow from Shopify order economics to reviewed cost coverage, explainable exceptions, and historical shipping-policy replay in one Shopify-native workspace.
-
-This distinction is only valuable if the end-to-end workflow is materially easier, clearer, or more useful than the buyer's current tools. Validate that with real merchants.
-
-Public references (reviewed 2026-11-15):
-
-- https://apps.shopify.com/shipping-analytics-pro
-- https://shopvibe.app/
-- https://apps.shopify.com/oh-ship
-- https://www.sendcloud.com/blog/shipping-data-analytics-software/
-
-These sources establish publicly described product positioning, not market share, customer satisfaction, retention, or willingness to pay.
-
-## 7. Buyer validation: evidence required before expansion
-
-Do not treat repository completeness, website traffic, app installs, survey compliments, or free usage as proof of demand.
-
-For each qualified merchant, record:
-
-1. The current process used to compare checkout shipping revenue with actual fulfillment cost.
-2. How often the process occurs and who owns it.
-3. The time and operational burden involved.
-4. The decisions delayed or made with incomplete evidence.
-5. The systems and exports the merchant can actually provide.
-6. Which findings in the NODUS pack the merchant considers actionable.
-7. Whether the merchant would use the workflow again next month.
-8. Whether the merchant is willing to pay for that recurring outcome, and what budget it would replace.
-
-The strongest evidence is repeated use and a real, authorized paid commitment—not positive comments.
-
-### Decision gates
-
-- **Problem gate:** Multiple qualified merchants independently describe the same costly, recurring job.
-- **Deliverable gate:** A merchant can inspect the pack, trace findings to source records, and use it to make a real decision.
-- **Repeatability gate:** The same workflow is useful in a later reporting period without disproportionate manual work.
-- **Payment gate:** A merchant explicitly agrees to pay for the recurring outcome, and the paid workflow is implemented and legally/operationally ready.
-- **Retention gate:** The merchant continues because the recurring value persists.
-
-If a gate fails, fix the offer or product before adding unrelated features.
-
-## 8. Acquisition without cold-email volume
-
-The intended motion is inbound and product-led:
-
-- a clear Shopify App Store listing after approval;
-- search-intent pages explaining shipping-margin questions with worked, reproducible examples;
-- a public sample Decision Pack using conspicuously synthetic data;
-- a low-friction assessment intake that states the exact required exports and data handling;
-- documentation that explains methodology and limitations;
-- legitimate ecosystem referrals and partnerships.
-
-Do not fabricate customer logos, reviews, savings, case studies, integrations, or App Store approval. Do not imply that a demo uses live customer data.
-
-Inbound acquisition is not immediate or guaranteed. Measure qualified visits, assessment starts, completed data submissions, first useful result, repeat use, and paid conversion separately.
-
-## 9. Current implementation boundary
-
-The repository currently documents and implements a constrained foundation:
-
-- Shopify order ingestion and persisted shipping revenue;
-- carrier-cost CSV import;
-- evidence matching/review and reconciliation workflows;
-- historical policy replay;
-- economic value ledger and audit events.
-
-The repository also explicitly states that the following are not yet verified or generally available:
-
-- direct UPS, FedEx, or USPS invoice integrations;
-- automated carrier invoice polling;
-- automatic shipping-policy writes;
-- carrier-policy drift detection and merchant alerts;
-- production-verified scheduled refresh;
-- live subscription checkout and complete paid-plan lifecycle;
-- Shopify App Store approval.
-
-These are product and release constraints, not footnotes. Public copy and sales claims must respect them.
-
-## 10. Immediate product priorities
-
-Prioritize work in this order:
-
-1. Complete and validate the full-scope JSON Decision Pack and CSV register, including deterministic totals, evidence coverage, limitations and integrity digest. The first implementation is now in the Reports workspace; CI and adversarial export tests remain required.
-2. Make first-run onboarding tell the merchant exactly what data is needed, why it is needed, and what result they will receive.
-3. Improve match review and exception prioritization; make uncertainty visible.
-4. Validate the policy replay with adversarial fixtures and explain its assumptions in the UI and export.
-5. Prove tenant isolation, privacy lifecycle, backup/restore, and production sync on an authorized test store.
-6. Implement recurring carrier-cost intake and reliable recurring reconciliation before claiming continuous monitoring.
-7. Implement and verify billing/entitlements only after recurring value is demonstrated.
-
-**Definition of commercial progress:** a qualified merchant completes the assessment, uses the evidence to make a decision, returns for a later period, and makes an authorized payment for the recurring workflow.
+Track requests, qualified leads, invoices, paid audits, delivery time, unresolved findings, verified merchant value and repeat purchases. Do not publish invented customers, testimonials or savings claims.
