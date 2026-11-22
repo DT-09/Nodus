@@ -53,7 +53,7 @@ export default function ShippingCostReconciliationGuide(){
     <section className="content-note">
       <h2>Where NODUS fits</h2>
       <p>NODUS reads permitted Shopify order data, imports supported merchant-provided carrier-cost CSV records, applies deterministic matching and exposes incomplete or ambiguous evidence. It can replay supported flat-rate and free-shipping threshold scenarios against stored historical orders. Carrier invoice polling, PDF extraction, direct UPS/FedEx/USPS invoice APIs and automated dispute submission are not current capabilities.</p>
-      <p>Read the <Link to="/methodology">reconciliation methodology</Link>, inspect the <Link to="/demo">synthetic Decision Pack walkthrough</Link>, or review the <Link to="/pricing">no-fee founding merchant programme</Link>.</p>
+      <p>Read the <Link to="/methodology">reconciliation methodology</Link>, inspect the <Link to="/demo">synthetic Decision Pack walkthrough</Link>, or review the <Link to="/pricing">NODUS audit and monthly review options</Link>.</p>
     </section>
   </main></MarketingShell>;
 }
