@@ -932,3 +932,110 @@
  .nh-service-grid p,.nh-steps p{font-size:12px}
  .nh-proof-copy>p,.nh-close>p{font-size:13px}
 }
+
+
+/* Brand discipline and commercial legibility pass. */
+.marketing-site .site-brand{
+ display:flex;flex-direction:row;align-items:center;gap:9px;min-width:0;
+}
+.marketing-site .site-brand .nodus-logo{
+ width:18px;height:18px;flex:0 0 18px;aspect-ratio:1;object-fit:contain;
+ filter:drop-shadow(0 0 5px rgba(216,194,154,.12));
+}
+.marketing-site .site-brand-word{
+ font-family:"Syncopate",sans-serif!important;font-size:18px!important;
+ line-height:1!important;font-weight:700!important;letter-spacing:.12em!important;
+}
+.marketing-site .site-brand-caption{display:none}
+.marketing-site .footer-wordmark{
+ display:inline-flex;align-items:center;gap:5px;
+}
+.marketing-site .footer-wordmark-label{
+ font-family:"Syncopate",sans-serif!important;font-size:19px!important;
+ line-height:1.15;font-weight:700!important;letter-spacing:.13em!important;
+}
+.marketing-site .footer-wordmark sup{font-size:10px}
+.marketing-site .nh-product-brand b{
+ font-family:"Syncopate",sans-serif!important;font-weight:700!important;
+}
+.marketing-site .nh-engine-mark{display:none}
+
+/* Raise small copy to readable sizes without flattening the type hierarchy. */
+.marketing-site .nh-eyebrow,
+.marketing-site .nh-section-heading>span,
+.marketing-site .nh-statement>div>span,
+.marketing-site .nh-proof-copy>span,
+.marketing-site .nh-close>span,
+.marketing-site .nh-meta,
+.marketing-site .nh-product-state,
+.marketing-site .nh-product-title>span,
+.marketing-site .nh-sources article>span,
+.marketing-site .nh-sources article>strong,
+.marketing-site .nh-engine>div>small,
+.marketing-site .nh-output span,
+.marketing-site .nh-product-note,
+.marketing-site .nh-service-grid article>small,
+.marketing-site .nh-steps article>span{font-size:10px!important}
+.marketing-site .nh-product-note{line-height:1.6}
+.marketing-site .nh-ledger-head{font-size:9px!important}
+.marketing-site .nh-ledger-row{font-size:10px!important}
+.marketing-site .nh-ledger-row em{font-size:9px!important}
+.marketing-site .nh-product-state{font-size:10px!important}
+.marketing-site .nh-proof-list b{font-size:16px}
+.marketing-site .nh-proof-list span{font-size:14px;line-height:1.7}
+.marketing-site .nh-service-grid p,
+.marketing-site .nh-steps p{font-size:14px;line-height:1.85}
+.marketing-site .nh-statement>p,
+.marketing-site .nh-proof-copy>p,
+.marketing-site .nh-close>p{font-size:15px;line-height:1.9}
+.marketing-site .footer-column a{font-size:13px;line-height:1.7}
+.marketing-site .footer-identity>p{font-size:14px}
+.marketing-site .footer-bottom{font-size:10px}
+.marketing-site .menu-group a{font-size:14px}
+
+/* Give the product illustrations a tactile, responsive sense of depth. */
+@media (prefers-reduced-motion:no-preference){
+ .marketing-site .nh-product,
+ .marketing-site .nh-sources article,
+ .marketing-site .nh-ledger-preview,
+ .marketing-site .nh-service-grid article,
+ .marketing-site .nh-steps article{
+  transform-origin:center;
+  transition:transform .34s cubic-bezier(.2,.7,.2,1),box-shadow .34s ease,border-color .34s ease,background .34s ease;
+ }
+ .marketing-site .nh-product:hover{
+  transform:perspective(1500px) rotateY(-1deg) rotateX(.5deg) translateY(-4px) scale(1.012);
+  box-shadow:0 54px 130px rgba(0,0,0,.56),0 18px 42px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.07);
+ }
+ .marketing-site .nh-sources article:hover{
+  transform:translateY(-3px) scale(1.025);
+  border-color:rgba(216,194,154,.42);
+  box-shadow:0 18px 38px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.06);
+ }
+ .marketing-site .nh-ledger-preview:hover{
+  transform:scale(1.025);
+  border-color:rgba(216,194,154,.36);
+  box-shadow:0 20px 44px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.04);
+ }
+ .marketing-site .nh-service-grid article:hover,
+ .marketing-site .nh-steps article:hover{
+  transform:translateY(-5px) scale(1.018);
+  border-color:rgba(216,194,154,.34);
+  box-shadow:0 22px 52px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.05);
+ }
+}
+.marketing-site .nh-sources article,
+.marketing-site .nh-ledger-preview,
+.marketing-site .nh-service-grid article,
+.marketing-site .nh-steps article{will-change:transform}
+@media(max-width:640px){
+ .marketing-site .site-brand{gap:8px}
+ .marketing-site .site-brand .nodus-logo{width:16px;height:16px;flex-basis:16px}
+ .marketing-site .site-brand-word{font-size:16px!important}
+ .marketing-site .footer-wordmark-label{font-size:17px!important}
+ .marketing-site .nh-product:hover{transform:none}
+ .marketing-site .nh-sources article:hover,
+ .marketing-site .nh-ledger-preview:hover,
+ .marketing-site .nh-service-grid article:hover,
+ .marketing-site .nh-steps article:hover{transform:none}
+}
