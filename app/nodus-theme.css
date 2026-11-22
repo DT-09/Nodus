@@ -399,3 +399,150 @@ body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 
  .marketing-site .site-brand-caption{font-size:6px;letter-spacing:.1em}
  .marketing-site .header-context{display:none}
 }
+
+
+/* NODUS refinement pass — mineral palette, tactile depth, quiet editorial layout. */
+.nodus-home{
+ --nh-bg:#11120f;
+ --nh-panel:#1a1b16;
+ --nh-panel-2:#22231d;
+ --nh-ink:#f2ede2;
+ --nh-muted:#d1c8b9;
+ --nh-dim:#a99d8a;
+ --nh-gold:#bda77f;
+ --nh-gold-2:#d8c29a;
+ --nh-line:rgba(216,194,154,.17);
+ background:
+  radial-gradient(ellipse at 76% 16%,rgba(98,107,85,.13),transparent 31%),
+  radial-gradient(ellipse at 8% 48%,rgba(53,45,36,.25),transparent 35%),
+  linear-gradient(180deg,#11120f 0%,#171813 48%,#11120f 100%);
+ color:var(--nh-ink);
+}
+.nodus-home:before{
+ content:"";position:absolute;inset:0 0 auto;height:980px;pointer-events:none;opacity:.15;
+ background-image:linear-gradient(rgba(216,194,154,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(216,194,154,.08) 1px,transparent 1px);
+ background-size:72px 72px;mask-image:linear-gradient(to bottom,black,transparent 85%);
+}
+.nh-hero{position:relative;z-index:1;min-height:820px;gap:clamp(38px,5vw,84px);padding-top:180px}
+.nh-copy h1,.nh-statement h2,.nh-section-heading h2,.nh-proof-copy h2,.nh-close h2{
+ font-family:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
+ font-weight:500;letter-spacing:-.035em;
+}
+.nh-copy h1{font-size:clamp(68px,7.4vw,108px);line-height:.91;letter-spacing:-.055em}
+.nh-lede,.nh-statement>p,.nh-service-grid p,.nh-steps p,.nh-proof-copy>p,.nh-close>p{
+ font-family:"Manrope","Avenir Next",Avenir,sans-serif;
+}
+.nh-eyebrow,.nh-section-heading>span,.nh-statement>div>span,.nh-proof-copy>span,.nh-close>span,
+.nh-meta,.nh-product-state,.nh-product-title>span,.nh-sources article>span,
+.nh-sources article>strong,.nh-engine>div>small,.nh-output span,.nh-product-note,
+.nh-service-grid article>small,.nh-steps article>span{
+ font-family:"Manrope","Avenir Next",Avenir,sans-serif;
+ font-weight:600;letter-spacing:.14em;
+}
+.nh-product{
+ border:1px solid rgba(216,194,154,.2);
+ border-radius:3px;
+ background:linear-gradient(145deg,rgba(53,45,36,.82),rgba(34,35,29,.96) 42%,rgba(24,25,20,.98));
+ box-shadow:0 42px 110px rgba(0,0,0,.48),0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.055);
+ transform:perspective(1500px) rotateY(-2deg) rotateX(1deg);
+ isolation:isolate;
+}
+.nh-product:after{
+ content:"";position:absolute;z-index:-1;inset:-24px -18px 18px 18px;border-radius:5px;
+ background:linear-gradient(145deg,rgba(216,194,154,.09),rgba(143,148,124,.035) 55%,transparent);
+ filter:blur(20px);
+}
+.nh-product:before{inset:9px;border:1px solid rgba(216,194,154,.09);border-radius:2px}
+.nh-product-top{padding-bottom:20px;border-color:rgba(216,194,154,.16)}
+.nh-product-brand b{font:500 11px "Manrope",sans-serif;letter-spacing:.2em}
+.nh-product-brand img{width:39px;height:39px}
+.nh-product-title{padding:30px 0 23px}
+.nh-product-title h2{font:500 39px/1.02 "Cormorant Garamond",Georgia,serif;color:var(--nh-ink)}
+.nh-sources article{
+ min-height:154px;border-color:rgba(216,194,154,.15);border-radius:2px;
+ background:linear-gradient(145deg,rgba(242,237,226,.045),rgba(242,237,226,.012));
+ box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.nh-sources article>b{font:500 21px "Cormorant Garamond",Georgia,serif}
+.nh-connector{color:var(--nd-olive)}
+.nh-engine{
+ border-color:rgba(216,194,154,.24);border-radius:2px;
+ background:linear-gradient(90deg,rgba(143,148,124,.12),rgba(216,194,154,.055));
+ box-shadow:0 12px 28px rgba(0,0,0,.16);
+}
+.nh-engine-mark{border:0;width:40px;height:40px;background:rgba(216,194,154,.07);border-radius:50%}
+.nh-output>div{border-color:rgba(216,194,154,.13);border-radius:2px;background:rgba(17,18,15,.34)}
+.nh-output b{font:500 15px "Cormorant Garamond",Georgia,serif}
+.nh-statement,.nh-proof{
+ position:relative;background:linear-gradient(115deg,#1b1c17 0%,#211d17 54%,#191a15 100%);
+ border-color:rgba(216,194,154,.14);
+}
+.nh-statement:before,.nh-proof:before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:radial-gradient(ellipse at 12% 0,rgba(143,148,124,.08),transparent 48%);
+}
+.nh-statement>*,.nh-proof>*{position:relative}
+.nh-services,.nh-process{position:relative}
+.nh-section-heading h2,.nh-statement h2,.nh-proof-copy h2,.nh-close h2{font-size:clamp(44px,5vw,68px)}
+.nh-service-grid{border-color:rgba(216,194,154,.18)}
+.nh-service-grid article{border-color:rgba(216,194,154,.15);transition:background .25s,transform .25s}
+.nh-service-grid article:hover{background:linear-gradient(145deg,rgba(53,45,36,.42),rgba(143,148,124,.055));transform:translateY(-4px)}
+.nh-service-number,.nh-steps article>span{color:var(--nd-champagne)}
+.nh-service-grid h3,.nh-steps h3{font:500 26px/1.12 "Cormorant Garamond",Georgia,serif}
+.nh-steps{border-color:rgba(216,194,154,.18)}
+.nh-steps article{border-color:rgba(216,194,154,.15)}
+.nh-proof-list{border-color:rgba(216,194,154,.2)}
+.nh-proof-list>div{border-color:rgba(216,194,154,.15)}
+.nh-proof-list b{font:500 16px "Cormorant Garamond",Georgia,serif}
+.nh-proof-list span{font:500 13px "Manrope",sans-serif}
+.nh-close{
+ position:relative;overflow:hidden;
+ background:radial-gradient(ellipse at 50% 0,rgba(216,194,154,.12),transparent 53%),linear-gradient(180deg,#171813,#11120f);
+ border-top:1px solid rgba(216,194,154,.13);
+}
+.nh-close:before{content:"";position:absolute;left:50%;top:38px;width:360px;height:360px;transform:translateX(-50%);border:1px solid rgba(216,194,154,.08);border-radius:50%;box-shadow:0 0 0 36px rgba(216,194,154,.018),0 0 0 72px rgba(216,194,154,.012);pointer-events:none}
+.nh-close>*{position:relative}
+.nh-close>img{width:74px;height:74px;filter:drop-shadow(0 0 18px rgba(216,194,154,.18))}
+.site-header,.marketing-site .site-header{
+ width:min(1320px,calc(100% - 48px));height:68px;top:14px;margin:14px auto -82px;
+ padding:0 26px;border:0!important;border-radius:999px!important;
+ background:rgba(17,18,15,.50)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(145%);backdrop-filter:blur(24px) saturate(145%);
+ box-shadow:0 12px 40px rgba(0,0,0,.16)!important;
+}
+.site-header .menu-trigger{border:0!important;border-radius:50%;background:rgba(242,237,226,.055)}
+.site-header .menu-trigger:hover,.site-header .menu-trigger.is-open{background:rgba(216,194,154,.12)}
+.site-menu{border:1px solid rgba(216,194,154,.14);border-radius:12px;background:rgba(24,25,20,.96)}
+.site-footer{
+ background:linear-gradient(145deg,#171813 0%,#11120f 70%)!important;
+ color:var(--nd-ivory)!important;border-top:1px solid rgba(216,194,154,.14)!important;
+ padding:86px max(36px,calc((100vw - 1240px)/2)) 25px;
+}
+.footer-main{grid-template-columns:1.65fr repeat(3,minmax(130px,1fr));gap:clamp(28px,4vw,62px);padding-bottom:64px}
+.footer-identity{max-width:300px}
+.footer-identity>p{font:13px/1.95 "Manrope",sans-serif;color:var(--nd-stone);margin:22px 0 28px}
+.footer-wordmark{display:inline-flex;align-items:center;gap:12px;font:inherit!important;letter-spacing:0!important}
+.footer-wordmark .nodus-logo{width:38px;height:38px}
+.footer-wordmark-label{font:400 16px "Syncopate",sans-serif!important;letter-spacing:.15em!important;color:var(--nd-ivory)}
+.footer-wordmark sup{font:11px "Cormorant Garamond",serif;color:var(--nd-champagne);align-self:flex-start}
+.footer-column{gap:15px}
+.footer-column>p{font:600 9px "Manrope",sans-serif;letter-spacing:.16em;color:var(--nd-champagne);margin-bottom:10px}
+.footer-column a{font:12px "Manrope",sans-serif;color:var(--nd-stone)!important;transition:color .2s}
+.footer-column a:hover{color:var(--nd-ivory)!important}
+.footer-bottom{border-color:rgba(216,194,154,.13);color:var(--nd-taupe);font:9px "Manrope",sans-serif;letter-spacing:.1em}
+.footer-bottom a{color:var(--nd-stone)!important;font:10px "Manrope",sans-serif}
+.site-brand-word{font-family:"Syncopate",sans-serif!important;font-weight:400!important}
+.nh-product-brand b{font-family:"Syncopate",sans-serif!important;font-weight:400!important;font-size:9px!important;letter-spacing:.13em!important}
+.nh-engine>div>b{font-family:"Manrope",sans-serif!important}
+@media(max-width:760px){
+ .site-header,.marketing-site .site-header{width:calc(100% - 24px);height:60px;top:8px;margin:8px auto -70px;padding:0 15px}
+ .nh-hero{width:calc(100% - 38px);padding:122px 0 62px;min-height:0;gap:36px}
+ .nh-copy h1{font-size:clamp(58px,14vw,84px)}
+ .nh-product{transform:none;padding:18px 15px 15px}
+ .nh-product-title h2{font-size:33px}
+ .nh-statement,.nh-proof{padding:62px 20px;grid-template-columns:1fr;gap:24px}
+ .nh-services,.nh-process{width:calc(100% - 38px);padding:72px 0}
+ .footer-main{grid-template-columns:1fr 1fr;gap:34px 22px}
+ .footer-identity{grid-column:1/-1;max-width:420px}
+ .footer-bottom{align-items:flex-start;flex-direction:column;gap:12px}
+}
