@@ -2,9 +2,9 @@
 
 ## Current release state
 
-The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial offer is a free browser-local diagnostic plus a proposed USD 149 one-time Shipping Cost Audit pilot. The price is unvalidated; the public form records a request only and does not take payment. No monthly subscription is offered.
+The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial offer is a free browser-local diagnostic, a USD 149 one-time baseline Shipping Cost Audit, and a USD 99/month recurring Monthly Shipping Review. The monthly service is analyst-delivered from fresh exports supplied each period; it is not automated carrier monitoring or real-time alerting. Both prices are pilot hypotheses.
 
-The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated subscription billing, carrier polling, App Store distribution and continuous monitoring are not part of the current paid service.
+The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated carrier polling, real-time alerts, App Store distribution and continuous monitoring are not part of the current paid service.
 
 ## Cloudflare resources
 
@@ -67,7 +67,7 @@ The D1 enquiry form does not send an automatic email notification. Direct mailto
 
 Production configuration was inspected on 2026-11-21. The Pages project has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` configured in either Production or Preview. Therefore:
 - The protected `/ops` console cannot authenticate an operator.
-- The public paid-audit form is an enquiry endpoint only; it does not take payment or redirect to checkout.
+- The public service-request form records interest in the baseline audit or recurring monthly review; it does not collect source files.
 - The form can store enquiries in D1, but there is no automatic new-lead notification. An authorized operator must check D1 manually until a notification channel is implemented.
 
 Required before accepting paid pilot requests:
@@ -78,6 +78,6 @@ Required before accepting paid pilot requests:
 - [ ] Test the full path: valid audit request → D1 record → operator review → written scope and terms → invoice → cleared-funds confirmation → engagement record.
 - [ ] Confirm that the invoice amount, currency, scope, refund terms and legal seller identity match the agreed USD 149 pilot offer.
 - [ ] The paid pilot is delivered using a secure, agreed data-transfer method.
-- [ ] No recurring subscription until billing, entitlement lifecycle, cancellation and support are tested.
+- [ ] Monthly review process is tested end to end with a fresh period export, report generation, human QA and customer delivery.
 
 Never equate a successful Pages deployment with a complete product launch or a purchase request with cleared revenue.
