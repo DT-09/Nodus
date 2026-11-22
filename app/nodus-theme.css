@@ -238,3 +238,64 @@ body{background:linear-gradient(180deg,#151612 0%,#191a16 42%,#151612 100%);colo
 .marketing-site a:hover{transition:color .2s ease}
 .marketing-site :focus-visible{outline:2px solid var(--nd-champagne);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.marketing-site *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* NODUS extended natural-mineral palette: dark grounds, light typography. */
+:root{
+  --nd-obsidian:#11120f;
+  --nd-obsidian-soft:#171813;
+  --nd-espresso:#29231d;
+  --nd-espresso-light:#352d24;
+  --nd-bone:#e9e2d5;
+  --nd-ivory:#f2ede2;
+  --nd-linen:#e1d8c9;
+  --nd-beige:#d3c6b2;
+  --nd-almond:#c9b79e;
+  --nd-stone:#b7aa96;
+  --nd-taupe:#a19481;
+  --nd-olive:#8f947c;
+  --nd-olive-deep:#626b55;
+  --nd-champagne:#d8c29a;
+  --nd-champagne-muted:#bda77f;
+  --nd-night:var(--nd-obsidian);
+  --nd-charcoal:#1a1b16;
+  --nd-graphite:#22231d;
+  --nd-peat:#292820;
+  --nd-bark:var(--nd-espresso);
+  --nd-moss:#34372d;
+  --nd-slate:#3b3d35;
+  --nd-cream:var(--nd-bone);
+  --nd-muted:var(--nd-linen);
+  --nd-dim:var(--nd-stone);
+  --nd-gold:var(--nd-champagne-muted);
+  --nd-gold-soft:var(--nd-champagne);
+  --nd-line:rgba(216,194,154,.18);
+  --nd-line-strong:rgba(216,194,154,.3);
+  --nd-glass:rgba(26,27,22,.82);
+  --nd-panel:rgba(34,35,29,.9);
+  --nd-shadow:0 28px 84px rgba(0,0,0,.36);
+}
+html,body,#root{background:var(--nd-obsidian);color:var(--nd-ivory)}
+body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 52%,var(--nd-obsidian-soft) 100%);color:var(--nd-ivory)}
+.marketing-site,.marketing-site[data-theme="light"]{
+ color-scheme:dark;
+ --ink:var(--nd-obsidian);--ink-2:var(--nd-charcoal);--ink-3:var(--nd-graphite);
+ --espresso:var(--nd-espresso);--paper:var(--nd-ivory);--paper-2:var(--nd-bone);
+ --stone:var(--nd-stone);--muted:var(--nd-linen);--muted-2:var(--nd-taupe);
+ --line:var(--nd-line);--accent:var(--nd-champagne-muted);--accent-2:var(--nd-champagne);
+ --blue:var(--nd-olive);--surface:var(--nd-charcoal);--surface-2:var(--nd-graphite);
+ --text:var(--nd-ivory);--shadow:var(--nd-shadow);
+ background:var(--nd-obsidian);color:var(--nd-ivory)
+}
+.marketing-site h1,.marketing-site h2,.marketing-site h3,.marketing-site h4{color:var(--nd-ivory)}
+.marketing-site p,.marketing-site li,.marketing-site label{color:var(--nd-linen)}
+.marketing-site small,.marketing-site .muted,.marketing-site .site-brand-caption,
+.marketing-site .header-context,.marketing-site .footer-column a{color:var(--nd-stone)}
+.marketing-site .eyebrow,.marketing-site .section-index,.marketing-site .nh-eyebrow,
+.marketing-site .nd-plan-kicker{color:var(--nd-champagne)}
+.marketing-site .cta-primary,.marketing-site .nh-primary,.marketing-site .primary-cta{
+ background:var(--nd-champagne-muted);border-color:var(--nd-champagne-muted);color:var(--nd-obsidian)!important
+}
+.marketing-site .cta-primary:hover,.marketing-site .nh-primary:hover,.marketing-site .primary-cta:hover{
+ background:var(--nd-champagne);border-color:var(--nd-champagne);color:var(--nd-obsidian)!important
+}
