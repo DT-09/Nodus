@@ -2,7 +2,7 @@
 
 ## Current release state
 
-The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial product is the free shipping-economics workbench plus a fixed-scope USD 99/month monthly review service.
+The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial offer is a free browser-local diagnostic plus a proposed USD 149 one-time Shipping Cost Audit pilot. The price is unvalidated; the public form records a request only and does not take payment. No monthly subscription is offered.
 
 The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated subscription billing, carrier polling, App Store distribution and continuous monitoring are not part of the current paid service.
 
