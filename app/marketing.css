@@ -892,3 +892,43 @@
  .nh-product-title h2{font-size:32px}
  .nh-sources article>small{font-size:11px}
 }
+
+
+/* Commercial refinement: restrained identity, legible copy, richer product interaction. */
+.marketing-site .site-brand .nodus-logo{width:21px;height:21px}
+.marketing-site .footer-wordmark .nodus-logo{width:23px;height:23px}
+.marketing-site .site-brand-word{font-family:"Syncopate",sans-serif;font-size:18px;font-weight:700;letter-spacing:.16em}
+.marketing-site .footer-wordmark-label{font-family:"Syncopate",sans-serif;font-weight:700;letter-spacing:.14em}
+.nh-product-brand b{font-family:"Syncopate",sans-serif;font-size:13px;font-weight:700;letter-spacing:.16em}
+.nh-engine-mark{font:700 15px "Syncopate",sans-serif}
+.nh-eyebrow,.nh-section-heading>span,.nh-statement>div>span,.nh-proof-copy>span,.nh-close>span{font-size:10px}
+.nh-lede{font-size:16px;line-height:1.85}
+.nh-meta{font-size:10px;line-height:1.8}
+.nh-primary,.nh-secondary{font-size:11px}
+.nh-product-note,.nh-ledger-head{font-size:9px}
+.nh-ledger-row{font-size:11px}
+.nh-product-state,.nh-product-brand small,.nh-product-title>span{font-size:9px}
+.nh-sources article>span,.nh-sources article>strong{font-size:9px}
+.nh-sources article>small{font-size:12px;line-height:1.65}
+.nh-engine>div>small{font-size:10px}
+.nh-output>div>span{font-size:9px}
+.nh-service-grid article>small{font-size:9px}
+.nh-service-grid p,.nh-steps p{font-size:13px;line-height:1.85}
+.nh-proof-copy>p,.nh-close>p{font-size:14px;line-height:1.9}
+.nh-proof-list span{font-size:13px;line-height:1.7}
+@media (prefers-reduced-motion:no-preference){
+ .nh-product,.nh-product-title,.nh-sources article,.nh-engine,.nh-ledger-preview,.nh-service-grid article,.nh-steps article,.nh-proof-list>div{
+  transition:transform .32s cubic-bezier(.2,.7,.2,1),border-color .32s ease,box-shadow .32s ease,background-color .32s ease;
+ }
+ .nh-product:hover{transform:translateY(-5px) scale(1.008)}
+ .nh-product-title:hover{transform:translateX(3px)}
+ .nh-ledger-preview:hover{transform:scale(1.012);box-shadow:0 18px 44px rgba(0,0,0,.24)}
+ .nh-sources article:hover{transform:translateY(-4px) scale(1.015)}
+ .nh-service-grid article:hover,.nh-steps article:hover{transform:translateY(-5px) scale(1.012)}
+ .nh-proof-list>div:hover{transform:translateX(7px)}
+}
+@media(max-width:720px){
+ .nh-lede{font-size:14px}
+ .nh-service-grid p,.nh-steps p{font-size:12px}
+ .nh-proof-copy>p,.nh-close>p{font-size:13px}
+}
