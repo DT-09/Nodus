@@ -828,3 +828,11 @@
 @media(max-width:560px){.nd-product-page,.nd-pricing-page{width:calc(100% - 32px)}.nd-product-grid{grid-template-columns:1fr}.nd-product-grid article{min-height:0}.nd-plan{padding:23px}.nd-pricing-contact{padding:55px 18px}.nd-pricing-contact h2{font-size:33px}.nd-product-principle,.nd-product-deliverable,.nd-pricing-process,.nd-pricing-value{padding:34px 20px}}
 
 .nh-engine-mark img{width:27px;height:27px;display:block;object-fit:contain}
+
+
+/* Compact NODUS mark sizing — preserve the original aspect ratio. */
+.marketing-site .site-brand .nodus-logo{width:25px;height:25px;object-fit:contain}
+.marketing-site .footer-wordmark .nodus-logo{width:27px;height:27px;object-fit:contain}
+.nh-product-brand>img{width:24px;height:24px;object-fit:contain}
+.nh-engine-mark img{width:18px;height:18px;object-fit:contain}
+.nh-close>img{width:38px;height:38px;object-fit:contain}
