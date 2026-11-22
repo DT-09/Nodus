@@ -40,7 +40,7 @@ function AssessmentForm(){
    <label>Store domain (for context)<input name="store" type="text" required maxLength={300} placeholder="store.myshopify.com"/></label>
    <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option>Under 500</option><option>500–2,000</option><option>2,000–10,000</option><option>10,000–50,000</option><option>50,000+</option><option>Prefer to discuss</option></select></label>
    <label className="nd-form-wide">Shipping setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option>Direct carrier account</option><option>Third-party logistics (3PL)</option><option>Multiple carriers / 3PLs</option><option>Shopify Shipping</option><option>Other / unsure</option></select></label>
-   <label className="nd-form-wide">Request type<select name="offer_type" defaultValue="pro_subscription"><option value="paid_audit">Shipping Cost Audit — USD 149 one-time pilot (request only)</option><option value="evaluation">Free evaluation — no payment</option></select></label>
+   <label className="nd-form-wide">Request type<select name="offer_type" defaultValue="paid_audit"><option value="paid_audit">Shipping Cost Audit — USD 149 one-time pilot (request only)</option><option value="evaluation">Free evaluation — no payment</option></select></label>
    <label className="nd-form-wide">What problem should the assessment investigate?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we cannot reliably compare shipping revenue with carrier charges across orders..."/></label>
   </div>
   <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorized to submit this business enquiry and agree that NODUS may use these details to review and respond to this request. No store data is requested by this form. <Link to="/privacy">Read the privacy notice.</Link></span></label>
@@ -48,7 +48,7 @@ function AssessmentForm(){
   <button className="cta-primary" type="submit" disabled={busy}>{busy?"SUBMITTING…":"REQUEST AUDIT ↗"}</button>
   {message?<p className={error?"nd-form-status is-error":"nd-form-status"} role="status">{message}</p>:null}
   <p className="nd-form-footnote">No card details are collected. A paid-audit request is not a purchase and does not collect payment. Work starts only after written scope, terms and cleared payment. Do not include passwords, access tokens, customer records or invoice attachments.</p>
- <p className="nd-form-footnote"><a href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20monthly%20service">EMAIL NODUS DIRECTLY ↗</a></p>\n </form>;
+ <p className="nd-form-footnote"><a href="mailto:dhairytopia@gmail.com?subject=NODUS%20Shipping%20Cost%20Audit">EMAIL NODUS DIRECTLY ↗</a></p>\n </form>;
 }
 export default function BuyerEvaluation(){
  return <MarketingShell active="evaluation"><main className="content-page">
