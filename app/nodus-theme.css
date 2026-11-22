@@ -299,3 +299,105 @@ body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 
 .marketing-site .cta-primary:hover,.marketing-site .nh-primary:hover,.marketing-site .primary-cta:hover{
  background:var(--nd-champagne);border-color:var(--nd-champagne);color:var(--nd-obsidian)!important
 }
+
+
+/* Final NODUS art direction: tailored typography, mineral palette, translucent navigation. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap');
+
+.marketing-site{
+  font-family:"Manrope", "Avenir Next", Avenir, sans-serif;
+  background:var(--nd-obsidian);
+  color:var(--nd-ivory);
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+.marketing-site h1,.marketing-site h2,.marketing-site h3,.marketing-site h4,
+.marketing-site .hero-copy-column h1,.marketing-site .manifesto-band h2,
+.marketing-site .section-heading h2,.marketing-site .trust-heading h2,
+.marketing-site .closing-section h2,.marketing-site .content-page h1,
+.marketing-site .content-grid h2,.marketing-site .content-note h2,
+.marketing-site .pricing-option h2,.marketing-site .thread-detail h3,
+.marketing-site .trust-grid h3,.marketing-site .system-cell h3{
+  font-family:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  font-weight:500;
+  letter-spacing:-.025em;
+}
+.marketing-site p,.marketing-site li,.marketing-site label,
+.marketing-site input,.marketing-site select,.marketing-site textarea,
+.marketing-site .menu-group a,.marketing-site .footer-column a{
+  font-family:"Manrope","Avenir Next",Avenir,sans-serif;
+}
+.marketing-site .site-brand-word,.marketing-site .footer-wordmark{
+  font-family:"Syncopate",sans-serif;
+  font-weight:400;
+  letter-spacing:.18em;
+}
+.marketing-site .site-brand-word{font-size:17px;line-height:1.2}
+.marketing-site .footer-wordmark{font-size:19px;letter-spacing:.16em}
+.marketing-site .site-brand{display:grid;grid-template-columns:38px auto;grid-template-rows:auto auto;column-gap:12px;align-items:center;min-width:0}
+.marketing-site .nodus-logo{
+  grid-column:1;grid-row:1 / span 2;
+  display:block;width:36px;height:36px;object-fit:contain;
+  background:transparent!important;filter:drop-shadow(0 0 9px rgba(216,194,154,.13));
+}
+.marketing-site .site-brand-word{grid-column:2;grid-row:1}
+.marketing-site .site-brand-caption{grid-column:2;grid-row:2;font:500 7px/1.35 "Manrope",sans-serif;letter-spacing:.16em}
+.marketing-site .footer-wordmark{display:inline-flex;align-items:center;gap:11px}
+.marketing-site .footer-wordmark .nodus-logo{width:34px;height:34px}
+.marketing-site .footer-wordmark>span:last-child{font-family:"Cormorant Garamond",serif;font-size:11px;letter-spacing:0}
+.marketing-site .site-header{
+  background:rgba(25,26,21,.58)!important;
+  border:1px solid rgba(216,194,154,.22);
+  backdrop-filter:blur(24px) saturate(135%);
+  -webkit-backdrop-filter:blur(24px) saturate(135%);
+  box-shadow:0 12px 36px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.025);
+}
+.marketing-site .site-menu{
+  background:rgba(27,28,23,.94);
+  backdrop-filter:blur(24px) saturate(125%);
+  -webkit-backdrop-filter:blur(24px) saturate(125%);
+  border-color:rgba(216,194,154,.22);
+}
+.marketing-site .menu-group>p,.marketing-site .footer-column>p,
+.marketing-site .menu-topline,.marketing-site .menu-bottom>div,
+.marketing-site .menu-cta,.marketing-site .footer-cta,
+.marketing-site .eyebrow,.marketing-site .section-index,
+.marketing-site .hero-proofline,.marketing-site .network-label,
+.marketing-site .network-caption,.marketing-site .cell-number,
+.marketing-site .detail-top,.marketing-site .detail-foot,
+.marketing-site .footer-bottom{
+  font-family:"Manrope",sans-serif;
+  letter-spacing:.14em;
+}
+.marketing-site .section-light,
+.marketing-site .live-system,
+.marketing-site .capability-ledger{
+  background:var(--nd-obsidian)!important;
+  color:var(--nd-ivory)!important;
+}
+.marketing-site .system-grid,.marketing-site .ledger{
+  border-color:var(--nd-line);
+}
+.marketing-site .system-cell,.marketing-site .ledger-column,
+.marketing-site .content-grid article,.marketing-site .pricing-option{
+  background:linear-gradient(155deg,rgba(53,45,36,.48),rgba(26,27,22,.92));
+  border-color:var(--nd-line);
+}
+.marketing-site .ledger-column+ .ledger-column{border-left-color:var(--nd-line)}
+.marketing-site .ledger-heading,.marketing-site .ledger li{color:var(--nd-linen);border-color:var(--nd-line)}
+.marketing-site .ledger-note{color:var(--nd-stone)}
+.marketing-site .network-core{
+  background:radial-gradient(circle at 50% 42%,rgba(189,167,127,.18),rgba(17,18,15,.96) 72%);
+  border-color:rgba(216,194,154,.38);
+}
+.marketing-site .network-core b{font-family:"Syncopate",sans-serif;font-size:12px;font-weight:400;letter-spacing:.12em}
+.marketing-site .site-footer{background:#0d0e0b}
+@media(max-width:640px){
+ .marketing-site .site-header{width:calc(100% - 24px);padding:0 13px}
+ .marketing-site .site-brand{grid-template-columns:32px auto;column-gap:9px}
+ .marketing-site .nodus-logo{width:30px;height:30px}
+ .marketing-site .site-brand-word{font-size:14px}
+ .marketing-site .site-brand-caption{font-size:6px;letter-spacing:.1em}
+ .marketing-site .header-context{display:none}
+}
