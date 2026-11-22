@@ -1,0 +1,72 @@
+/* NODUS unified visual system — warm mineral neutrals, natural depth, quiet metal */
+:root{
+  color-scheme:dark;
+  --nd-ink:#191a17; --nd-ink-2:#22231f; --nd-ink-3:#2c2d27;
+  --nd-espresso:#302a22; --nd-ivory:#eee8dc; --nd-linen:#e3dccf;
+  --nd-stone:#c4b9a7; --nd-taupe:#a79b88; --nd-muted:#a8a69b;
+  --nd-muted-2:#77796f; --nd-line:rgba(208,196,174,.19);
+  --nd-gold:#b99b6b; --nd-gold-soft:#d8c39d; --nd-olive:#89907b;
+  --nd-shadow:0 24px 70px rgba(0,0,0,.22);
+}
+body{background:var(--nd-ink);color:var(--nd-ivory)}
+/* Workspace */
+.app-shell{background:var(--nd-ink);color:var(--nd-ivory)}
+.sidebar{background:var(--nd-ink-2);border-color:var(--nd-line)}
+.brand{color:var(--nd-ivory)}
+.brand-mark{border:0;color:var(--nd-gold);background:transparent}
+.brand-mark svg,.brand-mark img{background:transparent}
+.nav-label,.eyebrow{color:var(--nd-gold)}
+.side-nav a{color:var(--nd-muted)}
+.side-nav a.active{color:var(--nd-ivory);background:rgba(185,155,107,.10);border-left-color:var(--nd-gold)}
+.sidebar-bottom{border-color:var(--nd-line);color:var(--nd-muted-2)}
+.status-dot,.connection-pill i{background:var(--nd-olive)}
+.page-wrap{color:var(--nd-ivory)}
+.topbar h1,.welcome-panel h2,.metric-card strong,.surface-card h3{color:var(--nd-ivory)}
+.muted,.welcome-panel p:not(.eyebrow),.metric-card>span,.metric-card small,.body-copy{color:var(--nd-muted)}
+.welcome-panel,.metric-card,.surface-card{background:var(--nd-ink-2);border-color:var(--nd-line)}
+.connection-pill,.tag{border-color:var(--nd-line);color:var(--nd-stone)}
+.progress-track{background:var(--nd-ink-3)}
+.progress-track span{background:var(--nd-gold)}
+.progress-caption{border-color:var(--nd-line);color:var(--nd-muted)}
+.progress-caption strong{color:var(--nd-ivory)}
+/* Marketing shell and navigation */
+.marketing-site{
+ --ink:var(--nd-ink);--ink-2:var(--nd-ink-2);--ink-3:var(--nd-ink-3);
+ --espresso:var(--nd-espresso);--paper:var(--nd-ivory);--paper-2:var(--nd-linen);
+ --stone:var(--nd-stone);--muted:var(--nd-muted);--muted-2:var(--nd-muted-2);
+ --line:var(--nd-line);--accent:var(--nd-gold);--accent-2:var(--nd-gold-soft);
+ --blue:var(--nd-olive);--surface:var(--nd-ink-2);--surface-2:var(--nd-ink-3);
+ --text:var(--nd-ivory);--shadow:var(--nd-shadow);
+ background:var(--ink);color:var(--text)
+}
+.site-header{background:rgba(34,35,31,.76);border-color:var(--nd-line);border-radius:2px}
+.site-brand-word{color:var(--nd-ivory)}
+.site-brand-caption,.header-context{color:var(--nd-muted-2)}
+.menu-trigger{border-color:var(--nd-line);border-radius:2px}
+.menu-trigger span{background:var(--nd-ivory)}
+.site-menu{background:var(--nd-ink-2);border-color:var(--nd-line);border-radius:2px}
+.menu-group a{color:var(--nd-ivory)}
+.site-footer{background:#141511;color:var(--nd-ivory);border-top-color:var(--nd-line)}
+.footer-wordmark{color:var(--nd-ivory)}
+.footer-identity>p,.footer-column a,.footer-bottom a{color:var(--nd-muted)}
+/* Buttons, forms, tables and evidence surfaces */
+button,input,select,textarea{accent-color:var(--nd-gold)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--nd-gold-soft);outline-offset:3px}
+.primary-cta,.cta-primary,.import-form button,.coverage-review-form button,.value-record-form button,.value-advance-form button{background:var(--nd-gold);border-color:var(--nd-gold);color:#191a17!important}
+.primary-cta:hover,.cta-primary:hover,.import-form button:hover,.coverage-review-form button:hover,.value-record-form button:hover,.value-advance-form button:hover{background:var(--nd-gold-soft)}
+.data-table th{color:var(--nd-gold-soft);border-color:var(--nd-line)}
+.data-table td{color:var(--nd-linen);border-color:var(--nd-line)}
+.data-table tbody tr:hover{background:rgba(185,155,107,.07)}
+.import-form,.value-record-form input,.value-record-form select,.value-record-form textarea,.coverage-review-form select,.value-advance-form select,.value-advance-form input{border-color:var(--nd-line);background:#1c1d19;color:var(--nd-ivory)}
+.market-card,.simulation-result{background:rgba(255,255,255,.025);border-color:var(--nd-line)}
+.market-option{border-color:var(--nd-line)}
+.market-option>div:last-child span{color:var(--nd-gold-soft)}
+/* Home page accents */
+.nh-product,.nh-service-grid article,.nh-steps article,.nh-proof-list,.nh-close{border-color:var(--nd-line)}
+.nh-product-brand img,.nh-engine-mark img,.nh-close>img{background:transparent!important;mix-blend-mode:normal}
+.nh-eyebrow,.nh-product-top,.nh-product-state,.nh-sources article>span,.nh-sources article>strong,.nh-product-note,.nh-service-number,.nh-service-grid article>small,.nh-steps article>span,.nh-proof-copy>span,.nh-proof-list b,.nh-close>span{color:var(--nd-gold-soft)}
+.nh-primary{background:var(--nd-gold)!important;color:#191a17!important}
+.nh-primary:hover{background:var(--nd-gold-soft)!important}
+.nh-secondary,.nh-proof-copy>a{color:var(--nd-ivory)}
+/* Respect reduced motion and keep the palette consistent on small screens */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
