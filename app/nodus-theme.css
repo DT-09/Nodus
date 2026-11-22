@@ -336,8 +336,25 @@ body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 
 .marketing-site .site-brand{display:grid;grid-template-columns:38px auto;grid-template-rows:auto auto;column-gap:12px;align-items:center;min-width:0}
 .marketing-site .nodus-logo{
   grid-column:1;grid-row:1 / span 2;
-  display:block;width:36px;height:36px;object-fit:contain;
+  display:block;width:36px;height:36px;aspect-ratio:1/1;
+  flex:0 0 36px;object-fit:contain;object-position:center;
   background:transparent!important;filter:drop-shadow(0 0 9px rgba(216,194,154,.13));
+  transform:none!important;
+}
+.marketing-site .footer-wordmark .nodus-logo{
+  width:36px;height:36px;aspect-ratio:1/1;flex:0 0 36px;
+}
+.marketing-site .nh-product-brand img{
+  width:42px;height:42px;aspect-ratio:1/1;flex:0 0 42px;
+  object-fit:contain;object-position:center;transform:none!important;
+}
+.marketing-site .nh-engine-mark img{
+  width:27px;height:27px;aspect-ratio:1/1;object-fit:contain;
+  object-position:center;transform:none!important;
+}
+.marketing-site .nh-close>img{
+  width:72px;height:72px;aspect-ratio:1/1;object-fit:contain;
+  object-position:center;transform:none!important;
 }
 .marketing-site .site-brand-word{grid-column:2;grid-row:1}
 .marketing-site .site-brand-caption{grid-column:2;grid-row:2;font:500 7px/1.35 "Manrope",sans-serif;letter-spacing:.16em}
