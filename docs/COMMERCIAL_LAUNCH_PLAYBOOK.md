@@ -1,4 +1,7 @@
-# NODUS Commercial Launch Playbook
+# NODUS Commercial Launch Playbook — Legacy Direction
+
+> **Superseded by [NODUS Master Business & Product Blueprint](NODUS_MASTER_BLUEPRINT.md).** This playbook describes the earlier shipping-cost reconciliation offer. Retain as historical context only; the new target is recurring 3PL billing and performance control.
+
 
 **Version:** 1.0  
 **Date:** 2026-11-15
