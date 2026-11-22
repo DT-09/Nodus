@@ -1,4 +1,7 @@
-# NODUS Commercial Offer and Buyer Definition
+# NODUS Commercial Offer and Buyer Definition — Legacy Offer
+
+> **Superseded by [NODUS Master Business & Product Blueprint](NODUS_MASTER_BLUEPRINT.md).** The former $99/month human-delivered shipping review is not the final target-state offer. Preserve it only as a historical pilot hypothesis; do not publish it as the new product offer without updating the website and validating scope.
+
 
 **Status:** Pilot offers; demand not yet validated  
 **Date:** 2026-11-22  
