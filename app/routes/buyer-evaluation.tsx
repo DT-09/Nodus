@@ -1,7 +1,7 @@
 import {useState} from "react";
 import type {FormEvent} from "react";
 import type {MetaFunction} from "react-router";
-import {Link} from "react-router";
+import {Link,useSearchParams} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
@@ -23,6 +23,7 @@ const deliverables=[
  ["Decision pack","A CSV register and JSON export with scope, methods and limitations."],
 ];
 function AssessmentForm(){
+ const [searchParams]=useSearchParams();
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState(false);
  async function submit(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(busy)return;setBusy(true);setMessage("");setError(false);
@@ -40,7 +41,7 @@ function AssessmentForm(){
    <label>Store domain (for context)<input name="store" type="text" required maxLength={300} placeholder="store.myshopify.com"/></label>
    <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option>Under 500</option><option>500–2,000</option><option>2,000–10,000</option><option>10,000–50,000</option><option>50,000+</option><option>Prefer to discuss</option></select></label>
    <label className="nd-form-wide">Shipping setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option>Direct carrier account</option><option>Third-party logistics (3PL)</option><option>Multiple carriers / 3PLs</option><option>Shopify Shipping</option><option>Other / unsure</option></select></label>
-   <label className="nd-form-wide">What do you need?<select name="offer_type" defaultValue="monthly_review"><option value="monthly_review">Monthly Shipping Review — USD 99/month</option><option value="paid_audit">Shipping Cost Audit — USD 149 one-time</option><option value="evaluation">Free evaluation</option></select></label>
+   <label className="nd-form-wide">What do you need?<select name="offer_type" defaultValue={searchParams.get("offer")==="paid_audit"?"paid_audit":searchParams.get("offer")==="evaluation"?"evaluation":"monthly_review"}><option value="monthly_review">Monthly Shipping Review — USD 99/month</option><option value="paid_audit">Shipping Cost Audit — USD 149 one-time</option><option value="evaluation">Free evaluation</option></select></label>
    <label className="nd-form-wide">What problem should the assessment investigate?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we cannot reliably compare shipping revenue with carrier charges across orders..."/></label>
   </div>
   <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorized to submit this business enquiry and agree that NODUS may use these details to review and respond to this request. No store data is requested by this form. <Link to="/privacy">Read the privacy notice.</Link></span></label>
