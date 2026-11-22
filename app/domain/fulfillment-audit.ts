@@ -95,7 +95,7 @@ function assertDate(value: string, field: string): void {
 
 function parseQuantity(value: string): bigint {
   const raw = value.trim();
-  if (!/^\d+(?:\\.\d{1,4})?$/.test(raw)) {
+  if (!/^\d+(?:\.\d{1,4})?$/.test(raw)) {
     throw new Error("Quantity must be a non-negative decimal with up to four places.");
   }
   const [whole, fraction = ""] = raw.split(".");
