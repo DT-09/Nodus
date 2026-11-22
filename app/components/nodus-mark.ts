@@ -1,18 +1,17 @@
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="NODUS six-node geometric network mark">
-<g stroke="#BDA77F" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" opacity=".9">
-  <path d="M256 54 112 145 72 286 256 458 440 286 400 145 256 54"/>
-  <path d="M112 145 400 145"/>
-  <path d="M112 145 256 458 400 145"/>
-  <path d="M72 286 400 145M440 286 112 145"/>
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="NODUS crown-diamond network mark">
+<g stroke="#BDA77F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M74 284 160 112 256 190 352 112 438 284 256 432 74 284Z" opacity=".96"/>
+ <path d="M160 112 352 112M74 284 352 112M438 284 160 112M160 112 256 432M352 112 256 432M74 284 256 190 438 284" opacity=".72"/>
+ <path d="M74 284 256 190 438 284" opacity=".9"/>
 </g>
-<g fill="#D8C29A" stroke="#A98B61" stroke-width="2.6">
-  <circle cx="256" cy="54" r="13"/><circle cx="112" cy="145" r="12"/>
-  <circle cx="400" cy="145" r="12"/><circle cx="72" cy="286" r="12"/>
-  <circle cx="440" cy="286" r="12"/><circle cx="256" cy="458" r="13"/>
+<g fill="#D8C29A" stroke="#A98B61" stroke-width="2.8">
+ <circle cx="160" cy="112" r="13"/><circle cx="256" cy="190" r="13"/>
+ <circle cx="352" cy="112" r="13"/><circle cx="74" cy="284" r="13"/>
+ <circle cx="438" cy="284" r="13"/><circle cx="256" cy="432" r="13"/>
 </g>
-<g fill="#F2EDE2" opacity=".76">
-  <circle cx="256" cy="54" r="4"/><circle cx="112" cy="145" r="3.5"/>
-  <circle cx="400" cy="145" r="3.5"/><circle cx="72" cy="286" r="3.5"/>
-  <circle cx="440" cy="286" r="3.5"/><circle cx="256" cy="458" r="4"/>
+<g fill="#F2EDE2" opacity=".82">
+ <circle cx="160" cy="112" r="4"/><circle cx="256" cy="190" r="4"/>
+ <circle cx="352" cy="112" r="4"/><circle cx="74" cy="284" r="4"/>
+ <circle cx="438" cy="284" r="4"/><circle cx="256" cy="432" r="4"/>
 </g></svg>`;
 export const NODUS_MARK = `data:image/svg+xml,${encodeURIComponent(svg)}`;
