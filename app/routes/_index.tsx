@@ -40,7 +40,7 @@ export default function Home(){
      <div className="nh-meta"><span>ORDER-LEVEL RECONCILIATION</span><i></i><span>CARRIER COST INTELLIGENCE</span><i></i><span>LOCAL FILE PROCESSING</span></div>
     </div>
     <div className="nh-product">
-     <div className="nh-product-top"><div className="nh-product-brand"><img src={NODUS_MARK} alt="NODUS six-node gold network mark"/><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
+     <div className="nh-product-top"><div className="nh-product-brand"><img src={NODUS_MARK} alt="NODUS crown-diamond network mark"/><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
      <div className="nh-product-title"><span>01 / EVIDENCE WORKSPACE</span><h2>One view of<br/><em>shipping economics.</em></h2></div>
      <div className="nh-sources">
       <article><span>01 / SOURCE</span><b>Shopify orders</b><small>Order value · shipping collected · tax treatment</small><strong>ORDER RECORDS</strong></article>
@@ -84,7 +84,7 @@ export default function Home(){
    </section>
 
    <section className="nh-close">
-    <img src={NODUS_MARK} alt="NODUS six-node gold network mark"/>
+    <img src={NODUS_MARK} alt="NODUS crown-diamond network mark"/>
     <span>NODUS / SHIPPING ECONOMICS</span>
     <h2>See the evidence.<br/><em>Then decide.</em></h2>
     <p>Start with a free review using your own supported CSV exports. Files are processed in your browser and are not uploaded to NODUS.</p>
