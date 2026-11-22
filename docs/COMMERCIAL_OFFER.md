@@ -1,100 +1,120 @@
 # NODUS Commercial Offer and Buyer Definition
 
-**Status:** Pilot offer; demand not yet validated  
+**Status:** Pilot offers; demand not yet validated  
 **Date:** 2026-11-22  
-**Product:** NODUS — Shopify Shipping Cost Audit
+**Product:** NODUS — Shopify Shipping Economics Review
 
-## 1. Commercial decision
+## 1. Commercial offer
 
-NODUS is offered in two stages:
+NODUS has three entry points:
 
-1. **Free self-serve diagnostic:** browser-local CSV reconciliation and policy replay.
-2. **Shipping Cost Audit pilot:** USD 149 one-time, fixed scope, human-reviewed decision pack.
+1. **Free diagnostic:** browser-local CSV reconciliation and historical shipping-policy replay.
+2. **Shipping Cost Audit — USD 149 one-time:** a human-reviewed baseline for one store and one reporting window.
+3. **Monthly Shipping Review — USD 99/month:** a recurring, human-delivered review of each new reporting period.
 
-The USD 149 is a test price, not demonstrated willingness to pay. The public form records a request only. It does not charge a card, create an order, reserve capacity or activate service. An authorized seller must confirm fit, scope, terms, invoice and cleared funds before work begins.
-
-NODUS is not currently sold as a monthly subscription. There is no verified continuous carrier monitoring or automated recurring ingestion that would justify automatic monthly billing.
+The prices are test offers. They are not validated willingness to pay.
 
 ## 2. Initial buyer
 
-Target Shopify merchants selling physical goods that:
+Shopify merchants selling physical goods that:
 - use external carriers or a 3PL;
 - have recurring order and carrier-cost exports;
-- have enough shipment complexity to make manual spreadsheet reconciliation burdensome;
+- have enough shipment volume and complexity that spreadsheet review is burdensome;
 - have an operations, ecommerce or finance owner accountable for shipping economics.
 
-Disqualify stores without usable cost evidence, digital-only stores, very low shipping volume, or buyers who cannot authorize the data handoff.
-
-This customer profile remains a hypothesis until paid engagements validate it.
+Disqualify stores without usable cost evidence, digital-only stores, and buyers who cannot provide authorized source exports.
 
 ## 3. The job being purchased
 
-The buyer is not paying for another dashboard. The buyer is paying for a bounded review that answers:
+The buyer needs to know:
+- what share of submitted order and carrier-cost records can be matched;
+- which charges remain unmatched, ambiguous, duplicated or incomplete;
+- how recorded shipping revenue compares with matched fulfillment cost where coverage supports the calculation;
+- which patterns deserve operator investigation;
+- how the current period differs from the previous period;
+- what alternative flat rates or free-shipping thresholds would have produced on the historical sample, where required fields exist.
 
-- What share of the submitted order and carrier-cost records can be matched?
-- Which charges remain unmatched, ambiguous, duplicated or incomplete?
-- For orders with adequate evidence, how does recorded shipping revenue compare with matched fulfillment cost?
-- Which patterns deserve operator investigation?
-- What would alternative flat rates or free-shipping thresholds have produced on the historical sample, where the required fields exist?
+A negative shipping balance is not proof of carrier overbilling, a recoverable credit, profit loss or guaranteed saving.
 
-A negative shipping balance is not proof of carrier overbilling, a recoverable credit, profit loss or a guaranteed saving.
-
-## 4. Fixed pilot scope
+## 4. Fixed baseline audit scope
 
 - One Shopify store.
-- One agreed reporting window of up to 30 days.
+- One reporting window of up to 30 days.
 - Up to 2,000 orders.
 - One carrier or 3PL cost export.
-- One reporting currency per comparison; mixed currencies remain separated.
+- One reporting currency per comparison; mixed currencies remain separate.
 - One written decision pack.
-- No direct carrier contact, claims filing, accounting opinion, tax advice or changes to live shipping settings.
 
-The operator must reject or separately quote data outside this scope before accepting payment.
+## 5. Monthly service scope
 
-## 5. Customer deliverables
+- One Shopify store.
+- One monthly reporting period.
+- Up to 2,000 orders per period.
+- One carrier or 3PL cost export per period.
+- Monthly evidence coverage and data-quality review.
+- Order-level shipping revenue versus matched fulfillment cost.
+- Exception register with source references.
+- Carrier spend breakdown.
+- Prior-period comparison when comparable prior data is available.
+- Monthly written decision brief and action register.
+
+The monthly service is analyst-delivered from exports supplied for each period. It is not continuous monitoring, real-time alerting, automatic carrier polling or automatic Shopify policy changes. Each month is a new evidence review.
+
+## 6. Deliverables
 
 1. **Coverage statement:** reporting period, source files, row counts, match coverage, exclusions and unresolved gaps.
 2. **Order-level reconciliation:** shipping revenue compared with matched carrier/3PL cost evidence, with source references and matching method.
 3. **Exception register:** unmatched, ambiguous, duplicate, currency-mismatched and incomplete records.
-4. **Policy replay:** historical flat-rate and free-shipping threshold comparison only where the input fields support it.
-5. **Decision brief:** prioritized investigation questions, calculation notes, limitations and next actions.
-6. **Machine-readable exports:** CSV register and JSON decision pack.
+4. **Carrier spend review:** imported cost by carrier and cost type where supplied.
+5. **Period comparison:** changes from the previous period where comparable evidence exists.
+6. **Policy replay:** historical flat-rate and free-shipping threshold comparison only where input fields support it.
+7. **Decision brief:** prioritized investigation questions, calculation notes, limitations and next actions.
+8. **Exports:** print-ready HTML report, CSV register and JSON decision pack.
 
 No claim of savings, carrier recovery, profit improvement or overbilling may be made without merchant-verified evidence.
 
-## 6. Repeat purchase logic
+## 7. Recurring value hypothesis
 
-There is no automatic renewal. A merchant may request another audit when a new reporting period or carrier invoice set exists. A repeat purchase is justified only when:
-- new source data is available;
-- the previous audit identified a material unresolved question or recurring cost pattern;
-- the next review can measure whether the issue changed.
+The monthly service is justified when the merchant has:
+- a fresh set of order and carrier-cost records each month;
+- recurring exceptions or material changes worth reviewing;
+- a need to compare performance across reporting periods;
+- an owner who uses the review to make an operational or financial decision.
 
-If merchants do not request a second review, NODUS must not pretend recurring demand exists. Monthly subscription pricing can be reconsidered only after repeated paid audits establish recurring value and the operating workflow supports reliable delivery.
+If the monthly report does not change a decision or reduce review burden, the recurring offer has not earned renewal. Track repeat use and renewal explicitly.
 
-## 7. Customer journey and operating controls
+## 8. Customer journey
 
 1. Merchant runs the free diagnostic locally.
-2. Merchant requests a paid audit through the enquiry form.
-3. Operator checks the lead in the D1 database and responds through the business-owned inbox.
-4. Operator confirms the data format and scope without collecting unnecessary customer data.
-5. Authorized seller issues written service terms and an invoice.
-6. Work begins only after cleared payment is confirmed.
-7. Operator delivers the decision pack and records completion, limitations and customer feedback.
+2. Merchant requests a baseline audit or monthly review.
+3. NODUS confirms data compatibility and scope.
+4. Merchant provides the agreed exports through the agreed data handoff.
+5. NODUS runs the reconciliation and human review.
+6. Merchant receives the report, exception register and decision brief.
+7. For monthly customers, the next period begins with a fresh export and a new review.
 
-The form is not checkout. The D1 enquiry store does not send automatic email notifications; the operator must monitor it until a tested notification channel is implemented.
-
-## 8. Legal and operational ownership
-
-A responsible adult business operator must own the legal seller identity, customer contract, invoice, payment account, tax and privacy obligations, refunds, and customer support. Do not bypass age or identity checks. Never place passwords, access tokens or payment secrets in the repository or chat.
+The public form stores business enquiries only. It does not collect order files or carrier invoices.
 
 ## 9. Validation gates
 
-Do not call this a validated business until all of the following are evidenced:
-- a real merchant requests the paid audit;
-- the seller issues terms and an invoice;
-- cleared payment is received;
-- the audit is delivered to the agreed scope;
-- the merchant confirms whether the output was useful;
-- a repeat purchase or referral provides evidence of continuing value.
+Do not call the business validated until there is evidence of:
+- qualified merchant demand;
+- at least one paid audit or monthly engagement;
+- delivery to the promised scope;
+- findings that the merchant accepts as useful;
+- a second reporting period completed;
+- a repeat purchase or renewal.
 
-Track requests, qualified leads, invoices, paid audits, delivery time, unresolved findings, verified merchant value and repeat purchases. Do not publish invented customers, testimonials or savings claims.
+Track qualified enquiries, paid audits, monthly service starts, reports delivered, delivery time, accepted findings, repeat periods, renewals and complaints. Do not count form submissions as revenue.
+
+## 10. Product boundaries
+
+NODUS does not currently provide:
+- direct UPS, FedEx or USPS invoice APIs;
+- automated carrier invoice polling;
+- real-time carrier alerts;
+- continuous monitoring;
+- automatic shipping-policy writes;
+- accounting opinions, tax advice or guaranteed recovery.
+
+Do not fabricate customers, testimonials, savings, market share, integrations or App Store approval.
