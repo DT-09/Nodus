@@ -1,21 +1,15 @@
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="NODUS six-node faceted diamond mark">
-<g stroke="#BDA77F" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M256 52 112 146 68 300 256 460 444 300 400 146 256 52"/>
-  <path d="M112 146 400 146M68 300 400 146M444 300 112 146"/>
-  <path d="M112 146 256 460 400 146M68 300 256 460 444 300"/>
-  <path d="M68 300 256 52 444 300" opacity=".72"/>
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 430" fill="none" role="img" aria-label="NODUS network mark">
+<g stroke="#F6C489" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M200 40 120 285 200 365 280 285 200 40"/>
+  <path d="M120 130 120 285M120 130 200 365M280 130 280 285M280 130 200 365"/>
 </g>
-<g fill="#D8C29A" stroke="#A98B61" stroke-width="2.6">
-  <circle cx="256" cy="52" r="13"/>
-  <circle cx="112" cy="146" r="12"/>
-  <circle cx="400" cy="146" r="12"/>
-  <circle cx="68" cy="300" r="12"/>
-  <circle cx="444" cy="300" r="12"/>
-  <circle cx="256" cy="460" r="13"/>
+<g fill="#F6C489">
+  <circle cx="200" cy="40" r="15"/>
+  <circle cx="120" cy="130" r="15"/>
+  <circle cx="280" cy="130" r="15"/>
+  <circle cx="120" cy="285" r="15"/>
+  <circle cx="280" cy="285" r="15"/>
+  <circle cx="200" cy="365" r="15"/>
 </g>
-<g fill="#F2EDE2" opacity=".8">
-  <circle cx="256" cy="52" r="4"/><circle cx="112" cy="146" r="3.5"/>
-  <circle cx="400" cy="146" r="3.5"/><circle cx="68" cy="300" r="3.5"/>
-  <circle cx="444" cy="300" r="3.5"/><circle cx="256" cy="460" r="4"/>
-</g></svg>`;
+</svg>`;
 export const NODUS_MARK = `data:image/svg+xml,${encodeURIComponent(svg)}`;
