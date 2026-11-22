@@ -794,9 +794,9 @@
 .nd-product-boundary{margin-top:70px;padding:34px;background:#211a27;border:1px solid rgba(213,179,111,.22)}
 .nd-product-boundary h2{font:34px Georgia,serif;color:#f4eee3;margin:15px 0}
 .nd-product-boundary p{max-width:720px;font:11px/1.9 Inter,system-ui,sans-serif;color:#c9c0b2}
-.nd-pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:0 0 75px}
+.nd-pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0 0 75px}
 .nd-plan{padding:30px;border:1px solid rgba(213,179,111,.24);background:#211a27}
-.nd-plan-pro{background:linear-gradient(145deg,#2b2432,#211a27);border-color:rgba(240,212,154,.5);box-shadow:0 22px 60px rgba(0,0,0,.18)}
+.nd-plan-pro{background:linear-gradient(145deg,#2b2432,#211a27);border-color:rgba(240,212,154,.5);box-shadow:0 22px 60px rgba(0,0,0,.18)}.nd-plan-monthly{border-color:rgba(140,167,182,.55);background:linear-gradient(145deg,#22303a,#1b252e)}
 .nd-plan h2{font:31px Georgia,serif;color:#f4eee3;margin:16px 0}
 .nd-plan-price{font:54px Georgia,serif;color:#f0d49a;margin:10px 0}
 .nd-plan-price small{font:12px Inter,system-ui,sans-serif;color:#c9c0b2}

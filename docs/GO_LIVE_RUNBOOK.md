@@ -2,9 +2,9 @@
 
 ## Current release state
 
-The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial product is the free shipping-economics workbench plus a fixed-scope USD 99/month monthly review service.
+The public release is a Cloudflare Pages website with Pages Functions and D1. It supports the marketing site, browser-local CSV analysis, synthetic demo and a persistent merchant enquiry form. The commercial offer is a free browser-local diagnostic, a USD 149 one-time baseline Shipping Cost Audit, and a USD 99/month recurring Monthly Shipping Review. The monthly service is analyst-delivered from fresh exports supplied each period; it is not automated carrier monitoring or real-time alerting. Both prices are pilot hypotheses.
 
-The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated subscription billing, carrier polling, App Store distribution and continuous monitoring are not part of the current paid service.
+The public CSV workflow is the active product. Direct Shopify OAuth is not promoted as a live integration. Automated carrier polling, real-time alerts, App Store distribution and continuous monitoring are not part of the current paid service.
 
 ## Cloudflare resources
 
@@ -65,19 +65,19 @@ The D1 enquiry form does not send an automatic email notification. Direct mailto
 
 ## Commercial operating requirements
 
-Production configuration was inspected on 2026-11-21. The Pages project currently has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` or `NODUS_PILOT_CHECKOUT_URL` configured in either Production or Preview. Therefore:
+Production configuration was inspected on 2026-11-21. The Pages project has the D1 binding and token-encryption variable, but does not have `NODUS_ADMIN_TOKEN` configured in either Production or Preview. Therefore:
 - The protected `/ops` console cannot authenticate an operator.
-- The public pilot form cannot redirect a buyer to checkout.
-- The form can store enquiries in D1, but there is no automatic new-lead notification. An operator must check D1 manually until a notification channel is implemented.
+- The public service-request form records interest in the baseline audit or recurring monthly review; it does not collect source files.
+- The form can store enquiries in D1, but there is no automatic new-lead notification. An authorized operator must check D1 manually until a notification channel is implemented.
 
 Required before accepting paid pilot requests:
 - [ ] A responsible adult business operator is named and owns support, contracts, payment collection, tax and customer-data obligations.
 - [ ] Configure a high-entropy `NODUS_ADMIN_TOKEN` as a Cloudflare secret in Production and Preview. Do not commit it or expose it in browser code.
-- [ ] Configure `NODUS_PILOT_CHECKOUT_URL` with an HTTPS checkout route owned by the authorized business operator. Do not use a personal or unverified payment account.
+- [ ] The authorized adult seller establishes an approved invoice and payment route outside the public form. Do not use a personal or unverified payment account.
 - [ ] Configure lead notification or assign a documented daily D1 review owner; test that a new enquiry is noticed and acknowledged.
-- [ ] Test the full path: valid pilot request → D1 record → operator review → scope acceptance → payment route → cleared-funds confirmation → paid status.
-- [ ] Confirm that the checkout amount, currency, scope, refund/cancellation terms and legal seller identity match the published USD 149 offer.
+- [ ] Test the full path: valid audit request → D1 record → operator review → written scope and terms → invoice → cleared-funds confirmation → engagement record.
+- [ ] Confirm that the invoice amount, currency, scope, refund terms and legal seller identity match the agreed USD 149 pilot offer.
 - [ ] The paid pilot is delivered using a secure, agreed data-transfer method.
-- [ ] No recurring subscription until billing, entitlement lifecycle, cancellation and support are tested.
+- [ ] Monthly review process is tested end to end with a fresh period export, report generation, human QA and customer delivery.
 
 Never equate a successful Pages deployment with a complete product launch or a purchase request with cleared revenue.

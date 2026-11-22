@@ -18,8 +18,9 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  try{const raw=await request.text();if(raw.length>10000)return json({error:"Request too large."},413);body=JSON.parse(raw) as Record<string,unknown>;}catch{return json({error:"Invalid request."},400);}
  if(clean(body.website,200))return json({ok:true},200);
  const name=clean(body.name,100),email=clean(body.email,254).toLowerCase(),store=clean(body.store,300),orders=clean(body.orders,60),shipping=clean(body.shipping,100),objective=clean(body.objective,1500);
- const offer=body.offer_type==="pro_subscription"?"pro_subscription":"evaluation";
- const priceQuote=offer==="pro_subscription"?"USD 99/month — requested, not charged":null;
+ const requestedOffer=clean(body.offer_type,40);
+ const offer=requestedOffer==="monthly_review"?"monthly_review":requestedOffer==="paid_audit"?"paid_audit":"evaluation";
+ const priceQuote=offer==="monthly_review"?"USD 99/month — requested":offer==="paid_audit"?"USD 149 one-time — requested":null;
  if(name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!store||!orders||!shipping||objective.length<20||body.consent!==true)
   return json({error:"Complete each required field and confirm permission to contact you."},400);
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid store URL."},400);}
@@ -32,5 +33,5 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  const id=crypto.randomUUID();
  await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested')").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote).run();
 
- return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:offer==="pro_subscription"?"Your NODUS Pro monthly service request has been recorded. This is not a payment. For a direct response, email NODUS using the contact link on the website.":"Your free evaluation request has been received. NODUS will review the information and respond using the email address you supplied."},201);
+ return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:offer==="monthly_review"?"Your Monthly Shipping Review request has been recorded. NODUS will review the scope and respond using the email address you supplied.":offer==="paid_audit"?"Your Shipping Cost Audit request has been recorded. NODUS will review the scope and respond using the email address you supplied.":"Your free diagnostic enquiry has been received. NODUS will review the information and respond using the email address you supplied."},201);
 }

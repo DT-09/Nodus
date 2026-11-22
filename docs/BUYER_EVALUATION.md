@@ -17,37 +17,56 @@ The free review provides:
 - CSV review register and JSON decision pack exports;
 - aggregate period history saved locally on that device.
 
-## NODUS Pro — USD 99/month
+## Shipping Cost Audit — USD 149 one-time pilot
 
-NODUS Pro is a fixed-scope monthly review service, not automated SaaS monitoring.
+This is a fixed-scope, human-reviewed service—not automated SaaS monitoring. USD 149 is a pilot price to validate, not a proven market rate.
 
 Scope:
 - one Shopify store;
-- up to 2,000 orders in the monthly reporting period;
+- one reporting window of up to 30 days;
+- up to 2,000 orders;
 - one carrier or 3PL cost export;
-- one reporting currency per review; mixed currencies remain separated.
+- one reporting currency per comparison.
 
 Deliverables:
-1. Reconciliation and carrier-spend summary.
-2. Prioritized exception register with source references.
-3. Coverage statement and explicit limitations.
-4. Historical flat-rate and free-shipping threshold replay where the order subtotal supports it.
-5. Monthly executive brief and action register.
-6. Comparison with the previous period when prior evidence is supplied.
+1. Coverage and data-quality statement.
+2. Order-level shipping revenue versus matched carrier-cost reconciliation.
+3. Prioritized exception register with source references.
+4. Historical flat-rate and free-shipping threshold replay where supported.
+5. Written decision brief with findings, limits and next actions.
+6. CSV register and JSON decision pack.
 
 The service does not promise recovered credits, savings, profit improvement, carrier overbilling or an audit opinion. It does not contact carriers or file claims for the merchant.
+
+## Monthly Shipping Review — USD 99/month
+
+A recurring, human-reviewed service for one Shopify store, up to 2,000 orders and one carrier/3PL cost export per monthly period.
+
+Each month includes:
+- evidence coverage and data-quality review;
+- order-level shipping revenue versus matched carrier-cost reconciliation;
+- prioritized exception register with source references;
+- carrier spend breakdown;
+- comparison with the previous period when comparable evidence is available;
+- written monthly decision brief and action register;
+- print-ready HTML report, CSV register and JSON decision pack.
+
+The merchant supplies fresh exports for each period through the agreed data handoff. This is an analyst-delivered recurring service, not continuous carrier monitoring, real-time alerting or automatic carrier invoice polling.
 
 ## Customer journey
 
 1. Merchant runs the free browser-local review.
-2. Merchant inspects the sample decision pack and methodology.
-3. Merchant emails NODUS with the store domain, monthly order volume and the business question.
-4. NODUS confirms fit and scope.
-5. The merchant receives the service terms and invoice before paying.
-6. An authorized business operator confirms cleared funds.
-7. The monthly review is completed and the executive brief and action register are delivered.
+2. Merchant submits a paid-audit request.
+3. Operator reviews the lead and confirms source compatibility and scope.
+4. Authorized seller issues written terms and invoice.
+5. Work starts only after cleared payment.
+6. The audit and decision pack are delivered to the agreed scope.
 
-Do not send raw customer records, passwords, Shopify access tokens or unredacted order exports by email. Share only the minimum redacted decision-pack information required for the agreed review.
+The public form records an enquiry only. It does not take payment, reserve capacity or create a paid order. The operator must monitor D1 for new leads; automatic email notification is not configured.
+
+## Repeat purchases
+
+No monthly auto-renewal is offered. A merchant may buy another audit for a later period when new records exist and the previous findings justify follow-up. A subscription should be considered only after multiple paid audits demonstrate repeat demand and the service can reliably deliver recurring value.
 
 ## What NODUS does not claim
 
@@ -71,4 +90,4 @@ Do not send raw customer records, passwords, Shopify access tokens or unredacted
 
 ## Commercial requirements
 
-The USD 99/month price is an offer to validate, not proven willingness to pay. There is no automated checkout or recurring subscription billing. An authorized adult business operator must own the legal seller identity, service agreement, invoice, approved payment account, tax and data-protection obligations, support and refund/cancellation process. Payment is accepted only after scope and terms are confirmed and cleared funds are verified.
+An authorized adult business operator must own the legal seller identity, service agreement, invoice, approved payment account, tax and data-protection obligations, support and refund process. Payment is accepted only after scope and terms are confirmed and cleared funds are verified.

@@ -1,14 +1,14 @@
 import {useState} from "react";
 import type {FormEvent} from "react";
 import type {MetaFunction} from "react-router";
-import {Link} from "react-router";
+import {Link,useSearchParams} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
   {title:"NODUS merchant evaluation"},
-  {name:"description",content:"Request the free evaluation or the USD 99/month NODUS Pro monthly service. No source files are collected by the public form."},
+  {name:"description",content:"Request a one-time NODUS Shipping Cost Audit or a recurring Monthly Shipping Review. No source files are collected by the public form."},
   {property:"og:title",content:"Merchant evaluation guide — NODUS"},
-  {property:"og:description",content:"A practical guide to the free NODUS shipping-economics review and fixed-scope monthly Pro service."},
+  {property:"og:description",content:"A practical guide to the NODUS free diagnostic, one-time audit and recurring monthly review."},
 ];
 const requirements=[
  ["Order export","A merchant-provided order CSV with order references, shipping revenue and currency."],
@@ -23,6 +23,7 @@ const deliverables=[
  ["Decision pack","A CSV register and JSON export with scope, methods and limitations."],
 ];
 function AssessmentForm(){
+ const [searchParams]=useSearchParams();
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState(false);
  async function submit(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(busy)return;setBusy(true);setMessage("");setError(false);
@@ -33,30 +34,30 @@ function AssessmentForm(){
   finally{setBusy(false);}
  }
  return <form className="nd-assessment-form" onSubmit={submit}>
-  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT INTAKE</span><h2>Choose how to begin.</h2><p>Start with the free evaluation, or request the $99/month monthly review service. This form records interest only; it does not take payment. For a direct response, use the email contact link below.</p></div>
+  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT INTAKE</span><h2>Request a NODUS review.</h2><p>Run the free diagnostic, request a $149 one-time baseline audit, or request the $99/month recurring Monthly Shipping Review. The monthly service is analyst-delivered from each month's agreed exports; it is not automated carrier monitoring.</p></div>
   <div className="nd-form-grid">
    <label>Your name<input name="name" autoComplete="name" required minLength={2} maxLength={100} placeholder="Name"/></label>
    <label>Work email<input name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@company.com"/></label>
    <label>Store domain (for context)<input name="store" type="text" required maxLength={300} placeholder="store.myshopify.com"/></label>
    <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option>Under 500</option><option>500–2,000</option><option>2,000–10,000</option><option>10,000–50,000</option><option>50,000+</option><option>Prefer to discuss</option></select></label>
    <label className="nd-form-wide">Shipping setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option>Direct carrier account</option><option>Third-party logistics (3PL)</option><option>Multiple carriers / 3PLs</option><option>Shopify Shipping</option><option>Other / unsure</option></select></label>
-   <label className="nd-form-wide">Request type<select name="offer_type" defaultValue="pro_subscription"><option value="pro_subscription">NODUS Pro — USD 99/month (monthly service request)</option><option value="evaluation">Free evaluation — no payment</option></select></label>
+   <label className="nd-form-wide">What do you need?<select name="offer_type" defaultValue={searchParams.get("offer")==="paid_audit"?"paid_audit":searchParams.get("offer")==="evaluation"?"evaluation":"monthly_review"}><option value="monthly_review">Monthly Shipping Review — USD 99/month</option><option value="paid_audit">Shipping Cost Audit — USD 149 one-time</option><option value="evaluation">Free evaluation</option></select></label>
    <label className="nd-form-wide">What problem should the assessment investigate?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we cannot reliably compare shipping revenue with carrier charges across orders..."/></label>
   </div>
   <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorized to submit this business enquiry and agree that NODUS may use these details to review and respond to this request. No store data is requested by this form. <Link to="/privacy">Read the privacy notice.</Link></span></label>
   <div className="nd-form-honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
   <button className="cta-primary" type="submit" disabled={busy}>{busy?"SUBMITTING…":"SUBMIT REQUEST ↗"}</button>
   {message?<p className={error?"nd-form-status is-error":"nd-form-status"} role="status">{message}</p>:null}
-  <p className="nd-form-footnote">No card details are collected. A Pro request records interest only. It does not collect payment or activate a subscription. Do not include passwords, access tokens, customer records or invoice attachments.</p>
- <p className="nd-form-footnote"><a href="mailto:dhairytopia@gmail.com?subject=NODUS%20Pro%20monthly%20service">EMAIL NODUS DIRECTLY ↗</a></p>\n </form>;
+  <p className="nd-form-footnote">No card details are collected. A paid-audit request is not a purchase and does not collect payment. Work starts only after written scope, terms and cleared payment. Do not include passwords, access tokens, customer records or invoice attachments.</p>
+ <p className="nd-form-footnote"><a href="mailto:dhairytopia@gmail.com?subject=NODUS%20Shipping%20Cost%20Audit">EMAIL NODUS DIRECTLY ↗</a></p>\n </form>;
 }
 export default function BuyerEvaluation(){
  return <MarketingShell active="evaluation"><main className="content-page">
   <header><p className="page-eyebrow">MERCHANTS / EVALUATION GUIDE</p><h1>Find the shipping shortfalls<br/><em>your evidence can support.</em></h1><p className="page-lede">NODUS connects Shopify order shipping charges with carrier/3PL invoice rows. With complete cost coverage attested, it flags orders where matched carrier costs exceed shipping collected and produces an evidence-backed review pack. It does not claim carrier overbilling or guaranteed recovery.</p><div className="hero-ctas"><Link to="/demo" className="cta-primary">INSPECT THE SAMPLE <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REVIEW THE PROGRAMME <span>↗</span></Link></div></header>
   <section className="content-note"><span className="page-eyebrow">01 / WHO THIS IS FOR</span><h2>Built for operators who already have the evidence.</h2><p>The initial target is a Shopify merchant selling physical goods, using one or more external carriers or a 3PL, and reconciling separate order and carrier-cost records. The daily user is likely in ecommerce operations, fulfillment or finance. The economic buyer is the owner or a lead accountable for shipping economics. This fit is a market hypothesis until paying customers validate it.</p><div className="content-grid">{requirements.map(([title,body])=><article key={title}><span>FIT / REQUIREMENT</span><h2>{title}</h2><p>{body}</p></article>)}</div></section>
-  <section className="content-note"><span className="page-eyebrow">02 / THE SCOPE</span><h2>Small enough to verify. Useful enough to judge.</h2><p>The public product accepts an order CSV and a carrier-cost CSV selected by the user. Analysis runs in the browser. Files are not uploaded to NODUS. A separate Shopify connection is present in source code but is not offered as a live production integration until installation is verified.</p><p>The form below is separate from the CSV tool. It stores only the business enquiry fields needed to review and respond to the request. Do not submit customer records, invoices, credentials or access tokens.</p></section>
+  <section className="content-note"><span className="page-eyebrow">02 / THE SCOPE</span><h2>Small enough to verify. Useful enough to judge.</h2><p>The public product accepts an order CSV and a carrier-cost CSV selected by the user. Analysis runs in the browser. Files are not uploaded to NODUS. The paid monthly review is a human-delivered service based on exports supplied for each reporting period. A separate Shopify connection is present in source code but is not offered as a live production integration until installation is verified.</p><p>The form below is separate from the CSV tool. It stores only the business enquiry fields needed to assess fit and respond. It does not collect source files or payment details. Do not submit customer records, invoices, credentials or access tokens.</p></section>
   <section className="content-note"><span className="page-eyebrow">03 / WHAT YOU RECEIVE</span><h2>What the paid review is designed to establish.</h2><div className="content-grid">{deliverables.map(([title,body],i)=><article key={title}><span>{String(i+1).padStart(2,"0")} / DELIVERABLE</span><h2>{title}</h2><p>{body}</p></article>)}</div></section>
   <section className="content-note"><span className="page-eyebrow">04 / WHAT WE WILL NOT CLAIM</span><h2>Evidence sets the boundary.</h2><ul><li>Missing carrier cost is not treated as zero.</li><li>A discrepancy is not a recovered credit or confirmed saving.</li><li>Historical shipping-revenue replay is not a profit or conversion forecast.</li><li>Carrier invoice intake is CSV-based. Direct UPS, FedEx and USPS invoice APIs are not represented as live integrations.</li><li>Carrier invoice polling, policy-drift alerts and automatic Shopify shipping-policy changes are not offered as current capabilities.</li><li>Merchant-entered value records are attestations, not independent financial audits.</li></ul><p>See the <Link to="/methodology">methodology</Link> and <Link to="/security">security boundaries</Link> before sharing any store data.</p></section>
-  <section className="content-note"><span className="page-eyebrow">05 / DECIDE WHETHER TO CONTINUE</span><h2>Repeat use must earn its place.</h2><p>The free review is available without payment. NODUS Pro is a fixed-scope monthly review service at USD 99/month. Request it by email so the scope, invoice and payment arrangements can be confirmed before service begins.</p><p>No payment details are collected. Participation does not require a testimonial, review or public case study.</p><AssessmentForm/></section>
+  <section className="content-note"><span className="page-eyebrow">05 / DECIDE WHETHER TO CONTINUE</span><h2>Repeat use must earn its place.</h2><p>The free review is available without payment. NODUS offers a USD 149 one-time baseline audit and a USD 99/month recurring Monthly Shipping Review. The monthly service includes a fresh review of each reporting period's exports, a comparison with prior evidence where available, and a written decision brief. It is not continuous automated monitoring.</p><p>No payment details are collected. Participation does not require a testimonial, review or public case study.</p><AssessmentForm/></section>
  </main></MarketingShell>;
 }
