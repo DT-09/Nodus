@@ -60,7 +60,7 @@ Required production environment variables / secrets:
 - SHOPIFY_APP_URL: canonical HTTPS application origin, https://nodus-hq.pages.dev.
 - TOKEN_ENCRYPTION_KEY: high-entropy random secret of at least 32 characters (secret).
 - NODUS_ADMIN_TOKEN: operator token of at least 32 characters (secret).
-- NODUS_PILOT_CHECKOUT_URL: optional HTTPS checkout link for the USD 149 pilot; configure only through an authorized adult-operated business account.
+- No checkout URL is configured. The public form is an enquiry endpoint; an authorized adult seller must handle any invoice and approved payment route outside the form.
 
 Apply migrations to a fresh D1 database in lexical order:
 
