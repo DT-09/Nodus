@@ -1,5 +1,7 @@
 # NODUS
 
+> **Business direction:** The authoritative target-state is [NODUS Master Business & Product Blueprint](docs/NODUS_MASTER_BLUEPRINT.md). The existing shipping-economics implementation is the starting codebase, not the final commercial product. Current capabilities and unverified integrations remain described below as implementation facts.
+
 **Shipping economics intelligence for Shopify merchants.**
 
 NODUS is a focused shipping-economics workbench: reconcile order shipping revenue with carrier and 3PL invoice evidence, inspect unresolved charges, review carrier spend, replay historical shipping policies and export a traceable decision pack.
