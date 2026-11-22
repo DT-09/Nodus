@@ -38,6 +38,21 @@ Deliverables:
 
 The service does not promise recovered credits, savings, profit improvement, carrier overbilling or an audit opinion. It does not contact carriers or file claims for the merchant.
 
+## Monthly Shipping Review — USD 99/month
+
+A recurring, human-reviewed service for one Shopify store, up to 2,000 orders and one carrier/3PL cost export per monthly period.
+
+Each month includes:
+- evidence coverage and data-quality review;
+- order-level shipping revenue versus matched carrier-cost reconciliation;
+- prioritized exception register with source references;
+- carrier spend breakdown;
+- comparison with the previous period when comparable evidence is available;
+- written monthly decision brief and action register;
+- print-ready HTML report, CSV register and JSON decision pack.
+
+The merchant supplies fresh exports for each period through the agreed data handoff. This is an analyst-delivered recurring service, not continuous carrier monitoring, real-time alerting or automatic carrier invoice polling.
+
 ## Customer journey
 
 1. Merchant runs the free browser-local review.
