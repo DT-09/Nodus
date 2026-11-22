@@ -32,6 +32,7 @@ export type AuditFindingCode =
   | "duplicate_charge_id"
   | "unknown_charge_code"
   | "no_effective_rate"
+  | "ambiguous_rate_version"
   | "currency_mismatch"
   | "unit_mismatch"
   | "billed_rate_variance"
@@ -83,7 +84,7 @@ function normalize(value: string): string {
 }
 
 function assertDate(value: string, field: string): void {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     throw new Error(field + " must use YYYY-MM-DD.");
   }
   const parsed = new Date(value + "T00:00:00.000Z");
@@ -94,7 +95,7 @@ function assertDate(value: string, field: string): void {
 
 function parseQuantity(value: string): bigint {
   const raw = value.trim();
-  if (!/^\\d+(?:\\.\\d{1,4})?$/.test(raw)) {
+  if (!/^\d+(?:\\.\d{1,4})?$/.test(raw)) {
     throw new Error("Quantity must be a non-negative decimal with up to four places.");
   }
   const [whole, fraction = ""] = raw.split(".");
@@ -120,7 +121,7 @@ function pushFinding(
 ): void {
   findings.push({
     code,
-    severity: code === "unknown_charge_code" || code === "no_effective_rate" ? "review" : "warning",
+    severity: code === "unknown_charge_code" || code === "no_effective_rate" || code === "ambiguous_rate_version" ? "review" : "warning",
     invoiceId: line.invoiceId,
     chargeId: line.chargeId,
     chargeCode: line.chargeCode,
@@ -230,6 +231,12 @@ export function auditFulfillmentInvoice(
               "A rate exists for this charge code, currency and unit, but none is effective on the invoice service date.",
             );
             lineFindings.push("no_effective_rate");
+          } else if (active.length > 1) {
+            pushFinding(
+              findings, line, "ambiguous_rate_version", "More than one rate-card version is effective",
+              "Overlapping effective dates make the contracted rate ambiguous. Resolve the rate-card history before calculating a variance.",
+            );
+            lineFindings.push("ambiguous_rate_version");
           } else {
             const rate = active[0]!;
             const expected = multiplyRate(rate.rateMinor, quantity);
@@ -266,7 +273,8 @@ export function auditFulfillmentInvoice(
       codeItem !== "unknown_charge_code" &&
       codeItem !== "currency_mismatch" &&
       codeItem !== "unit_mismatch" &&
-      codeItem !== "no_effective_rate",
+      codeItem !== "no_effective_rate" &&
+      codeItem !== "ambiguous_rate_version",
     ) && candidates.length > 0;
     const expected = matched
       ? (() => {
@@ -274,7 +282,7 @@ export function auditFulfillmentInvoice(
             .filter(rate => normalize(rate.currency) === currency && normalize(rate.unit) === unit &&
               rate.effectiveFrom <= line.serviceDate && (!rate.effectiveTo || line.serviceDate <= rate.effectiveTo))
             .sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom))[0];
-          return active ? multiplyRate(active.rateMinor, quantity) : null;
+          return active.length === 1 ? multiplyRate(active[0]!.rateMinor, quantity) : null;
         })()
       : null;
 
