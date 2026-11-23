@@ -232,6 +232,8 @@ model ThreePLWorkspace {
   caseEvents         ThreePLCaseEvent[]
   periodReports      ThreePLPeriodReport[]
   outcomes           ThreePLOutcome[]
+  accessTokens       ThreePLAccessToken[]
+  events             ThreePLWorkspaceEvent[]
 
   @@index([ownerEmail])
   @@index([status, trialEndsAt])
