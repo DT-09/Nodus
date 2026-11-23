@@ -39,7 +39,7 @@ export default function Home(){
      </div>
      <div className="nh-meta"><span>ORDER-LEVEL RECONCILIATION</span><i></i><span>CARRIER COST INTELLIGENCE</span><i></i><span>LOCAL FILE PROCESSING</span></div>
     </div>
-    <div className="nh-product" data-reveal>
+    <div className="nh-product">
      <div className="nh-product-top"><div className="nh-product-brand"><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
      <div className="nh-product-title"><span>01 / EVIDENCE WORKSPACE</span><h2>One view of<br/><em>shipping economics.</em></h2></div>
      <div className="nh-sources">
