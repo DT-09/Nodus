@@ -4,7 +4,7 @@ import { createWorkspaceSubscriptionCheckout, scheduleWorkspaceSubscriptionCance
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
-type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;subscription_cancel_at_period_end?:number;created_at:string };
+type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;stripe_checkout_url?:string|null;stripe_checkout_expires_at?:string|null;subscription_cancel_at_period_end?:number;created_at:string };
 
 async function audit(env:ThreePLEnv,workspaceId:string,action:string,detail:unknown={}) {
   await env.NODUS_DB.prepare("INSERT INTO threepl_workspace_events(id,workspace_id,actor_type,action,detail_json,created_at) VALUES(?,?,'operator',?,?,?)")
@@ -17,7 +17,7 @@ export async function onRequestGet({request,env}:Context) {
   if(!await operatorAuthorized(request,env))return bad("Operator authentication failed.",401);
   const [leadResult,workspaceResult]=await Promise.all([
     env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,status,created_at FROM merchant_leads WHERE offer_type='seven_day_trial' ORDER BY created_at DESC LIMIT 200").all<LeadRow>(),
-    env.NODUS_DB.prepare("SELECT id,business_name,owner_name,owner_email,shop_domain,status,plan_code,trial_activated_at,trial_ends_at,subscription_status,subscription_started_at,subscription_ends_at,stripe_subscription_id,subscription_cancel_at_period_end,created_at FROM threepl_workspaces ORDER BY created_at DESC LIMIT 200").all<WorkspaceRow>(),
+    env.NODUS_DB.prepare("SELECT id,business_name,owner_name,owner_email,shop_domain,status,plan_code,trial_activated_at,trial_ends_at,subscription_status,subscription_started_at,subscription_ends_at,stripe_subscription_id,stripe_checkout_url,stripe_checkout_expires_at,subscription_cancel_at_period_end,created_at FROM threepl_workspaces ORDER BY created_at DESC LIMIT 200").all<WorkspaceRow>(),
   ]);
   const tokens=await env.NODUS_DB.prepare("SELECT id,workspace_id,label,expires_at,used_at,revoked_at,last_used_at,created_at FROM threepl_access_tokens ORDER BY created_at DESC LIMIT 500").all<{id:string;workspace_id:string;label:string;expires_at:number;used_at:number|null;revoked_at:number|null;last_used_at:number|null;created_at:number}>();
   const tokenMap=new Map<string,unknown[]>();
@@ -25,7 +25,7 @@ export async function onRequestGet({request,env}:Context) {
   return json({
     ok:true,
     leads:leadResult.results.map(lead=>({id:lead.id,businessName:lead.business_name,name:lead.name,email:lead.email,shopDomain:lead.store_url,monthlyOrders:lead.monthly_orders,fulfilmentSetup:lead.shipping_setup,objective:lead.objective,status:lead.status,createdAt:lead.created_at})),
-    workspaces:workspaceResult.results.map(workspace=>({id:workspace.id,businessName:workspace.business_name,ownerName:workspace.owner_name,ownerEmail:workspace.owner_email,shopDomain:workspace.shop_domain,status:workspace.status,planCode:workspace.plan_code,trialActivatedAt:workspace.trial_activated_at,trialEndsAt:workspace.trial_ends_at,subscriptionStatus:workspace.subscription_status,subscriptionStartedAt:workspace.subscription_started_at,subscriptionEndsAt:workspace.subscription_ends_at,subscriptionCancelAtPeriodEnd:workspace.subscription_cancel_at_period_end===1,createdAt:workspace.created_at,accessTokens:tokenMap.get(workspace.id)||[]})),
+    workspaces:workspaceResult.results.map(workspace=>({id:workspace.id,businessName:workspace.business_name,ownerName:workspace.owner_name,ownerEmail:workspace.owner_email,shopDomain:workspace.shop_domain,status:workspace.status,planCode:workspace.plan_code,trialActivatedAt:workspace.trial_activated_at,trialEndsAt:workspace.trial_ends_at,subscriptionStatus:workspace.subscription_status,subscriptionStartedAt:workspace.subscription_started_at,subscriptionEndsAt:workspace.subscription_ends_at,subscriptionCancelAtPeriodEnd:workspace.subscription_cancel_at_period_end===1,stripeCheckoutUrl:workspace.stripe_checkout_url,stripeCheckoutExpiresAt:workspace.stripe_checkout_expires_at,createdAt:workspace.created_at,accessTokens:tokenMap.get(workspace.id)||[]})),
   });
 }
 
@@ -90,8 +90,8 @@ export async function onRequestPost({request,env}:Context) {
     if(workspace.status!=="trial"&&workspace.status!=="active")return bad("Activate the seven-day trial before creating a paid subscription.",409);
     const appUrl=new URL(request.url).origin;
     const checkout=await createWorkspaceSubscriptionCheckout({secret:env.STRIPE_SECRET_KEY,appUrl,workspaceId, email:workspace.owner_email,idempotencyKey:"nodus-"+workspaceId+"-"+randomToken(12)});
-    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_checkout_session_id=?,subscription_status='pending',updated_at=? WHERE id=?")
-      .bind(checkout.id,nowIso(),workspaceId).run();
+    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_checkout_session_id=?,stripe_checkout_url=?,stripe_checkout_expires_at=?,subscription_status='pending',updated_at=? WHERE id=?")
+      .bind(checkout.id,checkout.url,checkout.expiresAt,nowIso(),workspaceId).run();
     await audit(env,workspaceId,"stripe_subscription_checkout_created",{checkoutSessionId:checkout.id,planCode:"core_99"});
     return json({ok:true,checkoutUrl:checkout.url,message:"Hosted Stripe checkout created. Share the checkout link privately with the merchant."});
   }
