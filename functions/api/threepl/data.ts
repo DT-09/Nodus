@@ -210,6 +210,8 @@ export async function onRequestGet({request,env}:Context){
 
 export async function onRequestPost({request,env}:Context){
  if(!sameOrigin(request))return bad("Origin rejected.",403);
+ const contentLength=Number(request.headers.get("Content-Length")||0);if(contentLength>6*1024*1024)return bad("Upload request exceeds the 6 MB limit.",413);
+ if(!(request.headers.get("Content-Type")||"").toLowerCase().includes("multipart/form-data"))return bad("Use multipart form data for workspace actions.",415);
  const auth=await getWorkspace(request,env);if(!auth)return bad("Merchant access is required.",401);
  const form=await request.formData(),intent=clean(form.get("intent"),60),workspaceId=auth.workspace.id;
  if(!canWrite(auth.workspace))return bad("This workspace is read-only. Activate a trial after onboarding or arrange an active subscription.",403);
