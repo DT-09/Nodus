@@ -71,12 +71,11 @@ export async function onRequestPost({request,env}:Context) {
 
   if(operation==="activate_trial"){
     if(workspace.status!=="onboarding")return bad("A trial can only be activated from onboarding. Do not restart an expired trial.",409);
-    const [providers,contracts,invoices]=await Promise.all([
+    const [providers,matchedInvoices]=await Promise.all([
       env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_providers WHERE workspace_id=?").bind(workspaceId).first<{count:number}>(),
-      env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_contracts WHERE workspace_id=? AND status='active'").bind(workspaceId).first<{count:number}>(),
-      env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_invoices WHERE workspace_id=? AND status IN ('imported','reconciled')").bind(workspaceId).first<{count:number}>(),
+      env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_invoices i WHERE i.workspace_id=? AND i.status IN ('imported','reconciled') AND EXISTS (SELECT 1 FROM threepl_contracts c WHERE c.workspace_id=i.workspace_id AND c.provider_id=i.provider_id AND c.status='active')").bind(workspaceId).first<{count:number}>(),
     ]);
-    if((providers?.count||0)<1||(contracts?.count||0)<1||(invoices?.count||0)<1)return bad("Trial activation requires at least one provider, one active confirmed contract and one imported invoice.",409);
+    if((providers?.count||0)<1||(matchedInvoices?.count||0)<1)return bad("Trial activation requires a provider with both an active confirmed contract and a completed invoice import.",409);
     const start=new Date(),end=new Date(start.getTime()+7*24*60*60*1000),now=start.toISOString();
     await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET status='trial',trial_activated_at=?,trial_ends_at=?,updated_at=? WHERE id=?").bind(now,end.toISOString(),now,workspaceId).run();
     await audit(env,workspaceId,"trial_activated",{trialActivatedAt:now,trialEndsAt:end.toISOString()});
