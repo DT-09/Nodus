@@ -1,1 +1,0 @@
-ALTER TABLE "ThreePLInvoiceLine" ADD COLUMN "serviceDate" TIMESTAMP(3);
