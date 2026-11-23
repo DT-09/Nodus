@@ -121,7 +121,7 @@ At each billing period:
 6. Download the JSON report from the portal.
 7. Compare verified outcomes and unresolved exceptions with the prior period.
 
-Reports separate invoice totals by currency, exception status and verified outcomes. They do not claim that every calculated variance has been recovered.
+Reports separate invoice totals by currency, exception status and verified outcomes. They also compare the selected period with the immediately preceding equal-length calendar period for invoice totals, exception counts and verified outcomes. Comparisons remain currency-specific, descriptive rather than causal, and do not claim that every calculated variance has been recovered.
 
 ## 9. Current release boundaries
 
