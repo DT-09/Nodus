@@ -70,6 +70,7 @@ assert.match(stripeLib,/createWorkspaceSubscriptionCheckout/);
 assert.match(stripeLib,/scheduleWorkspaceSubscriptionCancellation/);
 assert.match(stripeWebhook,/verifyStripeSignature/);
 assert.match(stripeWebhook,/invoice\.paid/);
+assert.match(stripeWebhook,/checkout\.session\.expired/);
 assert.match(stripeWebhook,/invoice\.payment_failed/);
 assert.match(stripeWebhook,/customer\.subscription\.deleted/);
 assert.match(stripeWebhook,/stripe_webhook_events/);
