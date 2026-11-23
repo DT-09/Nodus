@@ -20,7 +20,7 @@ Apply `migrations/0003_threepl_control.sql` to the same D1 database bound as `NO
 npx wrangler d1 migrations apply <D1_DATABASE_NAME> --remote
 ```
 
-Use the actual database name from the Cloudflare account. Confirm that migrations 0000–0003 have been applied before using the new endpoints. The Prisma schema is not the 3PL runtime database; 3PL records live in D1.
+Use the actual database name from the Cloudflare account. Confirm that migrations 0000–0003 have been applied before using the new endpoints. Check `GET /api/threepl/health`; it returns `ready` only when the D1 tables and operator secret are available. The Prisma schema is not the 3PL runtime database; 3PL records live in D1.
 
 The Cloudflare Pages branch preview is not proof that the remote D1 migration or environment secrets have been configured.
 
