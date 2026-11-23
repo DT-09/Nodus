@@ -30,11 +30,16 @@ export async function onRequestPost({ request, env }: Context) {
     }
   } else if (event.type === "invoice.paid" || event.type === "invoice.payment_failed") {
     const subscriptionId = objectId(value.subscription);
+    const invoiceMetadata = value.metadata && typeof value.metadata === "object" ? value.metadata as Record<string, unknown> : {};
+    const parent = value.parent && typeof value.parent === "object" ? value.parent as Record<string, unknown> : {};
+    const details = parent.subscription_details && typeof parent.subscription_details === "object" ? parent.subscription_details as Record<string, unknown> : {};
+    const detailMetadata = details.metadata && typeof details.metadata === "object" ? details.metadata as Record<string, unknown> : {};
+    const workspaceId = typeof invoiceMetadata.workspace_id === "string" ? invoiceMetadata.workspace_id : typeof detailMetadata.workspace_id === "string" ? detailMetadata.workspace_id : "";
     if (subscriptionId) {
       const lineData = (value.lines && typeof value.lines === "object" ? (value.lines as { data?: Array<{ period?: { end?: unknown } }> }).data : undefined);
       const periodEnd = lineData?.[0]?.period?.end;
-      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_status=?,subscription_started_at=CASE WHEN ?='active' THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,subscription_ends_at=COALESCE(?,subscription_ends_at),status=CASE WHEN ?='active' AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE stripe_subscription_id=?")
-        .bind(event.type === "invoice.paid" ? "active" : "past_due",event.type === "invoice.paid" ? "active" : "past_due",now,isoFromEpoch(periodEnd),event.type === "invoice.paid" ? "active" : "past_due",now,subscriptionId));
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_subscription_id=COALESCE(stripe_subscription_id,?),stripe_customer_id=COALESCE(stripe_customer_id,?),plan_code='core_99',subscription_status=?,subscription_started_at=CASE WHEN ?='active' THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,subscription_ends_at=COALESCE(?,subscription_ends_at),status=CASE WHEN ?='active' AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE stripe_subscription_id=? OR id=?")
+        .bind(subscriptionId,objectId(value.customer),event.type === "invoice.paid" ? "active" : "past_due",event.type === "invoice.paid" ? "active" : "past_due",now,isoFromEpoch(periodEnd),event.type === "invoice.paid" ? "active" : "past_due",now,subscriptionId,workspaceId));
     }
   } else if (event.type === "customer.subscription.deleted") {
     const subscriptionId = objectId(value.id);
