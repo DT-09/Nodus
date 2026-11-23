@@ -24,7 +24,7 @@ describe("NODUS D1 source validation",()=>{
     expect(dateOnly("2026-10-31")).toBe("2026-10-31");
     expect(()=>dateOnly("2026-02-30")).toThrow("Invalid calendar date");
     expect(quantity("1.250")).toBe("1.250");
-    expect(()=>quantity("0")).toThrow("positive decimals");
+    expect(()=>quantity("0")).toThrow("positive, finite decimals");
     expect(()=>quantity("1.2345")).toThrow("positive decimals");
   });
   it("keeps onboarding writable, expires trials and honours paid period ends",()=>{
