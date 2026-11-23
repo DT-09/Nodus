@@ -1,5 +1,5 @@
-import { parseCarrierCostCsv } from "../../app/domain/carrier-csv";
-import { currencyPrecision } from "../../app/domain/money";
+import { parseCarrierCostCsv } from "../../../app/domain/carrier-csv";
+import { currencyPrecision } from "../../../app/domain/money";
 import { json, merchantSession, type PagesContext } from "../../_lib/shopify";
 
 function decimalFromMinor(minor: bigint, currency: string): string {
