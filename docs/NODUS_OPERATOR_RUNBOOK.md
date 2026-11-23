@@ -146,7 +146,16 @@ curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \
   -d '{"operation":"activate_subscription","workspaceId":"WORKSPACE_ID","planCode":"core_99","confirmed":true}'
 ```
 
-Do not set `confirmed` unless the subscription has actually been confirmed. The workspace records its plan code and subscription start. Renewal, billing collection, invoices, tax handling, failed-payment recovery and cancellation-at-period-end still require a proper billing workflow before self-serve scale.
+Do not set `confirmed` unless the subscription has actually been confirmed. The workspace records its plan code and subscription start. For cancellation at the end of a confirmed billing period, set a future period end:
+
+```bash
+curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \\
+  -H "content-type: application/json" \\
+  -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \\
+  -d '{"operation":"cancel_subscription","workspaceId":"WORKSPACE_ID","periodEndsAt":"2026-12-23T00:00:00.000Z"}'
+```
+
+The merchant retains access until that period end, then the workspace becomes read-only. Renewal, billing collection, invoices, tax handling and failed-payment recovery still require a proper billing workflow before self-serve scale.
 
 ## 8. Recurring period review
 
