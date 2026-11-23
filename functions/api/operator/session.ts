@@ -4,6 +4,7 @@ import { clearOperatorCookie, operatorSecretMatches, operatorSessionCookie, same
 interface Context { request: Request; env: ThreePLEnv; }
 export async function onRequestPost({request,env}:Context) {
   if (!sameOrigin(request)) return json({ok:false,error:"Origin rejected."},403);
+  if(Number(request.headers.get("Content-Length")||0)>2000)return json({ok:false,error:"Request too large."},413);
   const type=request.headers.get("Content-Type")||"";
   if(!type.toLowerCase().includes("application/json"))return json({ok:false,error:"Use JSON."},415);
   let body:{secret?:string};try{body=await request.json() as {secret?:string};}catch{return json({ok:false,error:"Invalid JSON."},400);}
