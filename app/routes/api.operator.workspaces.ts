@@ -2,6 +2,10 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { prisma } from "../db.server";
 import { issueThreePLAccessToken, operatorAuthorized } from "../services/threepl-auth.server";
 
+async function logWorkspaceEvent(workspaceId: string, action: string, detail: Record<string, unknown> = {}) {
+  await prisma.threePLWorkspaceEvent.create({ data: { workspaceId, actorType: "operator", action, detail } });
+}
+
 
 export async function loader({ request }: LoaderFunctionArgs) {
   if (!operatorAuthorized(request)) return Response.json({ ok: false, error: "Unauthorized." }, { status: 401 });
@@ -39,6 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
     try {
       const issued = await issueThreePLAccessToken(workspace.id, "Initial merchant invitation");
+      await logWorkspaceEvent(workspace.id, "workspace_created", { invitationIssued: true });
       return Response.json({
         ok: true, workspace, inviteToken: issued.token,
         tokenExpiresAt: issued.expiresAt.toISOString(),
@@ -61,6 +66,7 @@ export async function action({ request }: ActionFunctionArgs) {
     try {
       const issued = await issueThreePLAccessToken(workspace.id, "Trial workspace invitation");
       await prisma.threePLLead.update({ where: { id: lead.id }, data: { status: "converted" } });
+      await logWorkspaceEvent(workspace.id, "workspace_created_from_lead", { leadId: lead.id, invitationIssued: true });
       return Response.json({ ok: true, workspace, inviteToken: issued.token, tokenExpiresAt: issued.expiresAt.toISOString() }, { status: 201, headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
     } catch (error) {
       await prisma.threePLWorkspace.delete({ where: { id: workspace.id } });
@@ -95,6 +101,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: "trial", trialActivatedAt: now, trialEndsAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) },
       select: { id: true, status: true, trialActivatedAt: true, trialEndsAt: true },
     });
+    await logWorkspaceEvent(workspaceId, "trial_activated", { trialActivatedAt: updated.trialActivatedAt.toISOString(), trialEndsAt: updated.trialEndsAt.toISOString() });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
@@ -109,6 +116,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: "active", subscriptionStatus: "active", subscriptionStartedAt: now, subscriptionEndsAt: periodEndsAt, planCode },
       select: { id: true, status: true, subscriptionStatus: true, subscriptionStartedAt: true, planCode: true },
     });
+    await logWorkspaceEvent(workspaceId, "subscription_activated", { planCode, periodEndsAt: periodEndsAt?.toISOString() ?? null });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
@@ -121,6 +129,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { subscriptionStatus: "cancelled", subscriptionEndsAt: periodEndsAt },
       select: { id: true, status: true, subscriptionStatus: true, subscriptionEndsAt: true },
     });
+    await logWorkspaceEvent(workspaceId, "subscription_cancelled", { periodEndsAt: periodEndsAt.toISOString() });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
@@ -130,18 +139,21 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: operation === "suspend" ? "suspended" : "closed", subscriptionStatus: operation === "close" ? "cancelled" : workspace.subscriptionStatus },
       select: { id: true, status: true, subscriptionStatus: true },
     });
+    await logWorkspaceEvent(workspaceId, operation === "suspend" ? "workspace_suspended" : "workspace_closed");
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
   if (operation === "rotate_access") {
     await prisma.threePLAccessToken.updateMany({ where: { workspaceId, revokedAt: null }, data: { revokedAt: new Date() } });
     const issued = await issueThreePLAccessToken(workspaceId, String(body.label ?? "Rotated merchant access"));
+    await logWorkspaceEvent(workspaceId, "access_token_rotated", { previousTokensRevoked: true });
     return Response.json({ ok: true, inviteToken: issued.token, tokenExpiresAt: issued.expiresAt.toISOString() }, { headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
   }
 
   if (operation === "revoke_access") {
     const tokenId = String(body.tokenId ?? "");
     const result = await prisma.threePLAccessToken.updateMany({ where: { id: tokenId, workspaceId, revokedAt: null }, data: { revokedAt: new Date() } });
+    if (result.count === 1) await logWorkspaceEvent(workspaceId, "access_token_revoked", { tokenId });
     return Response.json({ ok: result.count === 1 }, { status: result.count === 1 ? 200 : 404, headers: { "Cache-Control": "no-store" } });
   }
 
