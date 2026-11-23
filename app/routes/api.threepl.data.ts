@@ -30,12 +30,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const auth = await getThreePLWorkspace(request);
   if (!auth) throw new Response("Merchant access is required.", { status: 401 });
   const workspaceId = auth.workspace.id;
-  const [providers, invoices, exceptions, reports, outcomes] = await Promise.all([
+  const [providers, invoices, exceptions, reports, outcomes, workspaceEvents] = await Promise.all([
     prisma.threePLProvider.findMany({ where: { workspaceId }, orderBy: { name: "asc" }, select: { id: true, name: true, status: true } }),
     prisma.threePLInvoice.findMany({ where: { workspaceId }, include: { provider: { select: { name: true } }, _count: { select: { lines: true, runs: true } } }, orderBy: { invoiceDate: "desc" }, take: 100 }),
     prisma.threePLException.findMany({ where: { workspaceId }, include: { invoice: { select: { invoiceNumber: true, provider: { select: { name: true } } } }, events: { orderBy: { createdAt: "desc" }, take: 12 }, _count: { select: { outcomes: true } } }, orderBy: [{ status: "asc" }, { lastSeenAt: "desc" }], take: 250 }),
     prisma.threePLPeriodReport.findMany({ where: { workspaceId }, orderBy: [{ periodEnd: "desc" }, { revision: "desc" }], take: 24 }),
     prisma.threePLOutcome.findMany({ where: { workspaceId }, include: { exception: { select: { findingCode: true } } }, orderBy: { createdAt: "desc" }, take: 100 }),
+    prisma.threePLWorkspaceEvent.findMany({ where: { workspaceId }, orderBy: { createdAt: "desc" }, take: 50 }),
   ]);
   const now = new Date();
   const trialExpired = auth.workspace.status === "trial" && Boolean(auth.workspace.trialEndsAt && auth.workspace.trialEndsAt <= now) && auth.workspace.subscriptionStatus !== "active";
@@ -52,6 +53,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     exceptions: exceptions.map(item => ({ id: item.id, invoiceNumber: item.invoice.invoiceNumber, provider: item.invoice.provider.name, code: item.findingCode, severity: item.severity, state: item.state, status: item.status, currency: item.currency, exposureMinor: item.exposureMinor?.toString() ?? null, explanation: item.explanation, note: item.note, evidence: Array.isArray(item.evidenceReferences) ? item.evidenceReferences : [], events: item.events.map(event => ({ action: event.action, detail: event.detail, createdAt: event.createdAt.toISOString() })), outcomes: item._count.outcomes, lastSeenAt: item.lastSeenAt.toISOString() })),
     reports: reports.map(item => ({ id: item.id, start: item.periodStart.toISOString(), end: item.periodEnd.toISOString(), revision: item.revision, status: item.status, generatedAt: item.generatedAt.toISOString(), payload: item.payload })),
     outcomes: outcomes.map(item => ({ id: item.id, exceptionId: item.exceptionId, type: item.outcomeType, status: item.status, amountMinor: item.amountMinor.toString(), currency: item.currency, reference: item.externalReference, note: item.evidenceNote, verifiedAt: item.verifiedAt?.toISOString() ?? null, findingCode: item.exception.findingCode })),
+    workspaceEvents: workspaceEvents.map(event => ({ action: event.action, detail: event.detail, createdAt: event.createdAt.toISOString() })),
   }, { headers: { "Cache-Control": "no-store" } });
 }
 
