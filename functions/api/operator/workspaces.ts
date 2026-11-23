@@ -1,10 +1,11 @@
 import { json, randomToken } from "../../_lib/shopify";
 import { clean, id, issueAccessToken, nowIso, operatorAuthorized, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
 import { createWorkspaceSubscriptionCheckout, scheduleWorkspaceSubscriptionCancellation } from "../../_lib/stripe";
+import { cancelRazorpaySubscription, createRazorpayPlan, createRazorpaySubscription } from "../../_lib/razorpay";
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
-type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;stripe_checkout_url?:string|null;stripe_checkout_expires_at?:string|null;subscription_cancel_at_period_end?:number;created_at:string };
+type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;stripe_checkout_url?:string|null;stripe_checkout_expires_at?:string|null;payment_provider?:string|null;razorpay_subscription_id?:string|null;razorpay_plan_id?:string|null;razorpay_checkout_url?:string|null;razorpay_checkout_expires_at?:string|null;subscription_cancel_at_period_end?:number;created_at:string };
 
 async function audit(env:ThreePLEnv,workspaceId:string,action:string,detail:unknown={}) {
   await env.NODUS_DB.prepare("INSERT INTO threepl_workspace_events(id,workspace_id,actor_type,action,detail_json,created_at) VALUES(?,?,'operator',?,?,?)")
@@ -17,7 +18,7 @@ export async function onRequestGet({request,env}:Context) {
   if(!await operatorAuthorized(request,env))return bad("Operator authentication failed.",401);
   const [leadResult,workspaceResult]=await Promise.all([
     env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,status,created_at FROM merchant_leads WHERE offer_type='seven_day_trial' ORDER BY created_at DESC LIMIT 200").all<LeadRow>(),
-    env.NODUS_DB.prepare("SELECT id,business_name,owner_name,owner_email,shop_domain,status,plan_code,trial_activated_at,trial_ends_at,subscription_status,subscription_started_at,subscription_ends_at,stripe_subscription_id,stripe_checkout_url,stripe_checkout_expires_at,subscription_cancel_at_period_end,created_at FROM threepl_workspaces ORDER BY created_at DESC LIMIT 200").all<WorkspaceRow>(),
+    env.NODUS_DB.prepare("SELECT id,business_name,owner_name,owner_email,shop_domain,status,plan_code,trial_activated_at,trial_ends_at,subscription_status,subscription_started_at,subscription_ends_at,stripe_subscription_id,stripe_checkout_url,stripe_checkout_expires_at,payment_provider,razorpay_subscription_id,razorpay_plan_id,razorpay_checkout_url,razorpay_checkout_expires_at,subscription_cancel_at_period_end,created_at FROM threepl_workspaces ORDER BY created_at DESC LIMIT 200").all<WorkspaceRow>(),
   ]);
   const tokens=await env.NODUS_DB.prepare("SELECT id,workspace_id,label,expires_at,used_at,revoked_at,last_used_at,created_at FROM threepl_access_tokens ORDER BY created_at DESC LIMIT 500").all<{id:string;workspace_id:string;label:string;expires_at:number;used_at:number|null;revoked_at:number|null;last_used_at:number|null;created_at:number}>();
   const tokenMap=new Map<string,unknown[]>();
@@ -25,7 +26,7 @@ export async function onRequestGet({request,env}:Context) {
   return json({
     ok:true,
     leads:leadResult.results.map(lead=>({id:lead.id,businessName:lead.business_name,name:lead.name,email:lead.email,shopDomain:lead.store_url,monthlyOrders:lead.monthly_orders,fulfilmentSetup:lead.shipping_setup,objective:lead.objective,status:lead.status,createdAt:lead.created_at})),
-    workspaces:workspaceResult.results.map(workspace=>({id:workspace.id,businessName:workspace.business_name,ownerName:workspace.owner_name,ownerEmail:workspace.owner_email,shopDomain:workspace.shop_domain,status:workspace.status,planCode:workspace.plan_code,trialActivatedAt:workspace.trial_activated_at,trialEndsAt:workspace.trial_ends_at,subscriptionStatus:workspace.subscription_status,subscriptionStartedAt:workspace.subscription_started_at,subscriptionEndsAt:workspace.subscription_ends_at,subscriptionCancelAtPeriodEnd:workspace.subscription_cancel_at_period_end===1,stripeCheckoutUrl:workspace.stripe_checkout_url,stripeCheckoutExpiresAt:workspace.stripe_checkout_expires_at,createdAt:workspace.created_at,accessTokens:tokenMap.get(workspace.id)||[]})),
+    workspaces:workspaceResult.results.map(workspace=>({id:workspace.id,businessName:workspace.business_name,ownerName:workspace.owner_name,ownerEmail:workspace.owner_email,shopDomain:workspace.shop_domain,status:workspace.status,planCode:workspace.plan_code,trialActivatedAt:workspace.trial_activated_at,trialEndsAt:workspace.trial_ends_at,subscriptionStatus:workspace.subscription_status,subscriptionStartedAt:workspace.subscription_started_at,subscriptionEndsAt:workspace.subscription_ends_at,subscriptionCancelAtPeriodEnd:workspace.subscription_cancel_at_period_end===1,stripeCheckoutUrl:workspace.stripe_checkout_url,stripeCheckoutExpiresAt:workspace.stripe_checkout_expires_at,paymentProvider:workspace.payment_provider,razorpayCheckoutUrl:workspace.razorpay_checkout_url,razorpayCheckoutExpiresAt:workspace.razorpay_checkout_expires_at,createdAt:workspace.created_at,accessTokens:tokenMap.get(workspace.id)||[]})),
   });
 }
 
@@ -84,26 +85,56 @@ export async function onRequestPost({request,env}:Context) {
   }
 
   if(operation==="create_subscription_checkout"){
-    if(!env.STRIPE_SECRET_KEY)return bad("Recurring checkout is not configured. The seller must configure the encrypted Stripe secret first.",503);
     if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot start a subscription.",409);
     if(workspace.subscription_status==="active")return bad("This workspace already has an active subscription.",409);
+    if(workspace.subscription_status==="pending")return bad("A checkout is already pending. Wait for its expiry or payment result.",409);
     if(workspace.status!=="trial"&&workspace.status!=="active")return bad("Activate the seven-day trial before creating a paid subscription.",409);
-    const appUrl=new URL(request.url).origin;
-    const checkout=await createWorkspaceSubscriptionCheckout({secret:env.STRIPE_SECRET_KEY,appUrl,workspaceId, email:workspace.owner_email,idempotencyKey:"nodus-"+workspaceId+"-"+randomToken(12)});
-    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_checkout_session_id=?,stripe_checkout_url=?,stripe_checkout_expires_at=?,subscription_status='pending',updated_at=? WHERE id=?")
-      .bind(checkout.id,checkout.url,checkout.expiresAt,nowIso(),workspaceId).run();
-    await audit(env,workspaceId,"stripe_subscription_checkout_created",{checkoutSessionId:checkout.id,planCode:"core_99"});
-    return json({ok:true,checkoutUrl:checkout.url,message:"Hosted Stripe checkout created. Share the checkout link privately with the merchant."});
+    if(env.RAZORPAY_KEY_ID&&env.RAZORPAY_KEY_SECRET){
+      let planId=env.RAZORPAY_PLAN_ID||"";
+      if(!planId){
+        const saved=await env.NODUS_DB.prepare("SELECT provider_plan_id FROM nodus_payment_plans WHERE provider='razorpay' AND plan_code='core_99'").first<{provider_plan_id:string}>();
+        planId=saved?.provider_plan_id||"";
+      }
+      if(!planId){
+        const createdPlan=await createRazorpayPlan({keyId:env.RAZORPAY_KEY_ID,keySecret:env.RAZORPAY_KEY_SECRET});
+        await env.NODUS_DB.prepare("INSERT OR IGNORE INTO nodus_payment_plans(provider,plan_code,provider_plan_id,created_at) VALUES('razorpay','core_99',?,?)").bind(createdPlan,nowIso()).run();
+        const saved=await env.NODUS_DB.prepare("SELECT provider_plan_id FROM nodus_payment_plans WHERE provider='razorpay' AND plan_code='core_99'").first<{provider_plan_id:string}>();
+        planId=saved?.provider_plan_id||createdPlan;
+      }
+      const checkout=await createRazorpaySubscription({keyId:env.RAZORPAY_KEY_ID,keySecret:env.RAZORPAY_KEY_SECRET,planId,workspaceId,idempotencyNote:randomToken(12)});
+      await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='razorpay',razorpay_plan_id=?,razorpay_subscription_id=?,razorpay_checkout_url=?,razorpay_checkout_expires_at=?,subscription_status='pending',updated_at=? WHERE id=?")
+        .bind(planId,checkout.id,checkout.url,checkout.expiresAt,nowIso(),workspaceId).run();
+      await audit(env,workspaceId,"razorpay_subscription_created",{subscriptionId:checkout.id,planId,planCode:"core_99"});
+      return json({ok:true,checkoutUrl:checkout.url,paymentProvider:"razorpay",message:"Razorpay subscription link created. Share it privately with the merchant."});
+    }
+    if(env.STRIPE_SECRET_KEY){
+      const checkout=await createWorkspaceSubscriptionCheckout({secret:env.STRIPE_SECRET_KEY,appUrl:new URL(request.url).origin,workspaceId,email:workspace.owner_email,idempotencyKey:"nodus-"+workspaceId+"-"+randomToken(12)});
+      await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='stripe',stripe_checkout_session_id=?,stripe_checkout_url=?,stripe_checkout_expires_at=?,subscription_status='pending',updated_at=? WHERE id=?")
+        .bind(checkout.id,checkout.url,checkout.expiresAt,nowIso(),workspaceId).run();
+      await audit(env,workspaceId,"stripe_subscription_checkout_created",{checkoutSessionId:checkout.id,planCode:"core_99"});
+      return json({ok:true,checkoutUrl:checkout.url,paymentProvider:"stripe",message:"Stripe checkout created. Share the link privately with the merchant."});
+    }
+    return bad("Configure an approved Razorpay account (preferred for India) or an eligible Stripe account before creating subscriptions.",503);
   }
 
   if(operation==="schedule_subscription_cancellation"){
-    if(!env.STRIPE_SECRET_KEY)return bad("Subscription cancellation is unavailable until the encrypted Stripe secret is configured.",503);
-    if(workspace.subscription_status!=="active"||!workspace.stripe_subscription_id)return bad("No active Stripe subscription is attached to this workspace.",409);
-    const result=await scheduleWorkspaceSubscriptionCancellation({secret:env.STRIPE_SECRET_KEY,subscriptionId:workspace.stripe_subscription_id,idempotencyKey:"nodus-cancel-"+workspace.id+"-"+randomToken(12)});
-    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_ends_at=?,updated_at=? WHERE id=?")
-      .bind(result.periodEnd,nowIso(),workspaceId).run();
-    await audit(env,workspaceId,"subscription_cancellation_scheduled",{stripeSubscriptionId:result.id,periodEnd:result.periodEnd});
-    return json({ok:true,message:"Stripe cancellation is scheduled for the end of the paid period."});
+    if(workspace.subscription_status!=="active")return bad("No active subscription is attached to this workspace.",409);
+    if(workspace.payment_provider==="razorpay"){
+      if(!env.RAZORPAY_KEY_ID||!env.RAZORPAY_KEY_SECRET||!workspace.razorpay_subscription_id)return bad("Razorpay subscription credentials or ID are missing.",503);
+      const result=await cancelRazorpaySubscription({keyId:env.RAZORPAY_KEY_ID,keySecret:env.RAZORPAY_KEY_SECRET,subscriptionId:workspace.razorpay_subscription_id});
+      await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_ends_at=?,subscription_cancel_at_period_end=1,updated_at=? WHERE id=?")
+        .bind(result.periodEnd,nowIso(),workspaceId).run();
+      await audit(env,workspaceId,"razorpay_subscription_cancellation_scheduled",{subscriptionId:result.id,periodEnd:result.periodEnd});
+      return json({ok:true,message:"Razorpay cancellation is scheduled for the end of the paid period."});
+    }
+    if(workspace.payment_provider==="stripe"&&env.STRIPE_SECRET_KEY&&workspace.stripe_subscription_id){
+      const result=await scheduleWorkspaceSubscriptionCancellation({secret:env.STRIPE_SECRET_KEY,subscriptionId:workspace.stripe_subscription_id,idempotencyKey:"nodus-cancel-"+workspace.id+"-"+randomToken(12)});
+      await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_ends_at=?,subscription_cancel_at_period_end=1,updated_at=? WHERE id=?")
+        .bind(result.periodEnd,nowIso(),workspaceId).run();
+      await audit(env,workspaceId,"stripe_subscription_cancellation_scheduled",{stripeSubscriptionId:result.id,periodEnd:result.periodEnd});
+      return json({ok:true,message:"Stripe cancellation is scheduled for the end of the paid period."});
+    }
+    return bad("The configured payment provider or subscription ID is unavailable.",503);
   }
 
   if(operation==="suspend"||operation==="close"){
