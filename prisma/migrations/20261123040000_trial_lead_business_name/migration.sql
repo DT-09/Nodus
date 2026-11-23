@@ -1,0 +1,1 @@
+ALTER TABLE "ThreePLLead" ADD COLUMN "businessName" TEXT NOT NULL DEFAULT '';
