@@ -1,4 +1,4 @@
-import { constantTimeEqual, getCookie, json, randomToken, sha256, type NodusEnv } from "./shopify";
+import { constantTimeEqual, getCookie, randomToken, sha256, type NodusEnv } from "./shopify";
 
 export type ThreePLEnv = NodusEnv & { NODUS_OPERATOR_SECRET?: string };
 export type ThreePLWorkspaceRow = {
