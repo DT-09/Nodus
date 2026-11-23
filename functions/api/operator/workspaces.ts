@@ -39,7 +39,7 @@ export async function onRequestPost({request,env}:Context) {
     const leadId=clean(body.leadId,80),status=clean(body.status,40);
     if(!["new","contacted","qualified","rejected"].includes(status))return bad("Invalid lead status.");
     const result=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=? WHERE id=? AND offer_type='seven_day_trial' AND status<>'converted'").bind(status,leadId).run();
-    if(!result)return bad("Lead update failed.",500);
+    if(result.meta?.changes!==1)return bad("Trial request was not found or has already been converted.",409);
     return json({ok:true,message:"Lead status updated."});
   }
 
@@ -54,7 +54,8 @@ export async function onRequestPost({request,env}:Context) {
     try{
       const issued=await issueAccessToken(workspaceId,"Initial merchant invitation",env);
       await audit(env,workspaceId,"workspace_created_from_lead",{leadId,invitationIssued:true});
-      await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND offer_type='seven_day_trial' AND status='qualified'").bind(leadId).run();
+      const converted=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND offer_type='seven_day_trial' AND status='qualified'").bind(leadId).run();
+      if(converted.meta?.changes!==1)throw new Error("Lead status changed during provisioning; refresh and retry.");
       const workspace=await env.NODUS_DB.prepare("SELECT id,business_name,owner_email,status FROM threepl_workspaces WHERE id=?").bind(workspaceId).first();
       return json({ok:true,workspace,inviteToken:issued.token,tokenExpiresAt:new Date(issued.expiresAt*1000).toISOString()},201);
     }catch(error){
@@ -86,6 +87,7 @@ export async function onRequestPost({request,env}:Context) {
     const planCode=clean(body.planCode,40),confirmed=body.confirmed===true;
     if(planCode!=="core_99"||!confirmed)return bad("Core pricing and explicit confirmation of the subscription are required.");
     if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot be activated.",409);
+    if(workspace.status!=="trial"&&workspace.status!=="active")return bad("Complete onboarding and activate the seven-day trial before starting a subscription.",409);
     const now=new Date(),periodEndsAt=new Date(String(body.periodEndsAt??""));
     if(!Number.isFinite(periodEndsAt.getTime())||periodEndsAt<=now)return bad("A future subscription period end date is required.");
     await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET status='active',subscription_status='active',subscription_started_at=?,subscription_ends_at=?,plan_code=?,updated_at=? WHERE id=?")
