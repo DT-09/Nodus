@@ -29,10 +29,10 @@ export async function onRequestPost({ request, env }: Context) {
         .bind(objectId(value.customer),subscriptionId,objectId(value.id),paid?"active":"pending",paid?1:0,now,paid?1:0,now,workspaceId));
     }
   } else if (event.type === "invoice.paid" || event.type === "invoice.payment_failed") {
-    const subscriptionId = objectId(value.subscription);
     const invoiceMetadata = value.metadata && typeof value.metadata === "object" ? value.metadata as Record<string, unknown> : {};
     const parent = value.parent && typeof value.parent === "object" ? value.parent as Record<string, unknown> : {};
     const details = parent.subscription_details && typeof parent.subscription_details === "object" ? parent.subscription_details as Record<string, unknown> : {};
+    const subscriptionId = objectId(value.subscription) || objectId(details.subscription);
     const detailMetadata = details.metadata && typeof details.metadata === "object" ? details.metadata as Record<string, unknown> : {};
     const workspaceId = typeof invoiceMetadata.workspace_id === "string" ? invoiceMetadata.workspace_id : typeof detailMetadata.workspace_id === "string" ? detailMetadata.workspace_id : "";
     if (subscriptionId) {
