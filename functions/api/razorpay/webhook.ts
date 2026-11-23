@@ -45,6 +45,9 @@ export async function onRequestPost({ request, env }: Context) {
     } else if (event.event === "subscription.cancelled" || event.event === "subscription.completed") {
       statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='razorpay',razorpay_subscription_id=?,subscription_status='cancelled',subscription_cancel_at_period_end=0,subscription_ends_at=COALESCE(?,subscription_ends_at),razorpay_checkout_url=NULL,razorpay_checkout_expires_at=NULL,updated_at=? WHERE id=?")
         .bind(subscriptionId,iso(sub.current_end),now,workspaceId));
+    } else if (event.event === "subscription.expired") {
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='razorpay',razorpay_subscription_id=NULL,razorpay_checkout_url=NULL,razorpay_checkout_expires_at=NULL,subscription_status='none',updated_at=? WHERE id=? AND razorpay_subscription_id=?")
+        .bind(now,workspaceId,subscriptionId));
     } else if (event.event === "subscription.paused") {
       statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='razorpay',razorpay_subscription_id=?,subscription_status='paused',updated_at=? WHERE id=?")
         .bind(subscriptionId,now,workspaceId));
