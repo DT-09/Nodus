@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { MetaFunction } from "react-router";
 import "./threepl-portal.css";
+import { formatMoney } from "../domain/money";
 
 export const meta: MetaFunction = () => [
   { title: "NODUS 3PL Control — Merchant workspace" },
@@ -21,13 +22,7 @@ type PortalData = {
   workspaceEvents: Array<{ action: string; detail: unknown; createdAt: string }>;
 };
 
-function money(minor: string, currency: string) {
-  const zero = new Set(["BIF","CLP","DJF","GNF","JPY","KMF","KRW","PYG","RWF","UGX","VND","VUV","XAF","XOF","XPF"]);
-  const three = new Set(["BHD","IQD","JOD","KWD","LYD","OMR","TND"]);
-  const precision = zero.has(currency) ? 0 : three.has(currency) ? 3 : 2;
-  return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: precision })
-    .format(Number(BigInt(minor)) / 10 ** precision);
-}
+function money(minor: string, currency: string) { return formatMoney({ minor: BigInt(minor), currency }); }
 function date(value: string | null) { return value ? new Date(value).toLocaleDateString() : "—"; }
 
 export default function ThreePLPortal() {
