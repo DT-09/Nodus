@@ -78,7 +78,7 @@ async function importInvoice(env:ThreePLEnv,workspaceId:string,form:FormData){
  const periodStart=periodStarts.size?dateOnly([...periodStarts][0]!):null,periodEnd=periodEnds.size?dateOnly([...periodEnds][0]!):null;
  const currencies=new Set<string>();
  const lines=parsed.rows.map((row,index)=>{
-  const amount=moneyMinor(csvValue(row,parsed.headers,"amount"),csvValue(row,parsed.headers,"currency"));
+  const amount=moneyMinor(csvValue(row,parsed.headers,"amount"),csvValue(row,parsed.headers,"currency"),true);
   currencies.add(amount.currency);
   const serviceRaw=csvValue(row,parsed.headers,"service_date",false);
   return {chargeCode:csvValue(row,parsed.headers,"charge_code"),description:csvValue(row,parsed.headers,"description",false)||null,serviceDate:serviceRaw?dateOnly(serviceRaw):null,quantity:quantity(csvValue(row,parsed.headers,"quantity")),unit:csvValue(row,parsed.headers,"unit"),amountMinor:amount.minor.toString(),currency:amount.currency,activityReference:csvValue(row,parsed.headers,"activity_reference",false)||null,sourceRow:index+2};
