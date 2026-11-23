@@ -28,8 +28,7 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  if(!["one_3pl","multiple_3pls","in_house_and_3pl","other"].includes(shipping))
   return json({error:"Choose a valid fulfilment setup."},400);
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid HTTPS business or storefront URL."},400);}
- if(parsed.protocol!=="https:"||!/^([a-z0-9][a-z0-9-]*)\.myshopify\.com$/i.test(parsed.hostname)||parsed.pathname!=="/"||parsed.search||parsed.hash)
-  return json({error:"Enter the permanent .myshopify.com store domain."},400);
+ if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password)return json({error:"Enter a valid HTTPS business or storefront URL."},400);
  const ip=request.headers.get("CF-Connecting-IP")||"unknown";
  const key=await digest(ip+"|nodus-3pl-trial-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
  const limit=await env.NODUS_DB.prepare("INSERT INTO lead_rate_limits(key,window_started_at,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN lead_rate_limits.window_started_at < ? THEN 1 ELSE lead_rate_limits.count+1 END, window_started_at=CASE WHEN lead_rate_limits.window_started_at < ? THEN excluded.window_started_at ELSE lead_rate_limits.window_started_at END RETURNING count").bind(key,now,windowStart,windowStart).first<{count:number}>();
