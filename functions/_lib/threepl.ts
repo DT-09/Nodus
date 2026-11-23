@@ -86,9 +86,9 @@ export function canWrite(workspace: ThreePLWorkspaceRow) {
   return workspace.status === "trial" && Boolean(workspace.trial_ends_at && Date.parse(workspace.trial_ends_at) > now);
 }
 
-export async function logWorkspaceEvent(env: ThreePLEnv, workspaceId: string, action: string, detail: unknown = {}) {
-  await env.NODUS_DB.prepare("INSERT INTO threepl_workspace_events(id,workspace_id,actor_type,action,detail_json,created_at) VALUES(?,?,'operator',?,?,?)")
-    .bind(id(), workspaceId, action, JSON.stringify(detail), nowIso()).run();
+export async function logWorkspaceEvent(env: ThreePLEnv, workspaceId: string, action: string, detail: unknown = {}, actorType = "operator") {
+  await env.NODUS_DB.prepare("INSERT INTO threepl_workspace_events(id,workspace_id,actor_type,action,detail_json,created_at) VALUES(?,?,?,?,?,?)")
+    .bind(id(), workspaceId, clean(actorType, 30), action, JSON.stringify(detail), nowIso()).run();
 }
 export async function logCaseEvent(env: ThreePLEnv, workspaceId: string, exceptionId: string, actorType: string, action: string, detail: unknown = {}) {
   await env.NODUS_DB.prepare("INSERT INTO threepl_case_events(id,workspace_id,exception_id,actor_type,action,detail_json,created_at) VALUES(?,?,?,?,?,?,?)")
