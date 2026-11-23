@@ -14,7 +14,7 @@ function TrialRequestForm(){
   event.preventDefault();if(busy)return;setBusy(true);setMessage("");setError(false);
   const form=event.currentTarget,data=new FormData(form);
   const payload={
-   name:String(data.get("name")||""),email:String(data.get("email")||""),
+   businessName:String(data.get("businessName")||""),name:String(data.get("name")||""),email:String(data.get("email")||""),
    store:String(data.get("store")||""),orders:String(data.get("orders")||""),
    shipping:String(data.get("shipping")||""),objective:String(data.get("objective")||""),
    consent:data.get("consent")==="on",website:String(data.get("website")||""),
@@ -30,6 +30,7 @@ function TrialRequestForm(){
  return <form className="nd-assessment-form" onSubmit={submit}>
   <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT ONBOARDING</span><h2>Request your seven-day trial.</h2><p>Tell us how your fulfilment operation works. We first confirm that your contract, invoice and activity exports can be reviewed. The seven-day clock starts only after your private workspace is ready and activated.</p></div>
   <div className="nd-form-grid">
+   <label>Business name<input name="businessName" required minLength={2} maxLength={160} placeholder="Company name"/></label>
    <label>Your name<input name="name" autoComplete="name" required minLength={2} maxLength={100} placeholder="Name"/></label>
    <label>Work email<input name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@company.com"/></label>
    <label>Shopify store domain<input name="store" required maxLength={255} placeholder="your-store.myshopify.com"/></label>
