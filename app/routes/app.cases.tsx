@@ -9,7 +9,7 @@ const validStatuses = new Set(["open", "investigating", "resolved", "ignored"]);
 
 function formatMinorAmount(amountMinor: string, currency: string) {
   const formatter = new Intl.NumberFormat(undefined, { style: "currency", currency });
-  const precision = formatter.resolvedOptions().maximumFractionDigits;
+  const precision = formatter.resolvedOptions().maximumFractionDigits ?? 2;
   return formatter.format(Number(BigInt(amountMinor)) / 10 ** precision);
 }
 
