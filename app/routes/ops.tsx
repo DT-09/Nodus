@@ -10,14 +10,9 @@ export const meta: MetaFunction = () => [
 
 type Lead = { id: string; businessName: string; name: string; email: string; shopDomain: string; monthlyOrders: string; fulfilmentSetup: string; objective: string; status: string; createdAt: string };
 type AccessToken = { id: string; label: string; expiresAt: string; usedAt: string | null; revokedAt: string | null; lastUsedAt: string | null; createdAt: string };
-type Workspace = { id: string; businessName: string; ownerName: string; ownerEmail: string; shopDomain: string | null; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionStartedAt: string | null; subscriptionEndsAt: string | null; createdAt: string; accessTokens: AccessToken[] };
+type Workspace = { id: string; businessName: string; ownerName: string; ownerEmail: string; shopDomain: string | null; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionStartedAt: string | null; subscriptionEndsAt: string | null; subscriptionCancelAtPeriodEnd: boolean; createdAt: string; accessTokens: AccessToken[] };
 type ConsoleData = { ok: boolean; leads: Lead[]; workspaces: Workspace[] };
 
-function periodEndDefault() {
-  const value = new Date();
-  value.setMonth(value.getMonth() + 1);
-  return new Date(value.getTime() - value.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-}
 function stamp(value: string | null) { return value ? new Date(value).toLocaleString() : "—"; }
 
 export default function OpsConsole() {
@@ -28,6 +23,7 @@ export default function OpsConsole() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [issuedToken, setIssuedToken] = useState<{ workspace: string; token: string; expiresAt: string } | null>(null);
+  const [checkoutLink, setCheckoutLink] = useState<{ workspace: string; url: string } | null>(null);
 
   async function load() {
     const response = await fetch("/api/operator/workspaces", { credentials: "same-origin", cache: "no-store" });
@@ -61,9 +57,10 @@ export default function OpsConsole() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload), credentials: "same-origin",
       });
-      const body = await response.json() as { ok?: boolean; error?: string; message?: string; inviteToken?: string; tokenExpiresAt?: string; workspace?: { businessName?: string } };
+      const body = await response.json() as { ok?: boolean; error?: string; message?: string; inviteToken?: string; tokenExpiresAt?: string; checkoutUrl?: string; workspace?: { businessName?: string } };
       if (!response.ok || !body.ok) throw new Error(body.error || "Operation failed.");
       if (body.inviteToken) setIssuedToken({ workspace: body.workspace?.businessName || String(payload.workspaceId || "Merchant workspace"), token: body.inviteToken, expiresAt: body.tokenExpiresAt || "" });
+      if (body.checkoutUrl) setCheckoutLink({ workspace: String(payload.workspaceId || "Merchant workspace"), url: body.checkoutUrl });
       setMessage(body.message || "Operation completed.");
       await load();
     } catch (e) { setError(e instanceof Error ? e.message : "Operation failed."); }
@@ -75,18 +72,13 @@ export default function OpsConsole() {
     await runOperation({ operation: "update_lead_status", leadId: form.get("leadId"), status: form.get("status") });
   }
 
-  async function activateSubscription(event: FormEvent<HTMLFormElement>, workspaceId: string) {
-    event.preventDefault(); const form = new FormData(event.currentTarget);
-    const raw = String(form.get("periodEndsAt") || "");
-    await runOperation({
-      operation: "activate_subscription", workspaceId, planCode: "core_99", confirmed: form.get("confirmed") === "on",
-      periodEndsAt: raw ? new Date(raw).toISOString() : undefined,
-    });
+  async function createCheckout(workspaceId: string) {
+    setCheckoutLink(null);
+    await runOperation({ operation: "create_subscription_checkout", workspaceId });
   }
 
-  async function cancelSubscription(event: FormEvent<HTMLFormElement>, workspaceId: string) {
-    event.preventDefault(); const form = new FormData(event.currentTarget);
-    await runOperation({ operation: "cancel_subscription", workspaceId, periodEndsAt: new Date(String(form.get("periodEndsAt"))).toISOString() });
+  async function scheduleCancellation(workspaceId: string) {
+    await runOperation({ operation: "schedule_subscription_cancellation", workspaceId });
   }
 
   async function signOut() {
@@ -112,6 +104,7 @@ export default function OpsConsole() {
     <header className="ops-header"><div><a href="/" className="ops-brand">NODUS <span>OPERATIONS</span></a><p className="ops-kicker">PRIVATE / MERCHANT LIFECYCLE</p><h1>Business operations</h1></div><button className="ops-quiet" onClick={() => void signOut()}>SIGN OUT</button></header>
     {message ? <p className="ops-message" role="status">{message}</p> : null}
     {error ? <p className="ops-error" role="alert">{error}</p> : null}
+    {checkoutLink ? <section className="ops-panel ops-token"><div><span className="ops-kicker">HOSTED STRIPE CHECKOUT</span><h2>{checkoutLink.workspace}</h2><p>Share this hosted payment link privately. Access changes only after Stripe confirms payment by signed webhook.</p></div><a href={checkoutLink.url} target="_blank" rel="noreferrer">OPEN CHECKOUT ↗</a><textarea readOnly value={checkoutLink.url}/><button onClick={() => void navigator.clipboard.writeText(checkoutLink.url)}>COPY CHECKOUT LINK</button></section> : null}
     {issuedToken ? <section className="ops-panel ops-token"><div><span className="ops-kicker">ONE-TIME-VISIBLE INVITATION TOKEN</span><h2>{issuedToken.workspace}</h2><p>Expires: {stamp(issuedToken.expiresAt)}</p></div><textarea readOnly value={issuedToken.token}/><button onClick={() => void navigator.clipboard.writeText(issuedToken.token)}>COPY TOKEN</button><p className="ops-note">Send this token privately to the merchant. It is shown here once and is not stored in plaintext.</p></section> : null}
 
     <section className="ops-section"><div className="ops-heading"><div><span>01 / INBOUND DEMAND</span><h2>Trial requests</h2></div><strong>{data?.leads.length ?? 0}</strong></div>
@@ -132,8 +125,9 @@ export default function OpsConsole() {
         <div className="ops-facts"><span>TRIAL / {stamp(workspace.trialActivatedAt)} → {stamp(workspace.trialEndsAt)}</span><span>PLAN / {workspace.planCode || "—"}</span><span>SUBSCRIPTION / {workspace.subscriptionStatus}</span><span>ENDS / {stamp(workspace.subscriptionEndsAt)}</span></div>
         <div className="ops-actions">
           {workspace.status === "onboarding" ? <button className="ops-small" disabled={busy} onClick={() => void runOperation({ operation: "activate_trial", workspaceId: workspace.id })}>ACTIVATE 7-DAY TRIAL</button> : null}
-          <form onSubmit={e=>void activateSubscription(e,workspace.id)} className="ops-subscription-form"><label>SUBSCRIPTION PERIOD END<input type="datetime-local" name="periodEndsAt" defaultValue={periodEndDefault()} required/></label><label className="ops-confirm"><input type="checkbox" name="confirmed" required/>Subscription actually confirmed</label><button className="ops-small" disabled={busy}>ACTIVATE CORE $99 / MONTH</button></form>
-          {workspace.subscriptionStatus === "active" ? <form onSubmit={e=>void cancelSubscription(e,workspace.id)} className="ops-subscription-form"><label>CANCEL AT PERIOD END<input type="datetime-local" name="periodEndsAt" defaultValue={periodEndDefault()} required/></label><button className="ops-small" disabled={busy}>SCHEDULE CANCELLATION</button></form> : null}
+          {workspace.subscriptionStatus !== "active" && workspace.status !== "closed" && workspace.status !== "suspended" && (workspace.status === "trial" || workspace.status === "active") ? <button className="ops-small" disabled={busy} onClick={() => void createCheckout(workspace.id)}>CREATE $99 / MONTH STRIPE CHECKOUT</button> : null}
+          {workspace.subscriptionStatus === "active" && !workspace.subscriptionCancelAtPeriodEnd ? <button className="ops-small ops-danger" disabled={busy} onClick={() => void scheduleCancellation(workspace.id)}>SCHEDULE CANCELLATION AT PERIOD END</button> : null}
+          {workspace.subscriptionCancelAtPeriodEnd ? <span className="ops-status ops-active">CANCELLATION SCHEDULED</span> : null}
           <button className="ops-small ops-secondary" disabled={busy || workspace.status === "closed"} onClick={() => void runOperation({ operation: "rotate_access", workspaceId: workspace.id, label: "Rotated merchant invitation" })}>ROTATE ACCESS TOKEN</button>
           <button className="ops-small ops-danger" disabled={busy || workspace.status === "closed"} onClick={() => void runOperation({ operation: "suspend", workspaceId: workspace.id })}>SUSPEND</button>
         </div>
