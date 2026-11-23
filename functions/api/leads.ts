@@ -25,7 +25,7 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  if(name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!store||!orders||!shipping||objective.length<20||body.consent!==true)
   return json({error:"Complete each required field and confirm permission to contact you."},400);
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid store URL."},400);}
- if(parsed.protocol!=="https:"||!/^([a-z0-9][a-z0-9-]*)\\.myshopify\\.com$/i.test(parsed.hostname)||parsed.pathname!=="/"||parsed.search||parsed.hash)return json({error:"Enter the permanent .myshopify.com store domain."},400);
+ if(parsed.protocol!=="https:"||!/^([a-z0-9][a-z0-9-]*)\.myshopify\.com$/i.test(parsed.hostname)||parsed.pathname!=="/"||parsed.search||parsed.hash)return json({error:"Enter the permanent .myshopify.com store domain."},400);
  const ip=request.headers.get("CF-Connecting-IP")||"unknown";
  const key=await digest(ip+"|nodus-lead-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
  const limit=await env.NODUS_DB.prepare("INSERT INTO lead_rate_limits(key,window_started_at,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN lead_rate_limits.window_started_at < ? THEN 1 ELSE lead_rate_limits.count+1 END, window_started_at=CASE WHEN lead_rate_limits.window_started_at < ? THEN excluded.window_started_at ELSE lead_rate_limits.window_started_at END RETURNING count").bind(key,now,windowStart,windowStart).first<{count:number}>();
