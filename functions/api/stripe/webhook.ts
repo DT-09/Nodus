@@ -25,8 +25,16 @@ export async function onRequestPost({ request, env }: Context) {
     const subscriptionId = objectId(value.subscription);
     if (workspaceId && subscriptionId && value.mode === "subscription") {
       const paid = value.payment_status === "paid";
-      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,plan_code='core_99',subscription_status=?,subscription_started_at=CASE WHEN ?=1 THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,status=CASE WHEN ?=1 AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE id=?")
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,stripe_checkout_url=NULL,stripe_checkout_expires_at=NULL,plan_code='core_99',subscription_status=?,subscription_started_at=CASE WHEN ?=1 THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,status=CASE WHEN ?=1 AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE id=?")
         .bind(objectId(value.customer),subscriptionId,objectId(value.id),paid?"active":"pending",paid?1:0,now,paid?1:0,now,workspaceId));
+    }
+  } else if (event.type === "checkout.session.expired") {
+    const metadata = value.metadata && typeof value.metadata === "object" ? value.metadata as Record<string, unknown> : {};
+    const workspaceId = typeof value.client_reference_id === "string" ? value.client_reference_id : typeof metadata.workspace_id === "string" ? metadata.workspace_id : "";
+    const sessionId = objectId(value.id);
+    if (workspaceId && sessionId) {
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_checkout_url=NULL,stripe_checkout_expires_at=NULL,stripe_checkout_session_id=NULL,subscription_status='none',updated_at=? WHERE id=? AND stripe_checkout_session_id=? AND subscription_status='pending'")
+        .bind(now,workspaceId,sessionId));
     }
   } else if (event.type === "invoice.paid" || event.type === "invoice.payment_failed") {
     const invoiceMetadata = value.metadata && typeof value.metadata === "object" ? value.metadata as Record<string, unknown> : {};
