@@ -84,9 +84,10 @@ export async function onRequestPost({request,env}:Context) {
 
   if(operation==="activate_subscription"){
     const planCode=clean(body.planCode,40),confirmed=body.confirmed===true;
-    if(!planCode||!confirmed)return bad("A plan code and explicit confirmation of the subscription are required.");
-    const now=new Date(),periodEndsAt=body.periodEndsAt?new Date(String(body.periodEndsAt)):null;
-    if(periodEndsAt&&(!Number.isFinite(periodEndsAt.getTime())||periodEndsAt<=now))return bad("periodEndsAt must be a future date.");
+    if(planCode!=="core_99"||!confirmed)return bad("Core pricing and explicit confirmation of the subscription are required.");
+    if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot be activated.",409);
+    const now=new Date(),periodEndsAt=new Date(String(body.periodEndsAt??""));
+    if(!Number.isFinite(periodEndsAt.getTime())||periodEndsAt<=now)return bad("A future subscription period end date is required.");
     await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET status='active',subscription_status='active',subscription_started_at=?,subscription_ends_at=?,plan_code=?,updated_at=? WHERE id=?")
       .bind(now.toISOString(),periodEndsAt?.toISOString()??null,planCode,now.toISOString(),workspaceId).run();
     await audit(env,workspaceId,"subscription_activated",{planCode,periodEndsAt:periodEndsAt?.toISOString()??null});
@@ -112,6 +113,7 @@ export async function onRequestPost({request,env}:Context) {
   }
 
   if(operation==="rotate_access"){
+    if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot receive new access.",409);
     const now=Math.floor(Date.now()/1000);
     await env.NODUS_DB.prepare("UPDATE threepl_access_tokens SET revoked_at=? WHERE workspace_id=? AND revoked_at IS NULL").bind(now,workspaceId).run();
     const issued=await issueAccessToken(workspaceId,clean(body.label,80)||"Rotated merchant access",env);
