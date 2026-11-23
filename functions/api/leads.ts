@@ -10,7 +10,8 @@ async function digest(value:string){const bytes=new TextEncoder().encode(value);
 export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Response>{
  if(request.method!=="POST")return json({error:"Method not allowed."},405);
  const origin=request.headers.get("Origin");
- if(origin){try{if(new URL(origin).host!==new URL(request.url).host)return json({error:"Origin rejected."},403);}catch{return json({error:"Origin rejected."},403);}}
+ if(origin){try{if(new URL(origin).origin!==new URL(request.url).origin)return json({error:"Origin rejected."},403);}catch{return json({error:"Origin rejected."},403);}}
+ else if(request.headers.get("Sec-Fetch-Site")!=="same-origin")return json({error:"Origin could not be verified."},403);
  const type=request.headers.get("Content-Type")||"";
  if(!type.toLowerCase().includes("application/json"))return json({error:"Use the JSON form endpoint."},415);
  const length=Number(request.headers.get("Content-Length")||0);
