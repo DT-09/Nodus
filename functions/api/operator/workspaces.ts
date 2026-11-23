@@ -4,7 +4,7 @@ import { createWorkspaceSubscriptionCheckout, scheduleWorkspaceSubscriptionCance
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
-type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;created_at:string };
+type WorkspaceRow = { id:string;business_name:string;owner_name:string;owner_email:string;shop_domain:string|null;status:string;plan_code:string|null;trial_activated_at:string|null;trial_ends_at:string|null;subscription_status:string;subscription_started_at:string|null;subscription_ends_at:string|null;stripe_subscription_id?:string|null;subscription_cancel_at_period_end?:number;created_at:string };
 
 async function audit(env:ThreePLEnv,workspaceId:string,action:string,detail:unknown={}) {
   await env.NODUS_DB.prepare("INSERT INTO threepl_workspace_events(id,workspace_id,actor_type,action,detail_json,created_at) VALUES(?,?,'operator',?,?,?)")
