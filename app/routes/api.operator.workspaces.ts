@@ -11,7 +11,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   ]);
   return Response.json({
     ok: true,
-    leads: leads.map(({ id, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt }) => ({ id, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt: createdAt.toISOString() })),
+    leads: leads.map(({ id, businessName, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt }) => ({ id, businessName, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt: createdAt.toISOString() })),
     workspaces: workspaces.map(item => ({ ...item, trialActivatedAt: item.trialActivatedAt?.toISOString() ?? null, trialEndsAt: item.trialEndsAt?.toISOString() ?? null, createdAt: item.createdAt.toISOString() })),
   }, { headers: { "Cache-Control": "no-store" } });
 }
@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const lead = await prisma.threePLLead.findUnique({ where: { id: leadId } });
     if (!lead || lead.status === "converted" || lead.status === "rejected") return Response.json({ ok: false, error: "Lead is unavailable for workspace creation." }, { status: 409 });
     const workspace = await prisma.threePLWorkspace.create({
-      data: { businessName: lead.shopDomain, ownerName: lead.name, ownerEmail: lead.email, shopDomain: lead.shopDomain, status: "onboarding" },
+      data: { businessName: lead.businessName, ownerName: lead.name, ownerEmail: lead.email, shopDomain: lead.shopDomain, status: "onboarding" },
       select: { id: true, businessName: true, ownerEmail: true, status: true },
     });
     try {
