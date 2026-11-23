@@ -392,6 +392,7 @@ model ThreePLException {
   exposureMinor      BigInt?
   currency           String
   explanation        String
+  note               String?
   evidenceReferences Json
   assignedTo         String?
   dueAt              DateTime?
