@@ -4,7 +4,7 @@ interface Env{NODUS_DB:D1Database;NODUS_ADMIN_TOKEN?:string}
 interface Context{request:Request;env:Env}
 const json=(body:unknown,status=200)=>Response.json(body,{status,headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"}});
 function equal(a:string,b:string){if(a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;}
-function authorized(request:Request,env:Env){const expected=env.NODUS_ADMIN_TOKEN||"";const received=(request.headers.get("Authorization")||"").replace(/^Bearer\\s+/i,"");return expected.length>=32&&equal(received,expected);}
+function authorized(request:Request,env:Env){const expected=env.NODUS_ADMIN_TOKEN||"";const received=(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");return expected.length>=32&&equal(received,expected);}
 function originAllowed(request:Request){const origin=request.headers.get("Origin");if(origin){try{return new URL(origin).origin===new URL(request.url).origin;}catch{return false;}}return request.headers.get("Sec-Fetch-Site")==="same-origin";}
 function guard(request:Request,env:Env){if(!originAllowed(request))return json({error:"Origin rejected."},403);if(!authorized(request,env))return json({error:"Operator authentication failed."},401);return null;}
 export async function onRequestGet({request,env}:Context){
