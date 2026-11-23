@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => [
 ];
 
 type PortalData = {
-  workspace: { id: string; businessName: string; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string };
+  workspace: { id: string; businessName: string; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionEndsAt: string | null };
   canWrite: boolean;
   providers: Array<{ id: string; name: string; status: string }>;
   invoices: Array<{ id: string; number: string; provider: string; date: string; currency: string; totalMinor: string; status: string; lineCount: number; runCount: number }>;
@@ -132,7 +132,7 @@ export default function ThreePLPortal() {
       <article><span>OPEN EXCEPTIONS</span><strong>{data.exceptions.filter(x => !["verified_closed","rejected","ignored"].includes(x.status)).length}</strong></article>
       <article><span>VERIFIED OUTCOMES</span><strong>{data.outcomes.filter(x => x.status === "verified").length}</strong></article>
     </section>
-    {data.workspace.status === "trial" || data.workspace.status === "trial_expired" ? <section className="tp-trial"><div><span>SEVEN-DAY TRIAL</span><strong>{data.workspace.status === "trial_expired" ? "Trial period ended" : "Trial active"}</strong></div><p>{data.workspace.trialEndsAt ? "Trial end: " + new Date(data.workspace.trialEndsAt).toLocaleString() : "The trial period has not been activated."} {data.workspace.subscriptionStatus === "active" ? "Subscription active." : "Your workspace remains available for review; new processing requires an active trial or subscription."}</p></section> : null}
+    {data.workspace.status === "trial" || data.workspace.status === "trial_expired" || data.workspace.status === "subscription_expired" ? <section className="tp-trial"><div><span>SEVEN-DAY TRIAL</span><strong>{data.workspace.status === "trial_expired" ? "Trial period ended" : data.workspace.status === "subscription_expired" ? "Subscription period ended" : "Trial active"}</strong></div><p>{data.workspace.trialEndsAt ? "Trial end: " + new Date(data.workspace.trialEndsAt).toLocaleString() : data.workspace.subscriptionEndsAt ? "Subscription access ended: " + new Date(data.workspace.subscriptionEndsAt).toLocaleString() : "The trial period has not been activated."} {data.workspace.subscriptionStatus === "active" ? "Subscription active." : data.workspace.subscriptionStatus === "cancelled" && data.workspace.subscriptionEndsAt && new Date(data.workspace.subscriptionEndsAt) > new Date() ? "Subscription remains active until its recorded period end." : "Your workspace is read-only until access is reactivated."}</p></section> : null}
     {!canWrite ? <section className="tp-warning">This workspace is read-only. NODUS can still display stored records and reports, but new imports and processing are paused until an active trial or subscription is in place.</section> : null}
 
     <section className="tp-section">
