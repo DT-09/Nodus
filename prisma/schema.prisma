@@ -285,6 +285,7 @@ model ThreePLRateRule {
   pricing       String
   rateMinor     BigInt
   currency      String
+  sourceRow     Int
   effectiveFrom DateTime
   effectiveTo   DateTime?
   createdAt     DateTime @default(now())
