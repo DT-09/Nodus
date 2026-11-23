@@ -89,10 +89,11 @@ async function importInvoice(env:ThreePLEnv,workspaceId:string,form:FormData){
  let invoiceId:string;
  if(existing){
   invoiceId=existing.id;
+  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET status='importing',updated_at=? WHERE id=? AND workspace_id=?").bind(now,invoiceId,workspaceId).run();
   await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status='superseded',resolved_at=?,updated_at=? WHERE workspace_id=? AND invoice_id=? AND status NOT IN ('verified_closed','rejected','ignored','superseded')")
    .bind(now,now,workspaceId,invoiceId).run();
   await env.NODUS_DB.prepare("DELETE FROM threepl_invoice_lines WHERE invoice_id=?").bind(invoiceId).run();
-  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET invoice_date=?,period_start=?,period_end=?,currency=?,total_minor=?,status='importing',source_file_name=?,source_hash=?,imported_at=?,updated_at=? WHERE id=? AND workspace_id=?")
+  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET invoice_date=?,period_start=?,period_end=?,currency=?,total_minor=?,source_file_name=?,source_hash=?,imported_at=?,updated_at=? WHERE id=? AND workspace_id=?")
    .bind(invoiceDate,periodStart,periodEnd,currency,totalMinor,sourceFileName,sourceHash,now,now,invoiceId,workspaceId).run();
  }else{
   invoiceId=id();
