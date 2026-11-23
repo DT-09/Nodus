@@ -30,13 +30,13 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  const ip=request.headers.get("CF-Connecting-IP")||"unknown";
  const key=await digest(ip+"|nodus-lead-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
  const limit=await env.NODUS_DB.prepare("INSERT INTO lead_rate_limits(key,window_started_at,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN lead_rate_limits.window_started_at < ? THEN 1 ELSE lead_rate_limits.count+1 END, window_started_at=CASE WHEN lead_rate_limits.window_started_at < ? THEN excluded.window_started_at ELSE lead_rate_limits.window_started_at END RETURNING count").bind(key,now,windowStart,windowStart).first<{count:number}>();
+ if(offer!=="evaluation"&&(!env.STRIPE_SECRET_KEY||!env.SHOPIFY_APP_URL?.startsWith("https://")))return json({error:"Paid checkout is not enabled yet. No payment was taken and no request was stored. The payment account must be configured before paid requests can be accepted."},503);
  if(!limit||limit.count>3)return json({error:"Too many requests. Please try again later."},429);
  await env.NODUS_DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const id=crypto.randomUUID();
  const nowIso=new Date().toISOString();
  await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status,updated_at) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested',?)").bind(id,nowIso,name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote,nowIso).run();
  if(offer!=="evaluation"){
-  if(!env.STRIPE_SECRET_KEY||!env.SHOPIFY_APP_URL?.startsWith("https://"))return json({error:"Paid checkout is not enabled yet. No payment was taken. The business operator must configure the payment account and checkout credentials."},503);
   try{
    const checkout=await createStripeCheckout({secret:env.STRIPE_SECRET_KEY,appUrl:env.SHOPIFY_APP_URL,leadId:id,email,offer});
    await env.NODUS_DB.prepare("UPDATE merchant_leads SET stripe_checkout_session_id=?,payment_status='invoice_pending',updated_at=? WHERE id=?").bind(checkout.id,new Date().toISOString(),id).run();
