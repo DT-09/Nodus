@@ -6,6 +6,8 @@
 **Decision:** Build a recurring 3PL operations-control product, beginning with evidence-backed billing and service-performance control.  
 **Deployment:** Cloudflare Pages and Cloudflare-native services. Vercel is not a deployment target.
 
+**Runtime architecture:** The browser application is statically built with React Router (`ssr: false`). All persistent 3PL operations run through Cloudflare Pages Functions under `functions/api` and the existing D1 binding `NODUS_DB`. The D1 schema is versioned under `migrations/`; do not implement 3PL persistence as React Router server actions or add a second runtime database. The private operator console and merchant portal call the Pages Functions endpoints.
+
 ---
 
 ## 1. The business we are building
