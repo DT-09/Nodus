@@ -196,6 +196,7 @@ export async function onRequestGet({request,env}:Context){
  const rulesByContract=new Map<string,RuleRow[]>();for(const rule of rules.results){const parent=contracts.results.find(contract=>contract.id===rule.contract_id);if(!parent)continue;const list=rulesByContract.get(rule.contract_id)||[];list.push(rule);rulesByContract.set(rule.contract_id,list);}
  const linesByInvoice=new Map<string,LineRow[]>();for(const line of lines.results){const list=linesByInvoice.get(line.invoice_id)||[];list.push(line);linesByInvoice.set(line.invoice_id,list);}
  const eventsByException=new Map<string,CaseEventRow[]>();for(const event of caseEvents.results){const list=eventsByException.get(event.exception_id)||[];if(list.length<12)list.push(event);eventsByException.set(event.exception_id,list);}
+ const outcomeCounts=new Map<string,number>();for(const outcome of outcomes.results)outcomeCounts.set(outcome.exception_id,(outcomeCounts.get(outcome.exception_id)||0)+1);
  const now=Date.now(),trialExpired=auth.workspace.status==="trial"&&Boolean(auth.workspace.trial_ends_at&&Date.parse(auth.workspace.trial_ends_at)<=now)&&auth.workspace.subscription_status!=="active";
  const subscriptionExpired=["active","cancelled"].includes(auth.workspace.subscription_status)&&Boolean(auth.workspace.subscription_ends_at&&Date.parse(auth.workspace.subscription_ends_at)<=now);
  return json({
@@ -205,7 +206,7 @@ export async function onRequestGet({request,env}:Context){
   contracts:contracts.results.map(contract=>({id:contract.id,name:contract.name,provider:contract.provider_name,currency:contract.currency,effectiveFrom:contract.effective_from,effectiveTo:contract.effective_to,status:contract.status,sourceFileName:contract.source_file_name,sourceHash:contract.source_hash,rules:(rulesByContract.get(contract.id)||[]).map(rule=>({id:rule.id,chargeCode:rule.charge_code,unit:rule.unit,pricing:rule.pricing,rateMinor:rule.rate_minor,currency:rule.currency,sourceRow:rule.source_row,effectiveFrom:rule.effective_from,effectiveTo:rule.effective_to}))})),
   invoices:invoices.results.map(invoice=>({id:invoice.id,number:invoice.invoice_number,provider:invoice.provider_name,date:invoice.invoice_date,currency:invoice.currency,totalMinor:invoice.total_minor,status:invoice.status,sourceFileName:invoice.source_file_name,sourceHash:invoice.source_hash,lineCount:(linesByInvoice.get(invoice.id)||[]).length,runCount:0,lines:(linesByInvoice.get(invoice.id)||[]).map(line=>({id:line.id,chargeCode:line.charge_code,description:line.description,serviceDate:line.service_date,quantity:line.quantity,unit:line.unit,amountMinor:line.amount_minor,currency:line.currency,activityReference:line.activity_reference,sourceRow:line.source_row}))})),
   activityRecords:activities.results.map(item=>({id:item.id,provider:item.provider_name,reference:item.reference,chargeCode:item.charge_code,quantity:item.quantity,unit:item.unit,occurredAt:item.occurred_at,sourceRow:item.source_row,sourceFileName:item.source_file_name,sourceHash:item.source_hash})),
-  exceptions:exceptions.results.map(item=>({id:item.id,invoiceNumber:item.invoice_number,provider:item.provider_name,code:item.finding_code,severity:item.severity,state:item.state,status:item.status,currency:item.currency,exposureMinor:item.exposure_minor,explanation:item.explanation,note:item.note,evidence:parseJson(item.evidence_json)||[],events:(eventsByException.get(item.id)||[]).map(event=>({action:event.action,detail:parseJson(event.detail_json),createdAt:event.created_at})),outcomes:0,lastSeenAt:item.last_seen_at})),
+  exceptions:exceptions.results.map(item=>({id:item.id,invoiceNumber:item.invoice_number,provider:item.provider_name,code:item.finding_code,severity:item.severity,state:item.state,status:item.status,currency:item.currency,exposureMinor:item.exposure_minor,explanation:item.explanation,note:item.note,evidence:parseJson(item.evidence_json)||[],events:(eventsByException.get(item.id)||[]).map(event=>({action:event.action,detail:parseJson(event.detail_json),createdAt:event.created_at})),outcomes:outcomeCounts.get(item.id)||0,lastSeenAt:item.last_seen_at})),
   reports:reports.results.map(item=>({id:item.id,start:item.period_start,end:item.period_end,revision:item.revision,status:item.status,generatedAt:item.generated_at,payload:parseJson(item.payload_json)})),
   outcomes:outcomes.results.map(item=>({id:item.id,exceptionId:item.exception_id,type:item.outcome_type,status:item.status,amountMinor:item.amount_minor,currency:item.currency,reference:item.external_reference,note:item.evidence_note,verifiedAt:item.verified_at,findingCode:item.finding_code})),
   workspaceEvents:workspaceEvents.results.map(event=>({action:event.action,detail:parseJson(event.detail_json),createdAt:event.created_at})),
@@ -238,11 +239,11 @@ export async function onRequestPost({request,env}:Context){
   if(intent==="update_exception"){
    const exceptionId=clean(form.get("exceptionId"),80),status=clean(form.get("status"),50),note=clean(form.get("note"),2000);
    if(!["open","investigating","ready_for_review","raised_with_provider","provider_responded","rejected","ignored"].includes(status))throw new Error("Choose a valid investigation status.");
-   const record=await env.NODUS_DB.prepare("SELECT id,status FROM threepl_exceptions WHERE id=? AND workspace_id=?").bind(exceptionId,workspaceId).first<{id:string;status:string}>();
+   const record=await env.NODUS_DB.prepare("SELECT id,status,note FROM threepl_exceptions WHERE id=? AND workspace_id=?").bind(exceptionId,workspaceId).first<{id:string;status:string}>();
    if(!record)throw new Error("Exception not found in this workspace.");
-   const now=nowIso();await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status=?,note=?,resolved_at=?,updated_at=? WHERE id=? AND workspace_id=?")
-    .bind(status,note||null,["rejected","ignored"].includes(status)?now:null,now,exceptionId,workspaceId).run();
-   await logCaseEvent(env,workspaceId,exceptionId,"merchant","status_changed",{from:record.status,to:status,note});
+   const nextNote=note||record.note,now=nowIso();await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status=?,note=?,resolved_at=?,updated_at=? WHERE id=? AND workspace_id=?")
+    .bind(status,nextNote,["rejected","ignored"].includes(status)?now:null,now,exceptionId,workspaceId).run();
+   await logCaseEvent(env,workspaceId,exceptionId,"merchant","status_changed",{from:record.status,to:status,noteProvided:Boolean(note)});
    return json({ok:true,message:"Investigation status saved."});
   }
   if(intent==="record_outcome"){
