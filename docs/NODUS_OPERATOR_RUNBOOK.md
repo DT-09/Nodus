@@ -14,7 +14,7 @@ Do not commit the operator secret or put it in browser code. Configure productio
 
 ### D1 schema state
 
-`migrations/0003_threepl_control.sql` has been applied to the remote D1 database bound as `NODUS_DB`. A pre-migration D1 export was created, the new tables and `merchant_leads.business_name` were verified, and the applied migration was recorded in `nodus_schema_migrations`.
+`migrations/0003_threepl_control.sql` and `migrations/0004_one_time_invitation_sessions.sql` have been applied to the remote D1 database bound as `NODUS_DB`. A pre-migration D1 export was created before each change; the new tables, `merchant_leads.business_name`, and one-time invitation session columns were verified, and both migrations were recorded in `nodus_schema_migrations`.
 
 The existing database has no Wrangler `d1_migrations` ledger for migrations 0000–0002. Do not run `wrangler d1 migrations apply` against this database: it would try to replay the original schema. Future migrations must be applied deliberately through the Cloudflare D1 query API and recorded in `nodus_schema_migrations`, or the project must first adopt a verified baseline migration ledger.
 
