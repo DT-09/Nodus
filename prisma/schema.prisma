@@ -500,3 +500,16 @@ model ThreePLLead {
   @@index([email, createdAt])
   @@index([shopDomain, createdAt])
 }
+
+model ThreePLWorkspaceEvent {
+  id          String   @id @default(cuid())
+  workspaceId String
+  actorType   String
+  actorRef    String?
+  action      String
+  detail      Json?
+  createdAt   DateTime @default(now())
+  workspace   ThreePLWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
+}
