@@ -54,11 +54,12 @@ async function importContract(env:ThreePLEnv,workspaceId:string,form:FormData){
  const sourceHash=await sha256(csv),sourceFileName=safeName(file.name),created=nowIso(),contractId=id();
  const starts=rules.map(rule=>rule.effectiveFrom).sort(),ends=rules.map(rule=>rule.effectiveTo);
  const effectiveTo=ends.every(Boolean)?ends.sort().at(-1)??null:null;
- await env.NODUS_DB.prepare("INSERT INTO threepl_contracts(id,workspace_id,provider_id,name,currency,effective_from,effective_to,status,source_file_name,source_hash,confirmed_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,'active',?,?,?,?,?)")
-  .bind(contractId,workspaceId,providerId,name,[...currencies][0],starts[0],effectiveTo,sourceFileName,sourceHash,created,created,created).run();
+ await env.NODUS_DB.prepare("INSERT INTO threepl_contracts(id,workspace_id,provider_id,name,currency,effective_from,effective_to,status,source_file_name,source_hash,confirmed_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,'draft',?,?,?,?,?)")
+  .bind(contractId,workspaceId,providerId,name,[...currencies][0],starts[0],effectiveTo,sourceFileName,sourceHash,null,created,created).run();
  const statements=rules.map(rule=>env.NODUS_DB.prepare("INSERT INTO threepl_rate_rules(id,contract_id,charge_code,unit,pricing,rate_minor,currency,source_row,effective_from,effective_to,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")
   .bind(id(),contractId,rule.chargeCode,rule.unit,rule.pricing,rule.rateMinor,rule.currency,rule.sourceRow,rule.effectiveFrom,rule.effectiveTo,created,created));
  await chunks(env,statements);
+ await env.NODUS_DB.prepare("UPDATE threepl_contracts SET status='active',confirmed_at=?,updated_at=? WHERE id=? AND workspace_id=?").bind(created,created,contractId,workspaceId).run();
  return {contractId,ruleCount:rules.length,sourceHash};
 }
 
@@ -91,16 +92,17 @@ async function importInvoice(env:ThreePLEnv,workspaceId:string,form:FormData){
   await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status='superseded',resolved_at=?,updated_at=? WHERE workspace_id=? AND invoice_id=? AND status NOT IN ('verified_closed','rejected','ignored','superseded')")
    .bind(now,now,workspaceId,invoiceId).run();
   await env.NODUS_DB.prepare("DELETE FROM threepl_invoice_lines WHERE invoice_id=?").bind(invoiceId).run();
-  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET invoice_date=?,period_start=?,period_end=?,currency=?,total_minor=?,status='imported',source_file_name=?,source_hash=?,imported_at=?,updated_at=? WHERE id=? AND workspace_id=?")
+  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET invoice_date=?,period_start=?,period_end=?,currency=?,total_minor=?,status='importing',source_file_name=?,source_hash=?,imported_at=?,updated_at=? WHERE id=? AND workspace_id=?")
    .bind(invoiceDate,periodStart,periodEnd,currency,totalMinor,sourceFileName,sourceHash,now,now,invoiceId,workspaceId).run();
  }else{
   invoiceId=id();
-  await env.NODUS_DB.prepare("INSERT INTO threepl_invoices(id,workspace_id,provider_id,invoice_number,invoice_date,period_start,period_end,currency,total_minor,status,source_file_name,source_hash,imported_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,'imported',?,?,?,?,?)")
+  await env.NODUS_DB.prepare("INSERT INTO threepl_invoices(id,workspace_id,provider_id,invoice_number,invoice_date,period_start,period_end,currency,total_minor,status,source_file_name,source_hash,imported_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,'importing',?,?,?,?,?)")
    .bind(invoiceId,workspaceId,providerId,invoiceNumber,invoiceDate,periodStart,periodEnd,currency,totalMinor,sourceFileName,sourceHash,now,now,now).run();
  }
  const statements=lines.map(line=>env.NODUS_DB.prepare("INSERT INTO threepl_invoice_lines(id,invoice_id,charge_code,description,service_date,quantity,unit,amount_minor,currency,activity_reference,source_row,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")
   .bind(id(),invoiceId,line.chargeCode,line.description,line.serviceDate,line.quantity,line.unit,line.amountMinor,line.currency,line.activityReference,line.sourceRow,now));
  await chunks(env,statements);
+ await env.NODUS_DB.prepare("UPDATE threepl_invoices SET status='imported',updated_at=? WHERE id=? AND workspace_id=?").bind(now,invoiceId,workspaceId).run();
  return {invoiceId,invoiceNumber,lineCount:lines.length,totalMinor,currency,sourceHash};
 }
 
