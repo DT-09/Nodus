@@ -36,7 +36,7 @@ From the qualified lead, choose **Provision workspace** in `/ops`.
 
 The operator API creates a merchant-specific D1 workspace, issues a random invitation token and changes the lead status to converted. The token is stored only as a SHA-256 hash and is displayed once. Send it to the merchant through a private channel. Do not put it in a public issue, chat room or analytics tool.
 
-The merchant opens `/portal`, enters the token and receives a seven-day HttpOnly, Secure, SameSite=Lax browser session. Invitation tokens expire after 30 days. Rotating access revokes all prior tokens for that workspace.
+The merchant opens `/portal`, enters the token and receives a seven-day HttpOnly, Secure, SameSite=Lax browser session. Invitation tokens expire after seven days and can be redeemed once. Redemption creates a separate seven-day browser session; logging out or losing that session requires the operator to rotate access. Rotating access revokes all prior tokens for that workspace.
 
 ## 4. Onboard source data
 
