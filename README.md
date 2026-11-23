@@ -88,6 +88,7 @@ Apply in lexical order only after inspecting the actual target database:
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0000_commercial_base.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0001_shopify.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0002_commercial_intake.sql
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0003_lead_lifecycle_audit.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0003_threepl_control.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0004_one_time_invitation_sessions.sql
 ```
