@@ -463,3 +463,17 @@ model ThreePLOutcome {
   @@index([workspaceId, exceptionId])
 }
 
+
+model ThreePLAccessToken {
+  id          String   @id @default(cuid())
+  workspaceId String
+  tokenHash   String   @unique
+  label       String
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+  workspace   ThreePLWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, revokedAt, expiresAt])
+}
