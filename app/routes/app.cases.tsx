@@ -7,6 +7,12 @@ import { diagnoseReconciliation } from "../domain/diagnostics";
 
 const validStatuses = new Set(["open", "investigating", "resolved", "ignored"]);
 
+function formatMinorAmount(amountMinor: string, currency: string) {
+  const formatter = new Intl.NumberFormat(undefined, { style: "currency", currency });
+  const precision = formatter.resolvedOptions().maximumFractionDigits;
+  return formatter.format(Number(BigInt(amountMinor)) / 10 ** precision);
+}
+
 export async function loader({ request }: LoaderFunctionArgs) {
   requireShopifyConfiguration();
   const { session } = await authenticate.admin(request);
@@ -118,7 +124,7 @@ export default function ReviewQueue() {
       <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Finding</th><th>Order</th><th>Evidence / amount</th><th>Severity</th><th>Status</th><th>Last observed</th><th>Review action</th></tr></thead>
         <tbody>{data.cases.map(item => <tr key={item.id}>
           <td><b>{item.title}</b><small>{item.explanation}</small>{item.note ? <small>Merchant note: {item.note}</small> : null}</td>
-          <td>{item.orderId}</td><td>{item.evidenceIds.length ? <><b>{item.evidenceIds.length} matched record(s)</b>{item.evidenceIds.map(id => <small key={id}>{id}</small>)}</> : <small>No matched cost evidence</small>}{BigInt(item.amountMinor) > 0n && item.currency ? <small>Excess evidenced cost: {new Intl.NumberFormat(undefined, { style: "currency", currency: item.currency }).format(Number(BigInt(item.amountMinor)) / 100)}</small> : null}</td><td>{item.severity}</td><td>{item.status}{!item.active ? <small>Not in latest analysis</small> : null}</td><td>{new Date(item.lastSeenAt).toLocaleString()}</td>
+          <td>{item.orderId}</td><td>{item.evidenceIds.length ? <><b>{item.evidenceIds.length} matched record(s)</b>{item.evidenceIds.map(id => <small key={id}>{id}</small>)}</> : <small>No matched cost evidence</small>}{BigInt(item.amountMinor) > 0n && item.currency ? <small>Excess evidenced cost: {formatMinorAmount(item.amountMinor, item.currency)}</small> : null}</td><td>{item.severity}</td><td>{item.status}{!item.active ? <small>Not in latest analysis</small> : null}</td><td>{new Date(item.lastSeenAt).toLocaleString()}</td>
           <td><Form method="post" className="coverage-review-form"><input type="hidden" name="caseId" value={item.id}/><select name="status" defaultValue={item.status} aria-label={`Status for ${item.title}`}><option value="open">Open</option><option value="investigating">Investigating</option><option value="resolved">Resolved</option><option value="ignored">Ignored</option></select><input name="note" maxLength={2000} defaultValue={item.note ?? ""} placeholder="Investigation note" aria-label="Investigation note"/><button type="submit">Save</button></Form></td>
         </tr>)}
         {!data.cases.length ? <tr><td colSpan={7}>No current findings. Import a carrier-cost file and review order coverage to build a useful exception register.</td></tr> : null}</tbody></table></div>
