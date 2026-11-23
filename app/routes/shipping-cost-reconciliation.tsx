@@ -1,2 +1,2 @@
-import { redirect } from "react-router";
-export function loader() { return redirect("/product"); }
+import { Navigate } from "react-router";
+export default function LegacyRedirect() { return <Navigate to="/product" replace />; }
