@@ -233,3 +233,10 @@ CREATE TABLE IF NOT EXISTS threepl_workspace_events (
   created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS threepl_workspace_events_workspace_idx ON threepl_workspace_events(workspace_id,created_at);
+
+CREATE TABLE IF NOT EXISTS nodus_schema_migrations (
+  name TEXT PRIMARY KEY,
+  applied_at TEXT NOT NULL
+);
+INSERT OR IGNORE INTO nodus_schema_migrations(name,applied_at)
+VALUES('0003_threepl_control.sql',CURRENT_TIMESTAMP);
