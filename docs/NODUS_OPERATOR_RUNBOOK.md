@@ -65,7 +65,7 @@ INV-1001,2026-10-31,PICK,120,order,54.00,USD
 
 Optional columns: `description`, `activity_reference`, `service_date`, `period_start`, `period_end`.
 
-Use `service_date` when the contract rate should be selected by the date the service occurred. If absent, NODUS uses `invoice_date`. Period fields must be consistent across the invoice file.
+Amounts may be negative when the provider invoice includes a credit or adjustment. Use `service_date` when the contract rate should be selected by the date the service occurred. If absent, NODUS uses `invoice_date`. Period fields must be consistent across the invoice file.
 
 ### Operational activity
 
