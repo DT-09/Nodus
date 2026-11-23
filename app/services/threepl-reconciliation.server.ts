@@ -110,6 +110,7 @@ export async function reconcileStoredThreePLInvoice(workspaceId: string, invoice
 
     for (const finding of result.findings) {
       const fingerprint = stableHash({
+        inputHash,
         invoiceLineId: finding.invoiceLineId,
         findingCode: finding.code,
         contractRuleId: finding.contractRuleId ?? null,
@@ -144,6 +145,20 @@ export async function reconcileStoredThreePLInvoice(workspaceId: string, invoice
           action: "finding_observed",
           detail: { runId: createdRun.id, findingCode: finding.code, inputHash },
         },
+      });
+    }
+
+    const priorFindings = await tx.threePLException.findMany({
+      where: {
+        workspaceId, invoiceId, runId: { not: createdRun.id },
+        status: { notIn: ["verified_closed", "rejected", "ignored", "superseded", "not_reproduced"] },
+      },
+      select: { id: true, status: true },
+    });
+    for (const prior of priorFindings) {
+      await tx.threePLException.update({ where: { id: prior.id }, data: { status: "not_reproduced", resolvedAt: new Date() } });
+      await tx.threePLCaseEvent.create({
+        data: { workspaceId, exceptionId: prior.id, actorType: "system", action: "not_reproduced_in_latest_run", detail: { previousStatus: prior.status, latestRunId: createdRun.id, inputHash } },
       });
     }
 
