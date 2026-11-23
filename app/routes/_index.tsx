@@ -28,7 +28,7 @@ const steps=[
 export default function Home(){
  return <MarketingShell active="home">
   <main className="nodus-home">
-   <section className="nh-hero">
+   <section className="nh-hero" data-reveal>
     <div className="nh-copy">
      <p className="nh-eyebrow"><span></span> SHIPPING ECONOMICS INTELLIGENCE / SHOPIFY</p>
      <h1>The economics<br/>behind every<br/><em>shipment.</em></h1>
@@ -39,7 +39,7 @@ export default function Home(){
      </div>
      <div className="nh-meta"><span>ORDER-LEVEL RECONCILIATION</span><i></i><span>CARRIER COST INTELLIGENCE</span><i></i><span>LOCAL FILE PROCESSING</span></div>
     </div>
-    <div className="nh-product">
+    <div className="nh-product" data-reveal>
      <div className="nh-product-top"><div className="nh-product-brand"><div><b>NODUS</b><small>SHIPPING CONTROL DESK</small></div></div><span className="nh-product-state">WORKFLOW / READY</span></div>
      <div className="nh-product-title"><span>01 / EVIDENCE WORKSPACE</span><h2>One view of<br/><em>shipping economics.</em></h2></div>
      <div className="nh-sources">
@@ -58,22 +58,22 @@ export default function Home(){
     </div>
    </section>
 
-   <section className="nh-statement">
+   <section className="nh-statement" data-reveal>
     <div><span>THE PROBLEM</span><h2>Shipping revenue and delivery cost live in different systems.<br/><em>NODUS brings the evidence together.</em></h2></div>
     <p>Most shipping reports show averages. NODUS works at the order and invoice-line level, so operators can see which records support a conclusion—and which do not.</p>
    </section>
 
-   <section className="nh-services">
+   <section className="nh-services" data-reveal>
     <div className="nh-section-heading"><span>THE PRODUCT / FOUR OPERATING SERVICES</span><h2>From raw records<br/><em>to controlled decisions.</em></h2></div>
     <div className="nh-service-grid">{services.map(item=><article key={item.n}><span className="nh-service-number">{item.n}</span><small>{item.tag}</small><h3>{item.title}</h3><p>{item.body}</p></article>)}</div>
    </section>
 
-   <section className="nh-process">
+   <section className="nh-process" data-reveal>
     <div className="nh-section-heading"><span>THE WORKFLOW / FOUR STEPS</span><h2>Every result has<br/><em>a traceable path.</em></h2></div>
     <div className="nh-steps">{steps.map((step,i)=><article key={step[0]}><span>0{i+1} / {step[0]}</span><h3>{step[1]}</h3><p>{step[2]}</p></article>)}</div>
    </section>
 
-   <section className="nh-proof">
+   <section className="nh-proof" data-reveal>
     <div className="nh-proof-copy"><span>THE OUTPUT</span><h2>A decision pack<br/><em>your team can inspect.</em></h2><p>Every review can produce a CSV register and a structured JSON decision pack. The output preserves order references, matched charge records, unresolved items, currency boundaries and calculation limits.</p><Link to="/demo">OPEN THE SAMPLE REPORT ↗</Link></div>
     <div className="nh-proof-list">
      <div><b>01</b><span>Matched and unmatched cost evidence</span></div>
@@ -84,7 +84,7 @@ export default function Home(){
     </div>
    </section>
 
-   <section className="nh-close">
+   <section className="nh-close" data-reveal>
     <span>NODUS / SHIPPING ECONOMICS</span>
     <h2>See the evidence.<br/><em>Then decide.</em></h2>
     <p>Start with a free review using your own supported CSV exports. Files are processed in your browser and are not uploaded to NODUS.</p>
