@@ -142,6 +142,7 @@ export async function importThreePLInvoice(input: { workspaceId: string; provide
       select: { id: true },
     });
     if (existing) {
+      await tx.threePLException.updateMany({ where: { workspaceId: input.workspaceId, invoiceId: existing.id, status: { notIn: ["verified_closed", "rejected", "ignored"] } }, data: { status: "superseded" } });
       await tx.threePLInvoiceLine.deleteMany({ where: { invoiceId: existing.id } });
       return tx.threePLInvoice.update({
         where: { id: existing.id },
@@ -171,6 +172,8 @@ export async function importThreePLActivity(input: { workspaceId: string; provid
   if (!provider) throw new Error("Provider does not belong to this workspace.");
   const parsed = parseCsv(input.csv);
   const sourceSystem = "provider_activity_csv";
+  const sourceHash = hash(input.csv);
+  const sourceFileName = safeName(input.fileName);
   const records = parsed.rows.map((row, index) => {
     const occurredRaw = value(row, parsed.headers, "occurred_at", false);
     return {
@@ -181,7 +184,7 @@ export async function importThreePLActivity(input: { workspaceId: string; provid
       quantity: quantity(value(row, parsed.headers, "quantity")),
       unit: value(row, parsed.headers, "unit"),
       occurredAt: occurredRaw ? new Date(occurredRaw) : null,
-      sourceRow: index + 2,
+      sourceRow: index + 2, sourceFileName, sourceHash,
     };
   });
   if (records.some(record => record.occurredAt && Number.isNaN(record.occurredAt.getTime()))) throw new Error("Activity file contains an invalid occurred_at timestamp.");
@@ -199,5 +202,5 @@ export async function importThreePLActivity(input: { workspaceId: string; provid
     }
     return count;
   });
-  return { imported: saved, sourceHash: hash(input.csv), sourceFileName: safeName(input.fileName) };
+  return { imported: saved, sourceHash, sourceFileName };
 }
