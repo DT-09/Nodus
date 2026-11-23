@@ -63,7 +63,7 @@ assert.match(threeplSessionMigration,/session_expires_at/);
 assert.ok(ops.includes("/api/operator/workspaces"));
 assert.ok(ops.includes("/api/operator/session"));
 assert.ok(ops.includes("ACTIVATE 7-DAY TRIAL"));
-assert.ok(ops.includes("CREATE $99 / MONTH STRIPE CHECKOUT"));
+assert.ok(ops.includes("CREATE $99 / MONTH CHECKOUT"));
 assert.ok(ops.includes("SCHEDULE CANCELLATION AT PERIOD END"));
 assert.match(stripeMigration,/stripe_webhook_events/);
 assert.match(stripeMigration,/stripe_subscription_id/);
