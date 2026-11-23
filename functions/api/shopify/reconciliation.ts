@@ -54,6 +54,7 @@ export async function onRequestGet({ request, env }: PagesContext) {
   // A reference that points to more than one Shopify order is ambiguous.
   // Never let insertion order silently decide which merchant record receives a charge.
   const referenceOwners = new Map<string, Set<string>>();
+  const orderById = new Map(orders.map((order) => [order.order_gid, order]));
   for (const order of orders) {
     for (const reference of [order.order_name, order.order_gid]) {
       const normalized = reference.trim();
@@ -103,7 +104,7 @@ export async function onRequestGet({ request, env }: PagesContext) {
     }
 
     const orderId = [...owners][0]!;
-    const order = orders.find((candidate) => candidate.order_gid === orderId)!;
+    const order = orderById.get(orderId)!;
     if (order.currency !== cost.currency) {
       unmatched.push({
         invoice: cost.invoice_id, charge: cost.source_record_id, reference,
