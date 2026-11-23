@@ -44,7 +44,7 @@ curl -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \
   https://YOUR_NODUS_HOST/api/operator/workspaces
 ```
 
-Lead statuses are `new`, `contacted`, `qualified`, `rejected` and `converted`.
+Lead statuses are `new`, `contacted`, `qualified`, `rejected` and `converted`. Mark a lead `qualified` only after checking that it uses an external 3PL and can supply the supported contract, invoice and activity records. Workspace provisioning rejects leads that are not qualified.
 
 ## 3. Provision a merchant workspace
 
