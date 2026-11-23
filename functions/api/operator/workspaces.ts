@@ -1,5 +1,5 @@
-import { json } from "../../_lib/shopify";
-import { clean, id, issueAccessToken, nowIso, operatorAuthorized, randomToken, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
+import { json, randomToken } from "../../_lib/shopify";
+import { clean, id, issueAccessToken, nowIso, operatorAuthorized, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
 import { createWorkspaceSubscriptionCheckout, scheduleWorkspaceSubscriptionCancellation } from "../../_lib/stripe";
 
 interface Context { request: Request; env: ThreePLEnv; }
