@@ -279,3 +279,19 @@ body{background:radial-gradient(ellipse at 72% 0%,rgba(111,83,48,.12),transparen
 @media(prefers-reduced-motion:reduce){
  .marketing-site *,.marketing-site *:before,.marketing-site *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Staggered entrance rhythm and fine-grain motion across public pages. */
+@media(prefers-reduced-motion:no-preference){
+ .marketing-site[data-motion-ready="true"] [data-reveal]{
+  transition-delay:calc(var(--reveal-index,0)*75ms);
+ }
+ .marketing-site .nh-product:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 0%,rgba(216,195,157,.035) 42%,transparent 58%);
+  transform:translateX(-110%);animation:ndus-sweep 12s ease-in-out infinite;
+ }
+ @keyframes ndus-sweep{0%,60%,100%{transform:translateX(-110%)}78%{transform:translateX(110%)}}
+ .marketing-site .nh-product{isolation:isolate}
+ .marketing-site .nh-product:before{z-index:1}
+ .marketing-site .nh-product:after{z-index:0}
+}
