@@ -102,9 +102,11 @@ export async function action({ request }: ActionFunctionArgs) {
     const planCode = String(body.planCode ?? "").trim().slice(0, 40);
     if (!planCode || body.confirmed !== true) return Response.json({ ok: false, error: "A plan code and explicit confirmation of the paid subscription are required." }, { status: 400 });
     const now = new Date();
+    const periodEndsAt = body.periodEndsAt ? new Date(String(body.periodEndsAt)) : null;
+    if (periodEndsAt && (Number.isNaN(periodEndsAt.getTime()) || periodEndsAt <= now)) return Response.json({ ok: false, error: "periodEndsAt must be a future date." }, { status: 400 });
     const updated = await prisma.threePLWorkspace.update({
       where: { id: workspaceId },
-      data: { status: "active", subscriptionStatus: "active", subscriptionStartedAt: now, subscriptionEndsAt: body.periodEndsAt ? new Date(String(body.periodEndsAt)) : null, planCode },
+      data: { status: "active", subscriptionStatus: "active", subscriptionStartedAt: now, subscriptionEndsAt: periodEndsAt, planCode },
       select: { id: true, status: true, subscriptionStatus: true, subscriptionStartedAt: true, planCode: true },
     });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
