@@ -10,6 +10,7 @@ export type ThreePLRateRule = Readonly<{
   rate: Money;
   effectiveFrom: string;
   effectiveTo?: string | null;
+  sourceRow?: number;
 }>;
 
 export type ThreePLInvoiceLine = Readonly<{
@@ -208,7 +209,7 @@ export function reconcileThreePLInvoices(input: Readonly<{
         severity: "warning",
         state: "needs_review",
         explanation: "More than one contract rule is effective for this charge code and date. A human must resolve the contract version before calculating a variance.",
-        evidenceReferences: [`invoice:${line.invoiceId}:${line.id}`, ...matchingRules.map(item => `contract-rule:${item.rule.id}`)],
+        evidenceReferences: [`invoice:${line.invoiceId}:${line.id}`, ...matchingRules.map(item => `contract-rule:${item.rule.id}:row:${item.rule.sourceRow ?? "unknown"}`)],
       });
       const result: ThreePLLineResult = {
         invoiceId: line.invoiceId, invoiceLineId: line.id, state: "needs_review",
@@ -219,7 +220,7 @@ export function reconcileThreePLInvoices(input: Readonly<{
     }
 
     const rule = matchingRules[0]!.rule;
-    const evidenceRefs = [`invoice:${line.invoiceId}:${line.id}`, `contract-rule:${rule.id}`];
+    const evidenceRefs = [`invoice:${line.invoiceId}:${line.id}`, `contract-rule:${rule.id}:row:${rule.sourceRow ?? "unknown"}`];
     if (rule.rate.currency !== line.amount.currency) {
       findings.push({
         ...base,
