@@ -1,6 +1,6 @@
 import { json } from "../../_lib/shopify";
 import { clean, id, issueAccessToken, nowIso, operatorAuthorized, randomToken, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
-import { createWorkspaceSubscriptionCheckout } from "../../_lib/stripe";
+import { createWorkspaceSubscriptionCheckout, scheduleWorkspaceSubscriptionCancellation } from "../../_lib/stripe";
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
@@ -96,27 +96,14 @@ export async function onRequestPost({request,env}:Context) {
     return json({ok:true,checkoutUrl:checkout.url,message:"Hosted Stripe checkout created. Share the checkout link privately with the merchant."});
   }
 
-  if(operation==="activate_subscription"){
-    const planCode=clean(body.planCode,40),confirmed=body.confirmed===true;
-    if(planCode!=="core_99"||!confirmed)return bad("Core pricing and explicit confirmation of the subscription are required.");
-    if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot be activated.",409);
-    if(workspace.status!=="trial"&&workspace.status!=="active")return bad("Complete onboarding and activate the seven-day trial before starting a subscription.",409);
-    const now=new Date(),periodEndsAt=new Date(String(body.periodEndsAt??""));
-    if(!Number.isFinite(periodEndsAt.getTime())||periodEndsAt<=now)return bad("A future subscription period end date is required.");
-    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET status='active',subscription_status='active',subscription_started_at=?,subscription_ends_at=?,plan_code=?,updated_at=? WHERE id=?")
-      .bind(now.toISOString(),periodEndsAt?.toISOString()??null,planCode,now.toISOString(),workspaceId).run();
-    await audit(env,workspaceId,"subscription_activated",{planCode,periodEndsAt:periodEndsAt?.toISOString()??null});
-    return json({ok:true,message:"Subscription state activated."});
-  }
-
-  if(operation==="cancel_subscription"){
-    const periodEndsAt=new Date(String(body.periodEndsAt??""));
-    if(!Number.isFinite(periodEndsAt.getTime())||periodEndsAt<=new Date())return bad("Provide a future subscription period end date.");
-    if(workspace.subscription_status!=="active")return bad("Only an active subscription can be cancelled.",409);
-    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_status='cancelled',subscription_ends_at=?,updated_at=? WHERE id=?")
-      .bind(periodEndsAt.toISOString(),nowIso(),workspaceId).run();
-    await audit(env,workspaceId,"subscription_cancelled",{periodEndsAt:periodEndsAt.toISOString()});
-    return json({ok:true,message:"Subscription cancellation scheduled for the recorded period end."});
+  if(operation==="schedule_subscription_cancellation"){
+    if(!env.STRIPE_SECRET_KEY)return bad("Subscription cancellation is unavailable until the encrypted Stripe secret is configured.",503);
+    if(workspace.subscription_status!=="active"||!workspace.stripe_subscription_id)return bad("No active Stripe subscription is attached to this workspace.",409);
+    const result=await scheduleWorkspaceSubscriptionCancellation({secret:env.STRIPE_SECRET_KEY,subscriptionId:workspace.stripe_subscription_id,idempotencyKey:"nodus-cancel-"+workspace.id+"-"+randomToken(12)});
+    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_ends_at=?,updated_at=? WHERE id=?")
+      .bind(result.periodEnd,nowIso(),workspaceId).run();
+    await audit(env,workspaceId,"subscription_cancellation_scheduled",{stripeSubscriptionId:result.id,periodEnd:result.periodEnd});
+    return json({ok:true,message:"Stripe cancellation is scheduled for the end of the paid period."});
   }
 
   if(operation==="suspend"||operation==="close"){
