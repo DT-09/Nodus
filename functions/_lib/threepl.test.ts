@@ -25,7 +25,7 @@ describe("NODUS D1 source validation",()=>{
     expect(()=>dateOnly("2026-02-30")).toThrow("Invalid calendar date");
     expect(quantity("1.250")).toBe("1.250");
     expect(()=>quantity("0")).toThrow("positive, finite decimals");
-    expect(()=>quantity("1.2345")).toThrow("positive decimals");
+    expect(()=>quantity("1.2345")).toThrow("positive, finite decimals");
   });
   it("keeps onboarding writable, expires trials and honours paid period ends",()=>{
     const base={id:"w",business_name:"Merchant",owner_name:"Owner",owner_email:"owner@example.test",shop_domain:null,status:"trial",plan_code:null,trial_activated_at:null,trial_ends_at:null,subscription_status:"none",subscription_started_at:null,subscription_ends_at:null};
