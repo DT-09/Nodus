@@ -1,103 +1,121 @@
 # NODUS
 
-**Shipping economics intelligence for Shopify merchants.**
+**Merchant-side 3PL billing and fulfilment-cost control.**
 
-NODUS is a focused shipping-economics workbench: reconcile order shipping revenue with carrier and 3PL invoice evidence, inspect unresolved charges, review carrier spend, replay historical shipping policies and export a traceable decision pack.
+NODUS compares third-party logistics (3PL) invoices with merchant-confirmed contract rates and available operational activity. It preserves source references, investigation history and provider outcomes in a persistent merchant workspace.
 
-## Current product implementation
+The product is platform-neutral. Shopify is not required. The initial onboarding path uses merchant-supplied CSV exports.
 
-Production site: https://nodus-hq.pages.dev
+## Commercial product
 
-- Marketing site, installable PWA shell and a Windows desktop WebView2 application source project.
-- Shopify OAuth authorization flow implemented as Cloudflare Pages Functions.
-- Per-store offline access token encryption using AES-GCM and a Cloudflare secret.
-- Hashed, expiring merchant sessions; browser session cookies are HttpOnly and Secure.
-- Read-only order synchronization through Shopify Admin GraphQL API version 2026-07.
-- Persistent carrier / 3PL CSV imports scoped by Shopify store.
-- Exact Shopify order-name or order-ID matching, with identical currency required.
-- Unmatched and currency-mismatched charge review.
-- Merchant workspace with order totals, imported cost evidence, and reconciliation summaries.
-- Signed Shopify webhook receiver for uninstall and privacy topics.
-- Browser-local CSV review tool with exact decimal arithmetic, exception register and downloadable CSV / JSON decision packs.
-- Device-local aggregate reporting history for up to 24 periods; raw source files are not persisted.
-- Free browser-local diagnostic, USD 149 one-time baseline audit request, and USD 99/month recurring Monthly Shipping Review request.
-- Print-ready monthly report export alongside the CSV register and JSON decision pack.
-- D1-backed lead capture, payment-state tracking and a token-protected private operator console.
-- Contact-first paid-audit request; the form records interest only. An authorized adult-operated seller must confirm scope, issue terms and invoice, and verify cleared payment before delivery.
-- D1 health endpoint.
+NODUS is designed for e-commerce brands that outsource warehousing, pick/pack and fulfilment to one or more 3PL providers.
 
-Shopify connection and sync are implemented in source but are not production-ready until Shopify Partner API credentials, Shopify app configuration, webhook registration, and end-to-end installation tests are completed. The production D1 schema is present. The Cloudflare token-encryption secret may be configured, but Shopify Partner API credentials and end-to-end installation tests have not been verified. Do not describe a Shopify installation as live until those checks pass.
+The recurring workflow:
 
-## Explicit product boundaries
+1. Register a 3PL provider and import its effective-dated contract rate card.
+2. Import each invoice as a separate CSV file.
+3. Import operational activity where the provider supplies stable record references.
+4. Reconcile invoice charges against the applicable contract rules.
+5. Investigate exceptions and preserve source evidence.
+6. Record provider responses and distinguish raised, promised, posted and verified outcomes.
+7. Generate period reports and carry unresolved cases into the next review.
 
-Current release boundaries:
-- The public workflow is CSV-based. The Shopify OAuth and read-only sync code is not a verified live merchant integration.
-- No scheduled background sync or carrier API / invoice polling.
-- No Shopify fulfillment or tracking ingestion in the current public workflow.
-- The Monthly Shipping Review is a human-delivered recurring service based on merchant-supplied exports each period; it is not continuous carrier monitoring or automated carrier polling.
-- No automated subscription checkout, Shopify Billing API, real-time carrier polling or background carrier invoice ingestion.
-- No automatic edits to orders, shipping rates, refunds, inventory, or customer records.
-- No general-purpose finance, marketing, CRM, inventory, or multi-platform operations.
-- No autonomous business execution.
-- Local period history is device-specific and stores aggregate metrics only; it is not a cloud workspace or automatic monitor.
+A calculated variance is a review signal. It is not proof of provider liability, a valid dispute, recoverable money or realized savings.
 
-The first Shopify integration requests read_orders only. The reconciliation engine does not access customer names, email addresses, shipping addresses, or payment details. Shopify's granted order-access window and API limits apply. A matched charge is evidence, not proof of complete cost coverage, profit, savings, or carrier recovery.
+## Current application
+
+Production marketing site: https://nodus-hq.pages.dev
+
+Private entry points:
+- Merchant workspace: `/portal`
+- Operator console: `/ops`
+- Trial request: `/buyer-evaluation#trial-request`
+
+Core implementation:
+- Merchant-specific D1 workspaces and tenant-scoped provider, contract, invoice, activity, exception, event, outcome and report records.
+- CSV intake for rate cards, one invoice per file, and operational activity.
+- Integer minor-unit money arithmetic with currency precision.
+- Effective-dated contract matching and explicit ambiguity handling.
+- Exact-reference activity matching; missing activity is not treated as zero.
+- Reconciliation run hashes and source-row references.
+- Persistent exception investigation and case events.
+- Outcome states that separate raised, promised, posted and verified adjustments.
+- Period reports with currency-separated totals and equal-length prior-period comparisons.
+- One-time merchant invitation links exchanged for expiring HttpOnly sessions.
+- Private operator session and workspace lifecycle controls.
+
+## CSV formats
+
+Rate card:
+- Required: `charge_code, unit, pricing, rate, currency, effective_from`
+- Optional: `effective_to`
+- `pricing` is `per_unit` or `fixed`.
+- Confirm every imported rate against the signed agreement before activating it.
+
+Invoice (one invoice per file):
+- Required: `invoice_number, invoice_date, charge_code, quantity, unit, amount, currency`
+- Optional: `external_line_id, description, service_date, period_start, period_end, activity_reference`
+- All lines in a file must use one invoice number, invoice date and currency.
+
+Operational activity:
+- Required: `record_id, reference, charge_code, quantity, unit`
+- Optional: `occurred_at`
+- Quantity comparisons require an exact reference, charge code and unit match.
+
+Uploads are CSV-only, limited to 5 MB per file and 20,000 data rows. PDF extraction, spreadsheet ingestion and direct provider APIs are not part of the current release.
 
 ## Cloudflare production configuration
 
-Cloudflare Pages project: nodus-hq  
+Cloudflare Pages project: `nodus-hq`  
 Production URL: https://nodus-hq.pages.dev  
-Production branch: main  
-Build command: npm run build  
-Build output: build/client
+Production branch: `main`  
+Build command: `npm run build`  
+Build output: `build/client`
 
-Cloudflare Pages is the canonical NODUS web deployment. The `functions/` directory contains Pages Functions. This repository has no separate Workers entrypoint; do not run `wrangler deploy` against the root React Router application. The separate Workers Build trigger is restricted to `workers/*`, `wrangler.jsonc` and `wrangler.toml` changes, and its preview builds are disabled; Cloudflare Pages handles application previews and production deployments.
+Required binding:
+- `NODUS_DB`: Cloudflare D1 database.
 
-Required Pages bindings:
-- NODUS_DB: the existing Cloudflare D1 database nodus-leads.
+Required secret:
+- `NODUS_OPERATOR_SECRET`: high-entropy secret of at least 32 characters. Never commit it to Git.
 
-Required production environment variables / secrets:
-- SHOPIFY_API_KEY: Shopify Partner app client ID.
-- SHOPIFY_API_SECRET: Shopify Partner app client secret (secret).
-- SHOPIFY_APP_URL: canonical HTTPS application origin, https://nodus-hq.pages.dev.
-- TOKEN_ENCRYPTION_KEY: high-entropy random secret of at least 32 characters (secret).
-- NODUS_ADMIN_TOKEN: operator token of at least 32 characters (secret).
-- No checkout URL is configured. The public form is an enquiry endpoint; an authorized adult seller must handle any invoice and approved payment route outside the form.
+The 3PL workflow does not require Shopify Partner credentials, Shopify OAuth, Shopify Admin API access or direct 3PL API credentials.
 
-Apply migrations to a fresh D1 database in lexical order:
+## Database migrations
+
+Apply in lexical order only after inspecting the actual target database:
 
 ```sh
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0000_commercial_base.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0001_shopify.sql
 npx wrangler d1 execute nodus-leads --remote --file=migrations/0002_commercial_intake.sql
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0003_threepl_control.sql
+npx wrangler d1 execute nodus-leads --remote --file=migrations/0004_one_time_invitation_sessions.sql
 ```
 
-For an existing database, inspect `sqlite_master` and `PRAGMA table_info` before applying migrations. Migration `0002_commercial_intake.sql` uses `ALTER TABLE` and is not safe to rerun after its columns exist. Do not infer schema state from the Pages project database table-count metadata alone; verify it with SQL.
+For an existing database, inspect `sqlite_master` and `PRAGMA table_info` first. The migrations contain `ALTER TABLE` statements and must not be blindly rerun. Verify every migration against a non-production database before applying it to production.
 
-Shopify Partner app configuration:
-- App URL: https://nodus-hq.pages.dev/workspace
-- Redirect URL: https://nodus-hq.pages.dev/api/shopify/callback
-- Scopes: read_orders
-- Webhook endpoint: https://nodus-hq.pages.dev/api/shopify/webhooks
-- API version: 2026-07
+## Commercial status and limits
 
-The Shopify app TOML is a template. Replace client_id with the actual Partner Dashboard value. The client secret and token encryption key must never be committed to Git.
+- The seven-day trial request is a qualification request; it does not automatically activate a trial.
+- Operator provisioning and access-token issuance are implemented. Automatic customer invitation email delivery is not.
+- Subscription state can be recorded by the operator. Automated recurring payment collection, checkout, invoicing, tax handling and failed-payment processing are not implemented.
+- The USD 99/month price is a hypothesis, not validated willingness to pay.
+- No paying merchant, completed paid pilot, renewal, customer result or revenue is established by this repository.
+- No SLA or inventory reconciliation is offered.
+- NODUS does not automatically contact providers, file disputes, approve invoices, make payments or modify merchant platform records.
+- Original uploaded files are processed in memory; normalized records, file hashes and source references are stored.
 
-## Local development and quality checks
+## Development
 
 Requirements: Node.js 22 and npm.
 
 ```sh
 npm ci
 npm run dev
+npm run verify:deployment
 npm run typecheck
 npm test
 npm run build
-npm run verify:deployment
 ```
 
-## Commercial and governance boundaries
-
-Commercial offer: free browser-local diagnostic; USD 149 one-time baseline Shipping Cost Audit; and USD 99/month recurring Monthly Shipping Review. The monthly service covers one store, up to 2,000 orders and one carrier/3PL cost export per period. Each period receives a human-reviewed reconciliation, coverage assessment, exception register, carrier spend review, prior-period comparison where comparable evidence exists, and a written decision brief. The monthly service is analyst-delivered from new exports supplied each period; it is not automated carrier monitoring, real-time alerting or automatic carrier polling. Prices are pilot hypotheses, not proven willingness to pay. The public form records service requests only. Do not publish customer logos, testimonials, customer counts or savings results without evidence and permission.
-
-A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
+A successful build is not proof of a production-ready service or a commercial business. Production acceptance also requires migration verification, tenant-isolation testing, data lifecycle procedures, operational monitoring, a legitimate payment process and an authorized merchant pilot.
