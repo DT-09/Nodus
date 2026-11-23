@@ -55,7 +55,7 @@ export function operatorSecretMatches(secret: string, env: ThreePLEnv) {
 export async function issueAccessToken(workspaceId: string, label: string, env: ThreePLEnv) {
   const token = randomToken(32);
   const tokenHash = await sha256(token);
-  const expiresAt = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+  const expiresAt = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
   await env.NODUS_DB.prepare("INSERT INTO threepl_access_tokens(id,workspace_id,token_hash,label,expires_at,created_at) VALUES(?,?,?,?,?,?)")
     .bind(id(), workspaceId, tokenHash, clean(label, 80) || "Merchant access", expiresAt, Math.floor(Date.now() / 1000)).run();
   return { token, expiresAt };
@@ -70,7 +70,7 @@ export async function getWorkspace(request: Request, env: ThreePLEnv): Promise<T
   const tokenHash = await sha256(token);
   const now = Math.floor(Date.now() / 1000);
   const access = await env.NODUS_DB.prepare(
-    "SELECT t.id AS token_id,w.* FROM threepl_access_tokens t JOIN threepl_workspaces w ON w.id=t.workspace_id WHERE t.token_hash=? AND t.revoked_at IS NULL AND t.expires_at>?"
+    "SELECT t.id AS token_id,w.* FROM threepl_access_tokens t JOIN threepl_workspaces w ON w.id=t.workspace_id WHERE t.session_hash=? AND t.revoked_at IS NULL AND t.session_expires_at>?"
   ).bind(tokenHash, now).first<ThreePLWorkspaceRow & { token_id: string }>();
   if (!access || ["suspended", "closed"].includes(access.status)) return null;
   await env.NODUS_DB.prepare("UPDATE threepl_access_tokens SET last_used_at=? WHERE id=?").bind(now, access.token_id).run();
