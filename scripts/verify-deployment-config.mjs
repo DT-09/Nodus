@@ -48,7 +48,7 @@ assert.match(leads,/body\.consent!==true/);
 assert.match(leads,/CF-Connecting-IP/);
 assert.match(operatorSession,/operatorSecretMatches/);
 assert.match(operatorSession,/operatorSessionCookie/);
-assert.match(operatorSession,/HttpOnly/);
+assert.match(threeplHelper,/HttpOnly/);
 assert.match(operatorWorkspaces,/status!==\"qualified\"/);
 assert.match(operatorWorkspaces,/trial_activated_at/);
 assert.match(operatorWorkspaces,/7\*24\*60\*60\*1000/);
