@@ -99,7 +99,7 @@ For an existing database, inspect `sqlite_master` and `PRAGMA table_info` first.
 
 - The seven-day trial request is a qualification request; it does not automatically activate a trial.
 - Operator provisioning and access-token issuance are implemented. Automatic customer invitation email delivery is not.
-- Stripe-hosted USD 99/month subscription checkout is implemented for operator-issued links. Signed webhooks activate access only after a paid invoice, track payment failures, and schedule cancellation at period end.
+- Stripe-hosted USD 99/month subscription checkout is implemented for operator-issued links. Signed paid checkout or invoice webhooks activate access; payment failures change access state, and cancellation is scheduled at period end.
 - Live payment processing remains disabled until an authorized adult seller configures encrypted `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`, registers the `/api/stripe/webhook` endpoint, and tests the full lifecycle in Stripe test mode.
 - Tax handling, seller identity, refunds/disputes and customer billing support still require adult-owned business operations.
 - The USD 99/month price is a hypothesis, not validated willingness to pay.
