@@ -477,3 +477,21 @@ model ThreePLAccessToken {
 
   @@index([workspaceId, revokedAt, expiresAt])
 }
+model ThreePLLead {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  shopDomain     String
+  monthlyOrders  String
+  fulfilmentSetup String
+  objective      String
+  requestedOffer String   @default("seven_day_trial")
+  consentAt      DateTime
+  status         String   @default("new")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email, createdAt])
+  @@index([shopDomain, createdAt])
+}
