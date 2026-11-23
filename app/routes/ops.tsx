@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => [
 ];
 
 type Lead = { id: string; businessName: string; name: string; email: string; shopDomain: string; monthlyOrders: string; fulfilmentSetup: string; objective: string; status: string; createdAt: string };
-type AccessToken = { id: string; label: string; expiresAt: string; revokedAt: string | null; lastUsedAt: string | null; createdAt: string };
+type AccessToken = { id: string; label: string; expiresAt: string; usedAt: string | null; revokedAt: string | null; lastUsedAt: string | null; createdAt: string };
 type Workspace = { id: string; businessName: string; ownerName: string; ownerEmail: string; shopDomain: string | null; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionStartedAt: string | null; subscriptionEndsAt: string | null; createdAt: string; accessTokens: AccessToken[] };
 type ConsoleData = { ok: boolean; leads: Lead[]; workspaces: Workspace[] };
 
@@ -137,7 +137,7 @@ export default function OpsConsole() {
           <button className="ops-small ops-secondary" disabled={busy || workspace.status === "closed"} onClick={() => void runOperation({ operation: "rotate_access", workspaceId: workspace.id, label: "Rotated merchant invitation" })}>ROTATE ACCESS TOKEN</button>
           <button className="ops-small ops-danger" disabled={busy || workspace.status === "closed"} onClick={() => void runOperation({ operation: "suspend", workspaceId: workspace.id })}>SUSPEND</button>
         </div>
-        <details className="ops-tokens"><summary>Access tokens ({workspace.accessTokens.length})</summary>{workspace.accessTokens.map(token=><div className="ops-token-row" key={token.id}><span>{token.label} · expires {stamp(token.expiresAt)} · {token.revokedAt ? "revoked" : "active"}</span>{!token.revokedAt?<button className="ops-small ops-danger" disabled={busy} onClick={()=>void runOperation({operation:"revoke_access",workspaceId:workspace.id,tokenId:token.id})}>REVOKE</button>:null}</div>)}</details>
+        <details className="ops-tokens"><summary>Access tokens ({workspace.accessTokens.length})</summary>{workspace.accessTokens.map(token=><div className="ops-token-row" key={token.id}><span>{token.label} · expires {stamp(token.expiresAt)} · {token.usedAt ? "redeemed" : "unused"} · {token.revokedAt ? "revoked" : "active"}</span>{!token.revokedAt?<button className="ops-small ops-danger" disabled={busy} onClick={()=>void runOperation({operation:"revoke_access",workspaceId:workspace.id,tokenId:token.id})}>REVOKE</button>:null}</div>)}</details>
       </article>)}{!data?.workspaces.length?<p className="ops-empty">No merchant workspaces have been provisioned.</p>:null}</div>
     </section>
     <footer className="ops-footer">NODUS / PRIVATE OPERATIONS · Do not share operator credentials or merchant invitation tokens.</footer>
