@@ -1146,3 +1146,75 @@
  .marketing-site .site-brand-caption,.marketing-site .footer-wordmark-caption{font-size:6px!important}
  .marketing-site .site-brand{gap:7px}
 }
+
+
+/* NODUS brand and navigation lockup */
+.marketing-site .site-header{
+  background:color-mix(in srgb,var(--ink-2) 50%,transparent);
+  border:0;
+  border-radius:22px;
+  box-shadow:0 10px 34px rgba(0,0,0,.12);
+  backdrop-filter:blur(22px) saturate(145%);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+}
+.marketing-site .site-brand{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+}
+.marketing-site .site-brand .nodus-logo{
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+  object-fit:contain;
+}
+.marketing-site .site-brand-copy,
+.marketing-site .footer-wordmark-copy{
+  display:grid;
+  gap:4px;
+}
+.marketing-site .site-brand-word,
+.marketing-site .footer-wordmark-label{
+  font-family:"Syncopate",sans-serif;
+  font-size:20px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:.07em;
+}
+.marketing-site .site-brand-caption,
+.marketing-site .footer-wordmark-caption{
+  font:7px/1.35 ui-monospace,monospace;
+  letter-spacing:.09em;
+  color:var(--muted);
+}
+.marketing-site .footer-wordmark{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-family:"Syncopate",sans-serif;
+  font-weight:700;
+}
+.marketing-site .footer-wordmark .nodus-logo{
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+  object-fit:contain;
+}
+.marketing-site .footer-wordmark>sup{
+  font:8px ui-monospace,monospace;
+}
+.marketing-site .menu-trigger{
+  border:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.045);
+}
+@media(max-width:760px){
+  .marketing-site .site-brand .nodus-logo,
+  .marketing-site .footer-wordmark .nodus-logo{width:17px;height:17px;flex-basis:17px}
+  .marketing-site .site-brand-word,
+  .marketing-site .footer-wordmark-label{font-size:17px!important}
+  .marketing-site .site-brand-caption,
+  .marketing-site .footer-wordmark-caption{font-size:6px!important;letter-spacing:.045em!important}
+}
