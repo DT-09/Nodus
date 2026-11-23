@@ -62,14 +62,7 @@ export default function ThreePLPortal() {
     finally { setBusy(false); }
   }
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("invite");
-    if (token) {
-      window.history.replaceState({}, "", window.location.pathname);
-      void exchange(token);
-    } else { void load(); }
-  }, []);
+  useEffect(() => { void load(); }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>, successMessage?: string) {
     event.preventDefault();
@@ -114,7 +107,7 @@ export default function ThreePLPortal() {
     </form>
     {message ? <p role="status" className="tp-success">{message}</p> : null}
     {error ? <p role="alert" className="tp-error">{error}</p> : null}
-    <p className="tp-footnote">Do not share this token. NODUS will never ask for your Shopify password or payment credentials here.</p>
+    <p className="tp-footnote">Do not share this token. NODUS will never ask for your Shopify password or payment credentials here. Do not upload customer names, emails, street addresses or payment data; use order IDs and provider references only.</p>
   </main>;
 
   const canWrite = data.canWrite;
@@ -127,10 +120,10 @@ export default function ThreePLPortal() {
     <section className="tp-metrics">
       <article><span>PROVIDERS</span><strong>{data.providers.length}</strong></article>
       <article><span>INVOICES</span><strong>{data.invoices.length}</strong></article>
-      <article><span>OPEN EXCEPTIONS</span><strong>{data.exceptions.filter(x => !["verified_closed","rejected","ignored"].includes(x.status)).length}</strong></article>
+      <article><span>OPEN EXCEPTIONS</span><strong>{data.exceptions.filter(x => !["verified_closed","rejected","ignored","superseded","not_reproduced"].includes(x.status)).length}</strong></article>
       <article><span>VERIFIED OUTCOMES</span><strong>{data.outcomes.filter(x => x.status === "verified").length}</strong></article>
     </section>
-    {data.workspace.status === "trial" || data.workspace.status === "trial_expired" || data.workspace.status === "subscription_expired" ? <section className="tp-trial"><div><span>SEVEN-DAY TRIAL</span><strong>{data.workspace.status === "trial_expired" ? "Trial period ended" : data.workspace.status === "subscription_expired" ? "Subscription period ended" : "Trial active"}</strong></div><p>{data.workspace.trialEndsAt ? "Trial end: " + new Date(data.workspace.trialEndsAt).toLocaleString() : data.workspace.subscriptionEndsAt ? "Subscription access ended: " + new Date(data.workspace.subscriptionEndsAt).toLocaleString() : "The trial period has not been activated."} {data.workspace.subscriptionStatus === "active" ? "Subscription active." : data.workspace.subscriptionStatus === "cancelled" && data.workspace.subscriptionEndsAt && new Date(data.workspace.subscriptionEndsAt) > new Date() ? "Subscription remains active until its recorded period end." : "Your workspace is read-only until access is reactivated."}</p></section> : null}
+    {data.workspace.status === "trial" || data.workspace.status === "trial_expired" || data.workspace.status === "subscription_expired" ? <section className="tp-trial"><div><span>SEVEN-DAY TRIAL</span><strong>{data.workspace.status === "trial_expired" ? "Trial period ended" : data.workspace.status === "subscription_expired" ? "Subscription period ended" : "Trial active"}</strong></div><p>{data.workspace.status === "subscription_expired" && data.workspace.subscriptionEndsAt ? "Subscription access ended: " + new Date(data.workspace.subscriptionEndsAt).toLocaleString() : data.workspace.trialEndsAt ? "Trial end: " + new Date(data.workspace.trialEndsAt).toLocaleString() : "The trial period has not been activated."} {data.workspace.subscriptionStatus === "active" ? "Subscription active." : data.workspace.subscriptionStatus === "cancelled" && data.workspace.subscriptionEndsAt && new Date(data.workspace.subscriptionEndsAt) > new Date() ? "Subscription remains active until its recorded period end." : "Your workspace is read-only until access is reactivated."}</p></section> : null}
     {!canWrite ? <section className="tp-warning">This workspace is read-only. NODUS can still display stored records and reports, but new imports and processing are paused until an active trial or subscription is in place.</section> : null}
 
     <section className="tp-section">
