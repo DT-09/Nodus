@@ -160,7 +160,10 @@ export function dateOnly(raw: string) {
 }
 
 export function quantity(raw: string) {
-  if (!/^\d+(\.\d{1,3})?$/.test(raw) || Number(raw) <= 0) throw new Error("Quantities must be positive decimals with at most three places.");
+  const value = Number(raw);
+  if (raw.length > 24 || !/^\d+(\.\d{1,3})?$/.test(raw) || !Number.isFinite(value) || value <= 0 || value > 1_000_000_000_000) {
+    throw new Error("Quantities must be positive, finite decimals with at most three places.");
+  }
   return raw;
 }
 
