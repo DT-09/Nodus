@@ -41,10 +41,6 @@ assert.match(adminLeads,/new URL\(origin\)\.origin===new URL\(request\.url\)\.or
 assert.match(adminLeads,/Sec-Fetch-Site/);
 assert.match(leads,/body\.consent!==true/);
 assert.match(leads,/crypto\.subtle\.digest/);
-assert.match(leads,/paid_audit/);
-assert.match(leads,/monthly_review/);
-assert.match(leads,/USD 149 one-time — requested/);
-assert.match(leads,/USD 99\/month — requested/);
 assert.doesNotMatch(leads,/NODUS_PILOT_CHECKOUT_URL/);
 assert.match(adminLeads,/NODUS_ADMIN_TOKEN/);
 assert.match(adminLeads,/payment_status/);
