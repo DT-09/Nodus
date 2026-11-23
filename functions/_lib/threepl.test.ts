@@ -1,5 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { canWrite, dateOnly, moneyMinor, parseCsv, quantity } from "./threepl";
+import { canWrite, dateOnly, moneyMinor, parseCsv, quantity, sameOrigin } from "./threepl";
+
+describe("NODUS request origin protection",()=>{
+  it("accepts an exact same-origin Origin header",()=>{
+    expect(sameOrigin(new Request("https://nodus.example/api", {headers:{Origin:"https://nodus.example"}}))).toBe(true);
+  });
+  it("rejects cross-origin, malformed and unverifiable requests",()=>{
+    expect(sameOrigin(new Request("https://nodus.example/api", {headers:{Origin:"https://attacker.example"}}))).toBe(false);
+    expect(sameOrigin(new Request("https://nodus.example/api", {headers:{Origin:"not a url"}}))).toBe(false);
+    expect(sameOrigin(new Request("https://nodus.example/api"))).toBe(false);
+  });
+  it("uses same-origin Fetch Metadata only when Origin is absent",()=>{
+    expect(sameOrigin(new Request("https://nodus.example/api", {headers:{"Sec-Fetch-Site":"same-origin"}}))).toBe(true);
+    expect(sameOrigin(new Request("https://nodus.example/api", {headers:{"Sec-Fetch-Site":"cross-site"}}))).toBe(false);
+  });
+});
 
 describe("NODUS D1 source validation",()=>{
   it("parses quoted commas and escaped quotes without losing source columns",()=>{
