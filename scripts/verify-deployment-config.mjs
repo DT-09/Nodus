@@ -64,6 +64,8 @@ assert.ok(ops.includes("CREATE $99 / MONTH STRIPE CHECKOUT"));
 assert.ok(ops.includes("SCHEDULE CANCELLATION AT PERIOD END"));
 assert.match(stripeMigration,/stripe_webhook_events/);
 assert.match(stripeMigration,/stripe_subscription_id/);
+assert.match(stripeMigration,/stripe_checkout_url/);
+assert.match(stripeMigration,/subscription_cancel_at_period_end/);
 assert.match(stripeLib,/createWorkspaceSubscriptionCheckout/);
 assert.match(stripeLib,/scheduleWorkspaceSubscriptionCancellation/);
 assert.match(stripeWebhook,/verifyStripeSignature/);
