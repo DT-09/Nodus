@@ -12,17 +12,13 @@ The Cloudflare Pages project must have:
 
 Do not commit the operator secret or put it in browser code. Configure production and preview environments separately. Shopify OAuth credentials are not required for this initial CSV-based 3PL workflow.
 
-### Apply the D1 migration
+### D1 schema state
 
-Apply `migrations/0003_threepl_control.sql` to the same D1 database bound as `NODUS_DB`:
+`migrations/0003_threepl_control.sql` has been applied to the remote D1 database bound as `NODUS_DB`. A pre-migration D1 export was created, the new tables and `merchant_leads.business_name` were verified, and the applied migration was recorded in `nodus_schema_migrations`.
 
-```bash
-npx wrangler d1 migrations apply <D1_DATABASE_NAME> --remote
-```
+The existing database has no Wrangler `d1_migrations` ledger for migrations 0000–0002. Do not run `wrangler d1 migrations apply` against this database: it would try to replay the original schema. Future migrations must be applied deliberately through the Cloudflare D1 query API and recorded in `nodus_schema_migrations`, or the project must first adopt a verified baseline migration ledger.
 
-Use the actual database name from the Cloudflare account. Confirm that migrations 0000–0003 have been applied before using the new endpoints. Check `GET /api/threepl/health`; it returns `ready` only when the D1 tables and operator secret are available. The Prisma schema is not the 3PL runtime database; 3PL records live in D1.
-
-The Cloudflare Pages branch preview is not proof that the remote D1 migration or environment secrets have been configured.
+Check `GET /api/threepl/health`; it returns `ready` only when the D1 tables and operator secret are available. The Prisma schema is not the 3PL runtime database; 3PL records live in D1.
 
 ## 2. Review trial requests
 
