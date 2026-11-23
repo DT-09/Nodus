@@ -18,7 +18,7 @@ export const links:LinksFunction=()=>[
   {rel:"manifest",href:"/manifest.webmanifest"},
 ];
 export default function Root(){
-  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{});},[]);
+  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.getRegistrations().then(registrations=>Promise.all(registrations.map(registration=>registration.unregister()))).catch(()=>{});if("caches" in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("nodus-shell-")).map(key=>caches.delete(key)))).catch(()=>{});},[]);
   return <html lang="en">
     <head>
       <meta charSet="utf-8"/>
