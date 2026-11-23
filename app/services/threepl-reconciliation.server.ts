@@ -58,7 +58,7 @@ export async function reconcileStoredThreePLInvoice(workspaceId: string, invoice
     id: line.id,
     invoiceId: invoice.id,
     chargeCode: line.chargeCode,
-    billedAt: day(invoice.invoiceDate),
+    billedAt: day(line.serviceDate ?? invoice.invoiceDate),
     quantity: line.quantity.toString(),
     unit: line.unit,
     amount: { minor: line.amountMinor, currency: line.currency },
