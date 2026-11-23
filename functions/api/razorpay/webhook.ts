@@ -32,7 +32,7 @@ export async function onRequestPost({ request, env }: Context) {
   const workspaceId = typeof sub?.notes?.workspace_id === "string" ? sub.notes.workspace_id : "";
   const now = new Date().toISOString();
   const statements = [env.NODUS_DB.prepare("INSERT OR IGNORE INTO razorpay_webhook_events(event_id,event_type,received_at) VALUES(?,?,?)").bind(eventId,event.event,now)];
-  if (subscriptionId && workspaceId) {
+  if (sub && subscriptionId && workspaceId) {
     if (event.event === "subscription.charged") {
       statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET payment_provider='razorpay',razorpay_subscription_id=?,subscription_status='active',subscription_started_at=COALESCE(subscription_started_at,?),subscription_ends_at=COALESCE(?,subscription_ends_at),subscription_cancel_at_period_end=0,plan_code='core_99',status=CASE WHEN status NOT IN ('closed','suspended') THEN 'active' ELSE status END,razorpay_checkout_url=NULL,razorpay_checkout_expires_at=NULL,updated_at=? WHERE id=?")
         .bind(subscriptionId,now,iso(sub.current_end),now,workspaceId));
