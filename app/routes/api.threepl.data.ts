@@ -39,11 +39,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   ]);
   const now = new Date();
   const trialExpired = auth.workspace.status === "trial" && Boolean(auth.workspace.trialEndsAt && auth.workspace.trialEndsAt <= now) && auth.workspace.subscriptionStatus !== "active";
+  const subscriptionExpired = auth.workspace.subscriptionStatus === "cancelled" && Boolean(auth.workspace.subscriptionEndsAt && auth.workspace.subscriptionEndsAt <= now);
   return Response.json({
     workspace: {
-      id: auth.workspace.id, businessName: auth.workspace.businessName, status: trialExpired ? "trial_expired" : auth.workspace.status,
+      id: auth.workspace.id, businessName: auth.workspace.businessName, status: trialExpired ? "trial_expired" : subscriptionExpired ? "subscription_expired" : auth.workspace.status,
       planCode: auth.workspace.planCode, trialActivatedAt: auth.workspace.trialActivatedAt?.toISOString() ?? null,
-      trialEndsAt: auth.workspace.trialEndsAt?.toISOString() ?? null, subscriptionStatus: auth.workspace.subscriptionStatus,
+      trialEndsAt: auth.workspace.trialEndsAt?.toISOString() ?? null, subscriptionStatus: auth.workspace.subscriptionStatus, subscriptionEndsAt: auth.workspace.subscriptionEndsAt?.toISOString() ?? null,
     },
     canWrite: canWriteThreePLWorkspace(auth.workspace) && !trialExpired,
     providers,
