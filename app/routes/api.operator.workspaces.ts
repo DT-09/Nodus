@@ -12,12 +12,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!operatorAuthorized(request)) return Response.json({ ok: false, error: "Unauthorized." }, { status: 401 });
   const [leads, workspaces] = await Promise.all([
     prisma.threePLLead.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
-    prisma.threePLWorkspace.findMany({ orderBy: { createdAt: "desc" }, take: 100, select: { id: true, businessName: true, ownerName: true, ownerEmail: true, shopDomain: true, status: true, planCode: true, trialActivatedAt: true, trialEndsAt: true, subscriptionStatus: true, subscriptionEndsAt: true, createdAt: true } }),
+    prisma.threePLWorkspace.findMany({ orderBy: { createdAt: "desc" }, take: 100, select: { id: true, businessName: true, ownerName: true, ownerEmail: true, shopDomain: true, status: true, planCode: true, trialActivatedAt: true, trialEndsAt: true, subscriptionStatus: true, subscriptionStartedAt: true, subscriptionEndsAt: true, createdAt: true, accessTokens: { select: { id: true, label: true, expiresAt: true, revokedAt: true, lastUsedAt: true, createdAt: true }, orderBy: { createdAt: "desc" } } } }),
   ]);
   return Response.json({
     ok: true,
     leads: leads.map(({ id, businessName, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt }) => ({ id, businessName, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt: createdAt.toISOString() })),
-    workspaces: workspaces.map(item => ({ ...item, trialActivatedAt: item.trialActivatedAt?.toISOString() ?? null, trialEndsAt: item.trialEndsAt?.toISOString() ?? null, createdAt: item.createdAt.toISOString() })),
+    workspaces: workspaces.map(item => ({ ...item, trialActivatedAt: item.trialActivatedAt?.toISOString() ?? null, trialEndsAt: item.trialEndsAt?.toISOString() ?? null, subscriptionStartedAt: item.subscriptionStartedAt?.toISOString() ?? null, subscriptionEndsAt: item.subscriptionEndsAt?.toISOString() ?? null, createdAt: item.createdAt.toISOString(), accessTokens: item.accessTokens.map(token => ({ ...token, expiresAt: token.expiresAt.toISOString(), revokedAt: token.revokedAt?.toISOString() ?? null, lastUsedAt: token.lastUsedAt?.toISOString() ?? null, createdAt: token.createdAt.toISOString() })) })),
   }, { headers: { "Cache-Control": "no-store" } });
 }
 
