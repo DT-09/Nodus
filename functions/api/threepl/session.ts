@@ -13,7 +13,7 @@ export async function onRequestPost({request,env}:Context){
  if(!access||["suspended","closed"].includes(access.status))return json({ok:false,error:"The access link is invalid or expired."},401);
  const sessionToken=randomToken(32),sessionHash=await sha256(sessionToken),sessionExpiresAt=now+7*24*60*60;
  const consumed=await env.NODUS_DB.prepare("UPDATE threepl_access_tokens SET used_at=?,session_hash=?,session_expires_at=?,last_used_at=? WHERE id=? AND used_at IS NULL AND revoked_at IS NULL")
-  .bind(now,sessionHash,sessionExpiresAt,now,access.token_id).run();
+  .bind(now,sessionHash,sessionExpiresAt,now,access.token_id).run() as {meta?:{changes?:number}};
  if(consumed.meta?.changes!==1)return json({ok:false,error:"The access link has already been used or revoked."},401);
  return new Response(JSON.stringify({ok:true,businessName:access.business_name}),{status:200,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","Referrer-Policy":"no-referrer","Set-Cookie":merchantSessionCookie(sessionToken)}});
 }
