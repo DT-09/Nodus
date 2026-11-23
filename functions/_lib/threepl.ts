@@ -81,7 +81,7 @@ export async function getWorkspace(request: Request, env: ThreePLEnv): Promise<T
 export function canWrite(workspace: ThreePLWorkspaceRow) {
   const now = Date.now();
   if (workspace.status === "onboarding") return true;
-  if (workspace.subscription_status === "active") return true;
+  if (workspace.subscription_status === "active" && (!workspace.subscription_ends_at || Date.parse(workspace.subscription_ends_at) > now)) return true;
   if (workspace.subscription_status === "cancelled" && workspace.subscription_ends_at && Date.parse(workspace.subscription_ends_at) > now) return true;
   return workspace.status === "trial" && Boolean(workspace.trial_ends_at && Date.parse(workspace.trial_ends_at) > now);
 }
