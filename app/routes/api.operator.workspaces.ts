@@ -59,15 +59,15 @@ export async function action({ request }: ActionFunctionArgs) {
   if (operation === "create_workspace_from_lead") {
     const leadId = String(body.leadId ?? "").trim();
     const lead = await prisma.threePLLead.findUnique({ where: { id: leadId } });
-    if (!lead || lead.status === "converted" || lead.status === "rejected") return Response.json({ ok: false, error: "Lead is unavailable for workspace creation." }, { status: 409 });
+    if (!lead || lead.status !== "qualified") return Response.json({ ok: false, error: "Qualify the lead before provisioning a workspace." }, { status: 409 });
     const workspace = await prisma.threePLWorkspace.create({
       data: { businessName: lead.businessName, ownerName: lead.name, ownerEmail: lead.email, shopDomain: lead.shopDomain, status: "onboarding" },
       select: { id: true, businessName: true, ownerEmail: true, status: true },
     });
     try {
       const issued = await issueThreePLAccessToken(workspace.id, "Trial workspace invitation");
-      await prisma.threePLLead.update({ where: { id: lead.id }, data: { status: "converted" } });
       await logWorkspaceEvent(workspace.id, "workspace_created_from_lead", { leadId: lead.id, invitationIssued: true });
+      await prisma.threePLLead.update({ where: { id: lead.id }, data: { status: "converted" } });
       return Response.json({ ok: true, workspace, inviteToken: issued.token, tokenExpiresAt: issued.expiresAt.toISOString() }, { status: 201, headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
     } catch (error) {
       await prisma.threePLWorkspace.delete({ where: { id: workspace.id } });
