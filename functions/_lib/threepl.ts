@@ -45,7 +45,7 @@ export const clearOperatorCookie = "__Host-nodus_ops_session=; Path=/; HttpOnly;
 export async function operatorAuthorized(request: Request, env: ThreePLEnv) {
   const secret = env.NODUS_OPERATOR_SECRET || "";
   if (secret.length < 32) return false;
-  const bearer = (request.headers.get("Authorization") || "").replace(/^Bearer\\s+/i, "");
+  const bearer = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
   if (bearer && constantTimeEqual(secret, bearer)) return true;
   const raw = getCookie(request, "__Host-nodus_ops_session");
   if (!raw) return false;
@@ -107,7 +107,7 @@ export async function logCaseEvent(env: ThreePLEnv, workspaceId: string, excepti
 
 export function parseCsv(source: string, maxBytes = 5 * 1024 * 1024, maxRows = 20000): CsvData {
   if (new TextEncoder().encode(source).byteLength > maxBytes) throw new Error("CSV files are limited to 5 MB.");
-  const text = source.replace(/^\\uFEFF/, "");
+  const text = source.replace(/^\uFEFF/, "");
   const rows: string[][] = [];
   let row: string[] = [], field = "", quoted = false, closed = false;
   const pushField = () => { row.push(field.trim()); field = ""; closed = false; };
@@ -125,13 +125,13 @@ export function parseCsv(source: string, maxBytes = 5 * 1024 * 1024, maxRows = 2
       else field += ch;
     } else if (closed) {
       if (ch === ",") pushField();
-      else if (ch === "\\n" || ch === "\\r") { if (ch === "\\r" && text[i + 1] === "\\n") i++; pushRow(); }
-      else if (ch !== " " && ch !== "\\t") throw new Error("Unexpected characters after a quoted CSV field.");
+      else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; pushRow(); }
+      else if (ch !== " " && ch !== "\t") throw new Error("Unexpected characters after a quoted CSV field.");
     } else if (ch === '"') {
       if (field.trim()) throw new Error("Quote inside an unquoted CSV field.");
       field = ""; quoted = true;
     } else if (ch === ",") pushField();
-    else if (ch === "\\n" || ch === "\\r") { if (ch === "\\r" && text[i + 1] === "\\n") i++; pushRow(); }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; pushRow(); }
     else field += ch;
   }
   if (quoted) throw new Error("CSV contains an unterminated quoted field.");
@@ -153,14 +153,14 @@ export function csvValue(row: string[], headers: string[], key: string, required
 }
 
 export function dateOnly(raw: string) {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(raw)) throw new Error("Dates must use YYYY-MM-DD.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) throw new Error("Dates must use YYYY-MM-DD.");
   const value = new Date(raw + "T00:00:00.000Z");
   if (Number.isNaN(value.getTime()) || value.toISOString().slice(0, 10) !== raw) throw new Error("Invalid calendar date: " + raw);
   return raw;
 }
 
 export function quantity(raw: string) {
-  if (!/^\\d+(\\.\\d{1,3})?$/.test(raw) || Number(raw) <= 0) throw new Error("Quantities must be positive decimals with at most three places.");
+  if (!/^\d+(\.\d{1,3})?$/.test(raw) || Number(raw) <= 0) throw new Error("Quantities must be positive decimals with at most three places.");
   return raw;
 }
 
@@ -173,7 +173,7 @@ export function moneyMinor(raw: string, currencyRaw: string, allowNegative = fal
   const precision = zeroDecimal.has(currency) ? 0 : threeDecimal.has(currency) ? 3 : 2;
   const negative = allowNegative && raw.startsWith("-");
   const numeric = negative ? raw.slice(1) : raw;
-  const pattern = precision === 0 ? /^\\d+$/ : new RegExp("^\\\\d+(?:\\\\.\\\\d{1," + precision + "})?$");
+  const pattern = precision === 0 ? /^\d+$/ : new RegExp("^\\d+(?:\\.\\d{1," + precision + "})?$");
   if (!pattern.test(numeric)) throw new Error("Amount has invalid precision for " + currency + ".");
   const [whole, fraction = ""] = numeric.split(".");
   const absolute = BigInt(whole!) * (10n ** BigInt(precision)) + BigInt((fraction + "0".repeat(precision)).slice(0, precision) || "0");
