@@ -16,6 +16,8 @@ describe("NODUS D1 source validation",()=>{
     expect(moneyMinor("12.34","USD").minor).toBe(1234n);
     expect(moneyMinor("125","JPY").minor).toBe(125n);
     expect(moneyMinor("1.234","KWD").minor).toBe(1234n);
+    expect(moneyMinor("-12.34","USD",true).minor).toBe(-1234n);
+    expect(()=>moneyMinor("-1.00","USD")).toThrow("precision");
     expect(()=>moneyMinor("1.001","USD")).toThrow("precision");
   });
   it("validates dates and positive fixed-precision quantities",()=>{
