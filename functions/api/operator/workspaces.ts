@@ -15,7 +15,7 @@ export async function onRequestGet({request,env}:Context) {
   if(!sameOrigin(request))return bad("Origin rejected.",403);
   if(!await operatorAuthorized(request,env))return bad("Operator authentication failed.",401);
   const [leadResult,workspaceResult]=await Promise.all([
-    env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,status,created_at FROM merchant_leads ORDER BY created_at DESC LIMIT 200").all<LeadRow>(),
+    env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,status,created_at FROM merchant_leads WHERE offer_type='seven_day_trial' ORDER BY created_at DESC LIMIT 200").all<LeadRow>(),
     env.NODUS_DB.prepare("SELECT id,business_name,owner_name,owner_email,shop_domain,status,plan_code,trial_activated_at,trial_ends_at,subscription_status,subscription_started_at,subscription_ends_at,created_at FROM threepl_workspaces ORDER BY created_at DESC LIMIT 200").all<WorkspaceRow>(),
   ]);
   const tokens=await env.NODUS_DB.prepare("SELECT id,workspace_id,label,expires_at,revoked_at,last_used_at,created_at FROM threepl_access_tokens ORDER BY created_at DESC LIMIT 500").all<{id:string;workspace_id:string;label:string;expires_at:number;revoked_at:number|null;last_used_at:number|null;created_at:number}>();
