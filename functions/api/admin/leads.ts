@@ -20,7 +20,7 @@ export async function onRequestPatch({request,env}:Context){
  const status=typeof body.status==="string"?body.status:"";
  const payment=typeof body.payment_status==="string"?body.payment_status:"";
  const statuses=["new","reviewing","accepted","declined","completed"];
- const payments=["not_requested","invoice_pending","paid","refunded"];
+ const payments=["not_requested","invoice_pending","paid","payment_failed","cancelled","refunded"];
  if(!id||!statuses.includes(status)||!payments.includes(payment))return json({error:"Provide a lead ID and valid lead/payment statuses."},400);
  const existing=await env.NODUS_DB.prepare("SELECT status,payment_status FROM merchant_leads WHERE id=?").bind(id).first<{status:string;payment_status:string}>();
  if(!existing)return json({error:"Lead not found."},404);
