@@ -1,8 +1,9 @@
+import { createStripeCheckout } from "../_lib/stripe";
 interface D1Result<T=unknown>{results:T[];success:boolean;meta?:{changes?:number}}
 interface D1Statement{bind(...values:unknown[]):D1Statement;first<T=unknown>():Promise<T|null>;run<T=unknown>():Promise<D1Result<T>>}
 interface D1Database{prepare(sql:string):D1Statement}
 interface PagesContext<E>{request:Request;env:E;waitUntil(promise:Promise<unknown>):void;passThroughOnException():void}
-interface Env{NODUS_DB:D1Database}
+interface Env{NODUS_DB:D1Database;STRIPE_SECRET_KEY?:string;SHOPIFY_APP_URL?:string}
 const json=(body:unknown,status=200)=>Response.json(body,{status,headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
 const clean=(value:unknown,max:number)=>typeof value==="string"?value.trim().slice(0,max):"";
 async function digest(value:string){const bytes=new TextEncoder().encode(value);const hash=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");}
@@ -32,7 +33,17 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  if(!limit||limit.count>3)return json({error:"Too many requests. Please try again later."},429);
  await env.NODUS_DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const id=crypto.randomUUID();
- await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested')").bind(id,new Date().toISOString(),name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote).run();
-
- return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:offer==="monthly_review"?"Your Monthly Shipping Review request has been recorded. NODUS will review the scope and respond using the email address you supplied.":offer==="paid_audit"?"Your Shipping Cost Audit request has been recorded. NODUS will review the scope and respond using the email address you supplied.":"Your free diagnostic enquiry has been received. NODUS will review the information and respond using the email address you supplied."},201);
+ const nowIso=new Date().toISOString();
+ await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,offer_type,price_quote,payment_status,updated_at) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,'not_requested',?)").bind(id,nowIso,name,email,parsed.origin,orders,shipping,objective,key,offer,priceQuote,nowIso).run();
+ if(offer!=="evaluation"){
+  if(!env.STRIPE_SECRET_KEY||!env.SHOPIFY_APP_URL?.startsWith("https://"))return json({error:"Paid checkout is not enabled yet. No payment was taken. The business operator must configure the payment account and checkout credentials."},503);
+  try{
+   const checkout=await createStripeCheckout({secret:env.STRIPE_SECRET_KEY,appUrl:env.SHOPIFY_APP_URL,leadId:id,email,offer});
+   await env.NODUS_DB.prepare("UPDATE merchant_leads SET stripe_checkout_session_id=?,payment_status='invoice_pending',updated_at=? WHERE id=?").bind(checkout.id,new Date().toISOString(),id).run();
+   return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,checkoutUrl:checkout.url,message:"Request recorded. Complete secure checkout to place the order."},201);
+  }catch(error){
+   return json({error:"Checkout could not be created. No payment was taken. "+(error instanceof Error?error.message:"Payment provider error.")},502);
+  }
+ }
+ return json({ok:true,reference:id.slice(0,8).toUpperCase(),offer,priceQuote,message:"Your free diagnostic enquiry has been received. NODUS will review the information and respond using the email address you supplied."},201);
 }
