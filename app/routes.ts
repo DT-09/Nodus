@@ -11,6 +11,7 @@ export default [
   route("api/leads", "./routes/api.leads.ts"),
   route("api/threepl/session", "./routes/api.threepl.session.ts"),
   route("api/threepl/data", "./routes/api.threepl.data.ts"),
+  route("api/operator/session", "./routes/api.operator.session.ts"),
   route("api/operator/workspaces", "./routes/api.operator.workspaces.ts"),
   route("manual-data", "./routes/manual-data.tsx"),
   route("about", "./routes/about.tsx"),
