@@ -85,7 +85,7 @@ export async function importThreePLContract(input: { workspaceId: string; provid
     return {
       chargeCode: value(row, parsed.headers, "charge_code"),
       unit: value(row, parsed.headers, "unit"),
-      pricing, rateMinor: amount.minor, currency: amount.currency,
+      pricing, rateMinor: amount.minor, currency: amount.currency, sourceRow: i + 2,
       effectiveFrom: from, effectiveTo: to,
     };
   });
