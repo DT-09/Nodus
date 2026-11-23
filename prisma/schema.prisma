@@ -326,6 +326,7 @@ model ThreePLInvoiceLine {
   externalLineId    String?
   chargeCode        String
   description       String?
+  serviceDate       DateTime?
   quantity          Decimal  @db.Decimal(18, 3)
   unit              String
   amountMinor       BigInt
