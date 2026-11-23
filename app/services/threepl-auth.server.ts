@@ -50,8 +50,10 @@ export function threePLSessionCookie(token: string, maxAge = 7 * 24 * 60 * 60) {
   return `nodus_3pl_session=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
 }
 
-export function canWriteThreePLWorkspace(workspace: { status: string; trialEndsAt: Date | null; subscriptionStatus: string }) {
+export function canWriteThreePLWorkspace(workspace: { status: string; trialEndsAt: Date | null; subscriptionStatus: string; subscriptionEndsAt?: Date | null }) {
+  const now = new Date();
   if (workspace.status === "onboarding") return true;
   if (workspace.subscriptionStatus === "active") return true;
-  return workspace.status === "trial" && Boolean(workspace.trialEndsAt && workspace.trialEndsAt > new Date());
+  if (workspace.subscriptionStatus === "cancelled" && workspace.subscriptionEndsAt && workspace.subscriptionEndsAt > now) return true;
+  return workspace.status === "trial" && Boolean(workspace.trialEndsAt && workspace.trialEndsAt > now);
 }
