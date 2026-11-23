@@ -46,7 +46,7 @@ export async function verifyStripeSignature(raw: string, header: string, secret:
   const parts = header.split(",").map(part => part.trim().split("=", 2));
   const timestamp = parts.find(([key]) => key === "t")?.[1] || "";
   const signatures = parts.filter(([key]) => key === "v1").map(([, value]) => value || "");
-  if (!/^\\d+$/.test(timestamp) || !signatures.length || Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
+  if (!/^\d+$/.test(timestamp) || !signatures.length || Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const signed = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(timestamp + "." + raw));
   const expected = [...new Uint8Array(signed)].map(value => value.toString(16).padStart(2, "0")).join("");
