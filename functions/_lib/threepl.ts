@@ -25,7 +25,7 @@ export const clean = (value: unknown, max = 300) => typeof value === "string" ? 
 export function sameOrigin(request: Request) {
   const origin = request.headers.get("Origin");
   if (!origin) return true;
-  try { return new URL(origin).host === new URL(request.url).host; } catch { return false; }
+  try { return new URL(origin).origin === new URL(request.url).origin; } catch { return false; }
 }
 
 async function hmacHex(secret: string, message: string) {
@@ -173,6 +173,7 @@ export function moneyMinor(raw: string, currencyRaw: string, allowNegative = fal
   const precision = zeroDecimal.has(currency) ? 0 : threeDecimal.has(currency) ? 3 : 2;
   const negative = allowNegative && raw.startsWith("-");
   const numeric = negative ? raw.slice(1) : raw;
+  if (numeric.length > 40) throw new Error("Amount exceeds the supported precision and range.");
   const pattern = precision === 0 ? /^\d+$/ : new RegExp("^\\d+(?:\\.\\d{1," + precision + "})?$");
   if (!pattern.test(numeric)) throw new Error("Amount has invalid precision for " + currency + ".");
   const [whole, fraction = ""] = numeric.split(".");
