@@ -24,7 +24,7 @@ export async function onRequestPost({request,env}:Context){
   const leadId=typeof object.client_reference_id==="string"?object.client_reference_id:typeof metadata.lead_id==="string"?metadata.lead_id:"";
   if(leadId){
    const mode=String(object.mode||""),paid=object.payment_status==="paid";
-   statements.push(env.NODUS_DB.prepare("UPDATE merchant_leads SET payment_status=?,stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,stripe_payment_intent_id=?,updated_at=? WHERE id=?").bind(mode==="subscription"?"invoice_pending":paid?"paid":"invoice_pending",idOf(object.customer),idOf(object.subscription),idOf(object.id),idOf(object.payment_intent),now,leadId));
+   statements.push(env.NODUS_DB.prepare("UPDATE merchant_leads SET payment_status=?,stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,stripe_payment_intent_id=?,updated_at=? WHERE id=?").bind(paid?"paid":"invoice_pending",idOf(object.customer),idOf(object.subscription),idOf(object.id),idOf(object.payment_intent),now,leadId));
   }
  }else if(event.type==="invoice.paid"||event.type==="invoice.payment_failed"){
   const subscription=idOf(object.subscription);
