@@ -6,6 +6,10 @@
 
 NODUS is a focused shipping-economics workbench: reconcile order shipping revenue with carrier and 3PL invoice evidence, inspect unresolved charges, review carrier spend, replay historical shipping policies and export a traceable decision pack.
 
+## Commercial operations
+
+See [the NODUS Operator Runbook](docs/NODUS_OPERATOR_RUNBOOK.md) for trial intake, workspace provisioning, CSV formats, reconciliation, case handling and the manual subscription lifecycle.
+
 ## Current product implementation
 
 Production site: https://nodus-hq.pages.dev
