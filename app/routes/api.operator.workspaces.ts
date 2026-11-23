@@ -50,6 +50,32 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
+  if (operation === "create_workspace_from_lead") {
+    const leadId = String(body.leadId ?? "").trim();
+    const lead = await prisma.threePLLead.findUnique({ where: { id: leadId } });
+    if (!lead || lead.status === "converted" || lead.status === "rejected") return Response.json({ ok: false, error: "Lead is unavailable for workspace creation." }, { status: 409 });
+    const workspace = await prisma.threePLWorkspace.create({
+      data: { businessName: lead.shopDomain, ownerName: lead.name, ownerEmail: lead.email, shopDomain: lead.shopDomain, status: "onboarding" },
+      select: { id: true, businessName: true, ownerEmail: true, status: true },
+    });
+    try {
+      const issued = await issueThreePLAccessToken(workspace.id, "Trial workspace invitation");
+      await prisma.threePLLead.update({ where: { id: lead.id }, data: { status: "converted" } });
+      return Response.json({ ok: true, workspace, inviteToken: issued.token, tokenExpiresAt: issued.expiresAt.toISOString() }, { status: 201, headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
+    } catch (error) {
+      await prisma.threePLWorkspace.delete({ where: { id: workspace.id } });
+      throw error;
+    }
+  }
+
+  if (operation === "update_lead_status") {
+    const leadId = String(body.leadId ?? "").trim();
+    const status = String(body.status ?? "");
+    if (!["new", "contacted", "qualified", "rejected"].includes(status)) return Response.json({ ok: false, error: "Invalid lead status." }, { status: 400 });
+    const updated = await prisma.threePLLead.updateMany({ where: { id: leadId, status: { not: "converted" } }, data: { status } });
+    return Response.json({ ok: updated.count === 1 }, { status: updated.count === 1 ? 200 : 404, headers: { "Cache-Control": "no-store" } });
+  }
+
   const workspaceId = String(body.workspaceId ?? "").trim();
   if (!workspaceId) return Response.json({ ok: false, error: "workspaceId is required." }, { status: 400 });
   const workspace = await prisma.threePLWorkspace.findUnique({ where: { id: workspaceId }, select: { id: true, status: true, subscriptionStatus: true } });
@@ -57,6 +83,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (operation === "activate_trial") {
     if (workspace.status !== "onboarding") return Response.json({ ok: false, error: "A trial can only be activated from onboarding. Do not restart an expired trial." }, { status: 409 });
+    const [providerCount, invoiceCount, activeContractCount] = await Promise.all([
+      prisma.threePLProvider.count({ where: { workspaceId } }),
+      prisma.threePLInvoice.count({ where: { workspaceId } }),
+      prisma.threePLContract.count({ where: { workspaceId, status: "active" } }),
+    ]);
+    if (providerCount < 1 || invoiceCount < 1 || activeContractCount < 1) return Response.json({ ok: false, error: "Trial activation requires at least one provider, one active confirmed contract and one imported invoice. Prepare the workspace first." }, { status: 409 });
     const now = new Date();
     const updated = await prisma.threePLWorkspace.update({
       where: { id: workspaceId },
@@ -88,6 +120,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (operation === "rotate_access") {
+    await prisma.threePLAccessToken.updateMany({ where: { workspaceId, revokedAt: null }, data: { revokedAt: new Date() } });
     const issued = await issueThreePLAccessToken(workspaceId, String(body.label ?? "Rotated merchant access"));
     return Response.json({ ok: true, inviteToken: issued.token, tokenExpiresAt: issued.expiresAt.toISOString() }, { headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
   }
