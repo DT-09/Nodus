@@ -119,12 +119,18 @@ export async function importThreePLInvoice(input: { workspaceId: string; provide
   if (invoiceNumbers.size !== 1 || invoiceDates.size !== 1) throw new Error("Upload one invoice per CSV file; invoice_number and invoice_date must be consistent across rows.");
   const invoiceNumber = [...invoiceNumbers][0]!;
   const invoiceDate = dateOnly([...invoiceDates][0]!);
+  const periodStarts = new Set(parsed.rows.map(row => value(row, parsed.headers, "period_start", false)).filter(Boolean));
+  const periodEnds = new Set(parsed.rows.map(row => value(row, parsed.headers, "period_end", false)).filter(Boolean));
+  if (periodStarts.size > 1 || periodEnds.size > 1) throw new Error("Invoice period dates must be consistent across all rows.");
+  const periodStart = periodStarts.size ? dateOnly([...periodStarts][0]!) : null;
+  const periodEnd = periodEnds.size ? dateOnly([...periodEnds][0]!) : null;
   const lines = parsed.rows.map((row, index) => {
     const amount = parseMoney(value(row, parsed.headers, "amount"), value(row, parsed.headers, "currency"));
     if (amount.minor < 0n) throw new Error("Negative invoice lines are not supported in this first release; upload credits as separate documented outcomes.");
     return {
       chargeCode: value(row, parsed.headers, "charge_code"),
       description: value(row, parsed.headers, "description", false) || null,
+      serviceDate: value(row, parsed.headers, "service_date", false) ? dateOnly(value(row, parsed.headers, "service_date", false)) : null,
       quantity: quantity(value(row, parsed.headers, "quantity")),
       unit: value(row, parsed.headers, "unit"),
       amountMinor: amount.minor, currency: amount.currency,
@@ -147,7 +153,7 @@ export async function importThreePLInvoice(input: { workspaceId: string; provide
       return tx.threePLInvoice.update({
         where: { id: existing.id },
         data: {
-          invoiceDate, currency: [...currencies][0]!, totalMinor, status: "imported",
+          invoiceDate, periodStart, periodEnd, currency: [...currencies][0]!, totalMinor, status: "imported",
           sourceFileName: safeName(input.fileName), sourceHash, importedAt: new Date(),
           lines: { create: lines },
         },
@@ -157,7 +163,7 @@ export async function importThreePLInvoice(input: { workspaceId: string; provide
     return tx.threePLInvoice.create({
       data: {
         workspaceId: input.workspaceId, providerId: input.providerId, invoiceNumber,
-        invoiceDate, currency: [...currencies][0]!, totalMinor,
+        invoiceDate, periodStart, periodEnd, currency: [...currencies][0]!, totalMinor,
         sourceFileName: safeName(input.fileName), sourceHash,
         lines: { create: lines },
       },
