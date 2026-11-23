@@ -16,6 +16,7 @@ type PortalData = {
   exceptions: Array<{ id: string; invoiceNumber: string; provider: string; code: string; severity: string; state: string; status: string; currency: string; exposureMinor: string | null; explanation: string; note: string | null; evidence: unknown[]; events: Array<{action:string;detail:unknown;createdAt:string}>; outcomes: number; lastSeenAt: string }>;
   reports: Array<{ id: string; start: string; end: string; revision: number; status: string; generatedAt: string; payload: any }>;
   outcomes: Array<{ id: string; exceptionId: string; type: string; status: string; amountMinor: string; currency: string; reference: string | null; note: string; verifiedAt: string | null; findingCode: string }>;
+  workspaceEvents: Array<{ action: string; detail: unknown; createdAt: string }>;
 };
 
 function money(minor: string, currency: string) {
@@ -168,6 +169,7 @@ export default function ThreePLPortal() {
       <div className="tp-table-wrap"><table><thead><tr><th>PERIOD</th><th>REVISION</th><th>GENERATED</th><th>INVOICES</th><th>VERIFIED OUTCOMES</th><th>EXPORT</th></tr></thead><tbody>{data.reports.map(report=><tr key={report.id}><td>{date(report.start)} — {date(report.end)}</td><td>{report.revision}</td><td>{date(report.generatedAt)}</td><td>{report.payload?.scope?.invoiceCount ?? 0}</td><td>{report.payload?.outcomes?.verifiedCount ?? 0}</td><td><button type="button" className="tp-small" onClick={()=>downloadReport(report)}>DOWNLOAD JSON</button></td></tr>)}{!data.reports.length?<tr><td colSpan={6}>No period reports generated yet.</td></tr>:null}</tbody></table></div>
       <div className="tp-outcomes">{data.outcomes.map(outcome=><article key={outcome.id}><div><b>{outcome.findingCode.replaceAll("_"," ")}</b><span>{outcome.status}</span></div><strong>{money(outcome.amountMinor,outcome.currency)}</strong><small>{outcome.reference || "No external reference"} · {outcome.note}</small></article>)}{!data.outcomes.length?<p className="tp-empty">No provider outcomes have been recorded.</p>:null}</div>
     </section>
+    <section className="tp-section tp-audit"><div className="tp-section-heading"><div><p className="tp-kicker">06 / WORKSPACE AUDIT</p><h2>Account history</h2></div></div><div className="tp-panel">{data.workspaceEvents.map((event,i)=><p key={i} className="tp-evidence">{date(event.createdAt)} · {event.action.replaceAll("_"," ")}</p>)}{!data.workspaceEvents.length?<p className="tp-empty">No workspace lifecycle events recorded yet.</p>:null}</div></section>
     <footer className="tp-footer"><span>NODUS / 3PL BILLING & PERFORMANCE CONTROL</span><span>Source records retained by workspace. Findings remain subject to human review.</span></footer>
   </main>;
 }
