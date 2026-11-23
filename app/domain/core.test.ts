@@ -30,3 +30,64 @@ I1,L1,1.00,USD`)).toHaveLength(1);expect(()=>parseCarrierCostCsv(`invoice_id,cha
 I1,L1,"1.00"oops,USD`)).toThrow(/after a closing quote/)});
   it("rejects duplicate invoice charge identities and malformed amounts",()=>{expect(()=>parseCarrierCostCsv("invoice_id,charge_id,amount,currency\nI1,L1,1.00,USD\nI1,L1,2.00,USD")).toThrow(/Duplicate/);expect(()=>parseCarrierCostCsv("invoice_id,charge_id,amount,currency\nI1,L1,1.001,USD")).toThrow(/precision/)});
 });
+
+
+import {reconcileThreePLInvoices} from "./threepl-control";
+
+describe("NODUS 3PL billing control",()=>{
+  const rules=[{id:"rate-pick",chargeCode:"PICK",unit:"each",pricing:"per_unit" as const,rate:parseMoney("0.50","USD"),effectiveFrom:"2026-01-01"}];
+  const baseLine={id:"line-1",invoiceId:"inv-1",chargeCode:"PICK",billedAt:"2026-11-01",quantity:"10",unit:"each",amount:parseMoney("6.00","USD")};
+
+  it("calculates a contract-rate variance with exact decimal arithmetic",()=>{
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[baseLine],activity:[]});
+    expect(result.lines[0]?.expectedMinor).toBe("500");
+    expect(result.lines[0]?.varianceMinor).toBe("100");
+    expect(result.findings[0]?.code).toBe("contract_rate_variance");
+    expect(result.findings[0]?.state).toBe("calculated_variance");
+  });
+
+  it("does not infer a quantity overcharge when operational activity evidence is absent",()=>{
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[baseLine],activity:[]});
+    expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(false);
+  });
+
+  it("compares billed quantity only on an exact activity reference",()=>{
+    const line={...baseLine,activityReference:"FUL-44"};
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[line],activity:[{id:"act-1",reference:"FUL-44",chargeCode:"PICK",quantity:"8",unit:"each"}]});
+    expect(result.lines[0]?.activityQuantity).toBe("8");
+    expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(true);
+  });
+
+  it("does not match activity records on a different reference",()=>{
+    const line={...baseLine,activityReference:"FUL-44"};
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[line],activity:[{id:"act-1",reference:"FUL-45",chargeCode:"PICK",quantity:"8",unit:"each"}]});
+    expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(false);
+  });
+
+
+  it("does not case-fold an operational reference that must match exactly",()=>{
+    const line={...baseLine,activityReference:"FUL-44"};
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[line],activity:[{id:"act-1",reference:"ful-44",chargeCode:"PICK",quantity:"8",unit:"each"}]});
+    expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(false);
+  });
+
+  it("withholds a rate conclusion when the contract rule is ambiguous",()=>{
+    const duplicateRule={...rules[0]!,id:"rate-pick-overlap"};
+    const result=reconcileThreePLInvoices({rules:[...rules,duplicateRule],invoiceLines:[baseLine],activity:[]});
+    expect(result.lines[0]?.state).toBe("needs_review");
+    expect(result.findings[0]?.code).toBe("contract_rule_ambiguous");
+    expect(result.lines[0]?.expectedMinor).toBeUndefined();
+  });
+
+  it("flags an invoice line with no effective contract rate as unpriced",()=>{
+    const line={...baseLine,billedAt:"2025-12-31"};
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[line],activity:[]});
+    expect(result.lines[0]?.state).toBe("unpriced");
+    expect(result.findings[0]?.code).toBe("unpriced_charge");
+  });
+
+  it("rejects duplicate invoice line IDs and invalid quantity precision",()=>{
+    expect(()=>reconcileThreePLInvoices({rules,invoiceLines:[baseLine,baseLine],activity:[]})).toThrow(/IDs must be present and unique/);
+    expect(()=>reconcileThreePLInvoices({rules,invoiceLines:[{...baseLine,quantity:"1.0001"}],activity:[]})).toThrow(/at most three places/);
+  });
+});

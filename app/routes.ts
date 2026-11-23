@@ -7,6 +7,7 @@ export default [
   route("downloads", "./routes/downloads.tsx"),
   route("connect", "./routes/connect.tsx"),
   route("workspace", "./routes/workspace.tsx"),
+  route("portal", "./routes/portal.tsx"),
   route("manual-data", "./routes/manual-data.tsx"),
   route("about", "./routes/about.tsx"),
   route("methodology", "./routes/methodology.tsx"),

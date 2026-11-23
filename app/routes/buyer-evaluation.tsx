@@ -1,63 +1,68 @@
-import {useState} from "react";
-import type {FormEvent} from "react";
+import {useState,type FormEvent} from "react";
 import type {MetaFunction} from "react-router";
-import {Link,useSearchParams} from "react-router";
+import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
-  {title:"NODUS merchant evaluation"},
-  {name:"description",content:"Request a one-time NODUS Shipping Cost Audit or a recurring Monthly Shipping Review. No source files are collected by the public form."},
-  {property:"og:title",content:"Merchant evaluation guide — NODUS"},
-  {property:"og:description",content:"A practical guide to the NODUS free diagnostic, one-time audit and recurring monthly review."},
+ {title:"Request a NODUS seven-day trial — 3PL billing control"},
+ {name:"description",content:"Review your 3PL contract rates, invoices and operational activity in one evidence-linked merchant workspace."},
 ];
-const requirements=[
- ["Order export","A merchant-provided order CSV with order references, shipping revenue and currency."],
- ["Carrier-cost export","A carrier or 3PL CSV with charge IDs, amounts, currency and available order or tracking references."],
- ["A defined question","A need to compare recorded shipping revenue with carrier costs and identify charges that need review."],
-];
-const deliverables=[
- ["Evidence coverage statement","The reporting window, source files, reporting currency, matched records, exclusions and unresolved gaps."],
- ["Evidenced shortfall register","Orders where matched carrier costs exceed shipping collected, shown only after complete cost coverage is attested and tax-inclusive charges are excluded."],
- ["Exception register","Matched, unmatched, duplicate, ambiguous and incomplete records with the source references available to the system."],
- ["Order-level comparison","Compare recorded shipping revenue with matched carrier-cost rows while keeping currencies separate."],
- ["Decision pack","A CSV register and JSON export with scope, methods and limitations."],
-];
-function AssessmentForm(){
- const [searchParams]=useSearchParams();
+
+function TrialRequestForm(){
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState(false);
  async function submit(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(busy)return;setBusy(true);setMessage("");setError(false);
-  const form=event.currentTarget;const data=new FormData(form);
-  const payload={name:String(data.get("name")||""),email:String(data.get("email")||""),store:String(data.get("store")||""),orders:String(data.get("orders")||""),shipping:String(data.get("shipping")||""),objective:String(data.get("objective")||""),offer_type:String(data.get("offer_type")||"evaluation"),consent:data.get("consent")==="on",website:String(data.get("website")||"")};
-  try{const response=await fetch("/api/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const result=await response.json() as {ok?:boolean;message?:string;error?:string;reference?:string;priceQuote?:string|null;checkoutUrl?:string};if(!response.ok||!result.ok)throw new Error(result.error||"The request could not be submitted.");if(result.checkoutUrl){window.location.assign(result.checkoutUrl);return;}setMessage((result.message||"Request received.")+" Reference: "+(result.reference||"NODUS")+(result.priceQuote?" · Requested price: "+result.priceQuote:""));form.reset();}
-  catch(e){setError(true);setMessage(e instanceof Error?e.message:"Network error. Please try again.");}
+  const form=event.currentTarget,data=new FormData(form);
+  const payload={
+   businessName:String(data.get("businessName")||""),name:String(data.get("name")||""),email:String(data.get("email")||""),
+   store:String(data.get("store")||""),orders:String(data.get("orders")||""),
+   shipping:String(data.get("shipping")||""),objective:String(data.get("objective")||""),
+   consent:data.get("consent")==="on",website:String(data.get("website")||""),
+  };
+  try{
+   const response=await fetch("/api/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+   const result=await response.json() as {ok?:boolean;message?:string;error?:string;reference?:string};
+   if(!response.ok||!result.ok)throw new Error(result.error||"The request could not be submitted.");
+   setMessage((result.message||"Trial request received.")+(result.reference?" Reference: "+result.reference:""));form.reset();
+  }catch(e){setError(true);setMessage(e instanceof Error?e.message:"Network error. Please try again.");}
   finally{setBusy(false);}
  }
  return <form className="nd-assessment-form" onSubmit={submit}>
-  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT INTAKE</span><h2>Request a NODUS review.</h2><p>Run the free diagnostic, request a $149 one-time baseline audit, or request the $99/month recurring Monthly Shipping Review. The monthly service is analyst-delivered from each month's agreed exports; it is not automated carrier monitoring.</p></div>
+  <div className="nd-form-intro"><span className="page-eyebrow">NODUS / MERCHANT ONBOARDING</span><h2>Request your seven-day trial.</h2><p>Tell us how your fulfilment operation works. We first confirm that your contract, invoice and activity exports can be reviewed. The seven-day clock starts only after your private workspace is ready and activated.</p></div>
   <div className="nd-form-grid">
+   <label>Business name<input name="businessName" required minLength={2} maxLength={160} placeholder="Company name"/></label>
    <label>Your name<input name="name" autoComplete="name" required minLength={2} maxLength={100} placeholder="Name"/></label>
    <label>Work email<input name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@company.com"/></label>
-   <label>Store domain (for context)<input name="store" type="text" required maxLength={300} placeholder="store.myshopify.com"/></label>
-   <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option>Under 500</option><option>500–2,000</option><option>2,000–10,000</option><option>10,000–50,000</option><option>50,000+</option><option>Prefer to discuss</option></select></label>
-   <label className="nd-form-wide">Shipping setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option>Direct carrier account</option><option>Third-party logistics (3PL)</option><option>Multiple carriers / 3PLs</option><option>Shopify Shipping</option><option>Other / unsure</option></select></label>
-   <label className="nd-form-wide">What do you need?<select name="offer_type" defaultValue={searchParams.get("offer")==="paid_audit"?"paid_audit":searchParams.get("offer")==="evaluation"?"evaluation":"monthly_review"}><option value="monthly_review">Monthly Shipping Review — USD 99/month</option><option value="paid_audit">Shipping Cost Audit — USD 149 one-time</option><option value="evaluation">Free evaluation</option></select></label>
-   <label className="nd-form-wide">What problem should the assessment investigate?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we cannot reliably compare shipping revenue with carrier charges across orders..."/></label>
+   <label>Shopify store domain<input name="store" required maxLength={255} placeholder="your-store.myshopify.com"/></label>
+   <label>Approximate monthly orders<select name="orders" required defaultValue=""><option value="" disabled>Select a range</option><option value="under_500">Under 500</option><option value="500_2000">500–2,000</option><option value="2000_10000">2,000–10,000</option><option value="10000_50000">10,000–50,000</option><option value="50000_plus">50,000+</option><option value="prefer_to_discuss">Prefer to discuss</option></select></label>
+   <label className="nd-form-wide">Fulfilment setup<select name="shipping" required defaultValue=""><option value="" disabled>Select your setup</option><option value="one_3pl">One external 3PL</option><option value="multiple_3pls">Multiple 3PL providers</option><option value="in_house_and_3pl">In-house plus external 3PL</option><option value="other">Other / unsure</option></select></label>
+   <label className="nd-form-wide">What needs control?<textarea name="objective" required minLength={20} maxLength={1500} rows={4} placeholder="For example: we need to check 3PL invoice rates against our agreement and verify billed pick/pack quantities against warehouse activity..."/></label>
   </div>
-  <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorized to submit this business enquiry and agree that NODUS may use these details to review and respond to this request. No store data is requested by this form. <Link to="/privacy">Read the privacy notice.</Link></span></label>
+  <label className="nd-form-consent"><input name="consent" type="checkbox" required/><span>I am authorised to submit this business enquiry and agree that NODUS may use these details to assess fit and respond. This form does not collect invoices, source files or customer records. <Link to="/privacy">Read the privacy notice.</Link></span></label>
   <div className="nd-form-honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
-  <button className="cta-primary" type="submit" disabled={busy}>{busy?"SUBMITTING…":"SUBMIT REQUEST ↗"}</button>
+  <button className="cta-primary" type="submit" disabled={busy}>{busy?"SUBMITTING…":"REQUEST PRIVATE TRIAL ↗"}</button>
   {message?<p className={error?"nd-form-status is-error":"nd-form-status"} role="status">{message}</p>:null}
-  <p className="nd-form-footnote">No card details are collected. A paid-audit request is not a purchase and does not collect payment. Work starts only after written scope, terms and cleared payment. Do not include passwords, access tokens, customer records or invoice attachments.</p>
- <p className="nd-form-footnote"><a href="mailto:dhairytopia@gmail.com?subject=NODUS%20Shipping%20Cost%20Audit">EMAIL NODUS DIRECTLY ↗</a></p>\n </form>;
+  <p className="nd-form-footnote">No card details are collected. A request is not an activated trial or a paid subscription. We confirm data compatibility and scope first. Never submit passwords, access tokens or customer personal data.</p>
+ </form>;
 }
+
 export default function BuyerEvaluation(){
  return <MarketingShell active="evaluation"><main className="content-page">
-  <header><p className="page-eyebrow">MERCHANTS / EVALUATION GUIDE</p><h1>Find the shipping shortfalls<br/><em>your evidence can support.</em></h1><p className="page-lede">NODUS connects Shopify order shipping charges with carrier/3PL invoice rows. With complete cost coverage attested, it flags orders where matched carrier costs exceed shipping collected and produces an evidence-backed review pack. It does not claim carrier overbilling or guaranteed recovery.</p><div className="hero-ctas"><Link to="/demo" className="cta-primary">INSPECT THE SAMPLE <span>↗</span></Link><Link to="/pricing" className="cta-secondary">REVIEW THE PROGRAMME <span>↗</span></Link></div></header>
-  <section className="content-note"><span className="page-eyebrow">01 / WHO THIS IS FOR</span><h2>Built for operators who already have the evidence.</h2><p>The initial target is a Shopify merchant selling physical goods, using one or more external carriers or a 3PL, and reconciling separate order and carrier-cost records. The daily user is likely in ecommerce operations, fulfillment or finance. The economic buyer is the owner or a lead accountable for shipping economics. This fit is a market hypothesis until paying customers validate it.</p><div className="content-grid">{requirements.map(([title,body])=><article key={title}><span>FIT / REQUIREMENT</span><h2>{title}</h2><p>{body}</p></article>)}</div></section>
-  <section className="content-note"><span className="page-eyebrow">02 / THE SCOPE</span><h2>Small enough to verify. Useful enough to judge.</h2><p>The public product accepts an order CSV and a carrier-cost CSV selected by the user. Analysis runs in the browser. Files are not uploaded to NODUS. The paid monthly review is a human-delivered service based on exports supplied for each reporting period. A separate Shopify connection is present in source code but is not offered as a live production integration until installation is verified.</p><p>The form below is separate from the CSV tool. It stores only the business enquiry fields needed to assess fit and respond. It does not collect source files or payment details. Do not submit customer records, invoices, credentials or access tokens.</p></section>
-  <section className="content-note"><span className="page-eyebrow">03 / WHAT YOU RECEIVE</span><h2>What the paid review is designed to establish.</h2><div className="content-grid">{deliverables.map(([title,body],i)=><article key={title}><span>{String(i+1).padStart(2,"0")} / DELIVERABLE</span><h2>{title}</h2><p>{body}</p></article>)}</div></section>
-  <section className="content-note"><span className="page-eyebrow">04 / WHAT WE WILL NOT CLAIM</span><h2>Evidence sets the boundary.</h2><ul><li>Missing carrier cost is not treated as zero.</li><li>A discrepancy is not a recovered credit or confirmed saving.</li><li>Historical shipping-revenue replay is not a profit or conversion forecast.</li><li>Carrier invoice intake is CSV-based. Direct UPS, FedEx and USPS invoice APIs are not represented as live integrations.</li><li>Carrier invoice polling, policy-drift alerts and automatic Shopify shipping-policy changes are not offered as current capabilities.</li><li>Merchant-entered value records are attestations, not independent financial audits.</li></ul><p>See the <Link to="/methodology">methodology</Link> and <Link to="/security">security boundaries</Link> before sharing any store data.</p></section>
-  <section className="content-note"><span className="page-eyebrow">05 / DECIDE WHETHER TO CONTINUE</span><h2>Repeat use must earn its place.</h2><p>The free review is available without payment. NODUS offers a USD 149 one-time baseline audit and a USD 99/month recurring Monthly Shipping Review. The monthly service includes a fresh review of each reporting period's exports, a comparison with prior evidence where available, and a written decision brief. It is not continuous automated monitoring.</p><p>No payment details are collected. Participation does not require a testimonial, review or public case study.</p><AssessmentForm/></section>
+  <header><p className="page-eyebrow">NODUS / 3PL BILLING & PERFORMANCE CONTROL</p><h1>Know what your 3PL<br/><em>actually billed.</em></h1><p className="page-lede">NODUS compares fulfilment invoices with the rates in your agreement and the operational activity available to support those charges. It gives your team a persistent exception register, an investigation history and a record of provider outcomes.</p><div className="hero-ctas"><Link to="/pricing" className="cta-primary">VIEW MONTHLY SERVICE ↗</Link><a href="#trial-request" className="cta-secondary">REQUEST SEVEN-DAY TRIAL</a></div></header>
+  <section className="content-note"><span className="page-eyebrow">01 / THE OPERATIONAL PROBLEM</span><h2>Three records. One accountable review.</h2><div className="content-grid">
+   <article><span>01 / AGREEMENT</span><h2>What was agreed?</h2><p>Effective-dated rate cards, charge codes, units, fixed fees and per-unit terms. Ambiguous terms remain flagged for human confirmation.</p></article>
+   <article><span>02 / BILLING</span><h2>What was charged?</h2><p>Invoice headers and line items, quantities, amounts, currency and original source-row references.</p></article>
+   <article><span>03 / OPERATIONS</span><h2>What happened?</h2><p>Pick, pack, storage or other provider activity exports where they include a reliable reference and matching unit.</p></article>
+  </div></section>
+  <section className="content-note"><span className="page-eyebrow">02 / THE WORKFLOW</span><h2>From imported evidence to a closed outcome.</h2><div className="content-grid">
+   <article><span>01</span><h2>Import</h2><p>Add your provider, confirmed rate card, invoice CSV and available operational activity.</p></article>
+   <article><span>02</span><h2>Reconcile</h2><p>Compare each invoice line with one effective contract rule. Quantity checks require exact-reference activity evidence.</p></article>
+   <article><span>03</span><h2>Investigate</h2><p>Assign a status, preserve notes and source references, and record provider responses.</p></article>
+   <article><span>04</span><h2>Verify</h2><p>Separate an identified variance from a promised credit, a posted credit and an outcome supported by evidence.</p></article>
+   <article><span>05</span><h2>Review again</h2><p>Generate period reports and compare the next invoice cycle with the history already on record.</p></article>
+  </div></section>
+  <section className="content-note"><span className="page-eyebrow">03 / DATA REQUIREMENTS</span><h2>Start with exports. Connect Shopify later.</h2><p>The first onboarding path uses merchant-supplied CSV exports. Shopify OAuth and direct 3PL integrations are not required for the initial review. The trial workspace supports contract rate cards, one-invoice-per-file CSV imports and operational activity exports with explicit source references.</p><ul><li>Rate card: charge_code, unit, pricing, rate, currency and effective_from.</li><li>Invoice: invoice_number, invoice_date, charge_code, quantity, unit, amount and currency.</li><li>Operational activity: record_id, reference, charge_code, quantity and unit.</li></ul><p>PDF extraction, automatic provider disputes, payments and accounting writes are not part of the first release.</p></section>
+  <section className="content-note"><span className="page-eyebrow">04 / EVIDENCE STANDARD</span><h2>A variance is a question, not a verdict.</h2><p>NODUS does not label a calculated difference as recovered money or confirmed provider error. It does not infer missing activity as zero. Currency mismatches, overlapping rate rules, unsupported units and ambiguous references require review. Verified outcomes require a provider reference and an evidence note.</p></section>
+  <section className="content-note" id="trial-request"><TrialRequestForm/></section>
  </main></MarketingShell>;
 }

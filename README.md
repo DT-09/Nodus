@@ -1,8 +1,18 @@
 # NODUS
 
-**Shipping economics intelligence for Shopify merchants.**
+> **Business direction:** The authoritative target-state is [NODUS Master Business & Product Blueprint](docs/NODUS_MASTER_BLUEPRINT.md). The existing shipping-economics implementation is the starting codebase, not the final commercial product. Current capabilities and unverified integrations remain described below as implementation facts.
 
-NODUS is a focused shipping-economics workbench: reconcile order shipping revenue with carrier and 3PL invoice evidence, inspect unresolved charges, review carrier spend, replay historical shipping policies and export a traceable decision pack.
+**Merchant-side 3PL billing and evidence control for Shopify merchants.**
+
+NODUS keeps the merchant's provider agreements, 3PL invoices, available operational activity, investigation history and provider outcomes in one persistent workspace. The initial commercial workflow is CSV-based and focused on contract-rate reconciliation and evidence-backed exception resolution. The previous shipping-economics workbench remains legacy code; do not mix its capabilities or offer with the current 3PL control offer.
+
+## Commercial operations
+
+See the [NODUS Operator Runbook](docs/NODUS_OPERATOR_RUNBOOK.md) for trial intake, workspace provisioning, supported CSV formats, reconciliation, case handling and the manual subscription lifecycle. Use the [Merchant Pilot Execution Pack](docs/NODUS_MERCHANT_PILOT_EXECUTION_PACK.md) to qualify, scope, deliver and evaluate the first real merchant pilot.
+
+The recurring 3PL control runtime is implemented as Cloudflare Pages Functions backed by the existing D1 binding `NODUS_DB`. The static merchant portal and private operator console call those Functions. Apply `migrations/0003_threepl_control.sql` to the configured remote D1 database and set `NODUS_OPERATOR_SECRET` before enabling the workflow. The Prisma schema is not the 3PL runtime store.
+
+This branch is not a claim of production readiness or revenue. The D1 migration, Cloudflare environment, tenant-isolation tests, backup/restore, privacy controls and live merchant onboarding must be verified before production data is accepted.
 
 ## Current product implementation
 
@@ -98,6 +108,6 @@ npm run verify:deployment
 
 ## Commercial and governance boundaries
 
-Commercial offer: free browser-local diagnostic; USD 149 one-time baseline Shipping Cost Audit; and USD 99/month recurring Monthly Shipping Review. The monthly service covers one store, up to 2,000 orders and one carrier/3PL cost export per period. Each period receives a human-reviewed reconciliation, coverage assessment, exception register, carrier spend review, prior-period comparison where comparable evidence exists, and a written decision brief. The monthly service is analyst-delivered from new exports supplied each period; it is not automated carrier monitoring, real-time alerting or automatic carrier polling. Prices are pilot hypotheses, not proven willingness to pay. The public form records service requests only. Do not publish customer logos, testimonials, customer counts or savings results without evidence and permission.
+Current commercial hypothesis: a free, scoped seven-day evaluation followed by NODUS Core at USD 99/month. The evaluation uses one merchant workspace, one external 3PL, one confirmed rate card, one invoice period and available activity exports. The recurring service is intended to carry forward exception history, provider responses, promised/posted/verified outcomes and period comparisons. Pricing and willingness to renew are unvalidated. The first customer workflow is CSV-based and includes operator involvement; it is not continuous monitoring. The public form records requests only. No automated checkout, paid customer, verified recovery or renewal is established. Do not publish customer logos, testimonials, customer counts or savings results without evidence and permission.
 
 A code implementation is not proof of a production integration. A deployment is not proof of a functioning business. NODUS is ready for merchant onboarding only after the release gates above are passed.
