@@ -64,6 +64,13 @@ describe("NODUS 3PL billing control",()=>{
     expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(false);
   });
 
+
+  it("does not case-fold an operational reference that must match exactly",()=>{
+    const line={...baseLine,activityReference:"FUL-44"};
+    const result=reconcileThreePLInvoices({rules,invoiceLines:[line],activity:[{id:"act-1",reference:"ful-44",chargeCode:"PICK",quantity:"8",unit:"each"}]});
+    expect(result.findings.some(f=>f.code==="billed_quantity_exceeds_activity")).toBe(false);
+  });
+
   it("withholds a rate conclusion when the contract rule is ambiguous",()=>{
     const duplicateRule={...rules[0]!,id:"rate-pick-overlap"};
     const result=reconcileThreePLInvoices({rules:[...rules,duplicateRule],invoiceLines:[baseLine],activity:[]});
