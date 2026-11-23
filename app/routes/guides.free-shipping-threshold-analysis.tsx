@@ -1,2 +1,2 @@
-import { redirect } from "react-router";
-export function loader() { return redirect("/guides/3pl-invoice-reconciliation"); }
+import { Navigate } from "react-router";
+export default function LegacyRedirect() { return <Navigate to="/guides/3pl-invoice-reconciliation" replace />; }
