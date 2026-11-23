@@ -83,6 +83,10 @@ function normalized(value: string): string {
   return value.trim().toUpperCase();
 }
 
+function exactReference(value: string): string {
+  return value.trim();
+}
+
 function validDate(value: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("Dates must use YYYY-MM-DD.");
   const time = Date.parse(value + "T00:00:00.000Z");
@@ -153,7 +157,7 @@ export function reconcileThreePLInvoices(input: Readonly<{
       throw new Error("Activity records require a reference, charge code and unit.");
     }
     quantityMilli(record.quantity);
-    const key = normalized(record.reference) + "|" + normalized(record.chargeCode);
+    const key = exactReference(record.reference) + "|" + normalized(record.chargeCode);
     activityByReference.set(key, [...(activityByReference.get(key) ?? []), record]);
   }
 
@@ -186,7 +190,7 @@ export function reconcileThreePLInvoices(input: Readonly<{
         code: "unpriced_charge",
         severity: "warning",
         state: "needs_review",
-        explanation: "No effective contract rule matches this charge code on the invoice date. The charge cannot be assessed against an agreed rate.",
+        explanation: "No effective contract rule matches this charge code on the service date (or invoice date when no service date was supplied). The charge cannot be assessed against an agreed rate.",
         evidenceReferences: [`invoice:${line.invoiceId}:${line.id}`],
       });
       const result: ThreePLLineResult = {
@@ -275,7 +279,7 @@ export function reconcileThreePLInvoices(input: Readonly<{
 
     let activityQuantity: bigint | undefined;
     if (line.activityReference?.trim()) {
-      const key = normalized(line.activityReference) + "|" + normalized(line.chargeCode);
+      const key = exactReference(line.activityReference) + "|" + normalized(line.chargeCode);
       const records = activityByReference.get(key) ?? [];
       if (records.length > 1) {
         findings.push({
