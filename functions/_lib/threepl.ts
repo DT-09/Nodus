@@ -1,6 +1,6 @@
 import { constantTimeEqual, getCookie, randomToken, sha256, type NodusEnv } from "./shopify";
 
-export type ThreePLEnv = NodusEnv & { NODUS_OPERATOR_SECRET?: string };
+export type ThreePLEnv = NodusEnv & { NODUS_OPERATOR_SECRET?: string; STRIPE_SECRET_KEY?: string; RAZORPAY_KEY_ID?: string; RAZORPAY_KEY_SECRET?: string; RAZORPAY_WEBHOOK_SECRET?: string; RAZORPAY_PLAN_ID?: string };
 export type ThreePLWorkspaceRow = {
   id: string;
   business_name: string;
