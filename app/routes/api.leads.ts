@@ -20,7 +20,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const monthlyOrders = String(body.orders ?? "");
   const fulfilmentSetup = String(body.shipping ?? "");
   const objective = String(body.objective ?? "").trim().slice(0, 1500);
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+  if (businessName.length < 2 || name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
     return Response.json({ ok: false, error: "Enter a valid name and work email." }, { status: 400 });
   }
   if (!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/.test(shopDomain)) {
