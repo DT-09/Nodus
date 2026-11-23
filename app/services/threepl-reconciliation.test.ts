@@ -33,7 +33,7 @@ integration("persisted 3PL reconciliation", () => {
       confirmed: true,
       csv: [
         "charge_code,unit,pricing,rate,currency,effective_from,effective_to",
-        "PICK,order,per_unit,0.10,USD,2026-01-01,",
+        "PICK,order,per_unit,0.10,USD,2026-10-30,2026-10-30",
       ].join("\n"),
     });
 
