@@ -99,8 +99,9 @@ For an existing database, inspect `sqlite_master` and `PRAGMA table_info` first.
 
 - The seven-day trial request is a qualification request; it does not automatically activate a trial.
 - Operator provisioning and access-token issuance are implemented. Automatic customer invitation email delivery is not.
-- Stripe-hosted USD 99/month subscription checkout is implemented for operator-issued links. Signed paid checkout or invoice webhooks activate access; payment failures change access state, and cancellation is scheduled at period end.
-- Live payment processing remains disabled until an authorized adult seller configures encrypted `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`, registers the `/api/stripe/webhook` endpoint, and tests the full lifecycle in Stripe test mode.
+- Razorpay-hosted USD 99/month subscription checkout is implemented for operator-issued links, including automatic monthly plan creation, signed webhooks, payment-failure states and period-end cancellation. Razorpay is the preferred adapter for an eligible India-based seller.
+- Stripe Checkout remains an optional fallback for sellers with an eligible Stripe account. New Stripe accounts in India are invite-only.
+- Live payment processing remains disabled until an authorized adult seller completes provider onboarding, configures the required encrypted production secrets, registers the provider webhook, applies the billing migration and passes the full test-mode lifecycle.
 - Tax handling, seller identity, refunds/disputes and customer billing support still require adult-owned business operations.
 - The USD 99/month price is a hypothesis, not validated willingness to pay.
 - No paying merchant, completed paid pilot, renewal, customer result or revenue is established by this repository.
