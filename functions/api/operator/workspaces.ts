@@ -38,14 +38,14 @@ export async function onRequestPost({request,env}:Context) {
   if(operation==="update_lead_status"){
     const leadId=clean(body.leadId,80),status=clean(body.status,40);
     if(!["new","contacted","qualified","rejected"].includes(status))return bad("Invalid lead status.");
-    const result=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=? WHERE id=? AND status<>'converted'").bind(status,leadId).run();
+    const result=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=? WHERE id=? AND offer_type='seven_day_trial' AND status<>'converted'").bind(status,leadId).run();
     if(!result)return bad("Lead update failed.",500);
     return json({ok:true,message:"Lead status updated."});
   }
 
   if(operation==="create_workspace_from_lead"){
     const leadId=clean(body.leadId,80);
-    const lead=await env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,status FROM merchant_leads WHERE id=?").bind(leadId).first<LeadRow>();
+    const lead=await env.NODUS_DB.prepare("SELECT id,business_name,name,email,store_url,status FROM merchant_leads WHERE id=? AND offer_type='seven_day_trial'").bind(leadId).first<LeadRow>();
     if(!lead||lead.status!=="qualified")return bad("Qualify the lead before provisioning a workspace.",409);
     const workspaceId=id(),created=nowIso();
     const shopDomain=(()=>{try{return new URL(lead.store_url).hostname;}catch{return null;}})();
@@ -54,7 +54,7 @@ export async function onRequestPost({request,env}:Context) {
     try{
       const issued=await issueAccessToken(workspaceId,"Initial merchant invitation",env);
       await audit(env,workspaceId,"workspace_created_from_lead",{leadId,invitationIssued:true});
-      await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND status='qualified'").bind(leadId).run();
+      await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND offer_type='seven_day_trial' AND status='qualified'").bind(leadId).run();
       const workspace=await env.NODUS_DB.prepare("SELECT id,business_name,owner_email,status FROM threepl_workspaces WHERE id=?").bind(workspaceId).first();
       return json({ok:true,workspace,inviteToken:issued.token,tokenExpiresAt:new Date(issued.expiresAt*1000).toISOString()},201);
     }catch(error){
