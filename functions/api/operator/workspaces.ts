@@ -1,5 +1,5 @@
 import { json } from "../../_lib/shopify";
-import { clean, id, issueAccessToken, logWorkspaceEvent, nowIso, operatorAuthorized, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
+import { clean, id, issueAccessToken, nowIso, operatorAuthorized, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
@@ -23,8 +23,8 @@ export async function onRequestGet({request,env}:Context) {
   for(const token of tokens.results){const list=tokenMap.get(token.workspace_id)||[];list.push({id:token.id,label:token.label,expiresAt:new Date(token.expires_at*1000).toISOString(),revokedAt:token.revoked_at?new Date(token.revoked_at*1000).toISOString():null,lastUsedAt:token.last_used_at?new Date(token.last_used_at*1000).toISOString():null,createdAt:new Date(token.created_at*1000).toISOString()});tokenMap.set(token.workspace_id,list);}
   return json({
     ok:true,
-    leads:leadResult.results.map(lead=>({...lead,shopDomain:lead.store_url,monthlyOrders:lead.monthly_orders,fulfilmentSetup:lead.shipping_setup,createdAt:lead.created_at})),
-    workspaces:workspaceResult.results.map(workspace=>({...workspace,accessTokens:tokenMap.get(workspace.id)||[]})),
+    leads:leadResult.results.map(lead=>({id:lead.id,businessName:lead.business_name,name:lead.name,email:lead.email,shopDomain:lead.store_url,monthlyOrders:lead.monthly_orders,fulfilmentSetup:lead.shipping_setup,objective:lead.objective,status:lead.status,createdAt:lead.created_at})),
+    workspaces:workspaceResult.results.map(workspace=>({id:workspace.id,businessName:workspace.business_name,ownerName:workspace.owner_name,ownerEmail:workspace.owner_email,shopDomain:workspace.shop_domain,status:workspace.status,planCode:workspace.plan_code,trialActivatedAt:workspace.trial_activated_at,trialEndsAt:workspace.trial_ends_at,subscriptionStatus:workspace.subscription_status,subscriptionStartedAt:workspace.subscription_started_at,subscriptionEndsAt:workspace.subscription_ends_at,createdAt:workspace.created_at,accessTokens:tokenMap.get(workspace.id)||[]})),
   });
 }
 
