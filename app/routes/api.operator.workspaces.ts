@@ -1,6 +1,20 @@
-import type { ActionFunctionArgs } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { prisma } from "../db.server";
 import { issueThreePLAccessToken, operatorAuthorized } from "../services/threepl-auth.server";
+
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  if (!operatorAuthorized(request)) return Response.json({ ok: false, error: "Unauthorized." }, { status: 401 });
+  const [leads, workspaces] = await Promise.all([
+    prisma.threePLLead.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
+    prisma.threePLWorkspace.findMany({ orderBy: { createdAt: "desc" }, take: 100, select: { id: true, businessName: true, ownerName: true, ownerEmail: true, shopDomain: true, status: true, planCode: true, trialActivatedAt: true, trialEndsAt: true, subscriptionStatus: true, createdAt: true } }),
+  ]);
+  return Response.json({
+    ok: true,
+    leads: leads.map(({ id, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt }) => ({ id, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective, requestedOffer, status, createdAt: createdAt.toISOString() })),
+    workspaces: workspaces.map(item => ({ ...item, trialActivatedAt: item.trialActivatedAt?.toISOString() ?? null, trialEndsAt: item.trialEndsAt?.toISOString() ?? null, createdAt: item.createdAt.toISOString() })),
+  }, { headers: { "Cache-Control": "no-store" } });
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   if (!operatorAuthorized(request)) return Response.json({ ok: false, error: "Unauthorized." }, { status: 401, headers: { "Cache-Control": "no-store" } });
