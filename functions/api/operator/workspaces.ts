@@ -73,7 +73,7 @@ export async function onRequestPost({request,env}:Context) {
     const [providers,contracts,invoices]=await Promise.all([
       env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_providers WHERE workspace_id=?").bind(workspaceId).first<{count:number}>(),
       env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_contracts WHERE workspace_id=? AND status='active'").bind(workspaceId).first<{count:number}>(),
-      env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_invoices WHERE workspace_id=?").bind(workspaceId).first<{count:number}>(),
+      env.NODUS_DB.prepare("SELECT COUNT(*) AS count FROM threepl_invoices WHERE workspace_id=? AND status IN ('imported','reconciled')").bind(workspaceId).first<{count:number}>(),
     ]);
     if((providers?.count||0)<1||(contracts?.count||0)<1||(invoices?.count||0)<1)return bad("Trial activation requires at least one provider, one active confirmed contract and one imported invoice.",409);
     const start=new Date(),end=new Date(start.getTime()+7*24*60*60*1000),now=start.toISOString();
