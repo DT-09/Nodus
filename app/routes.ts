@@ -8,6 +8,7 @@ export default [
   route("connect", "./routes/connect.tsx"),
   route("workspace", "./routes/workspace.tsx"),
   route("portal", "./routes/portal.tsx"),
+  route("api/leads", "./routes/api.leads.ts"),
   route("api/threepl/session", "./routes/api.threepl.session.ts"),
   route("api/threepl/data", "./routes/api.threepl.data.ts"),
   route("api/operator/workspaces", "./routes/api.operator.workspaces.ts"),
