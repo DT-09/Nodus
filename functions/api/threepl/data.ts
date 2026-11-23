@@ -173,6 +173,7 @@ async function reconcileInvoice(env:ThreePLEnv,workspaceId:string,invoiceId:stri
 }
 
 export async function onRequestGet({request,env}:Context){
+ if(!sameOrigin(request))return bad("Origin rejected.",403);
  const auth=await getWorkspace(request,env);if(!auth)return bad("Merchant access is required.",401);
  const workspaceId=auth.workspace.id;
  const [providers,contracts,rules,invoices,lines,activities,exceptions,caseEvents,reports,outcomes,workspaceEvents]=await Promise.all([
@@ -192,7 +193,7 @@ export async function onRequestGet({request,env}:Context){
  const linesByInvoice=new Map<string,LineRow[]>();for(const line of lines.results){const list=linesByInvoice.get(line.invoice_id)||[];list.push(line);linesByInvoice.set(line.invoice_id,list);}
  const eventsByException=new Map<string,CaseEventRow[]>();for(const event of caseEvents.results){const list=eventsByException.get(event.exception_id)||[];if(list.length<12)list.push(event);eventsByException.set(event.exception_id,list);}
  const now=Date.now(),trialExpired=auth.workspace.status==="trial"&&Boolean(auth.workspace.trial_ends_at&&Date.parse(auth.workspace.trial_ends_at)<=now)&&auth.workspace.subscription_status!=="active";
- const subscriptionExpired=auth.workspace.subscription_status==="cancelled"&&Boolean(auth.workspace.subscription_ends_at&&Date.parse(auth.workspace.subscription_ends_at)<=now);
+ const subscriptionExpired=["active","cancelled"].includes(auth.workspace.subscription_status)&&Boolean(auth.workspace.subscription_ends_at&&Date.parse(auth.workspace.subscription_ends_at)<=now);
  return json({
   workspace:{id:auth.workspace.id,businessName:auth.workspace.business_name,status:trialExpired?"trial_expired":subscriptionExpired?"subscription_expired":auth.workspace.status,planCode:auth.workspace.plan_code,trialActivatedAt:auth.workspace.trial_activated_at,trialEndsAt:auth.workspace.trial_ends_at,subscriptionStatus:auth.workspace.subscription_status,subscriptionEndsAt:auth.workspace.subscription_ends_at},
   canWrite:canWrite(auth.workspace)&&!trialExpired&&!subscriptionExpired,
