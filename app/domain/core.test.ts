@@ -29,4 +29,5 @@ describe("NODUS deterministic domain",()=>{
 I1,L1,1.00,USD`)).toHaveLength(1);expect(()=>parseCarrierCostCsv(`invoice_id,charge_id,amount,currency
 I1,L1,"1.00"oops,USD`)).toThrow(/after a closing quote/)});
   it("rejects duplicate invoice charge identities and malformed amounts",()=>{expect(()=>parseCarrierCostCsv("invoice_id,charge_id,amount,currency\nI1,L1,1.00,USD\nI1,L1,2.00,USD")).toThrow(/Duplicate/);expect(()=>parseCarrierCostCsv("invoice_id,charge_id,amount,currency\nI1,L1,1.001,USD")).toThrow(/precision/)});
+  it("retains source evidence identifiers and exact under-recovery amount in findings",()=>{const rows=reconcileShipping([{orderId:"o-evidence",shippingRevenue:parseMoney("5","USD"),trackingNumbers:[],costCoverage:"complete"}],[{evidenceId:"carrier:INV-1:LINE-2",orderReference:"o-evidence",amount:parseMoney("7.25","USD")}]);const finding=diagnoseReconciliation(rows)[0];expect(finding?.evidenceIds).toEqual(["carrier:INV-1:LINE-2"]);expect(finding?.amountMinor).toBe("225");expect(finding?.currency).toBe("USD")});
 });
