@@ -1,5 +1,6 @@
 import { json } from "../../_lib/shopify";
-import { clean, id, issueAccessToken, nowIso, operatorAuthorized, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
+import { clean, id, issueAccessToken, nowIso, operatorAuthorized, randomToken, sameOrigin, type ThreePLEnv } from "../../_lib/threepl";
+import { createWorkspaceSubscriptionCheckout } from "../../_lib/stripe";
 
 interface Context { request: Request; env: ThreePLEnv; }
 type LeadRow = { id:string;business_name:string;name:string;email:string;store_url:string;monthly_orders:string;shipping_setup:string;objective:string;status:string;created_at:string };
@@ -80,6 +81,19 @@ export async function onRequestPost({request,env}:Context) {
     await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET status='trial',trial_activated_at=?,trial_ends_at=?,updated_at=? WHERE id=?").bind(now,end.toISOString(),now,workspaceId).run();
     await audit(env,workspaceId,"trial_activated",{trialActivatedAt:now,trialEndsAt:end.toISOString()});
     return json({ok:true,workspace:{id:workspaceId,status:"trial",trialActivatedAt:now,trialEndsAt:end.toISOString()}});
+  }
+
+  if(operation==="create_subscription_checkout"){
+    if(!env.STRIPE_SECRET_KEY)return bad("Recurring checkout is not configured. The seller must configure the encrypted Stripe secret first.",503);
+    if(["closed","suspended"].includes(workspace.status))return bad("A closed or suspended workspace cannot start a subscription.",409);
+    if(workspace.subscription_status==="active")return bad("This workspace already has an active subscription.",409);
+    if(workspace.status!=="trial"&&workspace.status!=="active")return bad("Activate the seven-day trial before creating a paid subscription.",409);
+    const appUrl=new URL(request.url).origin;
+    const checkout=await createWorkspaceSubscriptionCheckout({secret:env.STRIPE_SECRET_KEY,appUrl,workspaceId, email:workspace.owner_email,idempotencyKey:"nodus-"+workspaceId+"-"+randomToken(12)});
+    await env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_checkout_session_id=?,subscription_status='pending',updated_at=? WHERE id=?")
+      .bind(checkout.id,nowIso(),workspaceId).run();
+    await audit(env,workspaceId,"stripe_subscription_checkout_created",{checkoutSessionId:checkout.id,planCode:"core_99"});
+    return json({ok:true,checkoutUrl:checkout.url,message:"Hosted Stripe checkout created. Share the checkout link privately with the merchant."});
   }
 
   if(operation==="activate_subscription"){
