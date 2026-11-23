@@ -13,6 +13,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // Honeypot: silently discard automated submissions without collecting data.
   if (String(body.website ?? "").trim()) return Response.json({ ok: true, message: "Your request has been received." });
+  const businessName = String(body.businessName ?? "").trim().slice(0, 160);
   const name = String(body.name ?? "").trim().slice(0, 100);
   const email = String(body.email ?? "").trim().toLowerCase();
   const shopDomain = String(body.store ?? "").trim().toLowerCase().slice(0, 255);
@@ -34,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const lead = await prisma.threePLLead.create({
     data: {
-      name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective,
+      businessName, name, email, shopDomain, monthlyOrders, fulfilmentSetup, objective,
       requestedOffer: "seven_day_trial", consentAt: new Date(),
     },
     select: { id: true, createdAt: true },
