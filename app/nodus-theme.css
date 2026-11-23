@@ -685,3 +685,66 @@ body{background:linear-gradient(155deg,var(--nd-obsidian) 0%,var(--nd-espresso) 
 .marketing-site .nh-ledger-row em{font-style:normal;color:var(--nd-olive);text-align:right;font-size:8px;letter-spacing:.06em}
 .marketing-site .nh-product-note{margin-top:12px}
 @media(max-width:420px){.marketing-site .nh-ledger-preview{padding:12px 10px}.marketing-site .nh-ledger-head,.marketing-site .nh-ledger-row{gap:7px;font-size:7px}}
+
+
+/* Brand lockup correction: restore a balanced, naturally aligned nav mark and word. */
+.marketing-site .site-brand{
+  display:grid;
+  grid-template-columns:44px auto;
+  grid-template-rows:auto auto;
+  column-gap:13px;
+  row-gap:3px;
+  align-items:center;
+  min-width:0;
+  width:max-content;
+}
+.marketing-site .site-brand .nodus-logo{
+  grid-column:1;
+  grid-row:1 / span 2;
+  width:44px;
+  height:44px;
+  min-width:44px;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  object-position:center;
+  align-self:center;
+  justify-self:center;
+  transform:none!important;
+}
+.marketing-site .site-brand-word{
+  grid-column:2;
+  grid-row:1;
+  align-self:end;
+  font-size:21px!important;
+  line-height:1.05!important;
+  letter-spacing:.12em!important;
+  font-weight:700!important;
+}
+.marketing-site .site-brand-caption{
+  grid-column:2;
+  grid-row:2;
+  align-self:start;
+  font-size:7px!important;
+  line-height:1.35!important;
+  letter-spacing:.12em!important;
+}
+@media(max-width:640px){
+  .marketing-site .site-brand{
+    grid-template-columns:38px auto;
+    column-gap:10px;
+    row-gap:2px;
+  }
+  .marketing-site .site-brand .nodus-logo{
+    width:38px;
+    height:38px;
+    min-width:38px;
+  }
+  .marketing-site .site-brand-word{
+    font-size:18px!important;
+    letter-spacing:.1em!important;
+  }
+  .marketing-site .site-brand-caption{
+    font-size:6px!important;
+    letter-spacing:.08em!important;
+  }
+}
