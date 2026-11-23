@@ -482,6 +482,7 @@ model ThreePLAccessToken {
 }
 model ThreePLLead {
   id             String   @id @default(cuid())
+  businessName   String
   name           String
   email          String
   shopDomain     String
