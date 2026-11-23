@@ -63,7 +63,7 @@ invoice_number,invoice_date,charge_code,quantity,unit,amount,currency
 INV-1001,2026-10-31,PICK,120,order,54.00,USD
 ```
 
-Optional columns: `description`, `activity_reference`, `service_date`, `period_start`, `period_end`.
+Optional columns: `external_line_id`, `description`, `activity_reference`, `service_date`, `period_start`, `period_end`. Duplicate non-empty `external_line_id` values are rejected.
 
 Amounts may be negative when the provider invoice includes a credit or adjustment. Use `service_date` when the contract rate should be selected by the date the service occurred. If absent, NODUS uses `invoice_date`. Period fields must be consistent across the invoice file.
 
