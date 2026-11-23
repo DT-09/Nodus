@@ -2,7 +2,7 @@ import { reconcileThreePLInvoices, type ThreePLActivityRecord, type ThreePLInvoi
 import { json } from "../../_lib/shopify";
 import {
   canWrite, clean, csvValue, dateOnly, getWorkspace, id, logCaseEvent, moneyMinor,
-  nowIso, parseCsv, quantity, sameOrigin, sha256, type ThreePLEnv
+  nowIso, parseCsv, quantity, sameOrigin, sha256, logWorkspaceEvent, type ThreePLEnv
 } from "../../_lib/threepl";
 
 interface Context { request: Request; env: ThreePLEnv; }
@@ -60,6 +60,7 @@ async function importContract(env:ThreePLEnv,workspaceId:string,form:FormData){
   .bind(id(),contractId,rule.chargeCode,rule.unit,rule.pricing,rule.rateMinor,rule.currency,rule.sourceRow,rule.effectiveFrom,rule.effectiveTo,created,created));
  await chunks(env,statements);
  await env.NODUS_DB.prepare("UPDATE threepl_contracts SET status='active',confirmed_at=?,updated_at=? WHERE id=? AND workspace_id=?").bind(created,created,contractId,workspaceId).run();
+ await logWorkspaceEvent(env,workspaceId,"contract_imported",{contractId,sourceFileName,sourceHash,ruleCount:rules.length},"merchant");
  return {contractId,ruleCount:rules.length,sourceHash};
 }
 
@@ -104,6 +105,7 @@ async function importInvoice(env:ThreePLEnv,workspaceId:string,form:FormData){
   .bind(id(),invoiceId,line.chargeCode,line.description,line.serviceDate,line.quantity,line.unit,line.amountMinor,line.currency,line.activityReference,line.sourceRow,now));
  await chunks(env,statements);
  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET status='imported',updated_at=? WHERE id=? AND workspace_id=?").bind(now,invoiceId,workspaceId).run();
+ await logWorkspaceEvent(env,workspaceId,"invoice_imported",{invoiceId,invoiceNumber,sourceFileName,sourceHash,lineCount:lines.length,totalMinor,currency},"merchant");
  return {invoiceId,invoiceNumber,lineCount:lines.length,totalMinor,currency,sourceHash};
 }
 
@@ -121,6 +123,7 @@ async function importActivity(env:ThreePLEnv,workspaceId:string,form:FormData){
  const statements=records.map(record=>env.NODUS_DB.prepare("INSERT INTO threepl_activity_records(id,workspace_id,provider_id,source_system,source_record_id,reference,charge_code,quantity,unit,occurred_at,source_row,source_file_name,source_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(workspace_id,source_system,source_record_id) DO UPDATE SET provider_id=excluded.provider_id,reference=excluded.reference,charge_code=excluded.charge_code,quantity=excluded.quantity,unit=excluded.unit,occurred_at=excluded.occurred_at,source_row=excluded.source_row,source_file_name=excluded.source_file_name,source_hash=excluded.source_hash,created_at=excluded.created_at")
   .bind(id(),workspaceId,providerId,sourceSystem,record.sourceRecordId,record.reference,record.chargeCode,record.quantity,record.unit,record.occurredAt,record.sourceRow,sourceFileName,sourceHash,now));
  await chunks(env,statements);
+ await logWorkspaceEvent(env,workspaceId,"activity_imported",{providerId,sourceFileName,sourceHash,recordCount:records.length},"merchant");
  return {imported:records.length,sourceHash,sourceFileName};
 }
 
@@ -169,6 +172,7 @@ async function reconcileInvoice(env:ThreePLEnv,workspaceId:string,invoiceId:stri
   await logCaseEvent(env,workspaceId,prior.id,"system","not_reproduced_in_latest_run",{previousStatus:prior.status,latestRunId:runId,inputHash});
  }
  await env.NODUS_DB.prepare("UPDATE threepl_invoices SET status='reconciled',updated_at=? WHERE id=? AND workspace_id=?").bind(now,invoiceId,workspaceId).run();
+ await logWorkspaceEvent(env,workspaceId,"invoice_reconciled",{invoiceId,runId,inputHash,findingCount:result.findings.length},"merchant");
  return {runId,summary,reused:false};
 }
 
@@ -220,6 +224,7 @@ export async function onRequestPost({request,env}:Context){
    const name=clean(form.get("name"),120);if(name.length<2)throw new Error("Provider name must contain at least two characters.");
    const providerId=id(),now=nowIso();
    await env.NODUS_DB.prepare("INSERT INTO threepl_providers(id,workspace_id,name,status,created_at,updated_at) VALUES(?,?,?,'active',?,?)").bind(providerId,workspaceId,name,now,now).run();
+   await logWorkspaceEvent(env,workspaceId,"provider_added",{providerId,name},"merchant");
    return json({ok:true,message:"Provider added.",provider:{id:providerId,name}});
   }
   if(intent==="import_contract"||intent==="import_invoice"||intent==="import_activity"){
@@ -272,6 +277,7 @@ export async function onRequestPost({request,env}:Context){
    const payload={scope:{periodStart:start,periodEnd:end,invoiceCount:invoiceRows.results.length,invoiceLineCount:invoiceRows.results.reduce((sum,row)=>sum+row.line_count,0)},invoiceTotalsMinorByCurrency:invoiceTotals,exceptionSummary:{total:exceptionRows.results.length,open:exceptionRows.results.filter(x=>!["verified_closed","rejected","ignored","superseded","not_reproduced"].includes(x.status)).length,verifiedClosed:exceptionRows.results.filter(x=>x.status==="verified_closed").length},outcomes:{total:outcomeRows.results.length,verifiedCount:outcomeRows.results.filter(x=>x.status==="verified").length,verifiedMinorByCurrency:verifiedTotals,statuses:outcomeRows.results.map(x=>({id:x.id,status:x.status,amountMinor:x.amount_minor,currency:x.currency,referencePresent:Boolean(x.external_reference)}))},invoices:invoiceRows.results.map(x=>({id:x.id,number:x.invoice_number,provider:x.provider_name,invoiceDate:x.invoice_date,currency:x.currency,totalMinor:x.total_minor,lineCount:x.line_count,status:x.status,sourceHash:x.source_hash})),exceptions:exceptionRows.results.map(x=>({id:x.id,invoiceId:x.invoice_id,findingCode:x.finding_code,status:x.status,severity:x.severity,currency:x.currency,exposureMinor:x.exposure_minor,evidenceReferences:parseJson(x.evidence_json)})),limitations:["Calculated contract variances are not proof of provider liability or recoverable credit.","Only outcomes explicitly marked verified with a reference and evidence note are counted as verified.","SLA performance is excluded unless contractual definitions and source timestamps are present."]};
    const revision=(revisionRow?.count||0)+1,reportId=id(),now=nowIso();
    await env.NODUS_DB.prepare("INSERT INTO threepl_period_reports(id,workspace_id,period_start,period_end,revision,status,payload_json,generated_at,created_at) VALUES(?,?,?,?,?,'generated',?,?,?)").bind(reportId,workspaceId,start,end,revision,JSON.stringify(payload),now,now).run();
+   await logWorkspaceEvent(env,workspaceId,"period_report_generated",{reportId,periodStart:start,periodEnd:end,revision},"merchant");
    return json({ok:true,message:"Period report generated and stored.",reportId});
   }
   throw new Error("Unsupported workspace action.");
