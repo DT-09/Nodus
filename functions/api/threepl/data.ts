@@ -241,7 +241,7 @@ export async function onRequestPost({request,env}:Context){
   if(intent==="update_exception"){
    const exceptionId=clean(form.get("exceptionId"),80),status=clean(form.get("status"),50),note=clean(form.get("note"),2000);
    if(!["open","investigating","ready_for_review","raised_with_provider","provider_responded","rejected","ignored"].includes(status))throw new Error("Choose a valid investigation status.");
-   const record=await env.NODUS_DB.prepare("SELECT id,status,note FROM threepl_exceptions WHERE id=? AND workspace_id=?").bind(exceptionId,workspaceId).first<{id:string;status:string}>();
+   const record=await env.NODUS_DB.prepare("SELECT id,status,note FROM threepl_exceptions WHERE id=? AND workspace_id=?").bind(exceptionId,workspaceId).first<{id:string;status:string;note:string|null}>();
    if(!record)throw new Error("Exception not found in this workspace.");
    const nextNote=note||record.note,now=nowIso();await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status=?,note=?,resolved_at=?,updated_at=? WHERE id=? AND workspace_id=?")
     .bind(status,nextNote,["rejected","ignored"].includes(status)?now:null,now,exceptionId,workspaceId).run();
