@@ -195,6 +195,9 @@ model ShippingReviewCase {
   title       String
   severity    String
   explanation String
+  evidenceIds Json     @default("[]")
+  amountMinor BigInt?
+  currency    String?
   status      String   @default("open")
   active      Boolean  @default(true)
   note        String?
