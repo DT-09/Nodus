@@ -24,8 +24,9 @@ export async function onRequestPost({ request, env }: Context) {
     const workspaceId = typeof value.client_reference_id === "string" ? value.client_reference_id : typeof metadata.workspace_id === "string" ? metadata.workspace_id : "";
     const subscriptionId = objectId(value.subscription);
     if (workspaceId && subscriptionId && value.mode === "subscription") {
-      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,plan_code='core_99',subscription_status='pending',updated_at=? WHERE id=?")
-        .bind(objectId(value.customer),subscriptionId,objectId(value.id),now,workspaceId));
+      const paid = value.payment_status === "paid";
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET stripe_customer_id=?,stripe_subscription_id=?,stripe_checkout_session_id=?,plan_code='core_99',subscription_status=?,subscription_started_at=CASE WHEN ?=1 THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,status=CASE WHEN ?=1 AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE id=?")
+        .bind(objectId(value.customer),subscriptionId,objectId(value.id),paid?"active":"pending",paid?1:0,now,paid?1:0,now,workspaceId));
     }
   } else if (event.type === "invoice.paid" || event.type === "invoice.payment_failed") {
     const subscriptionId = objectId(value.subscription);
@@ -35,13 +36,17 @@ export async function onRequestPost({ request, env }: Context) {
       statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_status=?,subscription_started_at=CASE WHEN ?='active' THEN COALESCE(subscription_started_at,?) ELSE subscription_started_at END,subscription_ends_at=COALESCE(?,subscription_ends_at),status=CASE WHEN ?='active' AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE stripe_subscription_id=?")
         .bind(event.type === "invoice.paid" ? "active" : "past_due",event.type === "invoice.paid" ? "active" : "past_due",now,isoFromEpoch(periodEnd),event.type === "invoice.paid" ? "active" : "past_due",now,subscriptionId));
     }
-  } else if (event.type === "customer.subscription.deleted" || event.type === "customer.subscription.updated") {
+  } else if (event.type === "customer.subscription.deleted") {
     const subscriptionId = objectId(value.id);
-    const status = String(value.status || "");
     if (subscriptionId) {
-      const mapped = event.type === "customer.subscription.deleted" || status === "canceled" ? "cancelled" : status === "past_due" || status === "unpaid" ? "past_due" : status === "active" ? "active" : "pending";
-      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_status=?,subscription_ends_at=COALESCE(?,subscription_ends_at),subscription_cancel_at_period_end=?,status=CASE WHEN ?='active' AND status NOT IN ('closed','suspended') THEN 'active' ELSE status END,updated_at=? WHERE stripe_subscription_id=?")
-        .bind(mapped,isoFromEpoch(value.current_period_end),value.cancel_at_period_end===true?1:0,mapped,now,subscriptionId));
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_status='cancelled',subscription_cancel_at_period_end=0,subscription_ends_at=COALESCE(?,subscription_ends_at),updated_at=? WHERE stripe_subscription_id=?")
+        .bind(isoFromEpoch(value.current_period_end),now,subscriptionId));
+    }
+  } else if (event.type === "customer.subscription.updated") {
+    const subscriptionId = objectId(value.id);
+    if (subscriptionId) {
+      statements.push(env.NODUS_DB.prepare("UPDATE threepl_workspaces SET subscription_cancel_at_period_end=?,subscription_ends_at=COALESCE(?,subscription_ends_at),updated_at=? WHERE stripe_subscription_id=?")
+        .bind(value.cancel_at_period_end===true?1:0,isoFromEpoch(value.current_period_end),now,subscriptionId));
     }
   }
   await env.NODUS_DB.batch(statements);
