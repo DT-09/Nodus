@@ -74,7 +74,7 @@ assert.match(stripeWebhook,/checkout\.session\.expired/);
 assert.match(stripeWebhook,/invoice\.payment_failed/);
 assert.match(stripeWebhook,/customer\.subscription\.deleted/);
 assert.match(stripeWebhook,/stripe_webhook_events/);
-assert.match(stripeTests,/workspace-scoped monthly subscription/);
+assert.match(stripeTests,/USD 99 monthly checkout tied to one workspace/);
 assert.match(commercialBaseMigration,/CREATE TABLE IF NOT EXISTS merchant_leads/);
 assert.match(commercialBaseMigration,/CREATE TABLE IF NOT EXISTS lead_rate_limits/);
 assert.match(commercialMigration,/ADD COLUMN offer_type/);
