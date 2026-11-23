@@ -38,7 +38,7 @@ export async function onRequestPost({request,env}:Context) {
   if(operation==="update_lead_status"){
     const leadId=clean(body.leadId,80),status=clean(body.status,40);
     if(!["new","contacted","qualified","rejected"].includes(status))return bad("Invalid lead status.");
-    const result=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=? WHERE id=? AND offer_type='seven_day_trial' AND status<>'converted'").bind(status,leadId).run();
+    const result=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=? WHERE id=? AND offer_type='seven_day_trial' AND status<>'converted'").bind(status,leadId).run() as {meta?:{changes?:number}};
     if(result.meta?.changes!==1)return bad("Trial request was not found or has already been converted.",409);
     return json({ok:true,message:"Lead status updated."});
   }
@@ -54,7 +54,7 @@ export async function onRequestPost({request,env}:Context) {
     try{
       const issued=await issueAccessToken(workspaceId,"Initial merchant invitation",env);
       await audit(env,workspaceId,"workspace_created_from_lead",{leadId,invitationIssued:true});
-      const converted=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND offer_type='seven_day_trial' AND status='qualified'").bind(leadId).run();
+      const converted=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND offer_type='seven_day_trial' AND status='qualified'").bind(leadId).run() as {meta?:{changes?:number}};
       if(converted.meta?.changes!==1)throw new Error("Lead status changed during provisioning; refresh and retry.");
       const workspace=await env.NODUS_DB.prepare("SELECT id,business_name,owner_email,status FROM threepl_workspaces WHERE id=?").bind(workspaceId).first();
       return json({ok:true,workspace,inviteToken:issued.token,tokenExpiresAt:new Date(issued.expiresAt*1000).toISOString()},201);
