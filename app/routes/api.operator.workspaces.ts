@@ -102,7 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: "trial", trialActivatedAt: now, trialEndsAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) },
       select: { id: true, status: true, trialActivatedAt: true, trialEndsAt: true },
     });
-    await logWorkspaceEvent(workspaceId, "trial_activated", { trialActivatedAt: trialActivatedAt: updated.trialActivatedAt?.toISOString() ?? null, trialEndsAt: updated.trialEndsAt?.toISOString() ?? null });
+    await logWorkspaceEvent(workspaceId, "trial_activated", { trialActivatedAt: updated.trialActivatedAt?.toISOString() ?? null, trialEndsAt: updated.trialEndsAt?.toISOString() ?? null });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
