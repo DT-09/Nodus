@@ -49,7 +49,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: "trial", trialActivatedAt: now, trialEndsAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) },
       select: { id: true, status: true, trialActivatedAt: true, trialEndsAt: true },
     });
-    return Response.json({ ok: true, workspace: updated, headers: { "Cache-Control": "no-store" } });
+    return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
   if (operation === "activate_subscription") {
