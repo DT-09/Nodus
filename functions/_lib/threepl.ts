@@ -168,4 +168,4 @@ export function moneyDisplay(minorRaw: string, currency: string) {
   return sign + whole.toString() + fraction + " " + currency;
 }
 
-export { sha256 };
+export { sha256, randomToken };
