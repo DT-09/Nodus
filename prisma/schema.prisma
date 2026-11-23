@@ -352,6 +352,8 @@ model ThreePLActivityRecord {
   unit           String
   occurredAt     DateTime?
   sourceRow      Int
+  sourceFileName String
+  sourceHash     String
   createdAt      DateTime @default(now())
   workspace      ThreePLWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   provider       ThreePLProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
