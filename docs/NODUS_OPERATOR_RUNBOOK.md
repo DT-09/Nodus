@@ -1,71 +1,50 @@
 # NODUS Operator Runbook — 3PL Control
 
-This runbook describes the first merchant-operated workflow. It is not a claim that the service is production-ready. Use test data until migrations, access isolation, backups, legal terms and the production environment have been verified.
+This runbook describes the Cloudflare Pages Functions + D1 implementation. The public React application is static; the live API is implemented under `functions/api`. Do not add React Router server actions for API work.
 
 ## 1. Runtime configuration
 
-Required server environment:
+The Cloudflare Pages project must have:
 
-- `DATABASE_URL`: pooled PostgreSQL connection string used by Prisma.
-- `DIRECT_URL`: direct PostgreSQL connection string for migrations.
-- `NODUS_OPERATOR_SECRET`: high-entropy secret used only by the protected operator API.
+- A D1 database binding named `NODUS_DB`, connected to the existing NODUS D1 database.
+- `NODUS_OPERATOR_SECRET` as a secret environment variable, at least 32 characters of high-entropy random data.
+- Existing production Pages configuration and custom domain.
 
-Keep these values in Cloudflare Pages/Workers environment configuration. Never commit them, put them in browser code, or send them to a merchant. Configure production and preview values separately. The application does not send email or process payments in this release.
+Do not commit the operator secret or put it in browser code. Configure production and preview environments separately. Shopify OAuth credentials are not required for this initial CSV-based 3PL workflow.
 
-Deploy schema migrations before enabling merchant workspaces:
+### Apply the D1 migration
+
+Apply `migrations/0003_threepl_control.sql` to the same D1 database bound as `NODUS_DB`:
 
 ```bash
-npm ci
-npx prisma generate
-npm run migrate:deploy
-npm run typecheck
-npm test
-npm run build
+npx wrangler d1 migrations apply <D1_DATABASE_NAME> --remote
 ```
 
-The CI workflow must complete successfully before merging. The Cloudflare branch preview is a build preview, not proof that production database migrations or secrets are configured.
+Use the actual database name from the Cloudflare account. Confirm that migrations 0000–0003 have been applied before using the new endpoints. The Prisma schema is not the 3PL runtime database; 3PL records live in D1.
+
+The Cloudflare Pages branch preview is not proof that the remote D1 migration or environment secrets have been configured.
 
 ## 2. Review trial requests
 
-Open the private operator console at `/ops` and sign in with `NODUS_OPERATOR_SECRET`. The secret is exchanged for an eight-hour HttpOnly, Secure, SameSite=Strict session and is not saved in browser storage. The console lists leads and workspaces, qualifies leads, provisions merchants, activates trials and subscriptions, rotates invitation tokens and revokes access.
+The public website form posts to `POST /api/leads`. It stores the business name, contact name, work email, permanent `.myshopify.com` domain, order range, fulfilment setup, business objective, consent and timestamps in `merchant_leads`.
 
-The public form sends business-fit information to `POST /api/leads`. It stores:
+The request form does not accept source files or customer records. Requests are rate-limited by source IP hash. No email notification is sent automatically in this release; review requests in the private operations console.
 
-- business name and contact name;
-- work email and Shopify store domain;
-- monthly order range and fulfilment setup;
-- the merchant's stated control problem;
-- consent and submission timestamps.
+Open `/ops` and sign in with `NODUS_OPERATOR_SECRET`. The secret is exchanged for an eight-hour HttpOnly, Secure, SameSite=Strict session and is not saved in browser storage.
 
-It does not collect source files or customer data.
-
-List recent leads and workspaces through the protected operator endpoint:
-
-```bash
-curl -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \
-  https://YOUR_NODUS_HOST/api/operator/workspaces
-```
-
-Lead statuses are `new`, `contacted`, `qualified`, `rejected` and `converted`. Mark a lead `qualified` only after checking that it uses an external 3PL and can supply the supported contract, invoice and activity records. Workspace provisioning rejects leads that are not qualified.
+Lead statuses are `new`, `contacted`, `qualified`, `rejected` and `converted`. Mark a lead qualified only after confirming that it uses an external 3PL and can supply supported contract, invoice and activity records.
 
 ## 3. Provision a merchant workspace
 
-Convert a qualified lead into an onboarding workspace:
+From the qualified lead, choose **Provision workspace** in `/ops`.
 
-```bash
-curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \
-  -H "content-type: application/json" \
-  -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \
-  -d '{"operation":"create_workspace_from_lead","leadId":"LEAD_ID"}'
-```
+The operator API creates a merchant-specific D1 workspace, issues a random invitation token and changes the lead status to converted. The token is stored only as a SHA-256 hash and is displayed once. Send it to the merchant through a private channel. Do not put it in a public issue, chat room or analytics tool.
 
-The response contains a random merchant invitation token. It is stored only as a SHA-256 hash and is shown once. Send it to the merchant through a private channel. Do not paste it into an issue, chat room, analytics tool or public URL. The merchant enters it at `/portal`; the application exchanges it for an HttpOnly, Secure, SameSite session cookie.
-
-Tokens expire after 30 days. Rotate access through the operator endpoint if a token is lost or exposed; rotation revokes all prior tokens for that workspace.
+The merchant opens `/portal`, enters the token and receives a seven-day HttpOnly, Secure, SameSite=Lax browser session. Invitation tokens expire after 30 days. Rotating access revokes all prior tokens for that workspace.
 
 ## 4. Onboard source data
 
-The merchant portal accepts the following CSV formats. Files are parsed in memory and are limited to 5 MB and 20,000 data rows. NODUS stores normalized records, source filenames, hashes and row numbers, not the original uploaded files.
+The merchant portal accepts CSV files up to 5 MB and 20,000 data rows. Files are parsed in memory. NODUS stores normalized records, source filename, file hash and source row numbers; the original uploaded CSV is not retained.
 
 ### Contract rate card
 
@@ -77,9 +56,9 @@ PICK,order,per_unit,0.45,USD,2026-01-01,
 STORAGE,pallet_day,per_unit,1.20,USD,2026-01-01,
 ```
 
-`pricing` must be `per_unit` or `fixed`. The merchant must confirm the rows against the signed agreement before the rate card is activated. Use ISO currency codes and effective dates. Avoid combining different currencies in one contract file.
+`pricing` must be `per_unit` or `fixed`. Use ISO currency codes and effective dates. The merchant must confirm the rows against the signed agreement before the contract is activated. A file must use one currency.
 
-### One invoice per CSV file
+### One invoice per CSV
 
 Required columns:
 
@@ -90,7 +69,7 @@ INV-1001,2026-10-31,PICK,120,order,54.00,USD
 
 Optional columns: `description`, `activity_reference`, `service_date`, `period_start`, `period_end`.
 
-Use `service_date` when the contract rate should be selected based on the date the service occurred. If absent, NODUS uses `invoice_date`. If the file contains multiple service dates, include a date on each line. Period fields must be consistent across all rows in the file.
+Use `service_date` when the contract rate should be selected by the date the service occurred. If absent, NODUS uses `invoice_date`. Period fields must be consistent across the invoice file.
 
 ### Operational activity
 
@@ -101,77 +80,52 @@ record_id,reference,charge_code,quantity,unit,occurred_at
 ACT-9001,ORDER-9001,PICK,1,order,2026-10-30T12:00:00Z
 ```
 
-`reference` must match the invoice line's `activity_reference` exactly. Quantity checks also require the same charge code and unit. Multiple activity rows for one reference and charge code are marked ambiguous; the system does not sum or choose them automatically in this release.
+`reference` must match the invoice line's `activity_reference` exactly (case-sensitive after trimming). Quantity checks also require the same charge code and unit. Multiple activity rows with the same reference and charge code are marked ambiguous; they are not automatically summed.
 
 ## 5. Reconcile and investigate
 
-1. Confirm the correct provider is selected for every import.
-2. Import and confirm the effective-dated rate card.
+1. Add the merchant's 3PL provider.
+2. Import and confirm its effective-dated rate card.
 3. Import one invoice.
 4. Import operational activity if it is available.
 5. Run reconciliation from the invoice list.
-6. Review each finding and its source references.
-7. Record the case status and investigation note.
-8. Record provider outcomes separately as raised, promised, posted, verified or rejected.
+6. Review source references and calculations.
+7. Record investigation status and notes.
+8. Record provider outcomes as raised, promised, posted, verified or rejected.
 
-The engine uses integer minor-unit money arithmetic. It does not convert currencies. It does not infer missing activity as zero. It flags overlapping effective contract rules, unsupported units and exact-reference ambiguity for human review.
+The engine uses integer minor-unit money arithmetic and explicit currency. It does not convert currencies. It does not infer missing activity as zero. Overlapping rate rules, unsupported units, currency mismatches and ambiguous references require human review.
 
 A calculated variance is not proof of provider liability, a valid dispute or recoverable money. A promised credit is not a posted credit. A verified outcome requires an external reference and a detailed evidence note.
 
 ## 6. Activate the seven-day trial
 
-The trial is not started when the enquiry arrives or when an invitation is sent. It is activated only after the workspace contains:
+The trial does not start when the enquiry arrives or when an invitation is sent. It can be activated only after the workspace contains:
 
 - at least one provider;
-- at least one active confirmed contract;
-- at least one imported invoice.
+- at least one active, confirmed contract;
+- at least one completed invoice import.
 
-Activate once:
-
-```bash
-curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \
-  -H "content-type: application/json" \
-  -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \
-  -d '{"operation":"activate_trial","workspaceId":"WORKSPACE_ID"}'
-```
-
-The application sets `trialActivatedAt` and `trialEndsAt` exactly seven days apart. An expired trial becomes read-only; the operator cannot restart it through the activation action.
+The operator console's **Activate 7-day trial** action enforces these checks. The application records activation and expiry timestamps exactly seven days apart. An expired trial becomes read-only; the activation action cannot restart it.
 
 ## 7. Convert to a paid subscription
 
-The initial subscription lifecycle is operator-managed. There is no payment processor or self-serve checkout in this release. After the subscription has been independently confirmed, activate paid access:
+The first subscription lifecycle is operator-managed. There is no payment processor or self-serve checkout in this release. After a subscription has actually been confirmed, use the operator console's **Activate Core $99 / month** action and confirm the subscription. Do not activate paid status before the subscription is confirmed.
 
-```bash
-curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \
-  -H "content-type: application/json" \
-  -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \
-  -d '{"operation":"activate_subscription","workspaceId":"WORKSPACE_ID","planCode":"core_99","confirmed":true}'
-```
-
-Do not set `confirmed` unless the subscription has actually been confirmed. The workspace records its plan code and subscription start. For cancellation at the end of a confirmed billing period, set a future period end:
-
-```bash
-curl -X POST https://YOUR_NODUS_HOST/api/operator/workspaces \\
-  -H "content-type: application/json" \\
-  -H "x-nodus-operator-secret: $NODUS_OPERATOR_SECRET" \\
-  -d '{"operation":"cancel_subscription","workspaceId":"WORKSPACE_ID","periodEndsAt":"2026-12-23T00:00:00.000Z"}'
-```
-
-The merchant retains access until that period end, then the workspace becomes read-only. Renewal, billing collection, invoices, tax handling and failed-payment recovery still require a proper billing workflow before self-serve scale.
+For cancellation, record a future billing-period end date. Access remains available until that date, then becomes read-only. Renewal, payment collection, invoices, tax handling and failed-payment recovery still require a proper billing workflow before self-serve scale.
 
 ## 8. Recurring period review
 
-At the end of each billing period:
+At each billing period:
 
 1. Import the new invoice and activity export.
 2. Reconcile the invoice.
-3. Review reopened or new exceptions.
+3. Review new exceptions and items not reproduced in the latest run.
 4. Update provider responses and outcomes.
 5. Generate a period report for the invoice date range.
 6. Download the JSON report from the portal.
-7. Compare verified outcomes and unresolved exceptions with the previous period.
+7. Compare verified outcomes and unresolved exceptions with the prior period.
 
-Reports separate invoice totals by currency, exception status, and verified outcomes. They do not claim that every calculated variance has been recovered.
+Reports separate invoice totals by currency, exception status and verified outcomes. They do not claim that every calculated variance has been recovered.
 
 ## 9. Current release boundaries
 
@@ -183,7 +137,7 @@ Not included:
 - automatic provider emails or claim submission;
 - automatic invoice approval, payments, accounting journals or Shopify writes;
 - self-serve payment checkout or automated subscription billing;
-- customer self-service data export/deletion or automated retention schedules;
-- automated email delivery of invitation tokens or trial notifications.
+- automated customer data export/deletion or retention schedules;
+- automatic email delivery of merchant invitation tokens or trial notifications.
 
-Before using production merchant data, verify the actual production database and Cloudflare secrets, migration status, backups and restore, rate limits, retention/deletion process, legal entity and privacy terms, incident response and tenant-isolation tests. Do not claim security certification or independent audit without evidence.
+Before production merchant data is accepted, verify the remote D1 migration, Pages binding, operator secret, backup/export and restore process, retention/deletion process, legal entity and privacy terms, incident response and tenant-isolation tests. Do not claim security certification or independent audit without evidence.
