@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS stripe_webhook_events (
   received_at TEXT NOT NULL
 );
 ALTER TABLE threepl_workspaces ADD COLUMN subscription_cancel_at_period_end INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE threepl_workspaces ADD COLUMN stripe_checkout_url TEXT;
+ALTER TABLE threepl_workspaces ADD COLUMN stripe_checkout_expires_at TEXT;
