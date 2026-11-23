@@ -1,8 +1,9 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../db.server";
 import { issueThreePLAccessToken, operatorAuthorized } from "../services/threepl-auth.server";
 
-async function logWorkspaceEvent(workspaceId: string, action: string, detail: Record<string, unknown> = {}) {
+async function logWorkspaceEvent(workspaceId: string, action: string, detail: Prisma.InputJsonValue = {}) {
   await prisma.threePLWorkspaceEvent.create({ data: { workspaceId, actorType: "operator", action, detail } });
 }
 
@@ -101,7 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
       data: { status: "trial", trialActivatedAt: now, trialEndsAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) },
       select: { id: true, status: true, trialActivatedAt: true, trialEndsAt: true },
     });
-    await logWorkspaceEvent(workspaceId, "trial_activated", { trialActivatedAt: updated.trialActivatedAt.toISOString(), trialEndsAt: updated.trialEndsAt.toISOString() });
+    await logWorkspaceEvent(workspaceId, "trial_activated", { trialActivatedAt: trialActivatedAt: updated.trialActivatedAt?.toISOString() ?? null, trialEndsAt: updated.trialEndsAt?.toISOString() ?? null });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
 
