@@ -3,6 +3,7 @@ import { clearMerchantCookie, clean, merchantSessionCookie, sameOrigin, sha256, 
 interface Context{request:Request;env:ThreePLEnv;}
 export async function onRequestPost({request,env}:Context){
  if(!sameOrigin(request))return json({ok:false,error:"Origin rejected."},403);
+ if(Number(request.headers.get("Content-Length")||0)>2000)return json({ok:false,error:"Request too large."},413);
  const type=request.headers.get("Content-Type")||"";if(!type.toLowerCase().includes("application/json"))return json({ok:false,error:"Use JSON."},415);
  let body:{inviteToken?:string};try{body=await request.json() as {inviteToken?:string};}catch{return json({ok:false,error:"Invalid request."},400);}
  const token=clean(body.inviteToken,256);if(token.length<32)return json({ok:false,error:"The access link is invalid or expired."},401);
