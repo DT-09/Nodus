@@ -24,8 +24,11 @@ export const clean = (value: unknown, max = 300) => typeof value === "string" ? 
 
 export function sameOrigin(request: Request) {
   const origin = request.headers.get("Origin");
-  if (!origin) return true;
-  try { return new URL(origin).origin === new URL(request.url).origin; } catch { return false; }
+  if (origin) {
+    try { return new URL(origin).origin === new URL(request.url).origin; } catch { return false; }
+  }
+  // Browser Fetch Metadata is the fallback when Origin is omitted.
+  return request.headers.get("Sec-Fetch-Site") === "same-origin";
 }
 
 async function hmacHex(secret: string, message: string) {
