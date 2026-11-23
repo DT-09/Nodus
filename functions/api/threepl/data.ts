@@ -261,7 +261,7 @@ export async function onRequestPost({request,env}:Context){
    await env.NODUS_DB.prepare("INSERT INTO threepl_outcomes(id,workspace_id,exception_id,outcome_type,status,amount_minor,currency,external_reference,evidence_note,verified_at,created_at,updated_at) VALUES(?,?,?,'provider_adjustment',?,?,?,?,?,?,?,?)")
     .bind(outcomeId,workspaceId,exceptionId,status,amount.minor.toString(),amount.currency,reference||null,note,status==="verified"?now:null,now,now).run();
    const next=status==="verified"?"verified_closed":status==="posted"?"credit_posted":status==="promised"?"credit_promised":status==="raised"?"raised_with_provider":"rejected";
-   await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status=?,resolved_at=?,updated_at=? WHERE id=? AND workspace_id=?").bind(next,status==="verified"?now:null,now,exceptionId,workspaceId).run();
+   await env.NODUS_DB.prepare("UPDATE threepl_exceptions SET status=?,resolved_at=?,updated_at=? WHERE id=? AND workspace_id=?").bind(next,["verified","rejected"].includes(status)?now:null,now,exceptionId,workspaceId).run();
    await logCaseEvent(env,workspaceId,exceptionId,"merchant","outcome_recorded",{outcomeId,status,amountMinor:amount.minor.toString(),currency:amount.currency,referencePresent:Boolean(reference)});
    return json({ok:true,message:status==="verified"?"Outcome recorded as verified with the supplied evidence reference.":"Outcome recorded. It is not counted as verified recovery."});
   }
