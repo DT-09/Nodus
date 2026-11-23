@@ -5,7 +5,7 @@ import { createThreePLProvider, importThreePLActivity, importThreePLContract, im
 import { reconcileStoredThreePLInvoice } from "../services/threepl-reconciliation.server";
 import { parseMoney } from "../domain/money";
 
-const caseStatuses = new Set(["open", "investigating", "ready_for_review", "raised_with_provider", "provider_responded", "credit_promised", "credit_posted", "verified_closed", "rejected", "ignored"]);
+const caseStatuses = new Set(["open", "investigating", "ready_for_review", "raised_with_provider", "provider_responded", "rejected", "ignored"]);
 const outcomeStatuses = new Set(["raised", "promised", "posted", "verified", "rejected"]);
 
 function sameOrigin(request: Request) {
@@ -33,7 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const [providers, invoices, exceptions, reports, outcomes] = await Promise.all([
     prisma.threePLProvider.findMany({ where: { workspaceId }, orderBy: { name: "asc" }, select: { id: true, name: true, status: true } }),
     prisma.threePLInvoice.findMany({ where: { workspaceId }, include: { provider: { select: { name: true } }, _count: { select: { lines: true, runs: true } } }, orderBy: { invoiceDate: "desc" }, take: 100 }),
-    prisma.threePLException.findMany({ where: { workspaceId }, include: { invoice: { select: { invoiceNumber: true, provider: { select: { name: true } } } }, _count: { select: { events: true, outcomes: true } } }, orderBy: [{ status: "asc" }, { lastSeenAt: "desc" }], take: 250 }),
+    prisma.threePLException.findMany({ where: { workspaceId }, include: { invoice: { select: { invoiceNumber: true, provider: { select: { name: true } } } }, events: { orderBy: { createdAt: "desc" }, take: 12 }, _count: { select: { outcomes: true } } }, orderBy: [{ status: "asc" }, { lastSeenAt: "desc" }], take: 250 }),
     prisma.threePLPeriodReport.findMany({ where: { workspaceId }, orderBy: [{ periodEnd: "desc" }, { revision: "desc" }], take: 24 }),
     prisma.threePLOutcome.findMany({ where: { workspaceId }, include: { exception: { select: { findingCode: true } } }, orderBy: { createdAt: "desc" }, take: 100 }),
   ]);
@@ -48,7 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     canWrite: canWriteThreePLWorkspace(auth.workspace) && !trialExpired,
     providers,
     invoices: invoices.map(item => ({ id: item.id, number: item.invoiceNumber, provider: item.provider.name, date: item.invoiceDate.toISOString(), currency: item.currency, totalMinor: item.totalMinor.toString(), status: item.status, lineCount: item._count.lines, runCount: item._count.runs })),
-    exceptions: exceptions.map(item => ({ id: item.id, invoiceNumber: item.invoice.invoiceNumber, provider: item.invoice.provider.name, code: item.findingCode, severity: item.severity, state: item.state, status: item.status, currency: item.currency, exposureMinor: item.exposureMinor?.toString() ?? null, explanation: item.explanation, evidence: Array.isArray(item.evidenceReferences) ? item.evidenceReferences : [], events: item._count.events, outcomes: item._count.outcomes, lastSeenAt: item.lastSeenAt.toISOString() })),
+    exceptions: exceptions.map(item => ({ id: item.id, invoiceNumber: item.invoice.invoiceNumber, provider: item.invoice.provider.name, code: item.findingCode, severity: item.severity, state: item.state, status: item.status, currency: item.currency, exposureMinor: item.exposureMinor?.toString() ?? null, explanation: item.explanation, note: item.note, evidence: Array.isArray(item.evidenceReferences) ? item.evidenceReferences : [], events: item.events.map(event => ({ action: event.action, detail: event.detail, createdAt: event.createdAt.toISOString() })), outcomes: item._count.outcomes, lastSeenAt: item.lastSeenAt.toISOString() })),
     reports: reports.map(item => ({ id: item.id, start: item.periodStart.toISOString(), end: item.periodEnd.toISOString(), revision: item.revision, status: item.status, generatedAt: item.generatedAt.toISOString(), payload: item.payload })),
     outcomes: outcomes.map(item => ({ id: item.id, exceptionId: item.exceptionId, type: item.outcomeType, status: item.status, amountMinor: item.amountMinor.toString(), currency: item.currency, reference: item.externalReference, note: item.evidenceNote, verifiedAt: item.verifiedAt?.toISOString() ?? null, findingCode: item.exception.findingCode })),
   }, { headers: { "Cache-Control": "no-store" } });
@@ -98,7 +98,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const record = await prisma.threePLException.findFirst({ where: { id: exceptionId, workspaceId }, select: { id: true, status: true } });
       if (!record) throw new Error("Exception not found in this workspace.");
       await prisma.$transaction([
-        prisma.threePLException.update({ where: { id: record.id }, data: { status, resolvedAt: status === "verified_closed" || status === "rejected" || status === "ignored" ? new Date() : null } }),
+        prisma.threePLException.update({ where: { id: record.id }, data: { status, note: note || null, resolvedAt: status === "rejected" || status === "ignored" ? new Date() : null } }),
         prisma.threePLCaseEvent.create({ data: { workspaceId, exceptionId: record.id, actorType: "merchant", action: "status_changed", detail: { from: record.status, to: status, note } } }),
       ]);
       return Response.json({ ok: true, message: "Investigation status saved." });
