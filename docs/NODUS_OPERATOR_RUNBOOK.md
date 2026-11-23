@@ -27,6 +27,8 @@ The CI workflow must complete successfully before merging. The Cloudflare branch
 
 ## 2. Review trial requests
 
+Open the private operator console at `/ops` and sign in with `NODUS_OPERATOR_SECRET`. The secret is exchanged for an eight-hour HttpOnly, Secure, SameSite=Strict session and is not saved in browser storage. The console lists leads and workspaces, qualifies leads, provisions merchants, activates trials and subscriptions, rotates invitation tokens and revokes access.
+
 The public form sends business-fit information to `POST /api/leads`. It stores:
 
 - business name and contact name;
