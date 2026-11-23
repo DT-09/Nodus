@@ -1,5 +1,5 @@
 interface D1Statement{bind(...values:unknown[]):D1Statement;all<T=unknown>():Promise<{results:T[]}>;first<T=unknown>():Promise<T|null>;run<T=unknown>():Promise<{meta?:{changes?:number}}>}
-interface D1Database{prepare(sql:string):D1Statement}
+interface D1Database{prepare(sql:string):D1Statement;batch<T=unknown>(statements:D1Statement[]):Promise<Array<{meta?:{changes?:number}}>>}
 interface Env{NODUS_DB:D1Database;NODUS_ADMIN_TOKEN?:string}
 interface Context{request:Request;env:Env}
 const json=(body:unknown,status=200)=>Response.json(body,{status,headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"}});
@@ -27,13 +27,13 @@ export async function onRequestPatch({request,env}:Context){
  if(existing.payment_status==="refunded"&&payment!=="refunded")return json({error:"A refunded payment state is terminal; create a new engagement record instead."},409);
  if(existing.status==="completed"&&status!=="completed")return json({error:"A completed lead state is terminal."},409);
  const now=new Date().toISOString();
- const update=await env.NODUS_DB.prepare("UPDATE merchant_leads SET status=?,payment_status=? WHERE id=? AND status=? AND payment_status=?").bind(status,payment,id,existing.status,existing.payment_status).run();
- if((update.meta?.changes??0)!==1)return json({error:"Lead changed during this request. Reload and retry."},409);
  const actor="operator:"+await digestToken((request.headers.get("Authorization")||""));
  const events=[] as Array<{id:string;lead_id:string;actor:string;event_type:string;previous_value:string;new_value:string;created_at:string}>;
  if(existing.status!==status)events.push({id:crypto.randomUUID(),lead_id:id,actor,event_type:"lead_status_changed",previous_value:existing.status,new_value:status,created_at:now});
  if(existing.payment_status!==payment)events.push({id:crypto.randomUUID(),lead_id:id,actor,event_type:"payment_status_changed",previous_value:existing.payment_status,new_value:payment,created_at:now});
- for(const event of events)await env.NODUS_DB.prepare("INSERT INTO merchant_lead_events(id,lead_id,actor,event_type,previous_value,new_value,created_at) VALUES(?,?,?,?,?,?,?)").bind(event.id,event.lead_id,event.actor,event.event_type,event.previous_value,event.new_value,event.created_at).run();
+ const statements=[env.NODUS_DB.prepare("UPDATE merchant_leads SET status=?,payment_status=? WHERE id=? AND status=? AND payment_status=?").bind(status,payment,id,existing.status,existing.payment_status),...events.map(event=>env.NODUS_DB.prepare("INSERT INTO merchant_lead_events(id,lead_id,actor,event_type,previous_value,new_value,created_at) VALUES(?,?,?,?,?,?,?)").bind(event.id,event.lead_id,event.actor,event.event_type,event.previous_value,event.new_value,event.created_at))];
+ const results=await env.NODUS_DB.batch(statements);
+ if((results[0]?.meta?.changes??0)!==1)return json({error:"Lead changed during this request. Reload and retry."},409);
  return json({ok:true,updated:true,eventsRecorded:events.length});
 }
 async function digestToken(value:string){const bytes=new TextEncoder().encode(value);const hash=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");}
