@@ -94,7 +94,6 @@ export async function importThreePLContract(input: { workspaceId: string; provid
   const ends = rules.map(rule => rule.effectiveTo?.getTime() ?? Number.POSITIVE_INFINITY);
   const sourceHash = hash(input.csv);
   const contract = await prisma.$transaction(async tx => {
-    await tx.threePLContract.updateMany({ where: { workspaceId: input.workspaceId, providerId: input.providerId, status: "active" }, data: { status: "superseded" } });
     return tx.threePLContract.create({
       data: {
         workspaceId: input.workspaceId, providerId: input.providerId,
