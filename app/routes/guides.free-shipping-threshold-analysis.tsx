@@ -19,7 +19,7 @@ const sequence=[
 
 export default function FreeShippingThresholdGuide(){
   return <MarketingShell><main className="content-page">
-    <section className="content-note" role="note"><strong>PRODUCT SCOPE</strong><p>This is an educational methodology guide. Historical shipping-policy replay is not implemented in the current public NODUS release. The live tool supports browser-local order and carrier-cost CSV analysis only.</p></section>
+    <section className="content-note" role="note"><strong>PRODUCT SCOPE</strong><p>NODUS supports historical flat-rate and free-shipping threshold replay against imported order baskets when the required subtotal, shipping revenue and currency fields are present. The replay uses the observed historical sample; it does not predict conversion, demand response or profit.</p></section>
   <header>
       <p className="page-eyebrow">FIELD GUIDE / SHIPPING POLICY</p>
       <h1>Test a free-shipping threshold against real order history.</h1>
