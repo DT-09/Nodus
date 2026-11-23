@@ -89,6 +89,15 @@ export default function ThreePLPortal() {
     finally { setBusy(false); }
   }
 
+  function downloadReport(report: PortalData["reports"][number]) {
+    const body = JSON.stringify({ schema: "nodus.3pl-period-report.v1", reportId: report.id, revision: report.revision, generatedAt: report.generatedAt, payload: report.payload }, null, 2);
+    const blob = new Blob([body], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url; anchor.download = "nodus-3pl-period-report-" + report.id + ".json";
+    anchor.click(); URL.revokeObjectURL(url);
+  }
+
   async function logout() {
     await fetch("/api/threepl/session", { method: "DELETE", credentials: "same-origin" });
     setData(null); setAuthRequired(true); setMessage("You have signed out.");
@@ -156,7 +165,7 @@ export default function ThreePLPortal() {
     <section className="tp-section">
       <div className="tp-section-heading"><div><p className="tp-kicker">05 / PERIOD CONTROL</p><h2>Reports and verified outcomes</h2><p>Reports distinguish calculated exposure, promised adjustments, posted credits and outcomes explicitly marked verified.</p></div></div>
       <form className="tp-panel tp-report-form" onSubmit={e=>void submit(e)}><input type="hidden" name="intent" value="generate_report"/><label>PERIOD START<input type="date" name="periodStart" required/></label><label>PERIOD END<input type="date" name="periodEnd" required/></label><button disabled={!canWrite || busy}>GENERATE PERIOD REPORT</button></form>
-      <div className="tp-table-wrap"><table><thead><tr><th>PERIOD</th><th>REVISION</th><th>GENERATED</th><th>INVOICES</th><th>VERIFIED OUTCOMES</th></tr></thead><tbody>{data.reports.map(report=><tr key={report.id}><td>{date(report.start)} — {date(report.end)}</td><td>{report.revision}</td><td>{date(report.generatedAt)}</td><td>{report.payload?.scope?.invoiceCount ?? 0}</td><td>{report.payload?.outcomes?.verifiedCount ?? 0}</td></tr>)}{!data.reports.length?<tr><td colSpan={5}>No period reports generated yet.</td></tr>:null}</tbody></table></div>
+      <div className="tp-table-wrap"><table><thead><tr><th>PERIOD</th><th>REVISION</th><th>GENERATED</th><th>INVOICES</th><th>VERIFIED OUTCOMES</th><th>EXPORT</th></tr></thead><tbody>{data.reports.map(report=><tr key={report.id}><td>{date(report.start)} — {date(report.end)}</td><td>{report.revision}</td><td>{date(report.generatedAt)}</td><td>{report.payload?.scope?.invoiceCount ?? 0}</td><td>{report.payload?.outcomes?.verifiedCount ?? 0}</td><td><button type="button" className="tp-small" onClick={()=>downloadReport(report)}>DOWNLOAD JSON</button></td></tr>)}{!data.reports.length?<tr><td colSpan={6}>No period reports generated yet.</td></tr>:null}</tbody></table></div>
       <div className="tp-outcomes">{data.outcomes.map(outcome=><article key={outcome.id}><div><b>{outcome.findingCode.replaceAll("_"," ")}</b><span>{outcome.status}</span></div><strong>{money(outcome.amountMinor,outcome.currency)}</strong><small>{outcome.reference || "No external reference"} · {outcome.note}</small></article>)}{!data.outcomes.length?<p className="tp-empty">No provider outcomes have been recorded.</p>:null}</div>
     </section>
     <footer className="tp-footer"><span>NODUS / 3PL BILLING & PERFORMANCE CONTROL</span><span>Source records retained by workspace. Findings remain subject to human review.</span></footer>
