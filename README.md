@@ -10,6 +10,10 @@ NODUS is a focused shipping-economics workbench: reconcile order shipping revenu
 
 See [the NODUS Operator Runbook](docs/NODUS_OPERATOR_RUNBOOK.md) for trial intake, workspace provisioning, CSV formats, reconciliation, case handling and the manual subscription lifecycle.
 
+The recurring 3PL control runtime is implemented as Cloudflare Pages Functions backed by the existing D1 binding `NODUS_DB`. The static merchant portal and private operator console call those Functions. Apply `migrations/0003_threepl_control.sql` to the configured remote D1 database and set `NODUS_OPERATOR_SECRET` before enabling the workflow. The Prisma schema is not the 3PL runtime store.
+
+This branch is not a claim of production readiness or revenue. The D1 migration, Cloudflare environment, tenant-isolation tests, backup/restore, privacy controls and live merchant onboarding must be verified before production data is accepted.
+
 ## Current product implementation
 
 Production site: https://nodus-hq.pages.dev
