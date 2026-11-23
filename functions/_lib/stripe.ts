@@ -33,3 +33,20 @@ export async function verifyStripeSignature(raw:string,header:string,secret:stri
  const expected=[...new Uint8Array(signed)].map(value=>value.toString(16).padStart(2,"0")).join("");
  return signatures.some(signature=>{if(signature.length!==expected.length)return false;let mismatch=0;for(let i=0;i<expected.length;i++)mismatch|=expected.charCodeAt(i)^signature.charCodeAt(i);return mismatch===0;});
 }
+
+export async function scheduleWorkspaceSubscriptionCancellation(input: { secret: string; subscriptionId: string; idempotencyKey: string }) {
+  const form = new URLSearchParams();
+  form.set("cancel_at_period_end", "true");
+  const response = await fetch("https://api.stripe.com/v1/subscriptions/" + encodeURIComponent(input.subscriptionId), {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + input.secret,
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Idempotency-Key": input.idempotencyKey,
+    },
+    body: form,
+  });
+  const result = await response.json() as { id?: string; status?: string; cancel_at_period_end?: boolean; current_period_end?: number; error?: { message?: string } };
+  if (!response.ok || !result.id || result.cancel_at_period_end !== true || !result.current_period_end) throw new Error(result.error?.message || "Stripe did not schedule subscription cancellation.");
+  return { id: result.id, periodEnd: new Date(result.current_period_end * 1000).toISOString(), status: result.status || "active" };
+}
