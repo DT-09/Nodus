@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS stripe_webhook_events (
   event_type TEXT NOT NULL,
   received_at TEXT NOT NULL
 );
+ALTER TABLE threepl_workspaces ADD COLUMN subscription_cancel_at_period_end INTEGER NOT NULL DEFAULT 0;
