@@ -9,7 +9,7 @@ export async function onRequestPost({request,env}:Context) {
   let body:{secret?:string};try{body=await request.json() as {secret?:string};}catch{return json({ok:false,error:"Invalid JSON."},400);}
   const secret=typeof body.secret==="string"?body.secret:"";
   if(!operatorSecretMatches(secret,env))return json({ok:false,error:"Operator credentials are invalid."},401);
-  return json({ok:true},200,{headers:{"Set-Cookie":await operatorSessionCookie(secret),"Referrer-Policy":"no-referrer"});
+  return new Response(JSON.stringify({ok:true}),{status:200,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","Set-Cookie":await operatorSessionCookie(secret),"Referrer-Policy":"no-referrer"}});
 }
 export async function onRequestDelete({request}:Context) {
   if(!sameOrigin(request))return json({ok:false,error:"Origin rejected."},403);
