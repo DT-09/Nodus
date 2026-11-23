@@ -7,7 +7,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!operatorAuthorized(request)) return Response.json({ ok: false, error: "Unauthorized." }, { status: 401 });
   const [leads, workspaces] = await Promise.all([
     prisma.threePLLead.findMany({ orderBy: { createdAt: "desc" }, take: 100 }),
-    prisma.threePLWorkspace.findMany({ orderBy: { createdAt: "desc" }, take: 100, select: { id: true, businessName: true, ownerName: true, ownerEmail: true, shopDomain: true, status: true, planCode: true, trialActivatedAt: true, trialEndsAt: true, subscriptionStatus: true, createdAt: true } }),
+    prisma.threePLWorkspace.findMany({ orderBy: { createdAt: "desc" }, take: 100, select: { id: true, businessName: true, ownerName: true, ownerEmail: true, shopDomain: true, status: true, planCode: true, trialActivatedAt: true, trialEndsAt: true, subscriptionStatus: true, subscriptionEndsAt: true, createdAt: true } }),
   ]);
   return Response.json({
     ok: true,
@@ -78,7 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const workspaceId = String(body.workspaceId ?? "").trim();
   if (!workspaceId) return Response.json({ ok: false, error: "workspaceId is required." }, { status: 400 });
-  const workspace = await prisma.threePLWorkspace.findUnique({ where: { id: workspaceId }, select: { id: true, status: true, subscriptionStatus: true } });
+  const workspace = await prisma.threePLWorkspace.findUnique({ where: { id: workspaceId }, select: { id: true, status: true, subscriptionStatus: true, subscriptionEndsAt: true } });
   if (!workspace) return Response.json({ ok: false, error: "Workspace not found." }, { status: 404 });
 
   if (operation === "activate_trial") {
@@ -104,8 +104,20 @@ export async function action({ request }: ActionFunctionArgs) {
     const now = new Date();
     const updated = await prisma.threePLWorkspace.update({
       where: { id: workspaceId },
-      data: { status: "active", subscriptionStatus: "active", subscriptionStartedAt: now, subscriptionEndsAt: null, planCode },
+      data: { status: "active", subscriptionStatus: "active", subscriptionStartedAt: now, subscriptionEndsAt: body.periodEndsAt ? new Date(String(body.periodEndsAt)) : null, planCode },
       select: { id: true, status: true, subscriptionStatus: true, subscriptionStartedAt: true, planCode: true },
+    });
+    return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
+  }
+
+  if (operation === "cancel_subscription") {
+    const periodEndsAt = new Date(String(body.periodEndsAt ?? ""));
+    if (Number.isNaN(periodEndsAt.getTime()) || periodEndsAt <= new Date()) return Response.json({ ok: false, error: "Provide a future subscription period end date." }, { status: 400 });
+    if (workspace.subscriptionStatus !== "active") return Response.json({ ok: false, error: "Only an active subscription can be cancelled." }, { status: 409 });
+    const updated = await prisma.threePLWorkspace.update({
+      where: { id: workspaceId },
+      data: { subscriptionStatus: "cancelled", subscriptionEndsAt: periodEndsAt },
+      select: { id: true, status: true, subscriptionStatus: true, subscriptionEndsAt: true },
     });
     return Response.json({ ok: true, workspace: updated }, { headers: { "Cache-Control": "no-store" } });
   }
