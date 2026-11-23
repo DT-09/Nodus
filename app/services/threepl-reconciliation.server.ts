@@ -51,6 +51,7 @@ export async function reconcileStoredThreePLInvoice(workspaceId: string, invoice
       rate: { minor: rule.rateMinor, currency: rule.currency },
       effectiveFrom: day(rule.effectiveFrom),
       effectiveTo: rule.effectiveTo ? day(rule.effectiveTo) : null,
+      sourceRow: rule.sourceRow,
     };
   }));
 
