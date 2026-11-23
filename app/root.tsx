@@ -4,10 +4,12 @@ import {Links,Meta,Outlet,Scripts,ScrollRestoration,isRouteErrorResponse,useRout
 import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
 import nodusThemeCss from "./nodus-theme.css?url";
+import nodusFinishCss from "./nodus-finish.css?url";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
   {rel:"stylesheet",href:nodusThemeCss},
+  {rel:"stylesheet",href:nodusFinishCss},
   {rel:"preconnect",href:"https://fonts.googleapis.com"},
   {rel:"preconnect",href:"https://fonts.gstatic.com",crossOrigin:"anonymous"},
   {rel:"stylesheet",href:"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap"},
