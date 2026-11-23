@@ -53,8 +53,8 @@ export async function onRequestPost({request,env}:Context) {
       .bind(workspaceId,lead.business_name,lead.name,lead.email,shopDomain,created,created).run();
     try{
       const issued=await issueAccessToken(workspaceId,"Initial merchant invitation",env);
-      await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND status='qualified'").bind(leadId).run();
       await audit(env,workspaceId,"workspace_created_from_lead",{leadId,invitationIssued:true});
+      await env.NODUS_DB.prepare("UPDATE merchant_leads SET status='converted' WHERE id=? AND status='qualified'").bind(leadId).run();
       const workspace=await env.NODUS_DB.prepare("SELECT id,business_name,owner_email,status FROM threepl_workspaces WHERE id=?").bind(workspaceId).first();
       return json({ok:true,workspace,inviteToken:issued.token,tokenExpiresAt:new Date(issued.expiresAt*1000).toISOString()},201);
     }catch(error){
