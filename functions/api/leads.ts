@@ -30,15 +30,15 @@ export async function onRequestPost({request,env}:PagesContext<Env>):Promise<Res
  let parsed:URL;try{parsed=new URL(store.startsWith("http")?store:"https://"+store);}catch{return json({error:"Enter a valid HTTPS business or storefront URL."},400);}
  if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password)return json({error:"Enter a valid HTTPS business or storefront URL."},400);
  const ip=request.headers.get("CF-Connecting-IP")||"unknown";
- const key=await digest(ip+"|nodus-3pl-trial-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
+ const key=await digest(ip+"|nodus-hourly-review-v1"),now=Math.floor(Date.now()/1000),windowStart=now-3600;
  const limit=await env.NODUS_DB.prepare("INSERT INTO lead_rate_limits(key,window_started_at,count) VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN lead_rate_limits.window_started_at < ? THEN 1 ELSE lead_rate_limits.count+1 END, window_started_at=CASE WHEN lead_rate_limits.window_started_at < ? THEN excluded.window_started_at ELSE lead_rate_limits.window_started_at END RETURNING count").bind(key,now,windowStart,windowStart).first<{count:number}>();
  if(!limit||limit.count>3)return json({error:"Too many requests. Please try again later."},429);
  await env.NODUS_DB.prepare("DELETE FROM lead_rate_limits WHERE window_started_at < ?").bind(now-86400).run();
  const leadId=crypto.randomUUID(),createdAt=new Date().toISOString();
- await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,status,source,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,?,1,?,'new','website','seven_day_trial',NULL,'not_requested')")
+ await env.NODUS_DB.prepare("INSERT INTO merchant_leads(id,created_at,business_name,name,email,store_url,monthly_orders,shipping_setup,objective,consent,ip_hash,status,source,offer_type,price_quote,payment_status) VALUES(?,?,?,?,?,?,?,?,?,1,?,'new','website','hourly_invoice_review','USD 100/hour','not_requested')")
   .bind(leadId,createdAt,businessName,name,email,parsed.origin,orders,shipping,objective,key).run();
  return json({
   ok:true,reference:leadId.slice(0,8).toUpperCase(),
-  message:"Trial request received. NODUS will review data compatibility and onboarding readiness. Your seven-day trial begins only after your merchant workspace is ready and activated.",
+  message:"Review request received. NODUS will check fit and delivery availability. This is not a booking or payment; no work starts until reviewer, scope, price and seller/payment arrangements are confirmed in writing.",
  },201);
 }
