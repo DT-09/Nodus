@@ -6,12 +6,14 @@ import marketingCss from "./marketing.css?url";
 import nodusThemeCss from "./nodus-theme.css?url";
 import nodusFinishCss from "./nodus-finish.css?url";
 import nodusCommerceCss from "./nodus-commerce.css?url";
+import nodusHomeCss from "./nodus-home.css?url";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
   {rel:"stylesheet",href:nodusThemeCss},
   {rel:"stylesheet",href:nodusFinishCss},
   {rel:"stylesheet",href:nodusCommerceCss},
+  {rel:"stylesheet",href:nodusHomeCss},
   {rel:"preconnect",href:"https://fonts.googleapis.com"},
   {rel:"preconnect",href:"https://fonts.gstatic.com",crossOrigin:"anonymous"},
   {rel:"stylesheet",href:"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap"},
@@ -20,40 +22,14 @@ export const links:LinksFunction=()=>[
   {rel:"manifest",href:"/manifest.webmanifest"},
 ];
 export default function Root(){
-  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.getRegistrations().then(registrations=>Promise.all(registrations.map(registration=>registration.unregister()))).catch(()=>{});if("caches" in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("nodus-shell-")).map(key=>caches.delete(key)))).catch(()=>{});},[]);
+  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.getRegistrations().then(registrations=>Promise.all(registrations.map(registration=>registration.unregister()))).catch(()=>{});if("caches" in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("nodus-shell-")).map(key=>caches.delete(key))).catch(()=>{});},[]);
   return <html lang="en">
-    <head>
-      <meta charSet="utf-8"/>
-      <meta name="viewport" content="width=device-width, initial-scale=1"/>
-      <meta property="og:site_name" content="NODUS"/>
-      <meta property="og:type" content="website"/>
-      <meta name="twitter:card" content="summary"/>
-      <meta name="theme-color" content="#10110f"/>
-      <Meta/>
-      <Links/>
-    </head>
-    <body>
-      <Outlet/>
-      <ScrollRestoration/>
-      <Scripts/>
-    </body>
+    <head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta property="og:site_name" content="NODUS"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="theme-color" content="#11120f"/><Meta/><Links/></head>
+    <body><Outlet/><ScrollRestoration/><Scripts/></body>
   </html>;
 }
 export function ErrorBoundary(){
-  const error=useRouteError();
-  const status=isRouteErrorResponse(error)?error.status:500;
-  const message=process.env.NODE_ENV==="production"
-    ? "The request could not be completed. Please try again. If the problem persists, contact NODUS support with the approximate time."
-    : isRouteErrorResponse(error)
-      ? error.statusText
-      : error instanceof Error
-        ? error.message
-        : "Unexpected application error";
-  return <main className="error-page">
-    <p className="eyebrow">NODUS / SYSTEM MESSAGE</p>
-    <h1>Something went wrong.</h1>
-    <p role="status">{message}</p>
-    <p className="muted">Reference: HTTP {status}</p>
-    <a href="/">Return to NODUS</a>
-  </main>;
+  const error=useRouteError();const status=isRouteErrorResponse(error)?error.status:500;
+  const message=process.env.NODE_ENV==="production"?"The request could not be completed. Please try again. If the problem persists, contact NODUS support with the approximate time.":isRouteErrorResponse(error)?error.statusText:error instanceof Error?error.message:"Unexpected application error";
+  return <main className="error-page"><p className="eyebrow">NODUS / SYSTEM MESSAGE</p><h1>Something went wrong.</h1><p role="status">{message}</p><p className="muted">Reference: HTTP {status}</p><a href="/">Return to NODUS</a></main>;
 }
