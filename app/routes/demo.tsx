@@ -23,16 +23,16 @@ const rateCard = [
   ["ACCOUNT_FEE","month","fixed","99.00","USD","2026-01-01",""],
 ];
 const invoice = [
-  ["invoice_number","invoice_date","charge_code","quantity","unit","amount","currency","external_line_id"],
-  ["INV-EXAMPLE-104","2026-11-01","PICK_FIRST","100","order","250.00","USD","L-001"],
-  ["INV-EXAMPLE-104","2026-11-01","PALLET_STORAGE","30","pallet_day","32.00","USD","L-002"],
-  ["INV-EXAMPLE-104","2026-11-01","ACCOUNT_FEE","1","month","99.00","USD","L-003"],
-  ["INV-EXAMPLE-104","2026-11-01","PEAK_SURCHARGE","1","month","420.00","USD","L-004"],
+  ["invoice_number","invoice_date","charge_code","quantity","unit","amount","currency","external_line_id","activity_reference"],
+  ["INV-EXAMPLE-104","2026-11-01","PICK_FIRST","100","order","250.00","USD","L-001","PICK-BATCH-001"],
+  ["INV-EXAMPLE-104","2026-11-01","PALLET_STORAGE","30","pallet_day","32.00","USD","L-002","STORAGE-2026-11"],
+  ["INV-EXAMPLE-104","2026-11-01","ACCOUNT_FEE","1","month","99.00","USD","L-003",""],
+  ["INV-EXAMPLE-104","2026-11-01","PEAK_SURCHARGE","1","month","420.00","USD","L-004",""],
 ];
 const activity = [
   ["record_id","reference","charge_code","quantity","unit","occurred_at"],
-  ...Array.from({ length: 100 }, (_, i) => [`PICK-${String(i + 1).padStart(3, "0")}`, `ORDER-${String(i + 1).padStart(3, "0")}`, "PICK_FIRST", "1", "order", "2026-10-31"]),
-  ["STOR-001","PALLET-001","PALLET_STORAGE","30","pallet_day","2026-11-01"],
+  ["PICK-BATCH-001","PICK-BATCH-001","PICK_FIRST","100","order","2026-10-31"],
+  ["STORAGE-2026-11","STORAGE-2026-11","PALLET_STORAGE","30","pallet_day","2026-11-01"],
 ];
 
 function downloadCsv(filename: string, data: string[][]) {
