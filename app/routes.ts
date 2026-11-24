@@ -16,6 +16,7 @@ export default [
   route("security", "./routes/security.tsx"),
   route("support", "./routes/support.tsx"),
   route("buyer-evaluation", "./routes/buyer-evaluation.tsx"),
+  route("control-week", "./routes/control-week.tsx"),
   route("ops", "./routes/ops.tsx"),
   route("portal", "./routes/portal.tsx"),
   route("guides/shopify-shipping-cost-reconciliation", "./routes/guides.shopify-shipping-cost-reconciliation.tsx"),
