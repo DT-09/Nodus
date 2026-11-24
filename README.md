@@ -1,68 +1,93 @@
 # NODUS
 
-**Merchant-side 3PL billing and fulfilment-cost control.**
+**Hourly 3PL invoice review and monthly fulfilment-cost control for Shopify and direct-to-consumer brands.**
 
-NODUS compares third-party logistics (3PL) invoices with merchant-confirmed contract rates and available operational activity. It preserves source references, investigation history and provider outcomes in a persistent merchant workspace.
+NODUS checks fulfilment invoices against merchant-provided rate cards and available operational activity. The service is designed for e-commerce businesses that outsource warehousing, pick/pack, storage, returns or fulfilment to a third-party logistics provider (3PL).
 
-The product is platform-neutral. Shopify is not required. The initial onboarding path uses merchant-supplied CSV exports.
+Shopify is a merchant context, not a native integration in the current release. The workflow uses merchant-supplied CSV exports. It does not require Shopify OAuth, a store password or direct 3PL API credentials.
 
-## Commercial product
+## Commercial offer
 
-NODUS is designed for e-commerce brands that outsource warehousing, pick/pack and fulfilment to one or more 3PL providers.
+### First engagement — hourly invoice review
 
-The recurring workflow:
+- Proposed opening rate: **USD 100 per hour**.
+- Initial scope: one 3PL invoice, its active rate card and available activity export, subject to file compatibility.
+- Deliverables: supported rate checks, quantity checks where references permit, an exception register, evidence gaps, questions for the provider and an exportable review pack.
+- No recovery percentage, refund promise or guaranteed savings claim.
+- Scope, qualified reviewer, fee and delivery terms must be confirmed in writing before work begins.
 
-1. Register a 3PL provider and import its effective-dated contract rate card.
-2. Import each invoice as a separate CSV file.
-3. Import operational activity where the provider supplies stable record references.
-4. Reconcile invoice charges against the applicable contract rules.
-5. Investigate exceptions and preserve source evidence.
-6. Record provider responses and distinguish raised, promised, posted and verified outcomes.
-7. Generate period reports and carry unresolved cases into the next review.
+The USD 100 hourly rate is a proposed price to test, not a validated market-clearing rate or evidence of completed sales.
 
-A calculated variance is a review signal. It is not proof of provider liability, a valid dispute, recoverable money or realized savings.
+### Optional continuation — monthly control
 
-## Current application
+- Proposed pilot price: **USD 99/month**.
+- Pilot scope: one 3PL, one monthly invoice, one active rate card and one activity export.
+- Carries open exceptions forward and preserves a dated review history.
+- No automatic conversion from an hourly engagement. The merchant must approve the monthly scope separately.
 
-Production marketing site: https://nodus-hq.pages.dev
+The monthly price is also unvalidated. The current public site does not collect payment or activate a subscription.
 
-Private entry points:
+## What the merchant receives
+
+1. **Working review workspace** — import supported rate-card, invoice and operational-activity CSVs.
+2. **Reconciliation** — compare invoice lines with effective-dated rates and exact activity references where available.
+3. **Exception register** — separate matched, unmatched, ambiguous and incomplete records.
+4. **Investigation history** — preserve notes, events and provider outcomes.
+5. **Review pack** — export source references, calculations, exceptions and limitations.
+
+A calculated variance is a review signal. It is not proof of provider liability, a valid dispute, recoverable money or realized savings. The merchant remains responsible for provider communications and payment decisions.
+
+## Current file limits
+
+- CSV only.
+- Maximum 5 MB per file.
+- Maximum 20,000 data rows per file.
+- One invoice per invoice CSV.
+- PDF extraction, spreadsheet ingestion, direct Shopify connections and live 3PL API polling are not included in the current release.
+
+### Rate card CSV
+
+Required: `charge_code, unit, pricing, rate, currency, effective_from`
+
+Optional: `effective_to`
+
+`pricing` is `per_unit` or `fixed`. Confirm imported rates against the signed agreement before activating them.
+
+### Invoice CSV
+
+Required: `invoice_number, invoice_date, charge_code, quantity, unit, amount, currency`
+
+Optional: `external_line_id, description, service_date, period_start, period_end, activity_reference`
+
+All lines in a file must use one invoice number, invoice date and currency.
+
+### Operational activity CSV
+
+Required: `record_id, reference, charge_code, quantity, unit`
+
+Optional: `occurred_at`
+
+Quantity comparisons require an exact reference, charge code and unit match. Missing activity is not treated as zero.
+
+## Public website and intake
+
+- Homepage: `/`
+- Hourly review request: `/buyer-evaluation`
+- Pricing: `/pricing`
+- Sample review: `/demo`
+- Browser CSV workflow: `/manual-data`
 - Merchant workspace: `/portal`
-- Operator console: `/ops`
-- Trial request: `/buyer-evaluation#trial-request`
+- Private operator console: `/ops`
 
-Core implementation:
-- Merchant-specific D1 workspaces and tenant-scoped provider, contract, invoice, activity, exception, event, outcome and report records.
-- CSV intake for rate cards, one invoice per file, and operational activity.
-- Integer minor-unit money arithmetic with currency precision.
-- Effective-dated contract matching and explicit ambiguity handling.
-- Exact-reference activity matching; missing activity is not treated as zero.
-- Reconciliation run hashes and source-row references.
-- Persistent exception investigation and case events.
-- Outcome states that separate raised, promised, posted and verified adjustments.
-- Period reports with currency-separated totals and equal-length prior-period comparisons.
-- One-time merchant invitation links exchanged for expiring HttpOnly sessions.
-- Private operator session and workspace lifecycle controls.
+The request form stores a service enquiry in the merchant lead table. It does not create a booking, charge a card or promise service availability. A qualified reviewer, file compatibility, scope and seller/payment arrangements must be confirmed before paid work.
 
-## CSV formats
+## Payment and seller status
 
-Rate card:
-- Required: `charge_code, unit, pricing, rate, currency, effective_from`
-- Optional: `effective_to`
-- `pricing` is `per_unit` or `fixed`.
-- Confirm every imported rate against the signed agreement before activating it.
-
-Invoice (one invoice per file):
-- Required: `invoice_number, invoice_date, charge_code, quantity, unit, amount, currency`
-- Optional: `external_line_id, description, service_date, period_start, period_end, activity_reference`
-- All lines in a file must use one invoice number, invoice date and currency.
-
-Operational activity:
-- Required: `record_id, reference, charge_code, quantity, unit`
-- Optional: `occurred_at`
-- Quantity comparisons require an exact reference, charge code and unit match.
-
-Uploads are CSV-only, limited to 5 MB per file and 20,000 data rows. PDF extraction, spreadsheet ingestion and direct provider APIs are not part of the current release.
+- The existing Razorpay and Stripe adapters are not enabled for live payment processing.
+- Live payment requires an authorized adult seller to complete provider onboarding, configure encrypted production secrets, register webhooks, apply the correct billing migration and pass the full test-mode lifecycle.
+- Tax, refunds, disputes, seller identity and customer billing support require adult-owned business operations.
+- No customer payment, completed paid pilot, renewal or revenue is established by this repository.
+- Do not represent NODUS as having a qualified delivery team until the reviewer is confirmed and contracted.
 
 ## Cloudflare production configuration
 
@@ -72,42 +97,8 @@ Production branch: `main`
 Build command: `npm run build`  
 Build output: `build/client`
 
-Required binding:
-- `NODUS_DB`: Cloudflare D1 database.
-
-Required secret:
-- `NODUS_OPERATOR_SECRET`: high-entropy secret of at least 32 characters. Never commit it to Git.
-
-The 3PL workflow does not require Shopify Partner credentials, Shopify OAuth, Shopify Admin API access or direct 3PL API credentials.
-
-## Database migrations
-
-Apply in lexical order only after inspecting the actual target database:
-
-```sh
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0000_commercial_base.sql
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0001_shopify.sql
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0002_commercial_intake.sql
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0003_lead_lifecycle_audit.sql
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0003_threepl_control.sql
-npx wrangler d1 execute nodus-leads --remote --file=migrations/0004_one_time_invitation_sessions.sql
-```
-
-For an existing database, inspect `sqlite_master` and `PRAGMA table_info` first. The migrations contain `ALTER TABLE` statements and must not be blindly rerun. Verify every migration against a non-production database before applying it to production.
-
-## Commercial status and limits
-
-- The seven-day trial request is a qualification request; it does not automatically activate a trial.
-- Operator provisioning and access-token issuance are implemented. Automatic customer invitation email delivery is not.
-- Razorpay-hosted USD 99/month subscription checkout is implemented for operator-issued links, including automatic monthly plan creation, signed webhooks, payment-failure states and period-end cancellation. Razorpay is the preferred adapter for an eligible India-based seller.
-- Stripe Checkout remains an optional fallback for sellers with an eligible Stripe account. New Stripe accounts in India are invite-only.
-- Live payment processing remains disabled until an authorized adult seller completes provider onboarding, configures the required encrypted production secrets, registers the provider webhook, applies the billing migration and passes the full test-mode lifecycle.
-- Tax handling, seller identity, refunds/disputes and customer billing support still require adult-owned business operations.
-- The USD 99/month price is a hypothesis, not validated willingness to pay.
-- No paying merchant, completed paid pilot, renewal, customer result or revenue is established by this repository.
-- No SLA or inventory reconciliation is offered.
-- NODUS does not automatically contact providers, file disputes, approve invoices, make payments or modify merchant platform records.
-- Original uploaded files are processed in memory; normalized records, file hashes and source references are stored.
+Required binding: `NODUS_DB` (Cloudflare D1).  
+Required secret: `NODUS_OPERATOR_SECRET` (high-entropy secret of at least 32 characters; never commit it to Git).
 
 ## Development
 
@@ -122,4 +113,4 @@ npm test
 npm run build
 ```
 
-A successful build is not proof of a production-ready service or a commercial business. Production acceptance also requires migration verification, tenant-isolation testing, data lifecycle procedures, operational monitoring, a legitimate payment process and an authorized merchant pilot.
+A successful build is not proof of a commercial business. Commercial acceptance also requires a qualified reviewer, adult-owned seller and payment operations, a paid pilot, and documented customer acceptance.
