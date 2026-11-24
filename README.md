@@ -20,12 +20,12 @@ The USD 100 hourly rate is a proposed price to test, not a validated market-clea
 
 ### Optional continuation — monthly control
 
-- Proposed pilot price: **USD 99/month**.
+- Monthly price: **not set; not currently orderable**.
 - Pilot scope: one 3PL, one monthly invoice, one active rate card and one activity export.
-- Carries open exceptions forward and preserves a dated review history.
+- Planned scope: carry open exceptions forward and preserve a dated review history. This persistence is not implemented for 3PL cases yet.
 - No automatic conversion from an hourly engagement. The merchant must approve the monthly scope separately.
 
-The monthly price is also unvalidated. The current public site does not collect payment or activate a subscription.
+Monthly pricing is not published as an orderable offer. The current public site does not collect payment or activate a subscription.
 
 ## What the merchant receives
 
