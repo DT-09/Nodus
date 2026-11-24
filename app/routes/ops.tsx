@@ -107,7 +107,7 @@ export default function OpsConsole() {
     {checkoutLink ? <section className="ops-panel ops-token"><div><span className="ops-kicker">HOSTED SUBSCRIPTION CHECKOUT</span><h2>{checkoutLink.workspace}</h2><p>Share this hosted payment link privately. Paid access changes only after the payment provider confirms the charge by signed webhook.</p></div><a href={checkoutLink.url} target="_blank" rel="noreferrer">OPEN CHECKOUT ↗</a><textarea readOnly value={checkoutLink.url}/><button onClick={() => void navigator.clipboard.writeText(checkoutLink.url)}>COPY CHECKOUT LINK</button></section> : null}
     {issuedToken ? <section className="ops-panel ops-token"><div><span className="ops-kicker">ONE-TIME-VISIBLE INVITATION TOKEN</span><h2>{issuedToken.workspace}</h2><p>Expires: {stamp(issuedToken.expiresAt)}</p></div><textarea readOnly value={issuedToken.token}/><button onClick={() => void navigator.clipboard.writeText(issuedToken.token)}>COPY TOKEN</button><p className="ops-note">Send this token privately to the merchant. It is shown here once and is not stored in plaintext.</p></section> : null}
 
-    <section className="ops-section"><div className="ops-heading"><div><span>01 / INBOUND DEMAND</span><h2>Trial requests</h2></div><strong>{data?.leads.length ?? 0}</strong></div>
+    <section className="ops-section"><div className="ops-heading"><div><span>01 / INBOUND DEMAND</span><h2>Service enquiries</h2></div><strong>{data?.leads.length ?? 0}</strong></div>
       <div className="ops-list">{data?.leads.map(lead=><article className="ops-panel" key={lead.id}>
         <div className="ops-card-head"><div><span className="ops-kicker">{lead.shopDomain}</span><h3>{lead.businessName}</h3><p>{lead.name} · {lead.email}</p></div><span className={"ops-status ops-"+lead.status}>{lead.status}</span></div>
         <div className="ops-facts"><span>ORDERS / {lead.monthlyOrders.replaceAll("_"," ")}</span><span>FULFILMENT / {lead.fulfilmentSetup.replaceAll("_"," ")}</span><span>REQUESTED / {stamp(lead.createdAt)}</span></div>
@@ -116,7 +116,7 @@ export default function OpsConsole() {
           <form onSubmit={submitLeadStatus}><input type="hidden" name="leadId" value={lead.id}/><select name="status" defaultValue={lead.status}><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="rejected">Rejected</option></select><button className="ops-small" disabled={busy}>UPDATE LEAD</button></form>
           <button className="ops-small" disabled={busy || lead.status !== "qualified"} onClick={() => void runOperation({ operation: "create_workspace_from_lead", leadId: lead.id })}>PROVISION WORKSPACE</button>
         </div>
-      </article>)}{!data?.leads.length?<p className="ops-empty">No trial requests have been received.</p>:null}</div>
+      </article>)}{!data?.leads.length?<p className="ops-empty">No service enquiries have been received.</p>:null}</div>
     </section>
 
     <section className="ops-section"><div className="ops-heading"><div><span>02 / MERCHANT DELIVERY</span><h2>Workspaces</h2></div><strong>{data?.workspaces.length ?? 0}</strong></div>
