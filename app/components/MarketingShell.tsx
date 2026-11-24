@@ -3,7 +3,7 @@ import {Link} from "react-router";
 import {NODUS_MARK} from "./nodus-mark";
 const groups = [
  {label:"PRODUCT",links:[["3PL invoice review","/guides/3pl-invoice-reconciliation"],["Product capabilities","/product"],["3PL control method","/methodology"]]},
- {label:"EXPLORE",links:[["How NODUS works","/methodology"],["Pricing","/pricing"],["Merchant evaluation","/buyer-evaluation"],["Support","/support"]]},
+ {label:"EXPLORE",links:[["7-day Control Week","/control-week"],["How NODUS works","/methodology"],["Pricing","/pricing"],["Merchant evaluation","/buyer-evaluation"],["Support","/support"]]},
  {label:"TRUST",links:[["Security & data","/security"],["Privacy & data handling","/privacy"],["GitHub","https://github.com/DT-09/Nodus"]]},
 ] as const;
 function NodusLogo(){return <img className="nodus-logo" src={NODUS_MARK} alt="NODUS network mark"/>;}
