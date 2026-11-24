@@ -11,8 +11,8 @@ Shopify is a merchant context, not a native integration in the current release. 
 ### First engagement — hourly invoice review
 
 - Proposed opening rate: **USD 100 per hour**.
-- Initial scope: one 3PL invoice, its active rate card and available activity export, subject to file compatibility.
-- Deliverables: supported rate checks, quantity checks where references permit, an exception register, evidence gaps, questions for the provider and an exportable review pack.
+- Initial scope: one warehouse, one invoice, one active rate card and up to 25 invoice lines. The one-hour session starts only after CSV compatibility is confirmed.
+- Time allocation: 10 minutes source/scope confirmation; 25 minutes rate and invoice exception review; 15 minutes activity-evidence validation and prioritisation; 10 minutes handover.\n- Deliverables: exported exception register, source-referenced findings, written action sheet, evidence gaps and a 10-minute walkthrough.\n- Work stops at 60 minutes. Any additional time requires a written scope and customer approval before it begins.
 - No recovery percentage, refund promise or guaranteed savings claim.
 - Scope, qualified reviewer, fee and delivery terms must be confirmed in writing before work begins.
 
@@ -72,14 +72,14 @@ Quantity comparisons require an exact reference, charge code and unit match. Mis
 ## Public website and intake
 
 - Homepage: `/`
-- Hourly review request: `/buyer-evaluation`
+- Hourly review request: `/buyer-evaluation`\n- 3PL invoice review workspace: `/fulfilment-review`
 - Pricing: `/pricing`
 - Sample review: `/demo`
 - Browser CSV workflow: `/manual-data`
 - Merchant workspace: `/portal`
 - Private operator console: `/ops`
 
-The request form stores a service enquiry in the merchant lead table. It does not create a booking, charge a card or promise service availability. A qualified reviewer, file compatibility, scope and seller/payment arrangements must be confirmed before paid work.
+The request form stores a service enquiry in the merchant lead table. It does not create a booking, charge a card or promise service availability. A qualified reviewer, file compatibility, scope and seller/payment arrangements must be confirmed before paid work. The `/fulfilment-review` workspace performs deterministic CSV checks; it does not replace human contract interpretation or professional sign-off.
 
 ## Payment and seller status
 
