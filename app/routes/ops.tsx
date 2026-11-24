@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
   { name: "referrer", content: "no-referrer" },
 ];
 
-type Lead = { id: string; businessName: string; name: string; email: string; shopDomain: string; monthlyOrders: string; fulfilmentSetup: string; objective: string; status: string; createdAt: string };
+type Lead = { id: string; businessName: string; name: string; email: string; shopDomain: string; monthlyOrders: string; fulfilmentSetup: string; objective: string; status: string; offerType: string; priceQuote: string | null; paymentStatus: string; createdAt: string };
 type AccessToken = { id: string; label: string; expiresAt: string; usedAt: string | null; revokedAt: string | null; lastUsedAt: string | null; createdAt: string };
 type Workspace = { id: string; businessName: string; ownerName: string; ownerEmail: string; shopDomain: string | null; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionStartedAt: string | null; subscriptionEndsAt: string | null; subscriptionCancelAtPeriodEnd: boolean; stripeCheckoutUrl: string | null; stripeCheckoutExpiresAt: string | null; checkoutUrl: string | null; checkoutExpiresAt: string | null; createdAt: string; accessTokens: AccessToken[] };
 type ConsoleData = { ok: boolean; leads: Lead[]; workspaces: Workspace[] };
@@ -110,7 +110,7 @@ export default function OpsConsole() {
     <section className="ops-section"><div className="ops-heading"><div><span>01 / INBOUND DEMAND</span><h2>Service enquiries</h2></div><strong>{data?.leads.length ?? 0}</strong></div>
       <div className="ops-list">{data?.leads.map(lead=><article className="ops-panel" key={lead.id}>
         <div className="ops-card-head"><div><span className="ops-kicker">{lead.shopDomain}</span><h3>{lead.businessName}</h3><p>{lead.name} · {lead.email}</p></div><span className={"ops-status ops-"+lead.status}>{lead.status}</span></div>
-        <div className="ops-facts"><span>ORDERS / {lead.monthlyOrders.replaceAll("_"," ")}</span><span>FULFILMENT / {lead.fulfilmentSetup.replaceAll("_"," ")}</span><span>REQUESTED / {stamp(lead.createdAt)}</span></div>
+        <div className="ops-facts"><span>OFFER / {lead.offerType.replaceAll("_"," ")}</span><span>QUOTE / {lead.priceQuote || "SCOPE TO CONFIRM"}</span><span>PAYMENT / {lead.paymentStatus.replaceAll("_"," ")}</span><span>ORDERS / {lead.monthlyOrders.replaceAll("_"," ")}</span><span>FULFILMENT / {lead.fulfilmentSetup.replaceAll("_"," ")}</span><span>REQUESTED / {stamp(lead.createdAt)}</span></div>
         <p>{lead.objective}</p>
         <div className="ops-actions">
           <form onSubmit={submitLeadStatus}><input type="hidden" name="leadId" value={lead.id}/><select name="status" defaultValue={lead.status}><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="rejected">Rejected</option></select><button className="ops-small" disabled={busy}>UPDATE LEAD</button></form>
