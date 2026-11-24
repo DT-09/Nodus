@@ -39,7 +39,7 @@ export default function BuyerEvaluation(){
  return <MarketingShell active="evaluation"><main className="nc-form-shell">
   <div className="nc-overline">NODUS / FIRST-HOUR REVIEW</div>
   <h1>One invoice.<br/><em>One clear scope.</em></h1>
-  <p className="nc-lede">Tell us what your 3PL bills and what records you can compare it with. We will check whether the current CSV workflow fits, confirm the reviewer and scope, and state the price before any paid work begins.</p>
+  <p className="nc-lede">Tell us what your 3PL bills and what records you can compare it with. The proposed $100 session covers one warehouse, one invoice, one active rate card and up to 25 invoice lines. We check CSV fit, reviewer availability and scope before any payment or work.</p>
   <div className="nc-actions"><span className="nc-micro">TARGET OPENING RATE: $100 / HOUR</span><span className="nc-micro">NO PAYMENT ON THIS FORM</span><span className="nc-micro">NO CONFIDENTIAL FILES HERE</span></div>
   <form className="nc-form" onSubmit={submit}>
    <div className="nc-field"><label htmlFor="businessName">Business name</label><input id="businessName" name="businessName" minLength={2} maxLength={160} required placeholder="Company name"/></div>
@@ -57,8 +57,8 @@ export default function BuyerEvaluation(){
   </form>
   <section className="nc-section"><div className="nc-overline">WHAT HAPPENS NEXT</div><div className="nc-steps">
    <article className="nc-step"><b>01 / FIT</b><h3>Request reviewed</h3><p>We check store type, volume, provider setup and the problem you described.</p></article>
-   <article className="nc-step"><b>02 / SCOPE</b><h3>Confirm the hour</h3><p>You receive a written scope, reviewer details and total fee before deciding.</p></article>
-   <article className="nc-step"><b>03 / WORK</b><h3>Review the evidence</h3><p>The merchant-side workspace handles supported CSVs. Original files stay in the browser workflow.</p></article>
+   <article className="nc-step"><b>02 / SCOPE</b><h3>Confirm the hour</h3><p>You receive the named reviewer, written scope, $100 one-hour fee, data-handling terms and delivery date before deciding.</p></article>
+   <article className="nc-step"><b>03 / WORK</b><h3>Review the evidence</h3><p>The browser workspace calculates supported rate and activity checks. A qualified reviewer validates the findings and prepares the action sheet; source files remain in the browser workflow.</p></article>
    <article className="nc-step"><b>04 / REPEAT</b><h3>Consider monthly control</h3><p>If invoices recur and the first review is useful, we can propose the $99/month pilot scope.</p></article>
   </div></section>
   <section className="nc-section"><div className="nc-overline">FIT AND LIMITS</div><div className="nc-faq">
