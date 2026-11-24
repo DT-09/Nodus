@@ -3,66 +3,38 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS pricing — 3PL billing and performance control"},
- {name:"description",content:"Request a free seven-day NODUS trial. Continue with the merchant 3PL control workspace at the initial $99/month price, subject to pilot confirmation."}
+ {title:"NODUS pricing — free shipping review and monthly control"},
+ {name:"description",content:"Start with a free seven-day shipping-cost review. Review the proposed NODUS monthly service and its current release limits."}
 ];
 
 const included=[
- "Merchant-specific workspace with revocable private access",
- "Provider and effective-dated contract rate records",
- "CSV invoice intake with source-row lineage",
- "Operational activity intake for exact-reference quantity checks",
- "Deterministic rate and quantity reconciliation",
- "Persistent exception investigation and case history",
- "Provider outcome ledger: raised, promised, posted and verified",
- "Recurring period reports with evidence coverage and limitations"
+ "Order-level shipping revenue and supported carrier-cost matching",
+ "Separate unmatched, ambiguous and incomplete records",
+ "Currency-separated totals and explicit tax limitations",
+ "Historical flat-rate and free-shipping threshold replay",
+ "CSV register, JSON decision pack and readable report",
+ "A repeatable monthly review of new carrier and 3PL cost records"
 ];
 
 export default function Pricing(){
  return <MarketingShell active="pricing"><main className="content-page nd-pricing-page">
-  <header className="nd-pricing-hero">
-   <p className="page-eyebrow">NODUS / COMMERCIAL SERVICE</p>
-   <h1>Control the fulfilment bill.<br/><em>Every month.</em></h1>
-   <p className="page-lede">A recurring merchant-side control record for 3PL contract rates, invoice charges, operational evidence, exceptions and verified provider outcomes.</p>
-  </header>
+  <header className="nd-pricing-hero"><p className="page-eyebrow">NODUS / COMMERCIAL PLAN</p><h1>Check the shipping bill.<br/><em>Then decide if it stays.</em></h1><p className="page-lede">Start with the free working review. If shipping costs change often enough to justify a monthly process, NODUS is being developed as a recurring merchant control service.</p></header>
   <section className="nd-pricing-grid">
-   <article className="nd-plan nd-plan-free">
-    <span className="nd-plan-kicker">01 / EVALUATION</span><h2>Seven-day trial</h2><p className="nd-plan-price">Free</p>
-    <p className="nd-plan-desc">A real private workspace using your own contract, invoice and available operational exports. No card details are collected on the request form.</p>
-    <ul><li>Data compatibility review before activation</li><li>Private merchant workspace</li><li>Import and reconcile supported source records</li><li>Investigate exceptions and record outcomes</li><li>Generate a period report during the trial</li></ul>
-    <Link to="/buyer-evaluation#trial-request" className="cta-secondary">REQUEST THE TRIAL ↗</Link>
-   </article>
-   <article className="nd-plan nd-plan-pro nd-plan-monthly">
-    <span className="nd-plan-kicker">02 / CONTINUOUS CONTROL</span><h2>NODUS Core</h2><p className="nd-plan-price">$99 <small>/ month</small></p>
-    <p className="nd-plan-desc">For a merchant that reviews recurring 3PL invoices and needs the evidence, investigations and outcomes to carry forward each billing period.</p>
-    <ul>{included.map(item=><li key={item}>{item}</li>)}</ul>
-    <Link to="/buyer-evaluation#trial-request" className="cta-primary">START WITH THE FREE TRIAL ↗</Link>
-   </article>
+   <article className="nd-plan nd-plan-free"><span className="nd-plan-kicker">01 / START HERE</span><h2>Control Week</h2><p className="nd-plan-price">Free</p><p className="nd-plan-desc">Seven days of guided work using sample data or your own CSV exports. No card, store password or sales call required.</p><ul><li>Inspect the sample reconciliation</li><li>Run your own order and carrier CSVs in your browser</li><li>Review matched and unmatched charges</li><li>Test historical shipping policies</li><li>Export your review pack</li><li>No automatic paid conversion</li></ul><Link to="/control-week" className="cta-primary">START THE FREE WEEK ↗</Link></article>
+   <article className="nd-plan nd-plan-pro nd-plan-monthly"><span className="nd-plan-kicker">02 / MONTHLY SERVICE</span><h2>NODUS Core</h2><p className="nd-plan-price">$99 <small>/ month · proposed</small></p><p className="nd-plan-desc">A proposed monthly service for merchants who need to review new carrier or 3PL charges, carry open exceptions forward and keep a record of shipping economics.</p><ul>{included.map(item=><li key={item}>{item}</li>)}</ul><p className="pricing-footnote">The $99 price is an unvalidated commercial hypothesis. Self-serve paid checkout and automatic subscription activation are not live. No payment will be taken through this page.</p><Link to="/support" className="cta-secondary">ASK ABOUT A MERCHANT PILOT ↗</Link></article>
   </section>
-  <section className="nd-pricing-process">
-   <div><span>HOW ACCESS WORKS</span><h2>Start when the workspace<br/><em>is ready to work.</em></h2></div>
-   <div className="nd-pricing-steps">
-    <article><b>01</b><div><h3>Request access</h3><p>Tell us about your 3PL setup and the records you can export. The request form does not collect source files.</p></div></article>
-    <article><b>02</b><div><h3>Confirm compatibility</h3><p>NODUS checks whether the contract rate card, invoice rows and activity exports fit the supported formats. Unsupported or ambiguous terms are identified before activation.</p></div></article>
-    <article><b>03</b><div><h3>Activate seven days</h3><p>The trial starts only after your private workspace is provisioned and ready. Waiting for onboarding does not consume trial time.</p></div></article>
-    <article><b>04</b><div><h3>Continue monthly</h3><p>Before the trial ends, the recurring scope and subscription are confirmed. Paid access is activated after the subscription is confirmed; self-serve checkout is not yet offered.</p></div></article>
-   </div>
+  <section className="nd-pricing-process"><div><span>WHAT HAPPENS NEXT</span><h2>Try the workflow<br/><em>before you pay.</em></h2></div><div className="nd-pricing-steps">
+   <article><b>01</b><div><h3>Run the sample</h3><p>See the exact matching rules and the limits on the result.</p></div></article>
+   <article><b>02</b><div><h3>Use your own exports</h3><p>Check whether your records contain enough information for a useful review.</p></div></article>
+   <article><b>03</b><div><h3>Keep the decision pack</h3><p>Export the work and decide whether the monthly review solves a real recurring problem.</p></div></article>
+   <article><b>04</b><div><h3>Consider a pilot</h3><p>Paid service begins only after scope, seller arrangements and payment terms are confirmed.</p></div></article>
+  </div></section>
+  <section className="nd-pricing-faq"><h2>What is available now?</h2>
+   <div><h3>Does the free review connect to Shopify?</h3><p>The public free experience uses CSV exports. It does not ask for your Shopify password or require an app installation.</p></div>
+   <div><h3>Are my files uploaded?</h3><p>No. The manual CSV review processes the selected files in your browser. You can save a local review history and export the results.</p></div>
+   <div><h3>Does NODUS guarantee savings?</h3><p>No. It identifies supported differences and missing evidence. A calculated variance is not proof of carrier liability or recovered money.</p></div>
+   <div><h3>Can I pay for NODUS Core now?</h3><p>Not through this page. Paid checkout is not live. The displayed monthly price is proposed, not a validated or currently purchasable subscription.</p></div>
   </section>
-  <section className="nd-pricing-value">
-   <div><span>WHY IT REPEATS</span><h2>The next invoice<br/><em>starts a new review.</em></h2><p>Contracts have effective dates. Invoices recur. Activity changes. Disputes and promised credits can remain open across periods. NODUS keeps those records together so each new review builds on the previous one.</p></div>
-   <div className="nd-pricing-deliverables"><p><b>01 / CONTRACT</b> Rate rules and effective periods</p><p><b>02 / INVOICE</b> Charges, quantities, currency and source rows</p><p><b>03 / ACTIVITY</b> Exact-reference operational evidence</p><p><b>04 / CASES</b> Investigation state and provider responses</p><p><b>05 / OUTCOMES</b> Promised, posted and verified adjustments</p><p><b>06 / REPORT</b> Period scope, exceptions and next actions</p></div>
-  </section>
-  <section className="nd-pricing-faq">
-   <h2>Scope and trust</h2>
-   <div><h3>Does NODUS guarantee savings or credits?</h3><p>No. It calculates supported variances and preserves evidence for investigation. A calculated variance is not proof of provider liability or recoverable money.</p></div>
-   <div><h3>Does it connect to Shopify automatically?</h3><p>The first onboarding path uses merchant-supplied CSV exports. platform APIs and direct 3PL integrations are deferred until a customer requires them and the integration is tested.</p></div>
-   <div><h3>Which files are supported?</h3><p>Structured CSV rate cards, one invoice per CSV and operational activity CSVs. Each upload is limited to 5 MB and 20,000 data rows. PDF extraction is not included.</p></div>
-   <div><h3>Are source files stored?</h3><p>CSV files are processed in memory. NODUS stores normalized source rows, file names, file hashes and source-row references for auditability; it does not retain the original uploaded file in this release.</p></div>
-   <div><h3>Is the subscription self-serve?</h3><p>Not yet. Trial requests are reviewed, workspaces are activated after onboarding, and paid access is enabled after the subscription is confirmed. No automated checkout is claimed.</p></div>
-  </section>
-  <section className="nd-pricing-contact">
-   <h2>Make your 3PL relationship auditable.</h2><p>Start with your actual rate card, invoice and activity exports. Decide whether the recurring control is worth keeping after the trial.</p>
-   <div className="hero-ctas"><Link to="/buyer-evaluation#trial-request" className="cta-primary">REQUEST SEVEN-DAY TRIAL ↗</Link><Link to="/product" className="cta-secondary">EXPLORE THE PRODUCT ↗</Link></div>
-  </section>
+  <section className="nd-pricing-contact"><h2>Start with the numbers you already have.</h2><p>No pitch deck. No invented savings estimate. Run the review and see whether the result is useful.</p><div className="hero-ctas"><Link to="/control-week" className="cta-primary">START FREE CONTROL WEEK ↗</Link><Link to="/demo" className="cta-secondary">SEE THE SAMPLE ↗</Link></div></section>
  </main></MarketingShell>;
 }

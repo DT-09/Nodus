@@ -332,3 +332,65 @@ body{min-height:100%;background:radial-gradient(ellipse at 78% -8%,rgba(185,155,
  .marketing-site .site-brand .nodus-logo{width:35px!important;height:35px!important;min-width:35px!important;flex-basis:35px!important}
  .marketing-site .nh-meta{font-size:10px!important;flex-wrap:wrap}
 }
+
+
+/* NODUS commercial rebuild: lock the navigation baseline and give the brand lockup one alignment system. */
+.marketing-site .site-header{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:82px}
+.marketing-site .site-brand{display:flex!important;align-items:center!important;align-self:center!important;gap:12px!important;min-height:40px}
+.marketing-site .site-brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important;line-height:1!important}
+.marketing-site .site-brand-word{display:block!important;line-height:1!important;margin:0!important;transform:none!important;position:static!important}
+.marketing-site .site-brand-caption{display:block!important;line-height:1.2!important;margin:0!important;transform:none!important;position:static!important}
+.marketing-site .site-header-right{display:flex!important;align-items:center!important;align-self:center!important;margin:0!important;padding:0!important}
+.marketing-site .menu-trigger{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;align-self:center;margin:0!important}
+.marketing-site .nh-commercial-metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.marketing-site .nh-commercial-metrics>div{padding:15px 12px;border-right:1px solid var(--nd-line)}
+.marketing-site .nh-commercial-metrics>div:last-child{border-right:0}
+.marketing-site .nh-commercial-metrics small{display:block;margin-top:7px;color:var(--nd-stone);font-size:10px;line-height:1.5}
+.marketing-site .nh-commercial-metrics b{font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.marketing-site .nh-sample-warning{display:flex;gap:10px;align-items:flex-start;margin-top:15px;padding:12px 14px;border:1px solid var(--nd-line);background:rgba(185,155,107,.055)}
+.marketing-site .nh-sample-warning>span{color:var(--nd-champagne);font-weight:700}
+.marketing-site .nh-sample-warning p{margin:0;color:var(--nd-linen);font-size:11px;line-height:1.65}
+.marketing-site .nh-steps article>a{display:inline-block;margin-top:16px;color:var(--nd-champagne);font:600 10px/1.5 Manrope,sans-serif;letter-spacing:.08em;text-decoration:none}
+.marketing-site .nh-steps article>a:hover{color:var(--nd-ivory)}
+.marketing-site .cw-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,240px);gap:22px;align-items:center}
+.marketing-site .cw-start>button{grid-column:1/-1;justify-self:start}
+.marketing-site .cw-progress strong{display:block;color:var(--nd-ivory);font:400 42px/1 Georgia,serif}
+.marketing-site .cw-progress strong small{font-size:18px;color:var(--nd-stone)}
+.marketing-site .cw-progress>span{display:block;margin-top:8px;color:var(--nd-champagne);font:600 9px/1.4 Manrope,sans-serif;letter-spacing:.12em}
+.marketing-site .cw-progress-track{height:4px;margin-top:13px;background:var(--nd-graphite);overflow:hidden}
+.marketing-site .cw-progress-track i{display:block;height:100%;background:var(--nd-gold);transition:width .25s ease}
+.marketing-site .cw-section-head{margin:0 0 26px}
+.marketing-site .cw-section-head h2{max-width:700px}
+.marketing-site .cw-day{display:grid;grid-template-columns:125px minmax(0,1fr) 210px;gap:24px;padding:28px 0;border-top:1px solid var(--nd-line);align-items:start}
+.marketing-site .cw-day:last-child{border-bottom:1px solid var(--nd-line)}
+.marketing-site .cw-day-number{color:var(--nd-champagne);font:600 10px/1.5 Manrope,sans-serif;letter-spacing:.1em}
+.marketing-site .cw-day-number span{display:block;margin-top:9px;color:var(--nd-stone);font-size:9px}
+.marketing-site .cw-day-copy h3{margin:0 0 9px;color:var(--nd-ivory);font:400 26px/1.2 Georgia,serif}
+.marketing-site .cw-day-copy p{margin:0;color:var(--nd-linen);font-size:14px;line-height:1.8}
+.marketing-site .cw-day-copy small{display:block;margin-top:12px;color:var(--nd-stone);font-size:10px;line-height:1.6}
+.marketing-site .cw-day-actions{display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.marketing-site .cw-day-actions>a{color:var(--nd-champagne);font:600 10px/1.5 Manrope,sans-serif;letter-spacing:.06em;text-decoration:none}
+.marketing-site .cw-day-actions label{display:flex;gap:8px;align-items:center;color:var(--nd-stone);font-size:11px}
+.marketing-site .cw-day-actions input{width:15px;height:15px;accent-color:var(--nd-gold)}
+.marketing-site .cw-day.is-complete .cw-day-number span{color:var(--nd-olive)}
+.marketing-site .cw-day.is-complete .cw-day-copy h3{text-decoration:line-through;text-decoration-color:var(--nd-gold)}
+.marketing-site .cw-boundaries .content-grid article{background:linear-gradient(150deg,rgba(49,47,39,.55),rgba(27,28,24,.9));border:1px solid var(--nd-line);padding:22px}
+.marketing-site .cw-boundaries .content-grid article h2{font-size:24px}
+.marketing-site .cw-final{text-align:center}
+.marketing-site .cw-final>p{max-width:650px;margin:15px auto 24px}
+.marketing-site .cw-final .hero-ctas{justify-content:center}
+@media(max-width:760px){
+ .marketing-site .site-header{min-height:66px}
+ .marketing-site .cw-start{grid-template-columns:1fr}
+ .marketing-site .cw-start>button{grid-column:auto}
+ .marketing-site .cw-day{grid-template-columns:1fr;gap:12px;padding:22px 0}
+ .marketing-site .cw-day-actions{flex-direction:row;flex-wrap:wrap;align-items:center;gap:18px}
+ .marketing-site .nh-commercial-metrics>div{padding:12px 8px}
+ .marketing-site .nh-commercial-metrics b{font-size:17px}
+ .marketing-site .nh-commercial-metrics small{font-size:9px}
+}
+@media(max-width:420px){
+ .marketing-site .nh-commercial-metrics{grid-template-columns:1fr}
+ .marketing-site .nh-commercial-metrics>div{border-right:0;border-bottom:1px solid var(--nd-line)}
+ .marketing-site .nh-commercial-metrics>div:last-child{border-bottom:0}
+}
