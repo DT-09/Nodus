@@ -1,90 +1,85 @@
 import type {MetaFunction} from "react-router";
 import {Link} from "react-router";
+import {useState} from "react";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS — 3PL invoice control for Shopify & DTC brands"},
- {name:"description",content:"A practical 3PL invoice review desk for e-commerce brands. Compare warehouse charges with your rate card and activity exports, document exceptions and keep a monthly control record."},
- {property:"og:title",content:"NODUS — Fulfilment costs, checked"},
- {property:"og:description",content:"3PL invoice review and recurring fulfilment-cost control for Shopify and DTC brands."},
- {name:"theme-color",content:"#10110f"}
+ {title:"NODUS — Independent fulfilment invoice control"},
+ {name:"description",content:"Check 3PL invoices against contracted rates and warehouse activity. Trace every exception to its source."},
+ {property:"og:title",content:"NODUS — The invoice is only half the record"},
+ {property:"og:description",content:"Independent fulfilment invoice control for Shopify and DTC operators."},
+ {name:"theme-color",content:"#11120f"}
 ];
 
-const sample=[
- {id:"INV-2048 / PICK-PACK",rate:"$2.10",billed:"$4.20",result:"CHECK",kind:"warn"},
- {id:"INV-2048 / STORAGE",rate:"$84.00",billed:"$84.00",result:"MATCH",kind:"good"},
- {id:"INV-2048 / RECEIVING",rate:"$18.00",billed:"—",result:"NO SOURCE",kind:"muted"},
- {id:"INV-2048 / MONTHLY MIN.",rate:"$250.00",billed:"$250.00",result:"MATCH",kind:"good"}
+const checks=[
+ {name:"Pick & pack",ref:"PICK / 01",contract:"$2.10",invoice:"$4.20",delta:"+$2.10",status:"RATE VARIANCE",detail:"The billed unit rate is twice the supplied contract rate. Quantity and effective-date checks are still required before treating this as a valid exception."},
+ {name:"Storage",ref:"STORAGE / 02",contract:"$84.00",invoice:"$84.00",delta:"$0.00",status:"RATE MATCH",detail:"The billed rate agrees with the supplied rate card. This does not independently verify the stored unit count or storage period."},
+ {name:"Receiving",ref:"RECEIVING / 03",contract:"$18.00",invoice:"—",delta:"—",status:"NO INVOICE LINE",detail:"No corresponding invoice line appears in this small sample. Absence is recorded as a source gap, not a saving."}
 ];
+
+function FulfilmentDrawing(){return <svg className="ndx-drawing" viewBox="0 0 720 520" role="img" aria-label="Technical drawing showing a parcel moving through receiving, storage and pick-pack before charges are reconciled against a contract and invoice">
+ <defs><pattern id="ndx-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" strokeOpacity=".09" strokeWidth=".7"/></pattern></defs>
+ <rect x="16" y="16" width="688" height="488" fill="url(#ndx-grid)" stroke="currentColor" strokeOpacity=".18"/>
+ <path d="M72 110H270V238H470V110H646" fill="none" stroke="#c7a977" strokeWidth="1.4"/>
+ <path d="M72 110l9 -5v10zM646 110l-9 -5v10z" fill="#c7a977"/>
+ <path d="M270 238v142h200V238" fill="none" stroke="currentColor" strokeOpacity=".5" strokeDasharray="4 6"/>
+ <g fill="#171914" stroke="#c7a977" strokeWidth="1.2"><rect x="40" y="72" width="64" height="76"/><rect x="238" y="200" width="64" height="76"/><rect x="438" y="72" width="64" height="76"/><rect x="614" y="72" width="64" height="76"/></g>
+ <g fill="none" stroke="#c7a977" strokeWidth="1.2"><path d="M40 92l32 18 32-18M72 110v38M238 220l32 18 32-18M270 238v38M438 92l32 18 32-18M470 110v38M614 92l32 18 32-18M646 110v38"/></g>
+ <g fill="currentColor" fontFamily="DM Mono,monospace" fontSize="10" letterSpacing="1.2"><text x="40" y="56">01 / RECEIVING</text><text x="238" y="184">02 / STORAGE</text><text x="438" y="56">03 / PICK + PACK</text><text x="614" y="56">04 / BILLING</text></g>
+ <g fill="currentColor" fontFamily="DM Mono,monospace" fontSize="9" opacity=".65"><text x="40" y="170">GOODS IN</text><text x="238" y="298">PALLET / BIN</text><text x="438" y="170">ORDER OUT</text><text x="614" y="170">INVOICE</text></g>
+ <path d="M72 148V420H646V148" fill="none" stroke="currentColor" strokeOpacity=".3" strokeDasharray="3 7"/>
+ <path d="M72 420H646" stroke="#c7a977" strokeWidth="1.4"/>
+ <g fill="#c7a977"><circle cx="72" cy="420" r="4"/><circle cx="270" cy="420" r="4"/><circle cx="470" cy="420" r="4"/><circle cx="646" cy="420" r="4"/></g>
+ <g fontFamily="DM Mono,monospace" fill="currentColor" fontSize="9"><text x="40" y="450">PHYSICAL EVENT</text><text x="236" y="450">WAREHOUSE RECORD</text><text x="438" y="450">CONTRACT RATE</text><text x="614" y="450" textAnchor="end">BILLED LINE</text></g>
+ <g fill="#c7a977" fontFamily="Cormorant Garamond,serif"><text x="360" y="490" textAnchor="middle" fontSize="19">Four records. One traceable charge.</text></g>
+ </svg>}
 
 export default function Home(){
- return <MarketingShell active="home"><main className="nc-page">
-  <section className="nc-hero">
-   <div>
-    <div className="nc-kicker">NODUS / E-COMMERCE FULFILMENT CONTROL</div>
-    <h1>Your 3PL invoice should match <em>your contract.</em></h1>
-    <p className="nc-lede">NODUS reviews fulfilment charges against the rates and activity your business agreed to. We isolate mismatches, duplicate-looking lines and charges without supporting records — then give your team an evidence register to investigate.</p>
-    <div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request a paid invoice review <span>↗</span></Link><Link to="/demo" className="nc-btn nc-btn-secondary">Inspect the working sample <span>↗</span></Link></div>
-    <div className="nc-micro"><span>SHOPIFY + DTC BRANDS</span><span>·</span><span>CSV-BASED</span><span>·</span><span>NO STORE PASSWORD</span></div>
+ const [selected,setSelected]=useState(0);
+ const item=checks[selected];
+ return <MarketingShell active="home"><main className="ndx">
+  <section className="ndx-hero">
+   <div className="ndx-hero-copy">
+    <div className="ndx-eyebrow"><span>INDEPENDENT 3PL CONTROL</span><i></i><span>01 — 04</span></div>
+    <h1>The invoice<br/>is only half<br/><em>the record.</em></h1>
+    <p className="ndx-intro">A warehouse bills for work it says it performed. NODUS checks that bill against the contract and the operational records behind it.</p>
+    <div className="ndx-hero-actions"><Link to="/manual-data" className="ndx-primary">Run a review <span>↗</span></Link><Link to="/methodology" className="ndx-text-link">See exactly what is checked <span>↗</span></Link></div>
+    <div className="ndx-footline"><span>FOR SHOPIFY + DTC OPERATORS</span><span>CSV INPUT</span><span>NO STORE PASSWORD</span></div>
    </div>
-   <div className="nc-console">
-    <div className="nc-console-top"><span className="nc-console-title">NODUS / RATE-CARD REVIEW</span><span className="nc-live">SAMPLE DATA</span></div>
-    <div className="nc-stat-grid">
-     <div className="nc-stat"><span>Invoice lines checked</span><strong>04</strong><small>Illustrative sample</small></div>
-     <div className="nc-stat"><span>Rate mismatches</span><strong>01</strong><small>Needs source review</small></div>
-     <div className="nc-stat"><span>Supported matches</span><strong>02</strong><small>Rate and unit agree</small></div>
-     <div className="nc-stat"><span>Evidence gaps</span><strong>01</strong><small>Not treated as an error</small></div>
+   <div className="ndx-hero-visual"><div className="ndx-visual-meta"><span>FIG. 01</span><span>FULFILMENT → FINANCIAL RECORD</span><span>NOT TO SCALE</span></div><FulfilmentDrawing/><div className="ndx-visual-caption"><span>THE CONTROL GAP</span><p>Movement happens in the warehouse. Charges appear on the invoice. The contract sets the terms. NODUS connects the three.</p></div></div>
+  </section>
+
+  <section className="ndx-ledger" aria-labelledby="ndx-ledger-title">
+   <div className="ndx-ledger-head"><div><div className="ndx-kicker">A LIVE EXAMPLE / SYNTHETIC DATA</div><h2 id="ndx-ledger-title">Open a charge.<br/><em>Follow the evidence.</em></h2></div><p>Choose a line to see what a review can and cannot establish. This is an illustrative example, not a customer result.</p></div>
+   <div className="ndx-inspector">
+    <div className="ndx-line-list" role="tablist" aria-label="Sample invoice lines">
+     {checks.map((c,i)=><button type="button" role="tab" aria-selected={selected===i} className={"ndx-line"+(selected===i?" is-active":"")} onClick={()=>setSelected(i)} key={c.ref}><span className="ndx-line-index">0{i+1}</span><span className="ndx-line-name">{c.name}</span><span className="ndx-line-ref">{c.ref}</span><span className="ndx-line-arrow">↗</span></button>)}
     </div>
-    <div className="nc-table">
-     <div className="nc-table-head"><span>INVOICE LINE</span><span>CONTRACT</span><span>BILLED</span><span>STATUS</span></div>
-     {sample.map(row=><div className="nc-table-row" key={row.id}><span>{row.id}</span><span>{row.rate}</span><span>{row.billed}</span><strong className={row.kind==="warn"?"nc-warn":""}>{row.result}</strong></div>)}
+    <div className="ndx-detail" role="tabpanel">
+     <div className="ndx-detail-top"><span>{item.ref}</span><span className={selected===0?"ndx-status-warn":"ndx-status"}>{item.status}</span></div>
+     <h3>{item.name}</h3>
+     <div className="ndx-comparison"><div><span>CONTRACT RATE</span><strong>{item.contract}</strong></div><div className="ndx-compare-mark">/</div><div><span>INVOICE RATE</span><strong>{item.invoice}</strong></div><div className="ndx-delta"><span>DIFFERENCE</span><strong>{item.delta}</strong></div></div>
+     <p>{item.detail}</p>
+     <div className="ndx-detail-rule"><span>REVIEW STANDARD</span><span>COMPARE · TRACE · QUALIFY</span></div>
     </div>
-    <div className="nc-footnote">SYNTHETIC EXAMPLE — NOT A CUSTOMER RESULT. A variance is a review signal, not proof of overbilling or money recovered.</div>
+   </div>
+   <div className="ndx-disclaimer">A rate difference is a review signal — not proof of overbilling, provider liability, recoverable cash or realised savings.</div>
+  </section>
+
+  <section className="ndx-method">
+   <div className="ndx-method-title"><div className="ndx-kicker">THE METHOD</div><h2>Not another<br/><em>analytics dashboard.</em></h2><p>It is a control procedure for the point where warehouse activity becomes a payable bill.</p></div>
+   <div className="ndx-method-steps">
+    <article><span>01</span><div><h3>Establish the terms</h3><p>Load the effective rate card, minimums and accessorial rules. Keep the source and date visible.</p></div></article>
+    <article><span>02</span><div><h3>Trace the charge</h3><p>Match invoice lines to rates and available activity references. Ambiguous joins remain unresolved.</p></div></article>
+    <article><span>03</span><div><h3>Record the exception</h3><p>Export the variance, calculation, source rows and exact question to put to the warehouse.</p></div></article>
    </div>
   </section>
 
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">THE FIRST PAID ENGAGEMENT</div><h2>Start with one invoice.<br/><em>Find out what deserves attention.</em></h2></div><p>For e-commerce operators who use a third-party warehouse and want an independent check before the next payment or contract review.</p></div>
-   <div className="nc-service-grid">
-    <article className="nc-service"><span className="nc-number">01 / RATE CHECK</span><h3>Contract vs. invoice</h3><p>Compare billed storage, pick-and-pack, receiving, returns, minimums and agreed accessorials with the effective rate card you provide.</p><small>DELIVERABLE / LINE-BY-LINE CHECK</small></article>
-    <article className="nc-service"><span className="nc-number">02 / ACTIVITY CHECK</span><h3>Charges vs. records</h3><p>Where stable references exist, compare invoice quantities with warehouse or order activity. Missing evidence stays visibly unresolved.</p><small>DELIVERABLE / EXCEPTION REGISTER</small></article>
-    <article className="nc-service"><span className="nc-number">03 / ACTION PACK</span><h3>Questions to send</h3><p>Receive a documented list of differences, source references, missing records and precise questions for your 3PL account manager.</p><small>DELIVERABLE / REVIEW PACK</small></article>
-   </div>
+  <section className="ndx-offer">
+   <div className="ndx-offer-copy"><div className="ndx-kicker">START WITH ONE BILL</div><h2>One invoice.<br/><em>One clear answer:</em><br/>what needs checking?</h2><p>Use the workspace with your own CSV files. If the data cannot support a defensible comparison, NODUS should say so — not manufacture certainty.</p><Link to="/manual-data" className="ndx-primary">Open the review workspace <span>↗</span></Link></div>
+   <div className="ndx-offer-spec"><div className="ndx-spec-head"><span>INPUT SPECIFICATION</span><span>01 / CURRENT</span></div><div><span>RATE CARD</span><b>CSV</b></div><div><span>3PL INVOICE</span><b>CSV</b></div><div><span>ACTIVITY EXPORT</span><b>CSV / WHEN AVAILABLE</b></div><div><span>FILE LIMIT</span><b>5 MB · 20,000 ROWS</b></div><div><span>CONNECTIONS</span><b>NO LIVE 3PL API POLLING</b></div><p>Files are processed in the browser workflow. Review the <Link to="/security">security notes</Link> before uploading sensitive records.</p></div>
   </section>
 
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">HOW THE SERVICE WORKS</div><h2>One paid hour.<br/><em>A decision you can inspect.</em></h2></div><p>No percentage-of-recovery fee. No claim that every variance is an overcharge. The work is limited to what your contract and source records can support.</p></div>
-   <div className="nc-steps">
-    <article className="nc-step"><b>01 / REQUEST</b><h3>Describe the bill</h3><p>Tell us your store, fulfilment setup, invoice period and what looks wrong. No confidential files in the public form.</p></article>
-    <article className="nc-step"><b>02 / SCOPE</b><h3>Confirm fit</h3><p>We check whether your rate card and CSV exports fit the current workflow. You receive the scope and price before any paid work.</p></article>
-    <article className="nc-step"><b>03 / REVIEW</b><h3>Work the evidence</h3><p>A one-hour review uses the NODUS workspace to inspect supported rates, quantities, exceptions and gaps.</p></article>
-    <article className="nc-step"><b>04 / HANDOVER</b><h3>Keep the record</h3><p>You receive an exportable review pack. You decide whether to raise questions with your provider.</p></article>
-   </div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">THE COMMERCIAL OFFER</div><h2>Pay for the review.<br/><em>Keep control month to month.</em></h2></div><p>The monthly option is offered only after the first review establishes that recurring invoice checks are useful. No automatic conversion.</p></div>
-   <div className="nc-price-layout">
-    <article className="nc-price-card featured"><span className="nc-overline">01 / HOURLY SERVICE</span><h3>Invoice Review Session</h3><div className="nc-price">$100 <small>/ hour · proposed opening rate</small></div><p>One focused working hour for one 3PL invoice and its matching rate-card / activity evidence, subject to a fit check.</p><ul><li>Scope confirmed before payment</li><li>Supported line checks and exceptions</li><li>Source-referenced findings register</li><li>Handover of questions and next steps</li><li>No recovery guarantee or success fee</li></ul><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request the first hour ↗</Link></article>
-    <article className="nc-price-card"><span className="nc-overline">02 / MONTHLY CONTINUATION</span><h3>NODUS Monthly Control</h3><div className="nc-price">$99 <small>/ month · proposed pilot scope</small></div><p>For one 3PL, one monthly invoice, one active rate card and one activity export, with open exceptions carried forward.</p><ul><li>Repeat the same reconciliation each month</li><li>Keep a dated exception history</li><li>Track cost-per-order where inputs support it</li><li>Export the monthly review pack</li><li>Cancel before the next billing period</li></ul><Link to="/buyer-evaluation" className="nc-btn nc-btn-secondary">Discuss monthly fit ↗</Link></article>
-   </div>
-   <p className="nc-footnote">Prices are NODUS's proposed opening offer, not evidence of completed sales or validated willingness to pay. Payment is not collected on this website. Work starts only after scope, qualified delivery, seller arrangements and payment terms are confirmed in writing.</p>
-  </section>
-
-  <section className="nc-section nc-proof">
-   <div><div className="nc-overline">THE PRODUCT YOU RECEIVE</div><h2>Not a PDF pitch.<br/><em>A working review workspace.</em></h2></div>
-   <div className="nc-proof-panel"><h3>NODUS browser workspace</h3><p>Use the existing reconciliation application to import rate-card, invoice and operational-activity CSVs; run supported matching; investigate exceptions; record provider outcomes; and export the review pack. The merchant keeps original source files in the browser workflow.</p><div className="nc-actions"><Link to="/manual-data" className="nc-btn nc-btn-primary">Open the working tool ↗</Link><Link to="/methodology" className="nc-btn nc-btn-secondary">Read the matching rules ↗</Link></div><p className="nc-footnote">Current limits: CSV only, up to 5 MB and 20,000 data rows per file. No PDF extraction, direct Shopify OAuth, live 3PL API polling or automatic dispute submission.</p></div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-overline">WHAT NODUS WILL NOT CLAIM</div><h2>Evidence first. <em>Recovery claims never.</em></h2>
-   <div className="nc-limits">
-    <article className="nc-limit"><b>01 / NO FALSE SAVINGS</b><p>A variance is not proof of provider liability, a credit, recoverable cash or realised savings.</p></article>
-    <article className="nc-limit"><b>02 / NO GUESSED MATCHES</b><p>Ambiguous references and missing activity stay separate. Unknown is not silently treated as zero.</p></article>
-    <article className="nc-limit"><b>03 / NO STORE ACCESS</b><p>The first review uses merchant-provided exports. NODUS does not need your Shopify password or payment credentials.</p></article>
-   </div>
-  </section>
-
-  <section className="nc-final"><div><div className="nc-overline">NODUS / FULFILMENT COST CONTROL</div><h2>Bring one invoice.<br/><em>Let's check the evidence.</em></h2><p>Request a scoped first-hour review. If the data cannot support a useful check, the work will not be sold as a completed audit.</p></div><div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request a review ↗</Link><Link to="/demo" className="nc-btn nc-btn-secondary">See the sample ↗</Link></div></section>
+  <section className="ndx-close"><div><span className="ndx-kicker">NODUS / FULFILMENT COST CONTROL</span><h2>Make every charge<br/><em>show its working.</em></h2></div><div><Link to="/manual-data" className="ndx-primary">Start with your own data <span>↗</span></Link><Link to="/methodology" className="ndx-text-link">Read the matching rules ↗</Link></div></section>
  </main></MarketingShell>;
 }
