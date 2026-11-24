@@ -7,6 +7,7 @@ export const meta:MetaFunction=()=>[
   {name:"description",content:"A practical method for comparing Shopify checkout shipping charges with carrier and 3PL invoice evidence, matching records and reporting coverage gaps."},
   {property:"og:title",content:"How to Reconcile Shopify Shipping Costs"},
   {property:"og:description",content:"A source-led guide to Shopify shipping revenue, carrier-cost evidence and reconciliation."},
+  {name:"robots",content:"noindex, nofollow"},
 ];
 
 const steps=[
