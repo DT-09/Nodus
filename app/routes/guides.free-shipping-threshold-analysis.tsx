@@ -7,6 +7,7 @@ export const meta:MetaFunction=()=>[
   {name:"description",content:"Learn how to replay Shopify flat-rate and free-shipping threshold policies against historical orders, with clear assumptions and limits."},
   {property:"og:title",content:"Shopify Free Shipping Threshold Analysis"},
   {property:"og:description",content:"An educational guide to the limits of historical shipping-policy analysis. Policy replay is not part of the current NODUS product."},
+  {name:"robots",content:"noindex, nofollow"},
 ];
 
 const sequence=[
