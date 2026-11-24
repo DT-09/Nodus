@@ -33,7 +33,7 @@ export default function Home(){
      <h1>Your 3PL bill.<br/>Your evidence.<br/><em>Your control.</em></h1>
      <p className="nh-lede">NODUS checks what your fulfilment provider charged against what your agreement says—and verifies billed quantities against operational activity when the records support it.</p>
      <div className="nh-actions">
-      <Link to="/buyer-evaluation#trial-request" className="nh-primary">REQUEST A SEVEN-DAY TRIAL <span>↗</span></Link>
+      <Link to="/control-week" className="nh-primary">ENTER THE 7-DAY CONTROL WEEK <span>↗</span></Link>
       <Link to="/product" className="nh-secondary">EXPLORE THE CONTROL SYSTEM ↗</Link>
      </div>
      <div className="nh-meta"><span>CONTRACT RATE CONTROL</span><i></i><span>INVOICE RECONCILIATION</span><i></i><span>PROVIDER OUTCOMES</span></div>
