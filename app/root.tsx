@@ -5,11 +5,13 @@ import css from "./styles.css?url";
 import marketingCss from "./marketing.css?url";
 import nodusThemeCss from "./nodus-theme.css?url";
 import nodusFinishCss from "./nodus-finish.css?url";
+import nodusCommerceCss from "./nodus-commerce.css?url";
 export const links:LinksFunction=()=>[
   {rel:"stylesheet",href:css},
   {rel:"stylesheet",href:marketingCss},
   {rel:"stylesheet",href:nodusThemeCss},
   {rel:"stylesheet",href:nodusFinishCss},
+  {rel:"stylesheet",href:nodusCommerceCss},
   {rel:"preconnect",href:"https://fonts.googleapis.com"},
   {rel:"preconnect",href:"https://fonts.gstatic.com",crossOrigin:"anonymous"},
   {rel:"stylesheet",href:"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap"},
@@ -26,7 +28,7 @@ export default function Root(){
       <meta property="og:site_name" content="NODUS"/>
       <meta property="og:type" content="website"/>
       <meta name="twitter:card" content="summary"/>
-      <meta name="theme-color" content="#101820"/>
+      <meta name="theme-color" content="#10110f"/>
       <Meta/>
       <Links/>
     </head>
