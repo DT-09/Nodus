@@ -8,6 +8,7 @@ export default [
   route("connect", "./routes/connect.tsx"),
   route("workspace", "./routes/workspace.tsx"),
   route("manual-data", "./routes/manual-data.tsx"),
+  route("fulfilment-review", "./routes/fulfilment-review.tsx"),
   route("about", "./routes/about.tsx"),
   route("methodology", "./routes/methodology.tsx"),
   route("pricing", "./routes/pricing.tsx"),
