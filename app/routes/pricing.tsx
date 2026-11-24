@@ -3,66 +3,63 @@ import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
 
 export const meta:MetaFunction=()=>[
- {title:"NODUS pricing — 3PL billing and performance control"},
- {name:"description",content:"Request a free seven-day NODUS trial. Continue with the merchant 3PL control workspace at the initial $99/month price, subject to pilot confirmation."}
-];
-
-const included=[
- "Merchant-specific workspace with revocable private access",
- "Provider and effective-dated contract rate records",
- "CSV invoice intake with source-row lineage",
- "Operational activity intake for exact-reference quantity checks",
- "Deterministic rate and quantity reconciliation",
- "Persistent exception investigation and case history",
- "Provider outcome ledger: raised, promised, posted and verified",
- "Recurring period reports with evidence coverage and limitations"
+ {title:"NODUS — Monthly 3PL invoice review service"},
+ {name:"description",content:"See the scope of a recurring 3PL invoice review: contract-rate checks, evidence-linked exceptions, provider follow-through and monthly reporting."}
 ];
 
 export default function Pricing(){
  return <MarketingShell active="pricing"><main className="content-page nd-pricing-page">
   <header className="nd-pricing-hero">
-   <p className="page-eyebrow">NODUS / COMMERCIAL SERVICE</p>
-   <h1>Control the fulfilment bill.<br/><em>Every month.</em></h1>
-   <p className="page-lede">A recurring merchant-side control record for 3PL contract rates, invoice charges, operational evidence, exceptions and verified provider outcomes.</p>
+   <p className="page-eyebrow">NODUS / RECURRING SERVICE</p>
+   <h1>Pay for the review.<br/><em>Not another dashboard.</em></h1>
+   <p className="page-lede">NODUS is designed as an ongoing merchant-side 3PL billing review. Each monthly engagement checks the provider's invoice against the agreed rates and available operating evidence, then carries unresolved questions into the next cycle.</p>
   </header>
   <section className="nd-pricing-grid">
    <article className="nd-plan nd-plan-free">
-    <span className="nd-plan-kicker">01 / EVALUATION</span><h2>Seven-day trial</h2><p className="nd-plan-price">Free</p>
-    <p className="nd-plan-desc">A real private workspace using your own contract, invoice and available operational exports. No card details are collected on the request form.</p>
-    <ul><li>Data compatibility review before activation</li><li>Private merchant workspace</li><li>Import and reconcile supported source records</li><li>Investigate exceptions and record outcomes</li><li>Generate a period report during the trial</li></ul>
-    <Link to="/buyer-evaluation#trial-request" className="cta-secondary">REQUEST THE TRIAL ↗</Link>
+    <span className="nd-plan-kicker">01 / FIRST LOOK</span><h2>Initial invoice assessment</h2><p className="nd-plan-price">No-fee fit check</p>
+    <p className="nd-plan-desc">We first confirm whether the records you already have can support a meaningful review. Do not send confidential invoices until a secure transfer method and scope are agreed.</p>
+    <ul><li>Confirm provider and fulfilment setup</li><li>Check which contract and invoice records exist</li><li>Identify whether activity exports are available</li><li>Confirm the scope and limits of a first review</li></ul>
+    <Link to="/buyer-evaluation#trial-request" className="cta-secondary">REQUEST A FIT CHECK ↗</Link>
    </article>
    <article className="nd-plan nd-plan-pro nd-plan-monthly">
-    <span className="nd-plan-kicker">02 / CONTINUOUS CONTROL</span><h2>NODUS Core</h2><p className="nd-plan-price">$99 <small>/ month</small></p>
-    <p className="nd-plan-desc">For a merchant that reviews recurring 3PL invoices and needs the evidence, investigations and outcomes to carry forward each billing period.</p>
-    <ul>{included.map(item=><li key={item}>{item}</li>)}</ul>
-    <Link to="/buyer-evaluation#trial-request" className="cta-primary">START WITH THE FREE TRIAL ↗</Link>
+    <span className="nd-plan-kicker">02 / RECURRING ENGAGEMENT</span><h2>Monthly 3PL billing control</h2><p className="nd-plan-price">Quoted <small>per operation</small></p>
+    <p className="nd-plan-desc">A recurring service scoped to the number of providers, invoice volume, source-data quality and follow-through required. A fixed monthly fee is agreed before work starts; there is no invented one-size-fits-all price.</p>
+    <ul>
+     <li>Monthly invoice-to-contract rate comparison</li>
+     <li>Evidence-linked exception register and calculations</li>
+     <li>Operational quantity checks where references match</li>
+     <li>Prioritised questions for the merchant to raise with the 3PL</li>
+     <li>Tracking of provider responses and promised credits</li>
+     <li>Verification of posted adjustments when evidence is supplied</li>
+     <li>Monthly report with open items, resolved items and limitations</li>
+    </ul>
+    <Link to="/buyer-evaluation#trial-request" className="cta-primary">SCOPE A MONTHLY ENGAGEMENT ↗</Link>
    </article>
   </section>
   <section className="nd-pricing-process">
-   <div><span>HOW ACCESS WORKS</span><h2>Start when the workspace<br/><em>is ready to work.</em></h2></div>
+   <div><span>HOW THE ENGAGEMENT STARTS</span><h2>Prove the workflow<br/><em>before recurring billing.</em></h2></div>
    <div className="nd-pricing-steps">
-    <article><b>01</b><div><h3>Request access</h3><p>Tell us about your 3PL setup and the records you can export. The request form does not collect source files.</p></div></article>
-    <article><b>02</b><div><h3>Confirm compatibility</h3><p>NODUS checks whether the contract rate card, invoice rows and activity exports fit the supported formats. Unsupported or ambiguous terms are identified before activation.</p></div></article>
-    <article><b>03</b><div><h3>Activate seven days</h3><p>The trial starts only after your private workspace is provisioned and ready. Waiting for onboarding does not consume trial time.</p></div></article>
-    <article><b>04</b><div><h3>Continue monthly</h3><p>Before the trial ends, the recurring scope and subscription are confirmed. Paid access is activated after the subscription is confirmed; self-serve checkout is not yet offered.</p></div></article>
+    <article><b>01</b><div><h3>Fit check</h3><p>Confirm the merchant uses an external 3PL and receives a contract or rate card, itemised invoices and relevant operational exports.</p></div></article>
+    <article><b>02</b><div><h3>Scoped first review</h3><p>Agree the provider, billing period, data transfer method, deliverables and exclusions in writing before confidential files are shared.</p></div></article>
+    <article><b>03</b><div><h3>Review and report</h3><p>Deliver calculations with source references, distinguish rate variances from unpriced charges, and list evidence gaps. A variance is not a confirmed recovery.</p></div></article>
+    <article><b>04</b><div><h3>Monthly continuation</h3><p>If the first review proves useful, agree a fixed recurring scope and fee. Each cycle updates open cases and records verified outcomes.</p></div></article>
    </div>
   </section>
   <section className="nd-pricing-value">
-   <div><span>WHY IT REPEATS</span><h2>The next invoice<br/><em>starts a new review.</em></h2><p>Contracts have effective dates. Invoices recur. Activity changes. Disputes and promised credits can remain open across periods. NODUS keeps those records together so each new review builds on the previous one.</p></div>
-   <div className="nd-pricing-deliverables"><p><b>01 / CONTRACT</b> Rate rules and effective periods</p><p><b>02 / INVOICE</b> Charges, quantities, currency and source rows</p><p><b>03 / ACTIVITY</b> Exact-reference operational evidence</p><p><b>04 / CASES</b> Investigation state and provider responses</p><p><b>05 / OUTCOMES</b> Promised, posted and verified adjustments</p><p><b>06 / REPORT</b> Period scope, exceptions and next actions</p></div>
+   <div><span>WHAT THE CLIENT RECEIVES</span><h2>A decision-ready<br/><em>monthly report.</em></h2><p>The report is built for the finance or operations owner who needs to decide which charges to question, what evidence supports the question and which provider responses remain outstanding.</p></div>
+   <div className="nd-pricing-deliverables"><p><b>01 / SUMMARY</b> Period reviewed, invoice totals and coverage</p><p><b>02 / EXCEPTIONS</b> Amount, calculation, contract clause and source line</p><p><b>03 / EVIDENCE GAPS</b> Missing or ambiguous records, not guessed values</p><p><b>04 / ACTIONS</b> Suggested provider questions and owner status</p><p><b>05 / OUTCOMES</b> Promised, posted and verified adjustments kept distinct</p><p><b>06 / NEXT CYCLE</b> Open items and checks to repeat next month</p></div>
   </section>
   <section className="nd-pricing-faq">
    <h2>Scope and trust</h2>
-   <div><h3>Does NODUS guarantee savings or credits?</h3><p>No. It calculates supported variances and preserves evidence for investigation. A calculated variance is not proof of provider liability or recoverable money.</p></div>
-   <div><h3>Does it connect to Shopify automatically?</h3><p>The first onboarding path uses merchant-supplied CSV exports. platform APIs and direct 3PL integrations are deferred until a customer requires them and the integration is tested.</p></div>
-   <div><h3>Which files are supported?</h3><p>Structured CSV rate cards, one invoice per CSV and operational activity CSVs. Each upload is limited to 5 MB and 20,000 data rows. PDF extraction is not included.</p></div>
-   <div><h3>Are source files stored?</h3><p>CSV files are processed in memory. NODUS stores normalized source rows, file names, file hashes and source-row references for auditability; it does not retain the original uploaded file in this release.</p></div>
-   <div><h3>Is the subscription self-serve?</h3><p>Not yet. Trial requests are reviewed, workspaces are activated after onboarding, and paid access is enabled after the subscription is confirmed. No automated checkout is claimed.</p></div>
+   <div><h3>Do you guarantee savings or credits?</h3><p>No. The service identifies evidence-supported differences and documents questions for the merchant. The 3PL decides whether to issue a credit; only a posted and evidenced adjustment is recorded as realised.</p></div>
+   <div><h3>Do you negotiate or dispute invoices on the merchant's behalf?</h3><p>The initial scope prepares the evidence and suggested questions. External communications, negotiation and authority to act for the merchant require a separate written agreement and authorised personnel.</p></div>
+   <div><h3>What records are needed?</h3><p>At minimum, an itemised 3PL invoice and the applicable agreement or rate card. Operational activity exports improve quantity checks but are not always available. Unsupported conclusions remain out of scope.</p></div>
+   <div><h3>How is the fee set?</h3><p>After a fit check, the monthly fee is scoped to provider count, invoice volume, data quality and agreed deliverables. The fee is confirmed in writing before recurring work or billing begins.</p></div>
+   <div><h3>Is this service already available for every provider?</h3><p>No universal compatibility is claimed. Each engagement starts with a data and scope check. A provider or file format is accepted only after its records can be reconciled reliably.</p></div>
   </section>
   <section className="nd-pricing-contact">
-   <h2>Make your 3PL relationship auditable.</h2><p>Start with your actual rate card, invoice and activity exports. Decide whether the recurring control is worth keeping after the trial.</p>
-   <div className="hero-ctas"><Link to="/buyer-evaluation#trial-request" className="cta-primary">REQUEST SEVEN-DAY TRIAL ↗</Link><Link to="/product" className="cta-secondary">EXPLORE THE PRODUCT ↗</Link></div>
+   <h2>Make the next 3PL invoice accountable.</h2><p>Tell us about your operation and the records you receive. The first step is a fit check—not an automatic subscription.</p>
+   <div className="hero-ctas"><Link to="/buyer-evaluation#trial-request" className="cta-primary">REQUEST A FIT CHECK ↗</Link><Link to="/demo" className="cta-secondary">INSPECT A SAMPLE REVIEW ↗</Link></div>
   </section>
  </main></MarketingShell>;
 }
