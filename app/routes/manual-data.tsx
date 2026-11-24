@@ -52,7 +52,8 @@ function money(amount:bigint,currency:string){const digits=currencyDigits(curren
 function download(name:string,type:string,body:string){const blob=new Blob([body],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
 function safeCsv(v:string){return '"'+( /^[\s]*[=+@-]/.test(v)?"'"+v:v).replaceAll('"','""')+'"';}
 
-export const meta:MetaFunction=()=>[{title:"Manual shipping data analysis — NODUS"},{name:"description",content:"Analyze Shopify order and carrier cost CSV files locally in your browser without connecting a store."}];
+export const meta:MetaFunction=()=>[{title:"Manual shipping data analysis — NODUS"},{name:"description",content:"Analyze Shopify order and carrier cost CSV files locally in your browser without connecting a store."}  {name:"robots",content:"noindex, nofollow"},
+];
 
 export default function ManualData(){
  const [orders,setOrders]=useState<Order[]>([]);const [costs,setCosts]=useState<Cost[]>([]);const [orderName,setOrderName]=useState("");const [costName,setCostName]=useState("");const [error,setError]=useState("");const [coverageAttested,setCoverageAttested]=useState(false);
