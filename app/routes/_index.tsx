@@ -51,6 +51,17 @@ export default function Home(){
      <p className="nh-product-note">NO STORE CONNECTION REQUIRED FOR THE FREE CSV REVIEW</p>
     </div>
    </section>
+   <section className="nh-visual-control" aria-label="Illustrative shipping cost flow">
+    <div className="nh-visual-heading"><span>THE SHIPPING MONEY TRAIL</span><p>One order. Two sides of the bill.</p></div>
+    <div className="nh-flow">
+     <article className="nh-flow-node"><span>01 / CHECKOUT</span><strong>$8.00</strong><small>Shipping collected</small><div className="nh-flow-track"><i style={{width:"78%"}}/></div></article>
+     <div className="nh-flow-link"><span>ORDER + TRACKING</span><i/></div>
+     <article className="nh-flow-node"><span>02 / CARRIER</span><strong>$11.40</strong><small>Delivery charge</small><div className="nh-flow-track"><i style={{width:"100%"}}/></div></article>
+     <div className="nh-flow-link"><span>03 / REVIEW</span><i/></div>
+     <article className="nh-flow-result"><span>ORDER BALANCE</span><strong>−$3.40</strong><small>Matched example · needs review</small><div className="nh-result-pulse"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div></article>
+    </div>
+    <div className="nh-visual-foot"><span><i className="nh-dot-match"/> MATCHED RECORD</span><span><i className="nh-dot-open"/> UNMATCHED CHARGES STAY SEPARATE</span><span>ILLUSTRATIVE DATA / USD</span></div>
+   </section>
    <section className="nh-statement">
     <div><span>THE PROBLEM</span><h2>Shopify shows what you collected.<br/><em>Your carrier shows what it charged.</em></h2></div>
     <p>Those records do not arrive as one clean report. Split shipments, later adjustments, missing tracking numbers and mixed currencies make a simple total unreliable. NODUS shows what matches and what still needs checking.</p>
