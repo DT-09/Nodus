@@ -5,6 +5,7 @@ import { MarketingShell } from "../components/MarketingShell";
 export const meta: MetaFunction = () => [
   { title: "Sample reconciliation — NODUS" },
   { name: "description", content: "Inspect an illustrative, synthetic shipping-cost reconciliation and see how NODUS separates matched, unmatched and incomplete evidence." },
+  {name:"robots",content:"noindex, nofollow"},
 ];
 
 const rows = [
