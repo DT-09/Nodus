@@ -11,7 +11,8 @@ export const meta: MetaFunction = () => [
 type Lead = { id: string; businessName: string; name: string; email: string; shopDomain: string; monthlyOrders: string; fulfilmentSetup: string; objective: string; status: string; createdAt: string };
 type AccessToken = { id: string; label: string; expiresAt: string; usedAt: string | null; revokedAt: string | null; lastUsedAt: string | null; createdAt: string };
 type Workspace = { id: string; businessName: string; ownerName: string; ownerEmail: string; shopDomain: string | null; status: string; planCode: string | null; trialActivatedAt: string | null; trialEndsAt: string | null; subscriptionStatus: string; subscriptionStartedAt: string | null; subscriptionEndsAt: string | null; subscriptionCancelAtPeriodEnd: boolean; stripeCheckoutUrl: string | null; stripeCheckoutExpiresAt: string | null; checkoutUrl: string | null; checkoutExpiresAt: string | null; createdAt: string; accessTokens: AccessToken[] };
-type ConsoleData = { ok: boolean; leads: Lead[]; workspaces: Workspace[] };
+type ConversionLead = { id:string; businessName:string; name:string; email:string; storeUrl:string; monthlySessions:string; platform:string; issueCategory:string; timeline:string; budget:string; symptom:string; status:string; createdAt:string };
+type ConsoleData = { ok: boolean; leads: Lead[]; conversionLeads:ConversionLead[]; workspaces: Workspace[] };
 
 function stamp(value: string | null) { return value ? new Date(value).toLocaleString() : "—"; }
 
@@ -72,6 +73,11 @@ export default function OpsConsole() {
     await runOperation({ operation: "update_lead_status", leadId: form.get("leadId"), status: form.get("status") });
   }
 
+  async function submitConversionLeadStatus(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); const form = new FormData(event.currentTarget);
+    await runOperation({ operation: "update_conversion_lead_status", leadId: form.get("leadId"), status: form.get("status") });
+  }
+
   async function createCheckout(workspaceId: string) {
     setCheckoutLink(null);
     await runOperation({ operation: "create_subscription_checkout", workspaceId });
@@ -117,6 +123,15 @@ export default function OpsConsole() {
           <button className="ops-small" disabled={busy || lead.status !== "qualified"} onClick={() => void runOperation({ operation: "create_workspace_from_lead", leadId: lead.id })}>PROVISION WORKSPACE</button>
         </div>
       </article>)}{!data?.leads.length?<p className="ops-empty">No service enquiries have been received.</p>:null}</div>
+    </section>
+
+    <section className="ops-section"><div className="ops-heading"><div><span>01 / SHOPIFY CONVERSION INCIDENTS</span><h2>Conversion requests</h2></div><strong>{data?.conversionLeads.length ?? 0}</strong></div>
+      <div className="ops-list">{data?.conversionLeads.map(lead=><article className="ops-panel" key={lead.id}>
+        <div className="ops-card-head"><div><span className="ops-kicker">{lead.storeUrl}</span><h3>{lead.businessName}</h3><p>{lead.name} · {lead.email}</p></div><span className={"ops-status ops-"+lead.status}>{lead.status.replaceAll("_"," ")}</span></div>
+        <div className="ops-facts"><span>SESSIONS / {lead.monthlySessions.replaceAll("_"," ")}</span><span>PLAN / {lead.platform.replaceAll("_"," ")}</span><span>ISSUE / {lead.issueCategory.replaceAll("_"," ")}</span><span>URGENCY / {lead.timeline.replaceAll("_"," ")}</span><span>BUDGET / {lead.budget.replaceAll("_"," ")}</span><span>REQUESTED / {stamp(lead.createdAt)}</span></div>
+        <p>{lead.symptom}</p>
+        <form className="ops-actions" onSubmit={submitConversionLeadStatus}><input type="hidden" name="leadId" value={lead.id}/><select name="status" defaultValue={lead.status}><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="declined">Declined</option><option value="completed">Completed</option></select><button className="ops-small" disabled={busy}>UPDATE REQUEST</button></form>
+      </article>)}{!data?.conversionLeads.length?<p className="ops-empty">No Shopify conversion requests have been received.</p>:null}</div>
     </section>
 
     <section className="ops-section"><div className="ops-heading"><div><span>02 / MERCHANT DELIVERY</span><h2>Workspaces</h2></div><strong>{data?.workspaces.length ?? 0}</strong></div>
