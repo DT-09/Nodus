@@ -1,0 +1,5 @@
+period,segment,sessions,added_to_cart,reached_checkout,purchases
+baseline,Mobile,5000,600,400,300
+current,Mobile,5000,600,400,200
+baseline,Desktop,5000,600,400,300
+current,Desktop,5000,600,400,290

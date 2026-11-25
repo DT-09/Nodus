@@ -1,90 +1,14 @@
 import type {MetaFunction} from "react-router";
 import {Link} from "react-router";
 import {MarketingShell} from "../components/MarketingShell";
-
-export const meta:MetaFunction=()=>[
- {title:"NODUS — 3PL invoice control for Shopify & DTC brands"},
- {name:"description",content:"A practical 3PL invoice review desk for e-commerce brands. Compare warehouse charges with your rate card and activity exports, document exceptions and keep a monthly control record."},
- {property:"og:title",content:"NODUS — Fulfilment costs, checked"},
- {property:"og:description",content:"3PL invoice review and recurring fulfilment-cost control for Shopify and DTC brands."},
- {name:"theme-color",content:"#10110f"}
-];
-
-const sample=[
- {id:"INV-2048 / PICK-PACK",rate:"$2.10",billed:"$4.20",result:"CHECK",kind:"warn"},
- {id:"INV-2048 / STORAGE",rate:"$84.00",billed:"$84.00",result:"MATCH",kind:"good"},
- {id:"INV-2048 / RECEIVING",rate:"$18.00",billed:"—",result:"NO SOURCE",kind:"muted"},
- {id:"INV-2048 / MONTHLY MIN.",rate:"$250.00",billed:"$250.00",result:"MATCH",kind:"good"}
-];
-
-export default function Home(){
- return <MarketingShell active="home"><main className="nc-page">
-  <section className="nc-hero">
-   <div>
-    <div className="nc-kicker">NODUS / E-COMMERCE FULFILMENT CONTROL</div>
-    <h1>Your 3PL invoice should match <em>your contract.</em></h1>
-    <p className="nc-lede">NODUS reviews fulfilment charges against the rates and activity your business agreed to. We isolate mismatches, duplicate-looking lines and charges without supporting records — then give your team an evidence register to investigate.</p>
-    <div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request a paid invoice review <span>↗</span></Link><Link to="/demo" className="nc-btn nc-btn-secondary">Inspect the working sample <span>↗</span></Link></div>
-    <div className="nc-micro"><span>SHOPIFY + DTC BRANDS</span><span>·</span><span>CSV-BASED</span><span>·</span><span>NO STORE PASSWORD</span></div>
-   </div>
-   <div className="nc-console">
-    <div className="nc-console-top"><span className="nc-console-title">NODUS / RATE-CARD REVIEW</span><span className="nc-live">SAMPLE DATA</span></div>
-    <div className="nc-stat-grid">
-     <div className="nc-stat"><span>Invoice lines checked</span><strong>04</strong><small>Illustrative sample</small></div>
-     <div className="nc-stat"><span>Rate mismatches</span><strong>01</strong><small>Needs source review</small></div>
-     <div className="nc-stat"><span>Supported matches</span><strong>02</strong><small>Rate and unit agree</small></div>
-     <div className="nc-stat"><span>Evidence gaps</span><strong>01</strong><small>Not treated as an error</small></div>
-    </div>
-    <div className="nc-table">
-     <div className="nc-table-head"><span>INVOICE LINE</span><span>CONTRACT</span><span>BILLED</span><span>STATUS</span></div>
-     {sample.map(row=><div className="nc-table-row" key={row.id}><span>{row.id}</span><span>{row.rate}</span><span>{row.billed}</span><strong className={row.kind==="warn"?"nc-warn":""}>{row.result}</strong></div>)}
-    </div>
-    <div className="nc-footnote">SYNTHETIC EXAMPLE — NOT A CUSTOMER RESULT. A variance is a review signal, not proof of overbilling or money recovered.</div>
-   </div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">THE FIRST PAID ENGAGEMENT</div><h2>Start with one invoice.<br/><em>Find out what deserves attention.</em></h2></div><p>For e-commerce operators who use a third-party warehouse and want an independent check before the next payment or contract review.</p></div>
-   <div className="nc-service-grid">
-    <article className="nc-service"><span className="nc-number">01 / RATE CHECK</span><h3>Contract vs. invoice</h3><p>Compare billed storage, pick-and-pack, receiving, returns, minimums and agreed accessorials with the effective rate card you provide.</p><small>DELIVERABLE / LINE-BY-LINE CHECK</small></article>
-    <article className="nc-service"><span className="nc-number">02 / ACTIVITY CHECK</span><h3>Charges vs. records</h3><p>Where stable references exist, compare invoice quantities with warehouse or order activity. Missing evidence stays visibly unresolved.</p><small>DELIVERABLE / EXCEPTION REGISTER</small></article>
-    <article className="nc-service"><span className="nc-number">03 / ACTION PACK</span><h3>Questions to send</h3><p>Receive a documented list of differences, source references, missing records and precise questions for your 3PL account manager.</p><small>DELIVERABLE / REVIEW PACK</small></article>
-   </div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">HOW THE SERVICE WORKS</div><h2>One paid hour.<br/><em>A decision you can inspect.</em></h2></div><p>No percentage-of-recovery fee. No claim that every variance is an overcharge. The work is limited to what your contract and source records can support.</p></div>
-   <div className="nc-steps">
-    <article className="nc-step"><b>01 / REQUEST</b><h3>Describe the bill</h3><p>Tell us your store, fulfilment setup, invoice period and what looks wrong. No confidential files in the public form.</p></article>
-    <article className="nc-step"><b>02 / SCOPE</b><h3>Confirm fit</h3><p>We check whether your rate card and CSV exports fit the current workflow. You receive the scope and price before any paid work.</p></article>
-    <article className="nc-step"><b>03 / REVIEW</b><h3>Work the evidence</h3><p>A one-hour review uses the NODUS workspace to inspect supported rates, quantities, exceptions and gaps.</p></article>
-    <article className="nc-step"><b>04 / HANDOVER</b><h3>Keep the record</h3><p>You receive an exportable review pack. You decide whether to raise questions with your provider.</p></article>
-   </div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-section-head"><div><div className="nc-overline">THE COMMERCIAL OFFER</div><h2>Pay for the review.<br/><em>Keep control month to month.</em></h2></div><p>Monthly service will open only after a first paid review validates recurring need and NODUS has persistent case history, a qualified reviewer and adult-owned billing operations. No automatic conversion.</p></div>
-   <div className="nc-price-layout">
-    <article className="nc-price-card featured"><span className="nc-overline">01 / HOURLY SERVICE</span><h3>Invoice Review Session</h3><div className="nc-price">$100 <small>/ hour · proposed opening rate</small></div><p>One warehouse, one invoice, one active rate card and up to 25 invoice lines. The 60-minute session starts only after the three CSVs pass a file-fit check.</p><ul><li>10-minute source and scope confirmation</li><li>25-minute exception and rate review</li><li>15-minute evidence and action validation</li><li>10-minute handover and walkthrough</li><li>Exported exception register and written action sheet</li><li>Stop at 60 minutes; extra time needs written approval</li><li>No recovery guarantee or success fee</li></ul><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request the first hour ↗</Link></article>
-    <article className="nc-price-card"><span className="nc-overline">02 / MONTHLY CONTINUATION</span><h3>NODUS Monthly Control</h3><div className="nc-price">Scoped <small>/ monthly service · not yet orderable</small></div><p>Planned continuation: one 3PL, one monthly invoice, one active rate card and one activity export. Persistent exception history and payment are not yet enabled.</p><ul><li>Planned recurring invoice review</li><li>Planned exception and credit history</li><li>Planned month-over-month cost trend</li><li>Not available until persistence and reviewer workflow are built</li><li>No subscription or payment is active</li></ul><Link to="/buyer-evaluation" className="nc-btn nc-btn-secondary">Discuss monthly fit ↗</Link></article>
-   </div>
-   <p className="nc-footnote">Prices are NODUS's proposed opening offer, not evidence of completed sales or validated willingness to pay. Payment is not collected on this website. Work starts only after scope, qualified delivery, seller arrangements and payment terms are confirmed in writing.</p>
-  </section>
-
-  <section className="nc-section nc-proof">
-   <div><div className="nc-overline">THE PRODUCT YOU RECEIVE</div><h2>Not a PDF pitch.<br/><em>A working review workspace.</em></h2></div>
-   <div className="nc-proof-panel"><h3>NODUS browser workspace</h3><p>Use the existing reconciliation application to import rate-card, invoice and operational-activity CSVs; run supported matching; investigate exceptions; record provider outcomes; and export the review pack. The merchant keeps original source files in the browser workflow.</p><div className="nc-actions"><Link to="/fulfilment-review" className="nc-btn nc-btn-primary">Open the 3PL review workspace ↗</Link><Link to="/methodology" className="nc-btn nc-btn-secondary">Read the matching rules ↗</Link></div><p className="nc-footnote">Current limits: CSV only, up to 5 MB and 20,000 data rows per file. No PDF extraction, direct Shopify OAuth, live 3PL API polling or automatic dispute submission.</p></div>
-  </section>
-
-  <section className="nc-section">
-   <div className="nc-overline">WHAT NODUS WILL NOT CLAIM</div><h2>Evidence first. <em>Recovery claims never.</em></h2>
-   <div className="nc-limits">
-    <article className="nc-limit"><b>01 / NO FALSE SAVINGS</b><p>A variance is not proof of provider liability, a credit, recoverable cash or realised savings.</p></article>
-    <article className="nc-limit"><b>02 / NO GUESSED MATCHES</b><p>Ambiguous references and missing activity stay separate. Unknown is not silently treated as zero.</p></article>
-    <article className="nc-limit"><b>03 / NO STORE ACCESS</b><p>The first review uses merchant-provided exports. NODUS does not need your Shopify password or payment credentials.</p></article>
-   </div>
-  </section>
-
-  <section className="nc-final"><div><div className="nc-overline">NODUS / FULFILMENT COST CONTROL</div><h2>Bring one invoice.<br/><em>Let's check the evidence.</em></h2><p>Request a scoped first-hour review. If the data cannot support a useful check, the work will not be sold as a completed audit.</p></div><div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request a review ↗</Link><Link to="/demo" className="nc-btn nc-btn-secondary">See the sample ↗</Link></div></section>
- </main></MarketingShell>;
-}
+export const meta:MetaFunction=()=>[{title:"NODUS — Shopify conversion incident response"},{name:"description",content:"Evidence-led diagnosis of Shopify storefront, cart and checkout conversion failures. Find the broken step, prioritise fixes and verify the result."},{property:"og:title",content:"NODUS — Find where the purchase journey breaks"},{property:"og:description",content:"Shopify conversion diagnosis and controlled optimisation."},{name:"theme-color",content:"#10110f"}];
+const rows=[["PRODUCT PAGE","Sessions → add to cart","Inspect intent and product friction"],["CART","Add to cart → checkout","Inspect cart and shipping friction"],["CHECKOUT","Checkout → purchase","Inspect payment and completion failures"]];
+export default function Home(){return <MarketingShell active="home"><main className="nc-page">
+<section className="nc-hero"><div><div className="nc-kicker">NODUS / SHOPIFY CONVERSION OPERATIONS</div><h1>Find where the purchase journey <em>breaks.</em></h1><p className="nc-lede">When paid traffic reaches your Shopify store but purchases fall away, NODUS investigates the funnel, isolates the failing step, prioritises the evidence and turns the diagnosis into a controlled remediation plan.</p><div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request an incident review ↗</Link><Link to="/conversion-review" className="nc-btn nc-btn-secondary">Run the diagnostic workspace ↗</Link></div><div className="nc-micro"><span>SHOPIFY & SHOPIFY PLUS</span><span>·</span><span>FUNNEL EVIDENCE</span><span>·</span><span>NO BLIND THEME CHANGES</span></div></div>
+<div className="nc-console"><div className="nc-console-top"><span className="nc-console-title">NODUS / FUNNEL TRIAGE</span><span className="nc-live">ILLUSTRATIVE DATA</span></div><div className="nc-stat-grid"><div className="nc-stat"><span>Sessions</span><strong>10,000</strong><small>Current period</small></div><div className="nc-stat"><span>Purchases</span><strong>690</strong><small>Current period</small></div><div className="nc-stat"><span>Checkout completion</span><strong>86.25%</strong><small>800 checkout starts</small></div><div className="nc-stat"><span>Modeled order gap</span><strong>210</strong><small>Versus baseline rate</small></div></div><div className="nc-table">{rows.map((r,i)=><div className="nc-table-row" key={r[0]}><span>{r[0]}</span><span>{r[1]}</span><strong>{i===2?"PRIORITY":"CHECK"}</strong></div>)}</div><div className="nc-footnote">SYNTHETIC EXAMPLE. The modeled gap is not verified lost revenue, causation or a recovery promise.</div></div></section>
+<section className="nc-section"><div className="nc-section-head"><div><div className="nc-overline">THE BUYING TRIGGER</div><h2>Traffic is arriving.<br/><em>Purchases are not.</em></h2></div><p>For Shopify merchants facing a live conversion decline, checkout failure, cart friction or unreliable purchase tracking. The work starts with a concrete symptom and evidence window.</p></div><div className="nc-service-grid"><article className="nc-service"><span className="nc-number">01 / DIAGNOSE</span><h3>Find the failing step</h3><p>Compare baseline and current funnel performance by device, channel and landing page. Separate traffic changes from product, cart and checkout regressions.</p><small>DELIVERABLE / EVIDENCE-LED DIAGNOSIS</small></article><article className="nc-service"><span className="nc-number">02 / REMEDIATE</span><h3>Fix the verified cause</h3><p>Translate findings into a scoped change plan. Any theme or checkout change requires merchant approval, a safe test environment and an identified implementation owner.</p><small>DELIVERABLE / APPROVED CHANGE SCOPE</small></article><article className="nc-service"><span className="nc-number">03 / VERIFY</span><h3>Prove the change works</h3><p>Record before-and-after evidence, test the affected journey and keep unresolved issues visible. Do not confuse a deployed change with a proven conversion lift.</p><small>DELIVERABLE / QA AND CHANGE RECORD</small></article></div></section>
+<section className="nc-section"><div className="nc-section-head"><div><div className="nc-overline">THE WORKFLOW</div><h2>From revenue symptom<br/><em>to verified action.</em></h2></div><p>No generic score. No speculative redesign. Each recommendation must trace back to a measured regression, reproducible failure or observed storefront issue.</p></div><div className="nc-steps"><article className="nc-step"><b>01 / INTAKE</b><h3>Define the incident</h3><p>Store URL, affected journey, time window, platform context and urgency.</p></article><article className="nc-step"><b>02 / EVIDENCE</b><h3>Compare the funnel</h3><p>Inspect comparable periods and segments. Flag missing or inconsistent metrics.</p></article><article className="nc-step"><b>03 / ACTION</b><h3>Prioritise the fix</h3><p>Reproduce the issue, identify the likely cause and scope a controlled change.</p></article><article className="nc-step"><b>04 / VERIFY</b><h3>Test and report</h3><p>Record test evidence, deployment status and post-change measurements.</p></article></div></section>
+<section className="nc-section nc-proof"><div><div className="nc-overline">WORKING DIAGNOSTIC</div><h2>Use the conversion workspace.<br/><em>Inspect the evidence yourself.</em></h2></div><div className="nc-proof-panel"><h3>Funnel regression analysis</h3><p>Import a baseline and current period CSV. NODUS calculates add-to-cart, cart-to-checkout, checkout-completion and session conversion rates; compares segments; identifies the largest measured deterioration; and exports a diagnostic record. Files stay in your browser.</p><div className="nc-actions"><Link to="/conversion-review" className="nc-btn nc-btn-primary">Open conversion workspace ↗</Link><a href="/nodus-funnel-template.csv" download className="nc-btn nc-btn-secondary">Download data template ↓</a></div><p className="nc-footnote">The tool does not independently access private analytics or modify a live store. Source data and findings require human validation.</p></div></section>
+<section className="nc-section"><div className="nc-overline">COMMERCIAL STANDARD</div><h2>Pay for a decision and a verified change. <em>Not activity.</em></h2><div className="nc-limits"><article className="nc-limit"><b>01 / NO FALSE LIFT</b><p>We do not claim recovered revenue or conversion lift without measured evidence and a defensible comparison.</p></article><article className="nc-limit"><b>02 / NO BLIND DEPLOYMENT</b><p>Live theme and checkout changes require explicit merchant approval, safe staging and rollback planning.</p></article><article className="nc-limit"><b>03 / NO DATA FICTION</b><p>Missing analytics, inconsistent event definitions and small samples remain visible limitations.</p></article></div></section>
+<section className="nc-final"><div><div className="nc-overline">NODUS / CONVERSION INCIDENT RESPONSE</div><h2>Show us where revenue<br/><em>stops moving.</em></h2><p>Request a scoped review. We first confirm the problem, evidence available, delivery capability, price and timing. No payment is collected by this form.</p></div><div className="nc-actions"><Link to="/buyer-evaluation" className="nc-btn nc-btn-primary">Request incident review ↗</Link><Link to="/conversion-review" className="nc-btn nc-btn-secondary">Run diagnostic ↗</Link></div></section>
+</main></MarketingShell>;}

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://nodus-hq.pages.dev/</loc><priority>1.0</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/guides/3pl-invoice-reconciliation</loc><priority>0.9</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/product</loc><priority>0.8</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/pricing</loc><priority>0.8</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/buyer-evaluation</loc><priority>0.8</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/methodology</loc><priority>0.7</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/security</loc><priority>0.4</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/privacy</loc><priority>0.4</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/support</loc><priority>0.3</priority></url>
-  <url><loc>https://nodus-hq.pages.dev/about</loc><priority>0.3</priority></url>
+ <url><loc>https://nodus-hq.pages.dev/</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/product</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/pricing</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/methodology</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/conversion-review</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/buyer-evaluation</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/security</loc></url>
+ <url><loc>https://nodus-hq.pages.dev/privacy</loc></url>
 </urlset>
